@@ -1,0 +1,104 @@
+{
+  "project_info": {
+    "project_number": "79998394043",
+    "project_id": "thermal-effort-366015",
+    "storage_bucket": "thermal-effort-366015.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79998394043:android:d8dae71aeb6fcda0d6139e",
+        "android_client_info": {
+          "package_name": "com.boha.geo_monitor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "79998394043-snbedcmpfomq4gfcqn1alvqfd0lvvq69.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.boha.geo_monitor",
+            "certificate_hash": "a1c6d044035fb9a0deea9c24a7c7f3dd85ed6950"
+          }
+        },
+        {
+          "client_id": "79998394043-2s6554pekjk08e759lb4i6bd1aluugif.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpxDuMIZrx55W6YuU6TY0v7T3Ar-Mg-Eo"
+        },
+        {
+          "current_key": "AIzaSyAppCGKY2IfL3R1lSyoUKXrdU7yUj5weMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "79998394043-2s6554pekjk08e759lb4i6bd1aluugif.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "79998394043-62opfk3baphnnbfejsosp87k4kq713d6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "datadriver-mobile"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79998394043:android:4ca42abb76079e2dd6139e",
+        "android_client_info": {
+          "package_name": "com.boha.universal_frontend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "79998394043-2llu6cka2h7lijqk1kds6m2056ub99vu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.boha.universal_frontend",
+            "certificate_hash": "a1c6d044035fb9a0deea9c24a7c7f3dd85ed6950"
+          }
+        },
+        {
+          "client_id": "79998394043-2s6554pekjk08e759lb4i6bd1aluugif.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpxDuMIZrx55W6YuU6TY0v7T3Ar-Mg-Eo"
+        },
+        {
+          "current_key": "AIzaSyAppCGKY2IfL3R1lSyoUKXrdU7yUj5weMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "79998394043-2s6554pekjk08e759lb4i6bd1aluugif.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "79998394043-62opfk3baphnnbfejsosp87k4kq713d6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "datadriver-mobile"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
