@@ -1,3 +1,3 @@
-# Gio FrontEnd: iOS, Android and Web
+# Gio FrontEnd: iOS, Android and Web with Flutter
 
 Welcome to the Geo frontend repository! This Flutter and Dart-based app provides a user-friendly interface for viewing and interacting with geolocation-based data, including multimedia timelines, maps, and real-time updates. Join our community of developers and help us build a powerful tool for promoting transparency and accountability in various industries and sectors.
