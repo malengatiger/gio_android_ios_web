@@ -5,6 +5,7 @@ import 'package:geo_monitor/library/data/settings_model.dart';
 
 import '../../device_location/device_location_bloc.dart';
 import '../api/data_api.dart';
+import '../api/data_api_og.dart';
 import '../api/prefs_og.dart';
 import '../cache_manager.dart';
 import '../data/audio.dart';
@@ -23,10 +24,13 @@ import '../data/video.dart';
 import '../functions.dart';
 import 'data_refresher.dart';
 
-final ProjectBloc projectBloc = ProjectBloc();
+late ProjectBloc projectBloc;
 
 class ProjectBloc {
-  ProjectBloc() {
+  final DataApiDog dataApiDog;
+  final CacheManager cacheManager;
+  
+  ProjectBloc(this.dataApiDog, this.cacheManager) {
     pp('$mm ProjectBloc constructed');
   }
   final mm = '💛️💛️💛️💛️💛️💛️ '
@@ -116,7 +120,7 @@ class ProjectBloc {
           await cacheManager.getProjectActivitiesWithinHours(projectId, hours);
 
       if (activities.isEmpty || forceRefresh) {
-        activities = await DataAPI.getProjectActivity(projectId, hours);
+        activities = await dataApiDog.getProjectActivity(projectId, hours);
       }
       activityController.sink.add(activities);
       pp('$mm 💜💜💜💜 getProjectActivity found: 💜 ${activities.length} activities ; organizationId: $projectId 💜');
@@ -138,7 +142,7 @@ class ProjectBloc {
 
     if (projectPositions.isEmpty || forceRefresh) {
       projectPositions =
-          await DataAPI.getProjectPositions(projectId, startDate, endDate);
+          await dataApiDog.getProjectPositions(projectId, startDate, endDate);
       pp('$mm getProjectPositions found ${projectPositions.length} positions from remote database ');
       await cacheManager.addProjectPositions(positions: projectPositions);
     }
@@ -158,7 +162,7 @@ class ProjectBloc {
       final startDate = map['startDate'];
       final endDate = map['endDate'];
       projectPolygons =
-          await DataAPI.getProjectPolygons(projectId, startDate!, endDate!);
+          await dataApiDog.getProjectPolygons(projectId, startDate!, endDate!);
       pp('$mm getProjectPolygons found ${projectPolygons.length} polygons from remote database ');
       await cacheManager.addProjectPolygons(polygons: projectPolygons);
     }
@@ -175,7 +179,7 @@ class ProjectBloc {
     List<Photo> photos = await cacheManager.getProjectPhotos(
         projectId: projectId, startDate: startDate, endDate: endDate);
     if (photos.isEmpty || forceRefresh) {
-      photos = await DataAPI.getProjectPhotos(
+      photos = await dataApiDog.getProjectPhotos(
           projectId: projectId, startDate: startDate, endDate: endDate);
       await cacheManager.addPhotos(photos: photos);
     }
@@ -191,7 +195,7 @@ class ProjectBloc {
     var schedules = await cacheManager.getProjectMonitorSchedules(projectId);
 
     if (schedules.isEmpty || forceRefresh) {
-      schedules = await DataAPI.getProjectFieldMonitorSchedules(projectId);
+      schedules = await dataApiDog.getProjectFieldMonitorSchedules(projectId);
       await cacheManager.addFieldMonitorSchedules(schedules: schedules);
     }
 
@@ -206,7 +210,7 @@ class ProjectBloc {
     var schedules = await cacheManager.getFieldMonitorSchedules(userId);
 
     if (schedules.isEmpty || forceRefresh) {
-      schedules = await DataAPI.getMonitorFieldMonitorSchedules(userId);
+      schedules = await dataApiDog.getMonitorFieldMonitorSchedules(userId);
       await cacheManager.addFieldMonitorSchedules(schedules: schedules);
     }
     schedules.sort((a, b) => b.date!.compareTo(a.date!));
@@ -225,7 +229,7 @@ class ProjectBloc {
         projectId: projectId, startDate: startDate, endDate: endDate);
 
     if (videos.isEmpty || forceRefresh) {
-      videos = await DataAPI.getProjectVideos(projectId, startDate, endDate);
+      videos = await dataApiDog.getProjectVideos(projectId, startDate, endDate);
     }
     videos.sort((a, b) => b.created!.compareTo(a.created!));
     _projectVideoController.sink.add(videos);
@@ -244,7 +248,7 @@ class ProjectBloc {
         projectId: projectId, startDate: startDate, endDate: endDate);
 
     if (audios.isEmpty || forceRefresh) {
-      audios = await DataAPI.getProjectAudios(projectId, startDate, endDate);
+      audios = await dataApiDog.getProjectAudios(projectId, startDate, endDate);
     }
     audios.sort((a, b) => b.created!.compareTo(a.created!));
 
@@ -314,7 +318,7 @@ class ProjectBloc {
     var bag = await _loadBag(projectId: projectId, startDate: startDate, endDate: endDate);
 
     if (forceRefresh) {
-      bag = await DataAPI.getProjectData(projectId, startDate, endDate);
+      bag = await dataApiDog.getProjectData(projectId, startDate, endDate);
     }
     _putBagContentsToStreams(bag);
     return bag;
@@ -386,7 +390,7 @@ class ProjectBloc {
       pp('MonitorBloc: Location is fucked!');
       rethrow;
     }
-    var projects = await DataAPI.findProjectsByLocation(
+    var projects = await dataApiDog.findProjectsByLocation(
         organizationId: user!.organizationId!,
         latitude: pos.latitude!,
         longitude: pos.longitude!,

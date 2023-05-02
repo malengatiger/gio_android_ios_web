@@ -4,7 +4,7 @@ import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/bloc/zip_bloc.dart';
 import 'package:geo_monitor/library/data/data_bag.dart';
 
-import '../api/data_api.dart';
+import '../api/data_api_og.dart';
 import '../cache_manager.dart';
 import '../data/activity_model.dart';
 import '../data/audio.dart';
@@ -19,10 +19,12 @@ import '../data/video.dart';
 import '../functions.dart';
 import 'data_refresher.dart';
 
-final UserBloc userBloc = UserBloc();
+late UserBloc userBloc;
 
 class UserBloc {
-  UserBloc() {
+  final DataApiDog dataApiDog;
+  final CacheManager cacheManager;
+  UserBloc(this.dataApiDog, this.cacheManager) {
     pp('UserBloc constructed');
   }
 
@@ -86,7 +88,7 @@ class UserBloc {
           await cacheManager.getUserActivitiesWithinHours(userId, hours);
 
       if (activities.isEmpty || forceRefresh) {
-        activities = await DataAPI.getUserActivity(userId, hours);
+        activities = await dataApiDog.getUserActivity(userId, hours);
       }
       activityController.sink.add(activities);
       pp('$mm 💜💜💜💜 getUserActivity found: 💜 ${activities.length} activities ; organizationId: $userId 💜');
@@ -103,7 +105,7 @@ class UserBloc {
     var photos = await cacheManager.getUserPhotos(userId);
 
     if (photos.isEmpty || forceRefresh) {
-      photos = await DataAPI.getUserProjectPhotos(userId);
+      photos = await dataApiDog.getUserProjectPhotos(userId);
     }
     _photoController.sink.add(photos);
     pp('$mm getUserProjectPhotos found: 💜 ${photos.length} photos ');
@@ -116,7 +118,7 @@ class UserBloc {
     var videos = await cacheManager.getUserVideos(userId);
 
     if (videos.isEmpty || forceRefresh) {
-      videos = await DataAPI.getUserProjectVideos(userId);
+      videos = await dataApiDog.getUserProjectVideos(userId);
     }
     _videoController.sink.add(videos);
     pp('$mm getUserProjectVideos found: 💜 ${videos.length} videos ');
@@ -129,7 +131,7 @@ class UserBloc {
     var audios = await cacheManager.getUserAudios(userId);
 
     if (audios.isEmpty || forceRefresh) {
-      audios = await DataAPI.getUserProjectAudios(userId);
+      audios = await dataApiDog.getUserProjectAudios(userId);
     }
     _audioController.sink.add(audios);
     pp('$mm getAudios found: 💜 ${audios.length} audios ');
@@ -142,7 +144,7 @@ class UserBloc {
     var schedules = await cacheManager.getProjectMonitorSchedules(userId);
 
     if (schedules.isEmpty || forceRefresh) {
-      schedules = await DataAPI.getUserFieldMonitorSchedules(userId);
+      schedules = await dataApiDog.getUserFieldMonitorSchedules(userId);
     }
     _fieldMonitorScheduleController.sink.add(schedules);
     pp('$mm getFieldMonitorSchedules found: 💜 ${schedules.length} schedules ');

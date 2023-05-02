@@ -17,7 +17,9 @@ import 'library/auth/app_auth.dart';
 import 'library/bloc/data_refresher.dart';
 import 'library/bloc/fcm_bloc.dart';
 import 'library/bloc/geo_uploader.dart';
+import 'library/bloc/project_bloc.dart';
 import 'library/bloc/theme_bloc.dart';
+import 'library/bloc/user_bloc.dart';
 import 'library/cache_manager.dart';
 import 'library/emojis.dart';
 import 'library/functions.dart';
@@ -47,6 +49,9 @@ class Initializer {
 
     organizationBloc = OrganizationBloc(dataApiDog, cacheManager);
     theGreatGeofencer = TheGreatGeofencer(dataApiDog, prefsOGx);
+
+    projectBloc = ProjectBloc(dataApiDog, cacheManager);
+    userBloc = UserBloc(dataApiDog, cacheManager);
 
     cacheManager.initialize(forceInitialization: false);
 
@@ -88,7 +93,7 @@ class Initializer {
         // dataRefresher.manageRefresh(numberOfDays: numberOfDays,
         //     organizationId: settings.organizationId!,
         //     projectId: null, userId: null);
-        isolateHandler = IsolateHandler(prefsOGx, appAuth);
+        isolateHandler = IsolateHandler(prefsOGx, appAuth, cacheManager, organizationBloc, projectBloc, userBloc, fcmBloc);
         isolateHandler.handleOrganization();
       }
 

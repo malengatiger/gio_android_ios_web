@@ -32,7 +32,7 @@ final geofenceService = GeofenceService.instance.setup(
 late TheGreatGeofencer theGreatGeofencer;
 
 class TheGreatGeofencer {
-  final xx = '😡😡😡😡😡😡😡 TheGreatGeofencer: 😡😡 ';
+  final xx = '😡😡😡😡😡😡😡 TheGreatGeofencer:  🔱 🔱 ';
 
   final DataApiDog dataApiDog;
   final PrefsOGx prefsOGx;
