@@ -23,14 +23,16 @@ import '../data/user.dart';
 import '../data/video.dart';
 import '../functions.dart';
 import 'data_refresher.dart';
+import 'isolate_handler.dart';
 
 late ProjectBloc projectBloc;
 
 class ProjectBloc {
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
+  final IsolateDataHandler isolateHandler;
   
-  ProjectBloc(this.dataApiDog, this.cacheManager) {
+  ProjectBloc(this.dataApiDog, this.cacheManager, this.isolateHandler) {
     pp('$mm ProjectBloc constructed');
   }
   final mm = '💛️💛️💛️💛️💛️💛️ '
@@ -288,22 +290,10 @@ class ProjectBloc {
         projectPolygons: polygons,
         settings: settings);
 
-    dataBagController.sink.add(dataBag);
-    if (videos.isEmpty || photos.isEmpty || audios.isEmpty || forceRefresh) {
-      dataBag = await dataRefresher.manageRefresh(
-          numberOfDays: numberOfDays,
-          organizationId: null,
-          projectId: projectId,
-          userId: null);
-      dataBagController.sink.add(dataBag!);
-    }
+      if (forceRefresh) {
+        isolateHandler.handleProject(projectId);
+      }
 
-    pp('$mm getProjectData found: 💜 ${dataBag.videos!.length} videos ');
-    pp('$mm getProjectData found: 💜 ${dataBag.photos!.length} photos ');
-    pp('$mm getProjectData found: 💜 ${dataBag.audios!.length} audios ');
-    pp('$mm getProjectData found: 💜 ${dataBag.projectPositions!.length} positions ');
-    pp('$mm getProjectData found: 💜 ${dataBag.projectPolygons!.length} polygons ');
-    pp('$mm getProjectData found: 💜 ${dataBag.settings!.length} settings ');
 
     return dataBag;
   }

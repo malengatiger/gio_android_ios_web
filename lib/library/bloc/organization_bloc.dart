@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:geo_monitor/library/bloc/data_refresher.dart';
+import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/theme_bloc.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
 import 'package:geo_monitor/library/data/project_summary.dart';
@@ -192,8 +193,8 @@ class OrganizationBloc {
       pp('$mm get data from server .....................; '
           'forceRefresh: $forceRefresh; if true do the refresh ...');
       await getLatestSettings(organizationId);
-      bag = await dataRefresher.manageRefresh(numberOfDays: numberOfDays,
-          organizationId: organizationId, projectId: null, userId: null);
+
+      isolateHandler.handleOrganization();
       bag!.projects = projects;
       bag.users = users;
       return bag;
@@ -202,9 +203,8 @@ class OrganizationBloc {
       if (bag.isEmpty()) {
         pp('$mm bag is empty. No organization data anywhere yet? ... '
             'will force refresh, forceRefresh: $forceRefresh');
-        bag = await dataRefresher.manageRefresh(numberOfDays: numberOfDays,
-            organizationId: organizationId, projectId: null, userId: null);
-        bag!.projects = projects;
+        isolateHandler.handleOrganization();
+        bag.projects = projects;
         bag.users = users;
         return bag;
       }

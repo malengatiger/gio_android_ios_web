@@ -9,6 +9,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geo_monitor/initializer.dart';
 import 'package:geo_monitor/l10n/translation_handler.dart';
+import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/splash/splash_page.dart';
@@ -129,9 +130,9 @@ class GeoApp extends ConsumerWidget {
                 splashIconSize: 160.0,
                 nextScreen: fbAuthedUser == null
                     ?  IntroMain(
-                  prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager,
+                  prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager, isolateHandler: isolateHandler,
                 )
-                    : const DashboardMain(),
+                    :  DashboardMain(isolateHandler: isolateHandler,),
                 splashTransition: SplashTransition.fadeTransition,
                 pageTransitionType: PageTransitionType.leftToRight,
                 backgroundColor: Colors.pink.shade900,

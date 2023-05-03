@@ -29,6 +29,7 @@ import '../../l10n/translation_handler.dart';
 import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
 import '../../library/bloc/geo_exception.dart';
+import '../../library/bloc/isolate_handler.dart';
 import '../../library/bloc/theme_bloc.dart';
 import '../../library/data/audio.dart';
 import '../../library/data/data_bag.dart';
@@ -52,12 +53,14 @@ import '../../utilities/constants.dart';
 import '../activity/user_profile_card.dart';
 
 class DashboardTablet extends StatefulWidget {
-  const DashboardTablet({Key? key, required this.user, required this.prefsOGx, required this.dataApiDog, required this.cacheManager}) : super(key: key);
+  const DashboardTablet({Key? key, required this.user, required this.prefsOGx, required this.dataApiDog, required this.cacheManager, required this.isolateHandler}) : super(key: key);
 
   final User user;
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
+  final IsolateDataHandler isolateHandler;
+
   @override
   State<DashboardTablet> createState() => DashboardTabletState();
 }
@@ -334,7 +337,7 @@ class DashboardTabletState extends State<DashboardTablet>
               alignment: Alignment.topLeft,
               duration: const Duration(seconds: 1),
               child:  IntroMain(
-                prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager,
+                prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager, isolateHandler: widget.isolateHandler,
               )));
     }
   }
@@ -378,7 +381,7 @@ class DashboardTabletState extends State<DashboardTablet>
               type: PageTransitionType.scale,
               alignment: Alignment.center,
               duration: const Duration(seconds: 1),
-              child: const SettingsMain()));
+              child:  SettingsMain(isolateHandler: widget.isolateHandler,)));
     }
   }
 

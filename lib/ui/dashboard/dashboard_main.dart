@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/dashboard_khaya/xd_dashboard.dart';
-import 'package:geo_monitor/initializer.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
-import 'package:geo_monitor/library/bloc/data_refresher.dart';
+import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geofence_service/geofence_service.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -14,8 +13,9 @@ import '../../library/geofence/the_great_geofencer.dart';
 
 class DashboardMain extends StatefulWidget {
   const DashboardMain({
-    Key? key,
+    Key? key, required this.isolateHandler,
   }) : super(key: key);
+  final IsolateDataHandler isolateHandler;
   @override
   DashboardMainState createState() => DashboardMainState();
 }
@@ -68,12 +68,7 @@ class DashboardMainState extends State<DashboardMain>
   }
 
   void _refreshWhileInBackground() async {
-    final sett = await prefsOGx.getSettings();
-    await dataRefresher.manageRefresh(
-        numberOfDays: sett.numberOfDays,
-        organizationId: sett.organizationId,
-        projectId: null,
-        userId: null);
+    isolateHandler.handleOrganization();
 
     pp('$mm Background data refresh completed');
   }
@@ -160,13 +155,13 @@ class DashboardMainState extends State<DashboardMain>
                 pp('$mm callback from WillStartForegroundTask fired! 🍎 WHY?');
               },
               child: ScreenTypeLayout(
-                mobile: const DashboardKhaya(),
+                mobile:  DashboardKhaya(isolateHandler: widget.isolateHandler,),
                 tablet: OrientationLayoutBuilder(
                   portrait: (context) {
-                    return const DashboardKhaya();
+                    return  DashboardKhaya(isolateHandler: widget.isolateHandler,);
                   },
                   landscape: (context) {
-                    return const DashboardKhaya();
+                    return  DashboardKhaya(isolateHandler: widget.isolateHandler,);
                   },
                 ),
               ),

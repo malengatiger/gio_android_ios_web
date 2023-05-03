@@ -1,36 +1,36 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/data_refresher.dart';
+import 'package:geo_monitor/library/bloc/location_request_handler.dart';
 import 'package:geo_monitor/library/bloc/project_bloc.dart';
 import 'package:geo_monitor/library/bloc/user_bloc.dart';
 import 'package:geo_monitor/library/bloc/zip_bloc.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../api/data_api_og.dart';
 import '../auth/app_auth.dart';
 import '../cache_manager.dart';
 import '../data/data_bag.dart';
 import 'fcm_bloc.dart';
 import 'organization_bloc.dart';
 
-late IsolateHandler isolateHandler;
+late IsolateDataHandler isolateHandler;
 
-class IsolateHandler {
+class IsolateDataHandler {
   static const xx = ' 🎁 🎁 🎁 🎁 🎁 🎁 IsolateHandler:  🎁 ';
+  IsolateDataHandler(this.prefsOGx, this.appAuth, this.cacheManager);
 
   final PrefsOGx prefsOGx;
   final AppAuth appAuth;
   final CacheManager cacheManager;
-  final OrganizationBloc organizationBloc;
-  final ProjectBloc projectBloc;
-  final UserBloc userBloc;
-  final FCMBloc fcmBloc;
 
-  IsolateHandler(this.prefsOGx, this.appAuth, this.cacheManager, this.organizationBloc, this.projectBloc, this.userBloc, this.fcmBloc);
 
   ReceivePort myReceivePort = ReceivePort();
+
   Future handleOrganization() async {
     pp('$xx handleOrganization;  🦊collect parameters from SettingsModel ...');
     final sett = await prefsOGx.getSettings();
@@ -48,6 +48,46 @@ class IsolateHandler {
         url: getUrl(),
         projectId: null,
         userId: null);
+
+    await startIsolate(gioParams);
+  }
+  Future handleProject(String projectId) async {
+    pp('$xx handleOrganization;  🦊collect parameters from SettingsModel ...');
+    final sett = await prefsOGx.getSettings();
+    final token = await appAuth.getAuthToken();
+    final map = await getStartEndDates(numberOfDays: sett.numberOfDays!);
+    final dir = await getApplicationDocumentsDirectory();
+
+    var gioParams = GioParams(
+        organizationId: null,
+        directoryPath: dir.path,
+        sendPort: myReceivePort.sendPort,
+        token: token!,
+        startDate: map['startDate']!,
+        endDate: map['endDate']!,
+        url: getUrl(),
+        projectId: projectId,
+        userId: null);
+
+    await startIsolate(gioParams);
+  }
+  Future handleUser(String userId) async {
+    pp('$xx handleOrganization;  🦊collect parameters from SettingsModel ...');
+    final sett = await prefsOGx.getSettings();
+    final token = await appAuth.getAuthToken();
+    final map = await getStartEndDates(numberOfDays: sett.numberOfDays!);
+    final dir = await getApplicationDocumentsDirectory();
+
+    var gioParams = GioParams(
+        organizationId: null,
+        directoryPath: dir.path,
+        sendPort: myReceivePort.sendPort,
+        token: token!,
+        startDate: map['startDate']!,
+        endDate: map['endDate']!,
+        url: getUrl(),
+        projectId: null,
+        userId: userId);
 
     await startIsolate(gioParams);
   }
@@ -75,6 +115,7 @@ class IsolateHandler {
         pp('$xx startIsolate received msg: $message');
       }
     });
+
     await Isolate.spawn<GioParams>(heavyTaskInsideIsolate, gioParams).catchError((err) {
       pp('$xx catchError: $err');
       return Future<Isolate>.delayed(const Duration(milliseconds: 1));
@@ -82,6 +123,7 @@ class IsolateHandler {
       pp('$xx whenComplete: 💙💙 Isolate seems to be done!\n\n');
     });
   }
+
   void _sendOrganizationDataToStreams(DataBag bag) {
     organizationBloc.dataBagController.sink.add(bag);
     pp('$xx Organization Data sent to dataBagStream  ...');
@@ -158,13 +200,35 @@ class GioParams {
 void heavyTaskInsideIsolate(GioParams gioParams) async {
   gioParams.sendPort.send('Heavy Task starting ....');
 
-  final bag = await refreshOrganizationDataInIsolate(
-      token: gioParams.token,
-      organizationId: gioParams.organizationId!,
-      startDate: gioParams.startDate,
-      endDate: gioParams.endDate,
-      url: gioParams.url,
-      directoryPath: gioParams.directoryPath);
+   DataBag? bag;
+  if (gioParams.organizationId != null) {
+    bag = await refreshOrganizationDataInIsolate(
+        token: gioParams.token,
+        organizationId: gioParams.organizationId!,
+        startDate: gioParams.startDate,
+        endDate: gioParams.endDate,
+        url: gioParams.url,
+        directoryPath: gioParams.directoryPath);
+  }
+  if (gioParams.projectId != null) {
+    bag = await refreshProjectDataInIsolate(
+        token: gioParams.token,
+        projectId: gioParams.projectId!,
+        startDate: gioParams.startDate,
+        endDate: gioParams.endDate,
+        url: gioParams.url,
+        directoryPath: gioParams.directoryPath);
+  }
+  if (gioParams.userId != null) {
+    bag = await refreshUserDataInIsolate(
+        token: gioParams.token,
+        userId: gioParams.userId!,
+        startDate: gioParams.startDate,
+        endDate: gioParams.endDate,
+        url: gioParams.url,
+        directoryPath: gioParams.directoryPath);
+  }
 
+  pp('🔷🔷🔷🔷 heavyTaskInsideIsolate completed, 🔷bag returned to the other side');
   gioParams.sendPort.send(bag);
 }

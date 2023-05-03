@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/bloc/data_refresher.dart';
+import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:uuid/uuid.dart';
@@ -20,10 +21,14 @@ import '../../generic_functions.dart';
 
 class SettingsForm extends StatefulWidget {
   const SettingsForm(
-      {Key? key, required this.padding, required this.onLocaleChanged})
+      {Key? key,
+      required this.padding,
+      required this.onLocaleChanged,
+      required this.isolateHandler})
       : super(key: key);
   final double padding;
   final Function(String locale) onLocaleChanged;
+  final IsolateDataHandler isolateHandler;
   @override
   State<SettingsForm> createState() => SettingsFormState();
 }
@@ -87,7 +92,7 @@ class SettingsFormState extends State<SettingsForm> {
   Future _setTexts() async {
     settingsModel = await prefsOGx.getSettings();
     oldSettingsModel = await prefsOGx.getSettings();
-      currentLocale = settingsModel!.locale!;
+    currentLocale = settingsModel!.locale!;
 
     pp('$mm 🍎🍎 user is here, huh? 🌎 ${user!.name!}');
     _setExistingSettings();
@@ -235,8 +240,10 @@ class SettingsFormState extends State<SettingsForm> {
         return;
       }
       final sett = await cacheManager.getSettings();
-      final settingsChanged = await translator.translate('settingsChanged', sett!.locale!);
-      final messageFromGeo = await translator.translate('messageFromGeo', sett!.locale!);
+      final settingsChanged =
+          await translator.translate('settingsChanged', sett!.locale!);
+      final messageFromGeo =
+          await translator.translate('messageFromGeo', sett!.locale!);
 
       settingsModel = SettingsModel(
         locale: selectedLocale.toString(),
@@ -288,12 +295,7 @@ class SettingsFormState extends State<SettingsForm> {
       await prefsOGx.saveSettings(s);
       organizationBloc.settingsController.sink.add(s);
       themeBloc.changeToTheme(s.themeIndex!);
-      //todo - do something with new settings ....
-      dataRefresher.manageRefresh(
-          numberOfDays: null,
-          organizationId: s.organizationId,
-          projectId: null,
-          userId: null);
+      isolateHandler.handleOrganization();
     } catch (e) {
       pp(e);
       if (mounted) {
@@ -754,96 +756,97 @@ class LocaleChooserState extends State<LocaleChooser> {
   Future setTexts() async {
     settingsModel = await prefsOGx.getSettings();
     settingsModel ??= getBaseSettings();
-      english = await translator.translate('en', settingsModel!.locale!);
-      afrikaans = await translator.translate('af', settingsModel!.locale!);
-      french = await translator.translate('fr', settingsModel!.locale!);
-      portuguese = await translator.translate('pt', settingsModel!.locale!);
-      lingala = await translator.translate('ig', settingsModel!.locale!);
-      sotho = await translator.translate('st', settingsModel!.locale!);
-      spanish = await translator.translate('es', settingsModel!.locale!);
-      swahili = await translator.translate('sw', settingsModel!.locale!);
-      tsonga = await translator.translate('ts', settingsModel!.locale!);
-      xhosa = await translator.translate('xh', settingsModel!.locale!);
-      zulu = await translator.translate('zu', settingsModel!.locale!);
-      yoruba = await translator.translate('yo', settingsModel!.locale!);
-      german = await translator.translate('de', settingsModel!.locale!);
-      chinese = await translator.translate('zh', settingsModel!.locale!);
-      shona = await translator.translate('sn', settingsModel!.locale!);
-      setState(() {});
-
+    english = await translator.translate('en', settingsModel!.locale!);
+    afrikaans = await translator.translate('af', settingsModel!.locale!);
+    french = await translator.translate('fr', settingsModel!.locale!);
+    portuguese = await translator.translate('pt', settingsModel!.locale!);
+    lingala = await translator.translate('ig', settingsModel!.locale!);
+    sotho = await translator.translate('st', settingsModel!.locale!);
+    spanish = await translator.translate('es', settingsModel!.locale!);
+    swahili = await translator.translate('sw', settingsModel!.locale!);
+    tsonga = await translator.translate('ts', settingsModel!.locale!);
+    xhosa = await translator.translate('xh', settingsModel!.locale!);
+    zulu = await translator.translate('zu', settingsModel!.locale!);
+    yoruba = await translator.translate('yo', settingsModel!.locale!);
+    german = await translator.translate('de', settingsModel!.locale!);
+    chinese = await translator.translate('zh', settingsModel!.locale!);
+    shona = await translator.translate('sn', settingsModel!.locale!);
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return settingsModel == null? const SizedBox(): DropdownButton<Locale>(
-        hint: Text(
-          widget.hint,
-          style: myTextStyleSmall(context),
-        ),
-        items: [
-          DropdownMenuItem(
-            value: const Locale('en'),
-            child: Text(english == null ? 'English' : english!,
-                style: myTextStyleSmall(context)),
-          ),
-          DropdownMenuItem(
-              value: const Locale('zh'),
-              child: Text(chinese == null ? 'Chinese' : chinese!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('af'),
-              child: Text(afrikaans == null ? 'Afrikaans' : afrikaans!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('fr'),
-              child: Text(french == null ? 'French' : french!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('de'),
-              child: Text(german == null ? 'German' : german!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('pt'),
-              child: Text(portuguese == null ? 'Portuguese' : portuguese!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('ig'),
-              child: Text(lingala == null ? 'Lingala' : lingala!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('st'),
-              child: Text(sotho == null ? 'Sotho' : sotho!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('es'),
-              child: Text(spanish == null ? 'Spanish' : spanish!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('sn'),
-              child: Text(shona == null ? 'Shona' : shona!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('sw'),
-              child: Text(swahili == null ? 'Swahili' : swahili!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('ts'),
-              child: Text(tsonga == null ? 'Tsonga' : tsonga!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('xh'),
-              child: Text(xhosa == null ? 'Xhosa' : xhosa!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('yo'),
-              child: Text(yoruba == null ? 'Yoruba' : yoruba!,
-                  style: myTextStyleSmall(context))),
-          DropdownMenuItem(
-              value: const Locale('zu'),
-              child: Text(zulu == null ? 'Zulu' : zulu!,
-                  style: myTextStyleSmall(context))),
-        ],
-        onChanged: onChanged);
+    return settingsModel == null
+        ? const SizedBox()
+        : DropdownButton<Locale>(
+            hint: Text(
+              widget.hint,
+              style: myTextStyleSmall(context),
+            ),
+            items: [
+              DropdownMenuItem(
+                value: const Locale('en'),
+                child: Text(english == null ? 'English' : english!,
+                    style: myTextStyleSmall(context)),
+              ),
+              DropdownMenuItem(
+                  value: const Locale('zh'),
+                  child: Text(chinese == null ? 'Chinese' : chinese!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('af'),
+                  child: Text(afrikaans == null ? 'Afrikaans' : afrikaans!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('fr'),
+                  child: Text(french == null ? 'French' : french!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('de'),
+                  child: Text(german == null ? 'German' : german!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('pt'),
+                  child: Text(portuguese == null ? 'Portuguese' : portuguese!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('ig'),
+                  child: Text(lingala == null ? 'Lingala' : lingala!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('st'),
+                  child: Text(sotho == null ? 'Sotho' : sotho!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('es'),
+                  child: Text(spanish == null ? 'Spanish' : spanish!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('sn'),
+                  child: Text(shona == null ? 'Shona' : shona!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('sw'),
+                  child: Text(swahili == null ? 'Swahili' : swahili!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('ts'),
+                  child: Text(tsonga == null ? 'Tsonga' : tsonga!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('xh'),
+                  child: Text(xhosa == null ? 'Xhosa' : xhosa!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('yo'),
+                  child: Text(yoruba == null ? 'Yoruba' : yoruba!,
+                      style: myTextStyleSmall(context))),
+              DropdownMenuItem(
+                  value: const Locale('zu'),
+                  child: Text(zulu == null ? 'Zulu' : zulu!,
+                      style: myTextStyleSmall(context))),
+            ],
+            onChanged: onChanged);
   }
 
   void onChanged(Locale? locale) async {
@@ -957,7 +960,6 @@ class ColorSchemePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     var colors = <ColorBag>[
       ColorBag(
         color: const Color(0xFF424343),
@@ -1071,7 +1073,6 @@ class ColorSchemePicker extends StatelessWidget {
         color: FlexColor.aquaBlueDarkPrimary,
         index: 27,
       ),
-
     ];
 
     var itemElevation = 0.0;

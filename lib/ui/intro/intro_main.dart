@@ -4,15 +4,23 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/isolate_handler.dart';
 import '../../library/cache_manager.dart';
 import 'intro_page_viewer_landscape.dart';
 
 class IntroMain extends StatefulWidget {
-
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
-  const IntroMain({Key? key, required this.prefsOGx, required this.dataApiDog, required this.cacheManager, }) : super(key: key);
+  final IsolateDataHandler isolateHandler;
+
+  const IntroMain({
+    Key? key,
+    required this.prefsOGx,
+    required this.dataApiDog,
+    required this.cacheManager,
+    required this.isolateHandler,
+  }) : super(key: key);
   @override
   IntroMainState createState() => IntroMainState();
 }
@@ -37,18 +45,27 @@ class IntroMainState extends State<IntroMain>
   @override
   Widget build(BuildContext context) {
     return ScreenTypeLayout(
-      mobile:  IntroPageViewerPortrait(
-        prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager,
+      mobile: IntroPageViewerPortrait(
+        prefsOGx: widget.prefsOGx,
+        dataApiDog: widget.dataApiDog,
+        cacheManager: widget.cacheManager,
+        isolateHandler: widget.isolateHandler,
       ),
       tablet: OrientationLayoutBuilder(
         portrait: (context) {
-          return  IntroPageViewerPortrait(
-            prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager,
+          return IntroPageViewerPortrait(
+            prefsOGx: widget.prefsOGx,
+            dataApiDog: widget.dataApiDog,
+            cacheManager: widget.cacheManager,
+            isolateHandler: widget.isolateHandler,
           );
         },
-        landscape: (context){
-          return  IntroPageViewerLandscape(
-            prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager,
+        landscape: (context) {
+          return IntroPageViewerLandscape(
+            prefsOGx: widget.prefsOGx,
+            dataApiDog: widget.dataApiDog,
+            cacheManager: widget.cacheManager,
+            isolateHandler: widget.isolateHandler,
           );
         },
       ),

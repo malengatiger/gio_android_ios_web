@@ -18,6 +18,7 @@ import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
 import '../../library/bloc/connection_check.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/isolate_handler.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
 import '../../library/bloc/theme_bloc.dart';
@@ -49,13 +50,15 @@ class DashboardMobile extends StatefulWidget {
   const DashboardMobile({
     Key? key,
     this.user,
-    this.project, required this.prefsOGx, required this.dataApiDog, required this.cacheManager,
+    this.project, required this.prefsOGx, required this.dataApiDog, required this.cacheManager, required this.isolateHandler,
   }) : super(key: key);
   final User? user;
   final Project? project;
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
+  final IsolateDataHandler isolateHandler;
+
   @override
   DashboardMobileState createState() => DashboardMobileState();
 }
@@ -473,7 +476,10 @@ class DashboardMobileState extends State<DashboardMobile>
               alignment: Alignment.topLeft,
               duration: const Duration(seconds: 1),
               child:  IntroPageViewerPortrait(
-                prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager,
+                prefsOGx: widget.prefsOGx,
+                dataApiDog: widget.dataApiDog,
+                cacheManager: widget.cacheManager,
+                isolateHandler: widget.isolateHandler,
               )));
     }
   }
@@ -504,7 +510,9 @@ class DashboardMobileState extends State<DashboardMobile>
               type: PageTransitionType.fade,
               alignment: Alignment.center,
               duration: const Duration(seconds: 1),
-              child: const SettingsMain()));
+              child:  SettingsMain(
+                isolateHandler: widget.isolateHandler,
+              )));
      pp('$mm  back from Settings ....');
      settings = await prefsOGx.getSettings();
      await _handleNewSettings(settings!);

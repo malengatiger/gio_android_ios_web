@@ -13,6 +13,7 @@ import '../../dashboard_khaya/xd_dashboard.dart';
 import '../../l10n/translation_handler.dart';
 import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/isolate_handler.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/user.dart' as ur;
 import '../../library/emojis.dart';
@@ -23,11 +24,13 @@ import '../intro/intro_page_one.dart';
 
 class IntroPageViewerPortrait extends StatefulWidget {
   const IntroPageViewerPortrait({
-    Key? key, required this.prefsOGx, required this.dataApiDog, required this.cacheManager,
+    Key? key, required this.prefsOGx, required this.dataApiDog, required this.cacheManager, required this.isolateHandler,
   }) : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
+  final IsolateDataHandler isolateHandler;
+
 
   @override
   IntroPageViewerPortraitState createState() => IntroPageViewerPortraitState();
@@ -102,7 +105,7 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
               duration: const Duration(seconds: 2),
-              child: const DashboardKhaya()));
+              child:  DashboardKhaya(isolateHandler: widget.isolateHandler,)));
     } else {
       pp('User is null,  🔆 🔆 🔆 🔆 cannot navigate to Dashboard');
     }

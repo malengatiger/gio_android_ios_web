@@ -10,6 +10,7 @@ import 'package:page_transition/page_transition.dart';
 import '../../l10n/translation_handler.dart';
 import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/isolate_handler.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/user.dart' as ur;
 import '../../library/emojis.dart';
@@ -19,16 +20,24 @@ import '../../library/ui/settings/settings_form.dart';
 import 'intro_page_one_landscape.dart';
 
 class IntroPageViewerLandscape extends StatefulWidget {
-  const IntroPageViewerLandscape({Key? key, required this.prefsOGx, required this.dataApiDog, required this.cacheManager}) : super(key: key);
+  const IntroPageViewerLandscape(
+      {Key? key,
+      required this.prefsOGx,
+      required this.dataApiDog,
+      required this.cacheManager,
+      required this.isolateHandler})
+      : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
+  final IsolateDataHandler isolateHandler;
+
   @override
   State<IntroPageViewerLandscape> createState() =>
-      _IntroPageViewerLandscapeState();
+      IntroPageViewerLandscapeState();
 }
 
-class _IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
+class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   fb.FirebaseAuth firebaseAuth = fb.FirebaseAuth.instance;
@@ -77,7 +86,8 @@ class _IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
     govt = await translator.translate('govt', locale);
     youth = await translator.translate('youth', locale);
     community = await translator.translate('community', locale);
-    registerOrganization = await translator.translate('registerOrganization', locale);
+    registerOrganization =
+        await translator.translate('registerOrganization', locale);
     setState(() {});
   }
 
@@ -117,7 +127,9 @@ class _IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
                 type: PageTransitionType.scale,
                 alignment: Alignment.topLeft,
                 duration: const Duration(milliseconds: 2000),
-                child: const DashboardMain()));
+                child: DashboardMain(
+                  isolateHandler: widget.isolateHandler,
+                )));
       } else {
         pp('$mm User is null,  🔆 🔆 🔆 🔆 cannot navigate to Dashboard');
       }
@@ -132,8 +144,10 @@ class _IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child:  AuthSignIn(
-              prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager,
+            child: AuthSignIn(
+              prefsOGx: prefsOGx,
+              dataApiDog: dataApiDog,
+              cacheManager: cacheManager,
             )));
 
     if (result is ur.User) {
@@ -169,8 +183,10 @@ class _IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child:  AuthRegistrationMain(
-              prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager,
+            child: AuthRegistrationMain(
+              prefsOGx: prefsOGx,
+              dataApiDog: dataApiDog,
+              cacheManager: cacheManager,
             )));
 
     if (result is ur.User) {
@@ -189,7 +205,8 @@ class _IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
     final s = getBaseSettings();
     s.organizationId = user!.organizationId;
     await prefsOGx.saveSettings(s);
-    await _setTexts();;
+    await _setTexts();
+    ;
   }
 
   @override
@@ -215,13 +232,14 @@ class _IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
                   color: Colors.black38,
                   shape: getRoundedBorder(radius: 16),
                   child: authed
-                      ? Row(mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          LocaleChooser(
-                          onSelected: onSelected,
-                          hint: hint == null ? 'Select Language' : hint!),
-                        ],
-                      )
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            LocaleChooser(
+                                onSelected: onSelected,
+                                hint: hint == null ? 'Select Language' : hint!),
+                          ],
+                        )
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -247,7 +265,7 @@ class _IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
           ListView(
             scrollDirection: Axis.horizontal,
             // itemExtent: ,
-            children:  [
+            children: [
               IntroPageLandscape(
                 title: 'Geo',
                 assetPath: 'assets/intro/pic2.jpg',
@@ -278,7 +296,6 @@ class _IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
                 text: thankYouMessage == null ? lorem : thankYouMessage!,
                 width: 420,
               ),
-
             ],
           )
         ],

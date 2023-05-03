@@ -12,13 +12,15 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../../l10n/translation_handler.dart';
 import '../../bloc/fcm_bloc.dart';
+import '../../bloc/isolate_handler.dart';
 import '../../data/location_response.dart';
 import '../../data/settings_model.dart';
 import '../../functions.dart';
 import '../maps/location_response_map.dart';
 
 class SettingsTablet extends StatefulWidget {
-  const SettingsTablet({Key? key}) : super(key: key);
+  const SettingsTablet({Key? key, required this.isolateHandler}) : super(key: key);
+  final IsolateDataHandler isolateHandler;
 
   @override
   SettingsTabletState createState() => SettingsTabletState();
@@ -85,7 +87,7 @@ class SettingsTabletState extends State<SettingsTablet>
                     padding: 32, onLocaleChanged: (String locale) {
                       //todo - set texts
                     _handleOnLocaleChanged(locale);
-                  },
+                  }, isolateHandler: widget.isolateHandler,
                   ),
                 ),
               ),
@@ -122,7 +124,7 @@ class SettingsTabletState extends State<SettingsTablet>
                   onLocaleChanged: (locale){
                     _handleOnLocaleChanged(locale);
                   },
-                  padding: 20,
+                  padding: 20, isolateHandler: widget.isolateHandler,
                 ),
               ),
             ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/bloc/zip_bloc.dart';
 import 'package:geo_monitor/library/data/data_bag.dart';
@@ -24,7 +25,8 @@ late UserBloc userBloc;
 class UserBloc {
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
-  UserBloc(this.dataApiDog, this.cacheManager) {
+  final IsolateDataHandler isolateDataHandler;
+  UserBloc(this.dataApiDog, this.cacheManager, this.isolateDataHandler) {
     pp('UserBloc constructed');
   }
 
@@ -160,11 +162,10 @@ class UserBloc {
     //todo - for monitor, only their projects must show
     DataBag? bag = await cacheManager.getUserData(userId: userId);
     if (forceRefresh || bag.isEmpty()) {
-      bag = await dataRefresher.manageRefresh(numberOfDays: numberOfDays,
-          organizationId: null, projectId: null, userId: userId);
+      isolateHandler.handleOrganization();
+
     }
     pp('$mm filter bag by the dates ....');
-    printDataBag(bag!);
     var mBag = filterBagContentsByDate(bag: bag!,  startDate: startDate, endDate: endDate);
     dataBagController.sink.add(mBag);
     pp('$mm filtered bag ....');

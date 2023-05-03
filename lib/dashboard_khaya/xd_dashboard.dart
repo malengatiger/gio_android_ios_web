@@ -32,6 +32,7 @@ import 'package:universal_platform/universal_platform.dart';
 
 import '../l10n/translation_handler.dart';
 import '../library/bloc/fcm_bloc.dart';
+import '../library/bloc/isolate_handler.dart';
 import '../library/bloc/theme_bloc.dart';
 import '../library/data/data_bag.dart';
 import '../library/data/project.dart';
@@ -40,7 +41,9 @@ import '../library/ui/settings/settings_main.dart';
 import 'member_list.dart';
 
 class DashboardKhaya extends StatefulWidget {
-  const DashboardKhaya({Key? key}) : super(key: key);
+  const DashboardKhaya({Key? key, required this.isolateHandler}) : super(key: key);
+
+  final IsolateDataHandler isolateHandler;
 
   @override
   State<DashboardKhaya> createState() => _DashboardKhayaState();
@@ -238,7 +241,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
               type: PageTransitionType.scale,
               alignment: Alignment.center,
               duration: const Duration(seconds: 1),
-              child: const SettingsMain()));
+              child:  SettingsMain(isolateHandler: widget.isolateHandler,)));
     }
   }
 

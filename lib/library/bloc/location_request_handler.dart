@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/data/location_request.dart';
 import 'package:uuid/uuid.dart';
@@ -12,11 +13,15 @@ import '../data/position.dart';
 import '../data/user.dart';
 import '../functions.dart';
 
-final LocationRequestHandler locationRequestHandler = LocationRequestHandler();
+late LocationRequestHandler locationRequestHandler;
 
 class LocationRequestHandler {
   final mm = '️🌀🌀🌀🌀LocationRequestHandler: 🍎 ';
   bool isStarted = false;
+  final DataApiDog dataApiDog;
+
+
+  LocationRequestHandler(this.dataApiDog);
 
   Future sendLocationRequest(
       {required String requesterId,
@@ -46,7 +51,7 @@ class LocationRequestHandler {
       created: DateTime.now().toUtc().toIso8601String(),
     );
 
-    var result = await DataAPI.sendLocationRequest(req);
+    var result = await dataApiDog.sendLocationRequest(req);
     pp('$mm  LocationRequest sent to cloud backend, result: ${result.toJson()}');
   }
 
@@ -77,7 +82,7 @@ class LocationRequestHandler {
         organizationId: user.organizationId,
         organizationName: user.organizationName);
 
-    var result = await DataAPI.addLocationResponse(locResp);
+    var result = await dataApiDog.addLocationResponse(locResp);
     pp('$mm  LocationResponse sent to database, result: ${result.toJson()}');
   }
 }

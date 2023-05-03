@@ -7,15 +7,16 @@ import 'package:firebase_messaging/firebase_messaging.dart' as fb;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geo_monitor/library/bloc/data_refresher.dart';
+import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/location_request_handler.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
-// import 'package:geolocator/geolocator.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 import '../../device_location/device_location_bloc.dart';
 import '../api/data_api.dart';
 import '../api/prefs_og.dart';
+import '../auth/app_auth.dart';
 import '../cache_manager.dart';
 import '../data/audio.dart';
 import '../data/condition.dart';
@@ -35,11 +36,20 @@ import '../functions.dart';
 import 'organization_bloc.dart';
 import 'theme_bloc.dart';
 
-FCMBloc fcmBloc = FCMBloc();
+late FCMBloc fcmBloc;
 const mm = '🔵🔵🔵🔵🔵🔵 FCMBloc: 🔵🔵 ';
 
 class FCMBloc {
-  fb.FirebaseMessaging messaging = fb.FirebaseMessaging.instance;
+  late IsolateDataHandler isolateHandler;
+  final fb.FirebaseMessaging firebaseMessaging;
+  final CacheManager cacheManager;
+  final LocationRequestHandler locationRequestHandler;
+
+
+  FCMBloc(this.firebaseMessaging, this.cacheManager,
+      this.locationRequestHandler,) {
+    isolateHandler = IsolateDataHandler(prefsOGx, appAuth, cacheManager,);
+  }
 
   final StreamController<User> userController = StreamController.broadcast();
   final StreamController<LocationResponse> _locationResponseController =
@@ -105,9 +115,6 @@ class FCMBloc {
     _projectPolygonController.close();
   }
 
-  FCMBloc() {
-    //initialize();
-  }
 
   Future initialize() async {
     pp("$mm initialize ....... FIREBASE MESSAGING ...........................");
@@ -115,7 +122,7 @@ class FCMBloc {
     var android = UniversalPlatform.isAndroid;
     var ios = UniversalPlatform.isIOS;
 
-    NotificationSettings settings = await messaging.requestPermission(
+    NotificationSettings settings = await firebaseMessaging.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -128,8 +135,8 @@ class FCMBloc {
     pp('$mm initialize: User granted permission: ${settings.authorizationStatus}');
 
     if (android || ios) {
-      messaging.setAutoInitEnabled(true);
-      messaging.onTokenRefresh.listen((newToken) {
+      firebaseMessaging.setAutoInitEnabled(true);
+      firebaseMessaging.onTokenRefresh.listen((newToken) {
         pp("$mm onTokenRefresh: 🍎 🍎 🍎 update user: token: $newToken ... 🍎 🍎 ");
         user!.fcmRegistration = newToken;
         DataAPI.updateUser(user!);
@@ -155,7 +162,7 @@ class FCMBloc {
       FlutterLocalNotificationsPlugin().initialize(initializationSettings,
           onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
 
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      fb.FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         // RemoteNotification? notification = message.notification;
         // AndroidNotification? android = message.notification?.android;
         if (message.data['activity'] != null) {
@@ -174,10 +181,10 @@ class FCMBloc {
         processFCMMessage(message);
       });
 
-      FirebaseMessaging.onBackgroundMessage(
+      fb.FirebaseMessaging.onBackgroundMessage(
           geoFirebaseMessagingBackgroundHandler);
 
-      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      fb.FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
         pp('$mm onMessageOpenedApp:  🍎 🍎 A new onMessageOpenedApp event was published! ${message.data}');
       });
       subscribeToTopics();
@@ -194,35 +201,35 @@ class FCMBloc {
     pp("$mm ..... subscribe to Gio FCM Topics ...........................");
 
     try {
-      await messaging.subscribeToTopic('activities_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('activities_${user.organizationId}');
       pp('$mm ..... subscribed to activities');
-      await messaging.subscribeToTopic('projects_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('projects_${user.organizationId}');
       pp('$mm ..... subscribed to projects');
-      await messaging.subscribeToTopic('projectPositions_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('projectPositions_${user.organizationId}');
       pp('$mm ..... subscribed to projectPositions_');
-      await messaging.subscribeToTopic('projectPolygons_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('projectPolygons_${user.organizationId}');
       pp('$mm ..... subscribed to projectPolygons_');
-      await messaging.subscribeToTopic('photos_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('photos_${user.organizationId}');
       pp('$mm ..... subscribed to photos_');
-      await messaging.subscribeToTopic('videos_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('videos_${user.organizationId}');
       pp('$mm ..... subscribed to videos_');
-      await messaging.subscribeToTopic('conditions_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('conditions_${user.organizationId}');
       pp('$mm ..... subscribed to conditions_');
-      await messaging.subscribeToTopic('messages_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('messages_${user.organizationId}');
       pp('$mm ..... subscribed to messages_');
-      await messaging.subscribeToTopic('users_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('users_${user.organizationId}');
       pp('$mm ..... subscribed to users_');
-      await messaging.subscribeToTopic('audios_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('audios_${user.organizationId}');
       pp('$mm ..... subscribed to audios_');
-      await messaging.subscribeToTopic('kill_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('kill_${user.organizationId}');
       pp('$mm ..... subscribed to kill_');
-      await messaging.subscribeToTopic('locationRequests_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('locationRequests_${user.organizationId}');
       pp('$mm ..... subscribed to locationRequests_');
-      await messaging.subscribeToTopic('locationResponses_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('locationResponses_${user.organizationId}');
       pp('$mm ..... subscribed to locationResponses_');
-      await messaging.subscribeToTopic('settings_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('settings_${user.organizationId}');
       pp('$mm ..... subscribed to settings_');
-      await messaging.subscribeToTopic('geofenceEvents_${user.organizationId}');
+      await firebaseMessaging.subscribeToTopic('geofenceEvents_${user.organizationId}');
       pp('$mm ..... subscribed to geofenceEvents_');
 
       // prefsOGz.setFCMSubscriptionFlag();
@@ -395,9 +402,7 @@ class FCMBloc {
         await cacheManager.addSettings(settings: settings);
         await themeBloc.changeToTheme(settings.themeIndex!);
         settingsStreamController.sink.add(settings);
-        dataRefresher.manageRefresh(numberOfDays: settings.numberOfDays,
-            organizationId: settings.organizationId,
-            projectId: null, userId: null);
+        isolateHandler.handleOrganization();
         pp('$mm This is an organization-wide setting, hopefully the ui changes to new color ...');
       }
     }

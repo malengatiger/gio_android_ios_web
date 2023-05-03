@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/ui/settings/settings_form.dart';
 import 'package:geo_monitor/library/ui/settings/settings_form_monitor.dart';
 
@@ -15,7 +16,9 @@ import '../../functions.dart';
 import '../../generic_functions.dart';
 
 class SettingsMobile extends StatefulWidget {
-  const SettingsMobile({Key? key}) : super(key: key);
+  const SettingsMobile({Key? key, required this.isolateHandler}) : super(key: key);
+
+  final IsolateDataHandler isolateHandler;
 
   @override
   SettingsMobileState createState() => SettingsMobileState();
@@ -151,7 +154,7 @@ class SettingsMobileState extends State<SettingsMobile>
                       padding: 8,
                       onLocaleChanged: (String locale) {
                         _handleOnLocaleChanged(locale);
-                      },
+                      }, isolateHandler: widget.isolateHandler,
                     ),
             ),
     ));
