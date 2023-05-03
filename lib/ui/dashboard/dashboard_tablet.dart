@@ -53,13 +53,24 @@ import '../../utilities/constants.dart';
 import '../activity/user_profile_card.dart';
 
 class DashboardTablet extends StatefulWidget {
-  const DashboardTablet({Key? key, required this.user, required this.prefsOGx, required this.dataApiDog, required this.cacheManager, required this.isolateHandler}) : super(key: key);
+  const DashboardTablet(
+      {Key? key,
+      required this.user,
+      required this.prefsOGx,
+      required this.dataApiDog,
+      required this.cacheManager,
+      required this.isolateHandler,
+      required this.fcmBloc,
+      required this.organizationBloc})
+      : super(key: key);
 
   final User user;
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
   final IsolateDataHandler isolateHandler;
+  final FCMBloc fcmBloc;
+  final OrganizationBloc organizationBloc;
 
   @override
   State<DashboardTablet> createState() => DashboardTabletState();
@@ -149,7 +160,7 @@ class DashboardTabletState extends State<DashboardTablet>
       pp('$mm 🍎 🍎 _listen to FCM message streams ... 🍎 🍎');
       pp('$mm ... _listenToFCM activityStream ...');
 
-      settingsSubscription = organizationBloc.settingsStream
+      settingsSubscription = widget.organizationBloc.settingsStream
           .listen((SettingsModel settings) async {
         pp('$mm settingsStream delivered settings ... ${settings.locale!}');
         await _handleNewSettings(settings);
@@ -158,7 +169,7 @@ class DashboardTabletState extends State<DashboardTablet>
         }
       });
       activitySubscriptionFCM =
-          fcmBloc.activityStream.listen((ActivityModel model) {
+          widget.fcmBloc.activityStream.listen((ActivityModel model) {
         pp('$mm activityStream delivered activity data ... ${model.date!}');
         _getData(false);
         if (mounted) {
@@ -166,39 +177,39 @@ class DashboardTabletState extends State<DashboardTablet>
         }
       });
       projectSubscriptionFCM =
-          fcmBloc.projectStream.listen((Project project) async {
+          widget.fcmBloc.projectStream.listen((Project project) async {
         _getData(false);
       });
 
-      settingsSubscriptionFCM = fcmBloc.settingsStream.listen((settings) async {
+      settingsSubscriptionFCM = widget.fcmBloc.settingsStream.listen((settings) async {
         pp('$mm: 🍎🍎 settings arrived with themeIndex: ${settings.themeIndex}... locale: ${settings.locale} 🍎🍎');
         await _handleNewSettings(settings);
       });
 
-      userSubscriptionFCM = fcmBloc.userStream.listen((user) async {
+      userSubscriptionFCM = widget.fcmBloc.userStream.listen((user) async {
         pp('$mm: 🍎 🍎 user arrived... 🍎 🍎');
         _getData(false);
       });
-      photoSubscriptionFCM = fcmBloc.photoStream.listen((user) async {
+      photoSubscriptionFCM = widget.fcmBloc.photoStream.listen((user) async {
         pp('$mm: 🍎 🍎 photoSubscriptionFCM photo arrived... 🍎 🍎');
         _getData(false);
       });
 
-      videoSubscriptionFCM = fcmBloc.videoStream.listen((Video message) async {
+      videoSubscriptionFCM = widget.fcmBloc.videoStream.listen((Video message) async {
         pp('$mm: 🍎 🍎 videoSubscriptionFCM video arrived... 🍎 🍎');
         _getData(false);
       });
-      audioSubscriptionFCM = fcmBloc.audioStream.listen((Audio message) async {
+      audioSubscriptionFCM = widget.fcmBloc.audioStream.listen((Audio message) async {
         pp('$mm: 🍎 🍎 audioSubscriptionFCM audio arrived... 🍎 🍎');
         _getData(false);
       });
       projectPositionSubscriptionFCM =
-          fcmBloc.projectPositionStream.listen((ProjectPosition message) async {
+          widget.fcmBloc.projectPositionStream.listen((ProjectPosition message) async {
         pp('$mm: 🍎 🍎 projectPositionSubscriptionFCM position arrived... 🍎 🍎');
         _getData(false);
       });
       projectPolygonSubscriptionFCM =
-          fcmBloc.projectPolygonStream.listen((ProjectPolygon message) async {
+          widget.fcmBloc.projectPolygonStream.listen((ProjectPolygon message) async {
         pp('$mm: 🍎 🍎 projectPolygonSubscriptionFCM polygon arrived... 🍎 🍎');
         _getData(false);
       });
@@ -224,25 +235,24 @@ class DashboardTabletState extends State<DashboardTablet>
 
   Future _setTexts() async {
     settingsModel = await prefsOGx.getSettings();
-      numberOfDays = settingsModel!.numberOfDays!;
-      title = await translator.translate('dashboard', settingsModel!.locale!);
-      var sub =
-          await translator.translate('dashboardSubTitle', settingsModel!.locale!);
-      pp('deciphering this string: 🍎 $sub');
-      int index = sub.indexOf('\$');
-      prefix = sub.substring(0, index);
-      String? suff;
-      try {
-        suff = sub.substring(index + 6);
-        suffix = suff;
-        pp('$mm prefix: $prefix suffix: $suffix');
-      } catch (e) {
-        pp('🔴🔴🔴🔴🔴🔴 $e');
-      }
-      dashboardSubTitle = sub.replaceAll('\$count', '$numberOfDays');
+    numberOfDays = settingsModel!.numberOfDays!;
+    title = await translator.translate('dashboard', settingsModel!.locale!);
+    var sub =
+        await translator.translate('dashboardSubTitle', settingsModel!.locale!);
+    pp('deciphering this string: 🍎 $sub');
+    int index = sub.indexOf('\$');
+    prefix = sub.substring(0, index);
+    String? suff;
+    try {
+      suff = sub.substring(index + 6);
+      suffix = suff;
+      pp('$mm prefix: $prefix suffix: $suffix');
+    } catch (e) {
+      pp('🔴🔴🔴🔴🔴🔴 $e');
+    }
+    dashboardSubTitle = sub.replaceAll('\$count', '$numberOfDays');
 
-      setState(() {});
-
+    setState(() {});
   }
 
   Future _getData(bool forceRefresh) async {
@@ -267,12 +277,11 @@ class DashboardTabletState extends State<DashboardTablet>
       if (e is GeoException) {
         var sett = await prefsOGx.getSettings();
         errorHandler.handleError(exception: e);
-        final msg = await translator.translate(e.geTranslationKey(), sett.locale!);
+        final msg =
+            await translator.translate(e.geTranslationKey(), sett.locale!);
         if (mounted) {
           showToast(
-              backgroundColor: Theme
-                  .of(context)
-                  .primaryColor,
+              backgroundColor: Theme.of(context).primaryColor,
               textStyle: myTextStyleMedium(context),
               padding: 16,
               duration: const Duration(seconds: 10),
@@ -336,8 +345,13 @@ class DashboardTabletState extends State<DashboardTablet>
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
               duration: const Duration(seconds: 1),
-              child:  IntroMain(
-                prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager, isolateHandler: widget.isolateHandler,
+              child: IntroMain(
+                prefsOGx: widget.prefsOGx,
+                dataApiDog: widget.dataApiDog,
+                cacheManager: widget.cacheManager,
+                isolateHandler: widget.isolateHandler,
+                fcmBloc: widget.fcmBloc,
+                organizationBloc: widget.organizationBloc,
               )));
     }
   }
@@ -381,7 +395,10 @@ class DashboardTabletState extends State<DashboardTablet>
               type: PageTransitionType.scale,
               alignment: Alignment.center,
               duration: const Duration(seconds: 1),
-              child:  SettingsMain(isolateHandler: widget.isolateHandler,)));
+              child: SettingsMain(
+                isolateHandler: widget.isolateHandler,
+                dataApiDog: widget.dataApiDog,
+              )));
     }
   }
 
@@ -505,7 +522,7 @@ class DashboardTabletState extends State<DashboardTablet>
     pp('$mm _displayPhoto ...');
     this.photo = photo;
     final settings = await prefsOGx.getSettings();
-    translatedDate =  getFmtDate(photo.created!, settings!.locale!);
+    translatedDate = getFmtDate(photo.created!, settings!.locale!);
     _resetFlags();
     setState(() {
       _showPhoto = true;
@@ -898,7 +915,7 @@ class DashboardTabletState extends State<DashboardTablet>
                             photo: photo!,
                             translatedDate: translatedDate!,
                             elevation: 8.0,
-                            onPhotoCardClose: (){
+                            onPhotoCardClose: () {
                               setState(() {
                                 _showPhoto = false;
                               });

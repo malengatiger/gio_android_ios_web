@@ -10,7 +10,9 @@ import 'package:page_transition/page_transition.dart';
 import '../../l10n/translation_handler.dart';
 import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/fcm_bloc.dart';
 import '../../library/bloc/isolate_handler.dart';
+import '../../library/bloc/organization_bloc.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/user.dart' as ur;
 import '../../library/emojis.dart';
@@ -25,12 +27,14 @@ class IntroPageViewerLandscape extends StatefulWidget {
       required this.prefsOGx,
       required this.dataApiDog,
       required this.cacheManager,
-      required this.isolateHandler})
+      required this.isolateHandler, required this.fcmBloc, required this.organizationBloc})
       : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
   final IsolateDataHandler isolateHandler;
+  final FCMBloc fcmBloc;
+  final OrganizationBloc organizationBloc;
 
   @override
   State<IntroPageViewerLandscape> createState() =>
@@ -128,7 +132,10 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
                 alignment: Alignment.topLeft,
                 duration: const Duration(milliseconds: 2000),
                 child: DashboardMain(
+                  dataApiDog: widget.dataApiDog,
                   isolateHandler: widget.isolateHandler,
+                  fcmBloc: widget.fcmBloc,
+                  organizationBloc: widget.organizationBloc,
                 )));
       } else {
         pp('$mm User is null,  🔆 🔆 🔆 🔆 cannot navigate to Dashboard');

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/bloc/data_refresher.dart';
 import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
@@ -24,11 +25,12 @@ class SettingsForm extends StatefulWidget {
       {Key? key,
       required this.padding,
       required this.onLocaleChanged,
-      required this.isolateHandler})
+      required this.isolateHandler, required this.dataApiDog})
       : super(key: key);
   final double padding;
   final Function(String locale) onLocaleChanged;
   final IsolateDataHandler isolateHandler;
+  final DataApiDog dataApiDog;
   @override
   State<SettingsForm> createState() => SettingsFormState();
 }
@@ -289,13 +291,13 @@ class SettingsFormState extends State<SettingsForm> {
       busyWritingToDB = true;
     });
     try {
-      var s = await DataAPI.addSettings(settingsModel!);
+      var s = await widget.dataApiDog.addSettings(settingsModel!);
       pp('\n\n🔵🔵🔵 settings sent to database: ${s.toJson()}');
 
       await prefsOGx.saveSettings(s);
       organizationBloc.settingsController.sink.add(s);
       themeBloc.changeToTheme(s.themeIndex!);
-      isolateHandler.handleOrganization();
+      dataHandler.getOrganizationData();
     } catch (e) {
       pp(e);
       if (mounted) {

@@ -7,15 +7,26 @@ import 'package:geofence_service/geofence_service.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../l10n/translation_handler.dart';
+import '../../library/api/data_api_og.dart';
+import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/organization_bloc.dart';
 import '../../library/data/user.dart';
 import '../../library/generic_functions.dart';
 import '../../library/geofence/the_great_geofencer.dart';
 
 class DashboardMain extends StatefulWidget {
   const DashboardMain({
-    Key? key, required this.isolateHandler,
+    Key? key,
+    required this.isolateHandler,
+    required this.dataApiDog,
+    required this.fcmBloc,
+    required this.organizationBloc,
   }) : super(key: key);
   final IsolateDataHandler isolateHandler;
+  final DataApiDog dataApiDog;
+  final FCMBloc fcmBloc;
+  final OrganizationBloc organizationBloc;
+
   @override
   DashboardMainState createState() => DashboardMainState();
 }
@@ -68,7 +79,7 @@ class DashboardMainState extends State<DashboardMain>
   }
 
   void _refreshWhileInBackground() async {
-    isolateHandler.handleOrganization();
+    dataHandler.getOrganizationData();
 
     pp('$mm Background data refresh completed');
   }
@@ -155,13 +166,28 @@ class DashboardMainState extends State<DashboardMain>
                 pp('$mm callback from WillStartForegroundTask fired! 🍎 WHY?');
               },
               child: ScreenTypeLayout(
-                mobile:  DashboardKhaya(isolateHandler: widget.isolateHandler,),
+                mobile: DashboardKhaya(
+                  dataApiDog: widget.dataApiDog,
+                  isolateHandler: widget.isolateHandler,
+                  fcmBloc: widget.fcmBloc,
+                  organizationBloc: widget.organizationBloc,
+                ),
                 tablet: OrientationLayoutBuilder(
                   portrait: (context) {
-                    return  DashboardKhaya(isolateHandler: widget.isolateHandler,);
+                    return DashboardKhaya(
+                      dataApiDog: widget.dataApiDog,
+                      isolateHandler: widget.isolateHandler,
+                      fcmBloc: widget.fcmBloc,
+                      organizationBloc: widget.organizationBloc,
+                    );
                   },
                   landscape: (context) {
-                    return  DashboardKhaya(isolateHandler: widget.isolateHandler,);
+                    return DashboardKhaya(
+                      dataApiDog: widget.dataApiDog,
+                      isolateHandler: widget.isolateHandler,
+                      fcmBloc: widget.fcmBloc,
+                      organizationBloc: widget.organizationBloc,
+                    );
                   },
                 ),
               ),

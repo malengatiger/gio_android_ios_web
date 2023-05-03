@@ -50,7 +50,7 @@ class DashboardMobile extends StatefulWidget {
   const DashboardMobile({
     Key? key,
     this.user,
-    this.project, required this.prefsOGx, required this.dataApiDog, required this.cacheManager, required this.isolateHandler,
+    this.project, required this.prefsOGx, required this.dataApiDog, required this.cacheManager, required this.isolateHandler, required this.fcmBloc, required this.organizationBloc,
   }) : super(key: key);
   final User? user;
   final Project? project;
@@ -58,6 +58,9 @@ class DashboardMobile extends StatefulWidget {
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
   final IsolateDataHandler isolateHandler;
+  final FCMBloc fcmBloc;
+  final OrganizationBloc organizationBloc;
+
 
   @override
   DashboardMobileState createState() => DashboardMobileState();
@@ -480,6 +483,8 @@ class DashboardMobileState extends State<DashboardMobile>
                 dataApiDog: widget.dataApiDog,
                 cacheManager: widget.cacheManager,
                 isolateHandler: widget.isolateHandler,
+                fcmBloc: widget.fcmBloc,
+                organizationBloc: widget.organizationBloc,
               )));
     }
   }
@@ -511,7 +516,7 @@ class DashboardMobileState extends State<DashboardMobile>
               alignment: Alignment.center,
               duration: const Duration(seconds: 1),
               child:  SettingsMain(
-                isolateHandler: widget.isolateHandler,
+                isolateHandler: widget.isolateHandler, dataApiDog: widget.dataApiDog,
               )));
      pp('$mm  back from Settings ....');
      settings = await prefsOGx.getSettings();

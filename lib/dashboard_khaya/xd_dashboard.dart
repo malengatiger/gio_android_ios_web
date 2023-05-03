@@ -31,6 +31,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 import '../l10n/translation_handler.dart';
+import '../library/api/data_api_og.dart';
 import '../library/bloc/fcm_bloc.dart';
 import '../library/bloc/isolate_handler.dart';
 import '../library/bloc/theme_bloc.dart';
@@ -41,9 +42,13 @@ import '../library/ui/settings/settings_main.dart';
 import 'member_list.dart';
 
 class DashboardKhaya extends StatefulWidget {
-  const DashboardKhaya({Key? key, required this.isolateHandler}) : super(key: key);
+  const DashboardKhaya({Key? key, required this.isolateHandler, required this.dataApiDog, required this.fcmBloc, required this.organizationBloc}) : super(key: key);
 
   final IsolateDataHandler isolateHandler;
+  final DataApiDog dataApiDog;
+  final FCMBloc fcmBloc;
+  final OrganizationBloc organizationBloc;
+
 
   @override
   State<DashboardKhaya> createState() => _DashboardKhayaState();
@@ -128,13 +133,13 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
     if (android || ios) {
       pp('$mm 🍎 🍎 _listen to FCM message streams ... 🍎 🍎');
       geofenceSubscriptionFCM =
-          fcmBloc.geofenceStream.listen((GeofenceEvent event) async {
+          widget.fcmBloc.geofenceStream.listen((GeofenceEvent event) async {
             pp('$mm: 🍎geofenceSubscriptionFCM: 🍎 GeofenceEvent: '
                 'user ${event.user!.name} arrived: ${event.projectName} ');
             _handleGeofenceEvent(event);
           });
       projectSubscriptionFCM =
-          fcmBloc.projectStream.listen((Project project) async {
+          widget.fcmBloc.projectStream.listen((Project project) async {
             _getData(false);
             if (mounted) {
               pp('$mm: 🍎 🍎 project arrived: ${project.name} ... 🍎 🍎');
@@ -142,42 +147,57 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
             }
           });
 
-      settingsSubscriptionFCM = fcmBloc.settingsStream.listen((settings) async {
+      settingsSubscriptionFCM = widget.fcmBloc.settingsStream.listen((settings) async {
         pp('$mm: 🍎🍎 settingsSubscriptionFCM: settings arrived with themeIndex: ${settings.themeIndex}... 🍎🍎');
         _handleNewSettings(settings);
       });
 
-      userSubscriptionFCM = fcmBloc.userStream.listen((u) async {
+      userSubscriptionFCM = widget.fcmBloc.userStream.listen((u) async {
         pp('$mm: 🍎 🍎 user arrived... 🍎 🍎');
         if (u.userId == user!.userId!) {
           user = u;
         }
         _getData(false);
       });
-      photoSubscriptionFCM = fcmBloc.photoStream.listen((user) async {
+      photoSubscriptionFCM = widget.fcmBloc.photoStream.listen((user) async {
         pp('$mm: 🍎 🍎 photoSubscriptionFCM photo arrived... 🍎 🍎');
         _getData(false);
       });
 
-      videoSubscriptionFCM = fcmBloc.videoStream.listen((Video message) async {
+      videoSubscriptionFCM = widget.fcmBloc.videoStream.listen((Video message) async {
         pp('$mm: 🍎 🍎 videoSubscriptionFCM video arrived... 🍎 🍎');
         _getData(false);
 
       });
-      audioSubscriptionFCM = fcmBloc.audioStream.listen((Audio message) async {
+      audioSubscriptionFCM = widget.fcmBloc.audioStream.listen((Audio message) async {
         pp('$mm: 🍎 🍎 audioSubscriptionFCM audio arrived... 🍎 🍎');
         _getData(false);
       });
       projectPositionSubscriptionFCM =
-          fcmBloc.projectPositionStream.listen((ProjectPosition message) async {
+          widget.fcmBloc.projectPositionStream.listen((ProjectPosition message) async {
             pp('$mm: 🍎 🍎 projectPositionSubscriptionFCM position arrived... 🍎 🍎');
             _getData(false);
           });
       projectPolygonSubscriptionFCM =
-          fcmBloc.projectPolygonStream.listen((ProjectPolygon message) async {
+          widget.fcmBloc.projectPolygonStream.listen((ProjectPolygon message) async {
             pp('$mm: 🍎 🍎 projectPolygonSubscriptionFCM polygon arrived... 🍎 🍎');
             _getData(false);
             if (mounted) {}
+          });
+      dataBagSubscription =
+          widget.organizationBloc.dataBagStream.listen((DataBag bag) async {
+            pp('$mm: 🍎 🍎 dataBagStream bag arrived... 🍎 🍎');
+            if (bag.projects != null) {
+            projects = bag.projects!;
+            }
+            if (bag.projects != null) {
+              users = bag.users!;
+            }
+            if (mounted) {
+              setState(() {
+
+              });
+            }
           });
     } else {
       pp('App is running on the Web 👿👿👿firebase messaging is OFF 👿👿👿');
@@ -241,7 +261,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
               type: PageTransitionType.scale,
               alignment: Alignment.center,
               duration: const Duration(seconds: 1),
-              child:  SettingsMain(isolateHandler: widget.isolateHandler,)));
+              child:  SettingsMain(isolateHandler: widget.isolateHandler, dataApiDog: widget.dataApiDog,)));
     }
   }
 
@@ -922,7 +942,7 @@ class DashboardTopCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    pp('primary color ${Theme.of(context).primaryColor} canvas color ${Theme.of(context).canvasColor}');
+    // pp('primary color ${Theme.of(context).primaryColor} canvas color ${Theme.of(context).canvasColor}');
 
     Color color = Theme.of(context).primaryColor;
     if (Theme.of(context).canvasColor.value == const Color(0xff121212).value) {

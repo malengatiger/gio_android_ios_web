@@ -6,6 +6,7 @@ import 'package:geo_monitor/library/ui/settings/settings_form.dart';
 import 'package:geo_monitor/library/ui/settings/settings_form_monitor.dart';
 
 import '../../../l10n/translation_handler.dart';
+import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
 import '../../bloc/fcm_bloc.dart';
 import '../../cache_manager.dart';
@@ -16,9 +17,11 @@ import '../../functions.dart';
 import '../../generic_functions.dart';
 
 class SettingsMobile extends StatefulWidget {
-  const SettingsMobile({Key? key, required this.isolateHandler}) : super(key: key);
+  const SettingsMobile({Key? key, required this.isolateHandler, required this.dataApiDog}) : super(key: key);
 
   final IsolateDataHandler isolateHandler;
+  final DataApiDog dataApiDog;
+
 
   @override
   SettingsMobileState createState() => SettingsMobileState();
@@ -155,6 +158,7 @@ class SettingsMobileState extends State<SettingsMobile>
                       onLocaleChanged: (String locale) {
                         _handleOnLocaleChanged(locale);
                       }, isolateHandler: widget.isolateHandler,
+                dataApiDog: widget.dataApiDog,
                     ),
             ),
     ));

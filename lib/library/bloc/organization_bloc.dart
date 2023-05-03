@@ -194,7 +194,7 @@ class OrganizationBloc {
           'forceRefresh: $forceRefresh; if true do the refresh ...');
       await getLatestSettings(organizationId);
 
-      isolateHandler.handleOrganization();
+      dataHandler.getOrganizationData();
       bag!.projects = projects;
       bag.users = users;
       return bag;
@@ -203,7 +203,7 @@ class OrganizationBloc {
       if (bag.isEmpty()) {
         pp('$mm bag is empty. No organization data anywhere yet? ... '
             'will force refresh, forceRefresh: $forceRefresh');
-        isolateHandler.handleOrganization();
+        dataHandler.getOrganizationData();
         bag.projects = projects;
         bag.users = users;
         return bag;

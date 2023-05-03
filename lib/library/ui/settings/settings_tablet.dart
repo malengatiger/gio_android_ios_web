@@ -11,6 +11,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../../l10n/translation_handler.dart';
+import '../../api/data_api_og.dart';
 import '../../bloc/fcm_bloc.dart';
 import '../../bloc/isolate_handler.dart';
 import '../../data/location_response.dart';
@@ -19,8 +20,11 @@ import '../../functions.dart';
 import '../maps/location_response_map.dart';
 
 class SettingsTablet extends StatefulWidget {
-  const SettingsTablet({Key? key, required this.isolateHandler}) : super(key: key);
+  const SettingsTablet(
+      {Key? key, required this.isolateHandler, required this.dataApiDog})
+      : super(key: key);
   final IsolateDataHandler isolateHandler;
+  final DataApiDog dataApiDog;
 
   @override
   SettingsTabletState createState() => SettingsTabletState();
@@ -38,24 +42,22 @@ class SettingsTabletState extends State<SettingsTablet>
     _setTexts();
     _listenToFCM();
   }
+
   String? title;
   Future _setTexts() async {
     var sett = await prefsOGx.getSettings();
     title = await translator.translate('settings', sett.locale!);
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   void _listenToFCM() async {
     settingsSubscriptionFCM =
         fcmBloc.settingsStream.listen((SettingsModel event) async {
-          if (mounted) {
-            await _setTexts();
-          }
-        });
+      if (mounted) {
+        await _setTexts();
+      }
+    });
   }
-
 
   @override
   void dispose() {
@@ -66,12 +68,11 @@ class SettingsTabletState extends State<SettingsTablet>
 
   @override
   Widget build(BuildContext context) {
-
     var size = MediaQuery.of(context).size;
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title:   Text(title == null?'Settings': title!),
+        title: Text(title == null ? 'Settings' : title!),
       ),
       body: OrientationLayoutBuilder(landscape: (ctx) {
         return Padding(
@@ -81,13 +82,17 @@ class SettingsTabletState extends State<SettingsTablet>
             children: [
               SizedBox(
                 width: (size.width / 2) - 40,
-                child:  Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
                   child: SettingsForm(
-                    padding: 32, onLocaleChanged: (String locale) {
+                    padding: 32,
+                    onLocaleChanged: (String locale) {
                       //todo - set texts
-                    _handleOnLocaleChanged(locale);
-                  }, isolateHandler: widget.isolateHandler,
+                      _handleOnLocaleChanged(locale);
+                    },
+                    isolateHandler: widget.isolateHandler,
+                    dataApiDog: widget.dataApiDog,
                   ),
                 ),
               ),
@@ -118,17 +123,19 @@ class SettingsTabletState extends State<SettingsTablet>
           children: [
             SizedBox(
               width: (size.width / 2),
-              child:  Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
                 child: SettingsForm(
-                  onLocaleChanged: (locale){
+                  onLocaleChanged: (locale) {
                     _handleOnLocaleChanged(locale);
                   },
-                  padding: 20, isolateHandler: widget.isolateHandler,
+                  padding: 20,
+                  isolateHandler: widget.isolateHandler,
+                  dataApiDog: widget.dataApiDog,
                 ),
               ),
             ),
-
             GeoActivity(
                 width: (size.width / 2),
                 thinMode: false,

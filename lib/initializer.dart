@@ -49,11 +49,10 @@ class Initializer {
     organizationBloc = OrganizationBloc(dataApiDog, cacheManager);
     theGreatGeofencer = TheGreatGeofencer(dataApiDog, prefsOGx);
 
-    isolateHandler = IsolateDataHandler(prefsOGx, appAuth, cacheManager);
+    dataHandler = IsolateDataHandler(prefsOGx, appAuth, cacheManager);
 
-
-    projectBloc = ProjectBloc(dataApiDog, cacheManager, isolateHandler);
-    userBloc = UserBloc(dataApiDog, cacheManager, isolateHandler);
+    projectBloc = ProjectBloc(dataApiDog, cacheManager, dataHandler);
+    userBloc = UserBloc(dataApiDog, cacheManager, dataHandler);
 
     locationRequestHandler = LocationRequestHandler(dataApiDog);
     fcmBloc = FCMBloc(FirebaseMessaging.instance, cacheManager, locationRequestHandler);
@@ -91,7 +90,7 @@ class Initializer {
       pp('$mx start data refresh after delaying for 5 seconds');
 
       if (settings.organizationId != null) {
-        isolateHandler.handleOrganization();
+        dataHandler.getOrganizationData();
       }
     });
   }

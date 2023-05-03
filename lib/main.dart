@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geo_monitor/initializer.dart';
 import 'package:geo_monitor/l10n/translation_handler.dart';
 import 'package:geo_monitor/library/bloc/isolate_handler.dart';
+import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/splash/splash_page.dart';
@@ -88,6 +89,7 @@ void main() async {
 
   runApp(const ProviderScope(child: GeoApp()));
 }
+
 class GeoApp extends ConsumerWidget {
   const GeoApp({super.key});
 
@@ -102,48 +104,57 @@ class GeoApp extends ConsumerWidget {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: StreamBuilder<LocaleAndTheme>(
-          stream: themeBloc.localeAndThemeStream,
-          builder: (_, snapshot) {
-            if (snapshot.hasData) {
-              pp('${E.check}${E.check}${E.check}'
-                  'build: theme index has changed to ${snapshot.data!.themeIndex}'
-                  '  and locale is ${snapshot.data!.locale.toString()}');
-              themeIndex = snapshot.data!.themeIndex;
-              locale = snapshot.data!.locale;
-              pp('${E.check}${E.check}${E.check} GeoApp: build: locale object received from stream: $locale');
-            }
-            return MaterialApp(
-              locale: locale,
-              scaffoldMessengerKey: rootScaffoldMessengerKey,
-              debugShowCheckedModeBanner: false,
-              title: 'Gio',
-              theme: themeBloc.getTheme(themeIndex).lightTheme,
-              darkTheme:themeBloc.getTheme(themeIndex).darkTheme,
-              themeMode: ThemeMode.system,
+        stream: themeBloc.localeAndThemeStream,
+        builder: (_, snapshot) {
+          if (snapshot.hasData) {
+            pp('${E.check}${E.check}${E.check}'
+                'build: theme index has changed to ${snapshot.data!.themeIndex}'
+                '  and locale is ${snapshot.data!.locale.toString()}');
+            themeIndex = snapshot.data!.themeIndex;
+            locale = snapshot.data!.locale;
+            pp('${E.check}${E.check}${E.check} GeoApp: build: locale object received from stream: $locale');
+          }
+          return MaterialApp(
+            locale: locale,
+            scaffoldMessengerKey: rootScaffoldMessengerKey,
+            debugShowCheckedModeBanner: false,
+            title: 'Gio',
+            theme: themeBloc.getTheme(themeIndex).lightTheme,
+            darkTheme: themeBloc.getTheme(themeIndex).darkTheme,
+            themeMode: ThemeMode.system,
 
-              // home:  const ComboAudio()
-              home: AnimatedSplashScreen(
-                duration: 2000,
-                splash: const SplashWidget(),
-                animationDuration: const Duration(milliseconds: 2000),
-                curve: Curves.easeInCirc,
-                splashIconSize: 160.0,
-                nextScreen: fbAuthedUser == null
-                    ?  IntroMain(
-                  prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager, isolateHandler: isolateHandler,
-                )
-                    :  DashboardMain(isolateHandler: isolateHandler,),
-                splashTransition: SplashTransition.fadeTransition,
-                pageTransitionType: PageTransitionType.leftToRight,
-                backgroundColor: Colors.pink.shade900,
-              ),
-            );
-          },
+            // home:  const ComboAudio()
+            home: AnimatedSplashScreen(
+              duration: 2000,
+              splash: const SplashWidget(),
+              animationDuration: const Duration(milliseconds: 2000),
+              curve: Curves.easeInCirc,
+              splashIconSize: 160.0,
+              nextScreen: fbAuthedUser == null
+                  ? IntroMain(
+                      prefsOGx: prefsOGx,
+                      dataApiDog: dataApiDog,
+                      cacheManager: cacheManager,
+                      isolateHandler: dataHandler,
+                      fcmBloc: fcmBloc,
+                      organizationBloc: organizationBloc,
+                    )
+                  : DashboardMain(
+                      isolateHandler: dataHandler,
+                      dataApiDog: dataApiDog,
+                      fcmBloc: fcmBloc,
+                      organizationBloc: organizationBloc,
+                    ),
+              splashTransition: SplashTransition.fadeTransition,
+              pageTransitionType: PageTransitionType.leftToRight,
+              backgroundColor: Colors.pink.shade900,
+            ),
+          );
+        },
       ),
     );
   }
 }
-
 
 late StreamSubscription killSubscriptionFCM;
 

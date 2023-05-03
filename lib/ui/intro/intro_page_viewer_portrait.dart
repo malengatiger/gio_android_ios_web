@@ -13,23 +13,26 @@ import '../../dashboard_khaya/xd_dashboard.dart';
 import '../../l10n/translation_handler.dart';
 import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/fcm_bloc.dart';
 import '../../library/bloc/isolate_handler.dart';
+import '../../library/bloc/organization_bloc.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/user.dart' as ur;
 import '../../library/emojis.dart';
 import '../../library/functions.dart';
 import '../../library/generic_functions.dart';
-import '../dashboard/dashboard_mobile.dart';
 import '../intro/intro_page_one.dart';
 
 class IntroPageViewerPortrait extends StatefulWidget {
   const IntroPageViewerPortrait({
-    Key? key, required this.prefsOGx, required this.dataApiDog, required this.cacheManager, required this.isolateHandler,
+    Key? key, required this.prefsOGx, required this.dataApiDog, required this.cacheManager, required this.isolateHandler, required this.fcmBloc, required this.organizationBloc,
   }) : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
   final IsolateDataHandler isolateHandler;
+  final FCMBloc fcmBloc;
+  final OrganizationBloc organizationBloc;
 
 
   @override
@@ -105,7 +108,9 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
               duration: const Duration(seconds: 2),
-              child:  DashboardKhaya(isolateHandler: widget.isolateHandler,)));
+              child:  DashboardKhaya(
+                dataApiDog: widget.dataApiDog,
+                isolateHandler: widget.isolateHandler, fcmBloc: widget.fcmBloc, organizationBloc: widget.organizationBloc,)));
     } else {
       pp('User is null,  🔆 🔆 🔆 🔆 cannot navigate to Dashboard');
     }

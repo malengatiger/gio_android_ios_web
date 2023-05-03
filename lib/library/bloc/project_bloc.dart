@@ -291,7 +291,7 @@ class ProjectBloc {
         settings: settings);
 
       if (forceRefresh) {
-        isolateHandler.handleProject(projectId);
+        isolateHandler.getProjectData(projectId);
       }
 
 

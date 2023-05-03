@@ -1,27 +1,24 @@
 import 'dart:async';
 import 'dart:isolate';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/data_refresher.dart';
-import 'package:geo_monitor/library/bloc/location_request_handler.dart';
 import 'package:geo_monitor/library/bloc/project_bloc.dart';
 import 'package:geo_monitor/library/bloc/user_bloc.dart';
 import 'package:geo_monitor/library/bloc/zip_bloc.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../api/data_api_og.dart';
 import '../auth/app_auth.dart';
 import '../cache_manager.dart';
 import '../data/data_bag.dart';
 import 'fcm_bloc.dart';
 import 'organization_bloc.dart';
 
-late IsolateDataHandler isolateHandler;
+late IsolateDataHandler dataHandler;
 
 class IsolateDataHandler {
-  static const xx = ' 🎁 🎁 🎁 🎁 🎁 🎁 IsolateHandler:  🎁 ';
+  static const xx = ' 🎁 🎁 🎁 🎁 🎁 🎁 IsolateDataHandler:  🎁 ';
   IsolateDataHandler(this.prefsOGx, this.appAuth, this.cacheManager);
 
   final PrefsOGx prefsOGx;
@@ -29,15 +26,16 @@ class IsolateDataHandler {
   final CacheManager cacheManager;
 
 
-  ReceivePort myReceivePort = ReceivePort();
+  late ReceivePort myReceivePort;
 
-  Future handleOrganization() async {
+  Future getOrganizationData() async {
     pp('$xx handleOrganization;  🦊collect parameters from SettingsModel ...');
     final sett = await prefsOGx.getSettings();
     final token = await appAuth.getAuthToken();
     final map = await getStartEndDates(numberOfDays: sett.numberOfDays!);
     final dir = await getApplicationDocumentsDirectory();
 
+    myReceivePort = ReceivePort();
     var gioParams = GioParams(
         organizationId: sett.organizationId!,
         directoryPath: dir.path,
@@ -49,10 +47,12 @@ class IsolateDataHandler {
         projectId: null,
         userId: null);
 
-    await startIsolate(gioParams);
+    await _startIsolate(gioParams);
   }
-  Future handleProject(String projectId) async {
+  Future getProjectData(String projectId) async {
     pp('$xx handleOrganization;  🦊collect parameters from SettingsModel ...');
+    myReceivePort = ReceivePort();
+
     final sett = await prefsOGx.getSettings();
     final token = await appAuth.getAuthToken();
     final map = await getStartEndDates(numberOfDays: sett.numberOfDays!);
@@ -69,10 +69,12 @@ class IsolateDataHandler {
         projectId: projectId,
         userId: null);
 
-    await startIsolate(gioParams);
+    await _startIsolate(gioParams);
   }
-  Future handleUser(String userId) async {
+  Future getUserData(String userId) async {
     pp('$xx handleOrganization;  🦊collect parameters from SettingsModel ...');
+    myReceivePort = ReceivePort();
+
     final sett = await prefsOGx.getSettings();
     final token = await appAuth.getAuthToken();
     final map = await getStartEndDates(numberOfDays: sett.numberOfDays!);
@@ -89,12 +91,13 @@ class IsolateDataHandler {
         projectId: null,
         userId: userId);
 
-    await startIsolate(gioParams);
+    await _startIsolate(gioParams);
   }
 
-  Future startIsolate(GioParams gioParams) async {
+  Future _startIsolate(GioParams gioParams) async {
     pp('$xx starting Isolate with gioParams ...');
-    
+    myReceivePort = ReceivePort();
+
     gioParams.sendPort = myReceivePort.sendPort;
 
     myReceivePort.listen((message) {
@@ -116,7 +119,7 @@ class IsolateDataHandler {
       }
     });
 
-    await Isolate.spawn<GioParams>(heavyTaskInsideIsolate, gioParams).catchError((err) {
+    await Isolate.spawn<GioParams>(_heavyTaskInsideIsolate, gioParams).catchError((err) {
       pp('$xx catchError: $err');
       return Future<Isolate>.delayed(const Duration(milliseconds: 1));
     }).whenComplete(() {
@@ -197,7 +200,7 @@ class GioParams {
 }
 
 ///running inside isolate
-void heavyTaskInsideIsolate(GioParams gioParams) async {
+void _heavyTaskInsideIsolate(GioParams gioParams) async {
   gioParams.sendPort.send('Heavy Task starting ....');
 
    DataBag? bag;
