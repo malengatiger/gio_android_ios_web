@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geo_monitor/l10n/translation_handler.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:uuid/uuid.dart';
 
@@ -24,16 +25,17 @@ class RatingAdder extends StatefulWidget {
     this.audio,
     this.video,
     this.photo,
-    required this.width,
+    // required this.width,
     required this.onDone,
-    required this.elevation,
+    required this.elevation, required this.dataApiDog,
   }) : super(key: key);
 
   final Audio? audio;
   final Video? video;
   final Photo? photo;
-  final double width;
+  // final double width;
   final double elevation;
+  final DataApiDog dataApiDog;
 
   final Function() onDone;
 
@@ -143,7 +145,7 @@ class RatingAdderState extends State<RatingAdder>
           organizationId: organizationId,
           projectName: projectName);
 
-      var res = await DataAPI.addRating(rating);
+      var res = await widget.dataApiDog.addRating(rating);
       pp('$mm rating added; ${res.toJson()}');
       if (mounted) {
         showToast(
@@ -188,12 +190,19 @@ class RatingAdderState extends State<RatingAdder>
       projectName = widget.audio!.projectName!;
       userName = widget.audio!.userName!;
     }
-
+    final width = MediaQuery.of(context).size.width;
+    var mWidth = width;
+    final type = getThisDeviceType();
+    if (type == 'phone') {
+      mWidth = mWidth - 48;
+    } else {
+      mWidth = mWidth / 2;
+    }
     return Stack(
       children: [
         ScreenTypeLayout(
           mobile: RatingCard(
-            width: widget.width,
+            width: mWidth,
             height: 360,
             padding: 24,
             projectName: projectName,
@@ -205,7 +214,7 @@ class RatingAdderState extends State<RatingAdder>
             elevation: 8.0,
           ),
           tablet: RatingCard(
-            width: widget.width,
+            width: mWidth,
             height: 460,
             padding: 24,
             projectName: projectName,
@@ -278,7 +287,7 @@ class RatingCard extends StatelessWidget {
               ),
               Text(
                 title,
-                style: myTextStyleLarge(context),
+                style: myTextStyleMediumLarge(context),
               ),
               const SizedBox(
                 height: 12,

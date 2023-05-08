@@ -314,21 +314,7 @@ class _ActivityListTabletState extends State<ActivityListTablet>
         ),
       );
     }
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (listScrollController.hasClients) {
-    //     if (sortedAscending) {
-    //       listScrollController.animateTo(
-    //           listScrollController.position.maxScrollExtent,
-    //           duration: const Duration(milliseconds: 2000),
-    //           curve: Curves.fastOutSlowIn);
-    //     } else {
-    //       listScrollController.animateTo(
-    //           listScrollController.position.minScrollExtent,
-    //           duration: const Duration(milliseconds: 2000),
-    //           curve: Curves.fastOutSlowIn);
-    //     }
-    //   }
-    // });
+
     return Scaffold(
         body: Stack(
       children: [

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/data/photo.dart';
@@ -15,7 +16,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../l10n/translation_handler.dart';
 import '../../../ui/audio/audio_player_og.dart';
-import '../../../ui/dashboard/photo_card.dart';
+import '../../../ui/dashboard/photo_frame.dart';
 import '../../bloc/fcm_bloc.dart';
 import '../../bloc/geo_exception.dart';
 import '../../bloc/location_request_handler.dart';
@@ -26,7 +27,7 @@ import '../../data/user.dart';
 import '../../errors/error_handler.dart';
 import '../../functions.dart';
 import '../../generic_functions.dart';
-import '../../ui/camera/video_player_tablet.dart';
+import '../../ui/camera/gio_video_player.dart';
 import '../../ui/maps/location_response_map.dart';
 import '../../ui/maps_field_monitor/field_monitor_map_mobile.dart';
 import '../../ui/message/message_mobile.dart';
@@ -34,16 +35,19 @@ import '../../ui/schedule/scheduler_mobile.dart';
 import '../kill_user_page.dart';
 import '../user_batch_control.dart';
 
-class UserListTablet extends StatefulWidget {
-  const UserListTablet({
+class GioUserList extends StatefulWidget {
+  const GioUserList({
     Key? key,
+    required this.dataApiDog,
   }) : super(key: key);
 
+  final DataApiDog dataApiDog;
+
   @override
-  State<UserListTablet> createState() => _UserListTabletState();
+  State<GioUserList> createState() => _GioUserListState();
 }
 
-class _UserListTabletState extends State<UserListTablet> {
+class _GioUserListState extends State<GioUserList> {
   var users = <User>[];
   User? user;
 
@@ -166,7 +170,8 @@ class _UserListTabletState extends State<UserListTablet> {
   Future _setTexts() async {
     var sett = await prefsOGx.getSettings();
     title = await translator.translate('organizationMembers', sett!.locale!);
-    subTitle = await translator.translate('administratorsMembers', sett!.locale!);
+    subTitle =
+        await translator.translate('administratorsMembers', sett!.locale!);
     setState(() {});
   }
 
@@ -189,12 +194,11 @@ class _UserListTabletState extends State<UserListTablet> {
         if (e is GeoException) {
           var sett = await prefsOGx.getSettings();
           errorHandler.handleError(exception: e);
-          final msg = await translator.translate(e.geTranslationKey(), sett.locale!);
+          final msg =
+              await translator.translate(e.geTranslationKey(), sett.locale!);
           if (mounted) {
             showToast(
-                backgroundColor: Theme
-                    .of(context)
-                    .primaryColor,
+                backgroundColor: Theme.of(context).primaryColor,
                 textStyle: myTextStyleMedium(context),
                 padding: 16,
                 duration: const Duration(seconds: 10),
@@ -216,7 +220,7 @@ class _UserListTabletState extends State<UserListTablet> {
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child: UserDashboard(user: user)));
+            child: UserDashboard(user: user, dataApiDog: widget.dataApiDog,)));
   }
 
   void navigateToUserBatchUpload(User? user) async {
@@ -237,7 +241,6 @@ class _UserListTabletState extends State<UserListTablet> {
 
     _getData(false);
   }
-
 
   void navigateToMessaging(User user) {
     Navigator.push(
@@ -340,6 +343,16 @@ class _UserListTabletState extends State<UserListTablet> {
       busy = false;
     });
   }
+  void navigateToUserDashboard(User user) {
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: const Duration(seconds: 1),
+            child: UserDashboard(user: user, dataApiDog: widget.dataApiDog,)));
+  }
+
 
   void _sort() {
     if (sortedByName) {
@@ -365,6 +378,11 @@ class _UserListTabletState extends State<UserListTablet> {
   Widget build(BuildContext context) {
     var amInPortrait = false;
     final ori = MediaQuery.of(context).orientation.name;
+    var style = myTextStyleLarge(context);
+    final type = getThisDeviceType();
+    if (type == 'phone') {
+      style = myTextStyleMediumBold(context);
+    }
     if (ori == 'portrait') {
       amInPortrait = true;
     }
@@ -374,7 +392,7 @@ class _UserListTabletState extends State<UserListTablet> {
           centerTitle: true,
           title: Text(
             title == null ? 'Organization Members' : title!,
-            style: myTextStyleLarge(context),
+            style: style,
           ),
           actions: [
             IconButton(
@@ -390,10 +408,9 @@ class _UserListTabletState extends State<UserListTablet> {
                   navigateToUserBatchUpload(null);
                 },
                 icon: Icon(
-                  Icons.add,
+                  Icons.people,
                   color: Theme.of(context).primaryColor,
                 )),
-
             IconButton(
                 onPressed: () {
                   _getData(true);
@@ -406,137 +423,186 @@ class _UserListTabletState extends State<UserListTablet> {
         ),
         body: Stack(
           children: [
-            OrientationLayoutBuilder(landscape: (ctx) {
-              return Padding(
-                padding: const EdgeInsets.only(
-                    left: 48.0, right: 24.0, top: 24.0, bottom: 24),
-                child: Row(
-                  children: [
-                    user == null
-                        ? const SizedBox()
-                        : SizedBox(
-                            width: (mWidth / 2) - 80,
-                            child: UserListCard(
-                              subTitle: subTitle == null
-                                  ? 'Admins & Monitors'
-                                  : subTitle!,
-                              amInLandscape: true,
-                              avatarRadius: 20,
-                              users: users,
-                              deviceUser: user!,
-                              navigateToLocationRequest: (mUser) {
-                                _sendLocationRequest(mUser);
-                              },
-                              navigateToPhone: (mUser) {
-                                navigateToPhone(mUser);
-                              },
-                              navigateToMessaging: (user) {
-                                navigateToMessaging(user);
-                              },
-                              navigateToUserDashboard: (user) {
-                                navigateToUserReport(user);
-                              },
-                              navigateToUserEdit: (user) {
-                                navigateToUserEdit(user);
-                              },
-                              navigateToScheduler: (user) {
-                                navigateToScheduler(user);
-                              },
-                              navigateToKillPage: (user) {
-                                navigateToKillPage(user);
-                              },
-                              badgeTapped: () {
-                                _sort();
-                              },
-                            )),
-                    GeoActivity(
-                        width: mWidth / 2,
-                        thinMode: false,
-                        showPhoto: showPhoto,
-                        showVideo: showVideo,
-                        showAudio: showAudio,
-                        showUser: (user) {},
-                        showLocationRequest: (req) {},
-                        showLocationResponse: (resp) {
-                          locationResponse = resp;
-                          _navigateToLocationResponseMap();
-                        },
-                        showGeofenceEvent: (event) {},
-                        showProjectPolygon: (polygon) {},
-                        showProjectPosition: (position) {},
-                        showOrgMessage: (message) {},
-                        forceRefresh: false),
-                  ],
-                ),
-              );
-            }, portrait: (ctx) {
-              return Padding(
-                padding: const EdgeInsets.only(
-                    left: 16, right: 16.0, top: 48, bottom: 48),
-                child: Row(
-                  children: [
-                    user == null
-                        ? const SizedBox()
-                        : SizedBox(
-                            width: (mWidth / 2) - 40,
-                            child: UserListCard(
-                              subTitle: subTitle == null
-                                  ? 'Admins & Monitors'
-                                  : subTitle!,
-                              amInLandscape: true,
-                              avatarRadius: 20,
-                              users: users,
-                              deviceUser: user!,
-                              navigateToLocationRequest: (mUser) {
-                                _sendLocationRequest(mUser);
-                              },
-                              navigateToPhone: (mUser) {
-                                navigateToPhone(mUser);
-                              },
-                              navigateToMessaging: (user) {
-                                navigateToMessaging(user);
-                              },
-                              navigateToUserDashboard: (user) {
-                                navigateToUserReport(user);
-                              },
-                              navigateToUserEdit: (user) {
-                                navigateToUserEdit(user);
-                              },
-                              navigateToScheduler: (user) {
-                                navigateToScheduler(user);
-                              },
-                              navigateToKillPage: (user) {
-                                navigateToKillPage(user);
-                              },
-                              badgeTapped: () {
-                                _sort();
-                              },
+            ScreenTypeLayout(
+              mobile: Padding(
+        padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 24,
+          ),
+          user == null
+              ? const SizedBox()
+              : Expanded(
+            child: UserListCard(
+              subTitle: subTitle == null
+                  ? 'Admins & Monitors'
+                  : subTitle!,
+              amInLandscape: true,
+              users: users,
+              avatarRadius: 20,
+              deviceUser: user!,
+              navigateToLocationRequest: (mUser) {
+                _sendLocationRequest(mUser);
+              },
+              navigateToPhone: (mUser) {
+                navigateToPhone(mUser);
+              },
+              navigateToMessaging: (user) {
+                navigateToMessaging(user);
+              },
+              navigateToUserDashboard: (user) {
+                navigateToUserDashboard(user);
+              },
+              navigateToUserEdit: (user) {
+                navigateToUserEdit(user);
+              },
+              navigateToScheduler: (user) {
+                navigateToScheduler(user);
+              },
+              navigateToKillPage: (user) {
+                navigateToKillPage(user);
+              },
+              badgeTapped: () {
+                _sort();
+              },
+            ),
+          ),
+        ],
+      ),
+    ),
+              tablet: OrientationLayoutBuilder(landscape: (ctx) {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                      left: 48.0, right: 24.0, top: 24.0, bottom: 24),
+                  child: Row(
+                    children: [
+                      user == null
+                          ? const SizedBox()
+                          : SizedBox(
+                              width: (mWidth / 2) - 80,
+                              child: UserListCard(
+                                subTitle: subTitle == null
+                                    ? 'Admins & Monitors'
+                                    : subTitle!,
+                                amInLandscape: true,
+                                avatarRadius: 20,
+                                users: users,
+                                deviceUser: user!,
+                                navigateToLocationRequest: (mUser) {
+                                  _sendLocationRequest(mUser);
+                                },
+                                navigateToPhone: (mUser) {
+                                  navigateToPhone(mUser);
+                                },
+                                navigateToMessaging: (user) {
+                                  navigateToMessaging(user);
+                                },
+                                navigateToUserDashboard: (user) {
+                                  navigateToUserReport(user);
+                                },
+                                navigateToUserEdit: (user) {
+                                  navigateToUserEdit(user);
+                                },
+                                navigateToScheduler: (user) {
+                                  navigateToScheduler(user);
+                                },
+                                navigateToKillPage: (user) {
+                                  navigateToKillPage(user);
+                                },
+                                badgeTapped: () {
+                                  _sort();
+                                },
+                              )),
+                      GeoActivity(
+                          width: mWidth / 2,
+                          thinMode: false,
+                          showPhoto: showPhoto,
+                          showVideo: showVideo,
+                          showAudio: showAudio,
+                          showUser: (user) {},
+                          showLocationRequest: (req) {},
+                          showLocationResponse: (resp) {
+                            locationResponse = resp;
+                            _navigateToLocationResponseMap();
+                          },
+                          showGeofenceEvent: (event) {},
+                          showProjectPolygon: (polygon) {},
+                          showProjectPosition: (position) {},
+                          showOrgMessage: (message) {},
+                          forceRefresh: false),
+                    ],
+                  ),
+                );
+              }, portrait: (ctx) {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                      left: 16, right: 16.0, top: 48, bottom: 48),
+                  child: Row(
+                    children: [
+                      user == null
+                          ? const SizedBox()
+                          : SizedBox(
+                              width: (mWidth / 2) - 40,
+                              child: UserListCard(
+                                subTitle: subTitle == null
+                                    ? 'Admins & Monitors'
+                                    : subTitle!,
+                                amInLandscape: true,
+                                avatarRadius: 20,
+                                users: users,
+                                deviceUser: user!,
+                                navigateToLocationRequest: (mUser) {
+                                  _sendLocationRequest(mUser);
+                                },
+                                navigateToPhone: (mUser) {
+                                  navigateToPhone(mUser);
+                                },
+                                navigateToMessaging: (user) {
+                                  navigateToMessaging(user);
+                                },
+                                navigateToUserDashboard: (user) {
+                                  navigateToUserReport(user);
+                                },
+                                navigateToUserEdit: (user) {
+                                  navigateToUserEdit(user);
+                                },
+                                navigateToScheduler: (user) {
+                                  navigateToScheduler(user);
+                                },
+                                navigateToKillPage: (user) {
+                                  navigateToKillPage(user);
+                                },
+                                badgeTapped: () {
+                                  _sort();
+                                },
+                              ),
                             ),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    GeoActivity(
-                        width: (mWidth / 2),
-                        thinMode: true,
-                        showPhoto: showPhoto,
-                        showVideo: showVideo,
-                        showAudio: showAudio,
-                        showUser: (user) {},
-                        showLocationRequest: (req) {},
-                        showLocationResponse: (resp) {
-                          locationResponse = resp;
-                          _navigateToLocationResponseMap();
-                        },
-                        showGeofenceEvent: (event) {},
-                        showProjectPolygon: (polygon) {},
-                        showProjectPosition: (position) {},
-                        showOrgMessage: (message) {},
-                        forceRefresh: false),
-                  ],
-                ),
-              );
-            }),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      GeoActivity(
+                          width: (mWidth / 2),
+                          thinMode: true,
+                          showPhoto: showPhoto,
+                          showVideo: showVideo,
+                          showAudio: showAudio,
+                          showUser: (user) {},
+                          showLocationRequest: (req) {},
+                          showLocationResponse: (resp) {
+                            locationResponse = resp;
+                            _navigateToLocationResponseMap();
+                          },
+                          showGeofenceEvent: (event) {},
+                          showProjectPolygon: (polygon) {},
+                          showProjectPosition: (position) {},
+                          showOrgMessage: (message) {},
+                          forceRefresh: false),
+                    ],
+                  ),
+                );
+              }),
+            ),
             _showPhoto
                 ? Positioned(
                     left: amInPortrait ? 160 : 300,
@@ -564,19 +630,21 @@ class _UserListTabletState extends State<UserListTablet> {
                           setState(() {
                             _playAudio = false;
                           });
-                        }),
+                        }, dataApiDog: widget.dataApiDog,),
                   )
                 : const SizedBox(),
             _playVideo
                 ? Positioned(
-                    child: VideoPlayerTablet(
-                        video: selectedVideo!,
-                        onCloseRequested: () {
-                          setState(() {
-                            _playVideo = false;
-                          });
-                        },
-                        width: 400))
+                    child: GioVideoPlayer(
+                    video: selectedVideo!,
+                    onCloseRequested: () {
+                      setState(() {
+                        _playVideo = false;
+                      });
+                    },
+                    width: 400,
+                    dataApiDog: widget.dataApiDog,
+                  ))
                 : const SizedBox(),
           ],
         ));

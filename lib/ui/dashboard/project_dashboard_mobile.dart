@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
+import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:geo_monitor/library/data/geofence_event.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/ui/maps/project_map_mobile.dart';
-import 'package:geo_monitor/library/ui/media/list/project_media_list_mobile.dart';
-import 'package:geo_monitor/ui/activity/geo_activity_mobile.dart';
+import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
 import 'package:geo_monitor/ui/dashboard/project_dashboard_grid.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
@@ -16,6 +17,7 @@ import '../../l10n/translation_handler.dart';
 import '../../library/api/prefs_og.dart';
 import '../../library/bloc/connection_check.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
 import '../../library/bloc/theme_bloc.dart';
 import '../../library/data/audio.dart';
@@ -27,15 +29,26 @@ import '../../library/data/user.dart';
 import '../../library/data/video.dart';
 import '../../library/emojis.dart';
 import '../../library/functions.dart';
+import '../activity/geo_activity.dart';
 
 class ProjectDashboardMobile extends StatefulWidget {
   const ProjectDashboardMobile({
     Key? key,
     this.user,
     required this.project,
+    required this.projectBloc,
+    required this.prefsOGx,
+    required this.organizationBloc,
+    required this.dataApiDog,
+    required this.cacheManager,
   }) : super(key: key);
   final Project project;
   final User? user;
+  final ProjectBloc projectBloc;
+  final PrefsOGx prefsOGx;
+  final OrganizationBloc organizationBloc;
+  final DataApiDog dataApiDog;
+  final CacheManager cacheManager;
   @override
   ProjectDashboardMobileState createState() => ProjectDashboardMobileState();
 }
@@ -215,7 +228,14 @@ class ProjectDashboardMobileState extends State<ProjectDashboardMobile>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child: ProjectMediaListMobile(project: project)));
+            child: ProjectMediaTimeline(
+              project: widget.project,
+              projectBloc: widget.projectBloc,
+              organizationBloc: widget.organizationBloc,
+              prefsOGx: widget.prefsOGx,
+              cacheManager: widget.cacheManager,
+              dataApiDog: widget.dataApiDog,
+            )));
   }
 
   void _navigateToActivity() {
@@ -225,9 +245,11 @@ class ProjectDashboardMobileState extends State<ProjectDashboardMobile>
         type: PageTransitionType.fade,
         alignment: Alignment.topLeft,
         duration: const Duration(seconds: 1),
-        child: GeoActivityMobile(
-          project: widget.project,
-        ),
+        child: GeoActivity(width: 400, thinMode: false, showPhoto: (p){},
+            showVideo: (v){}, showAudio: (a){}, forceRefresh: true,
+            showLocationResponse: (r){}, showLocationRequest: (r){},
+            showUser: (r){}, showProjectPosition: (r){}, showOrgMessage: (r){},
+            showGeofenceEvent: (r){}, showProjectPolygon: (r){})
       ),
     );
   }
@@ -260,8 +282,9 @@ class ProjectDashboardMobileState extends State<ProjectDashboardMobile>
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title:  Text(title == null?
-            'Project Dashboard': title!, style: myTextStyleMedium(context),
+          title: Text(
+            title == null ? 'Project Dashboard' : title!,
+            style: myTextStyleMedium(context),
           ),
           actions: [
             IconButton(
@@ -297,7 +320,6 @@ class ProjectDashboardMobileState extends State<ProjectDashboardMobile>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-
                       Flexible(
                         child: Text(
                           widget.project.name!,
@@ -331,11 +353,14 @@ class ProjectDashboardMobileState extends State<ProjectDashboardMobile>
               )
             : Stack(
                 children: [
-                  dashboardStrings == null? const SizedBox():ProjectDashboardGrid(onTypeTapped: onTypeTapped,
-                      dashboardStrings: dashboardStrings!,
-                      project: widget.project,
-                      showProjectName: false,
-                      crossAxisCount: 2)
+                  dashboardStrings == null
+                      ? const SizedBox()
+                      : ProjectDashboardGrid(
+                          onTypeTapped: onTypeTapped,
+                          dashboardStrings: dashboardStrings!,
+                          project: widget.project,
+                          showProjectName: false,
+                          crossAxisCount: 2)
                 ],
               ),
       ),
@@ -402,7 +427,7 @@ class DashboardStrings {
       required this.photos,
       required this.videos,
       required this.areas,
-        required this.refreshProjectDashboardData,
+      required this.refreshProjectDashboardData,
       required this.locations,
       required this.schedules,
       required this.audioClips});
@@ -417,7 +442,8 @@ class DashboardStrings {
     var areas = await translator.translate('areas', sett.locale!);
     var schedules = await translator.translate('schedules', sett.locale!);
     var videos = await translator.translate('videos', sett.locale!);
-    var refreshProjectDashboardData = await translator.translate('refreshProjectDashboardData', sett.locale!);
+    var refreshProjectDashboardData =
+        await translator.translate('refreshProjectDashboardData', sett.locale!);
 
     var m = DashboardStrings(
         projects: projects,

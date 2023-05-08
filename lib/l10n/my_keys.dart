@@ -11,7 +11,29 @@ class MyKeys {
   }
 
   static _buildMap() {
+    hashMap["searchProjects"] = "searchProjects";
+    hashMap["search"] = "search";
+    hashMap["searchMembers"] = "Search Members";
+    hashMap["searchUsers"] = "Search Users";
+    hashMap["closeCancel"] = "Close/Cancel";
+    hashMap["exit"] = "Exit";
+    hashMap["timeLine"] = "timeLine";
+    hashMap["projectTimeline"] = "projectTimeline";
+    hashMap["seeLocationDetails"] = "seeLocationDetails";
+    hashMap["ratePhoto"] = "ratePhoto";
+    hashMap["createdBy"] = "createdBy";
+    hashMap["rateVideo"] = "rateVideo";
+    hashMap["rateAudio"] = "rateAudio";
 
+    hashMap["actionsOnPhoto"] = "actionsOnPhoto";
+    hashMap["actionsOnVideo"] = "actionsOnVideo";
+    hashMap["actionsOnAudio"] = "actionsOnAudio";
+
+    hashMap["close"] = "close";
+    hashMap["cancel"] = "close";
+
+    hashMap["loadingData"] = "loadingData";
+    hashMap["recentEvents"] = "recentEvents";
     hashMap["events"] = "events";
     hashMap["recentEvents"] = "recentEvents";
     hashMap["audioArrived"] = "audioArrived";

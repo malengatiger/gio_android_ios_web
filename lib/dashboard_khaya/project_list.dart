@@ -19,6 +19,7 @@ class ProjectListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final Random random = Random(DateTime.now().millisecondsSinceEpoch);
     final images = getImages();
+
     return ScreenTypeLayout(mobile: SizedBox(
         height: 220,
         child: ListView.builder(
@@ -33,8 +34,14 @@ class ProjectListView extends StatelessWidget {
               final m = random.nextInt(images.length - 1);
               image = images.elementAt(m);
             }
-            return ProjectView(
-                image: image, project: project, height: 212, width: 242);
+            return GestureDetector(
+              onTap: (){
+                pp('........ project tapped: ${project.name}');
+                onProjectTapped(project);
+              },
+              child: ProjectView(
+                  image: image, project: project, height: 212, width: 242),
+            );
           },
         )),
     tablet: OrientationLayoutBuilder(portrait: (context){
@@ -52,8 +59,14 @@ class ProjectListView extends StatelessWidget {
                 final m = random.nextInt(images.length - 1);
                 image = images.elementAt(m);
               }
-              return ProjectView(
-                  image: image, project: project, height: 312, width: 312);
+              return GestureDetector(
+                onTap: (){
+                  pp('........ project tapped: ${project.name}');
+                  onProjectTapped(project);
+                },
+                child: ProjectView(
+                    image: image, project: project, height: 312, width: 312),
+              );
             },
           ));
 
@@ -73,8 +86,14 @@ class ProjectListView extends StatelessWidget {
                  final m = random.nextInt(images.length - 1);
                  image = images.elementAt(m);
                }
-               return ProjectView(
-                   image: image, project: project, height: 212, width: 242);
+               return GestureDetector(
+                 onTap: (){
+                   pp('........ project tapped: ${project.name}');
+                   onProjectTapped(project);
+                 },
+                 child: ProjectView(
+                     image: image, project: project, height: 212, width: 242),
+               );
              },
            ));
       },
@@ -89,11 +108,12 @@ class ProjectView extends StatelessWidget {
       required this.project,
       required this.height,
       required this.width,
-      required this.image})
+      required this.image,})
       : super(key: key);
   final Project project;
   final double height, width;
   final Image image;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(

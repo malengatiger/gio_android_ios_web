@@ -1395,7 +1395,7 @@ class DataApiDog {
     var start = DateTime.now();
     var token = await appAuth.getAuthToken();
     if (token != null) {
-      pp('$xz _sendHttpGET: 😡😡😡 Firebase Auth Token: 💙️ Token is GOOD! 💙 ');
+      pp('$xz _sendHttpGET: 😡😡😡 Firebase Auth Token: 💙️ Token is GOOD! 💙\n$token ');
     } else {
       pp('$xz Firebase token missing ${E.redDot}${E.redDot}${E.redDot}${E.redDot}');
       final gex = GeoException(

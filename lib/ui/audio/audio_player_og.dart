@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/bloc/fcm_bloc.dart';
 import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:geo_monitor/library/data/audio.dart';
-import 'package:geo_monitor/library/ui/media/list/project_videos_page.dart';
 import 'package:geo_monitor/ui/audio/player_controls.dart';
 import 'package:siri_wave/siri_wave.dart';
 
@@ -15,6 +15,7 @@ import '../../library/data/settings_model.dart';
 import '../../library/data/user.dart';
 import '../../library/emojis.dart';
 import '../../library/functions.dart';
+import '../../library/ui/loading_card.dart';
 import '../../library/ui/ratings/rating_adder.dart';
 import '../activity/user_profile_card.dart';
 
@@ -24,12 +25,13 @@ class AudioPlayerOG extends StatefulWidget {
       required this.audio,
       this.width,
       this.height,
-      required this.onCloseRequested})
+      required this.onCloseRequested, required this.dataApiDog})
       : super(key: key);
 
   final Audio audio;
   final double? width, height;
   final Function() onCloseRequested;
+  final DataApiDog dataApiDog;
 
   @override
   AudioPlayerOGState createState() => AudioPlayerOGState();
@@ -231,11 +233,10 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
                     color: Colors.black12,
                     child: RatingAdder(
                       elevation: 8.0,
-                      width: 400,
                       audio: widget.audio,
                       onDone: () {
                         Navigator.of(context).pop();
-                      },
+                      }, dataApiDog: widget.dataApiDog,
                     )),
               ),
             ));
@@ -263,7 +264,7 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
     }
 
     if  (loadingActivities == null) {
-      return const LoadingCard(loadingActivities: 'Loading',);;
+      return  const LoadingCard(loadingData: 'loadingActivities!',);
     }
 
     return deviceType == 'phone'
@@ -297,7 +298,7 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
             ),
           ))
         :  duration == null
-                ? LoadingCard(loadingActivities: loadingActivities!)
+                ? LoadingCard(loadingData: loadingActivities!)
                 : AudioPlayerWidget(
                     onRatingRequested: _onFavorite,
                     onStopRequested: _stop,
@@ -420,7 +421,7 @@ class AudioPlayerWidget extends StatelessWidget {
                   namePictureHorizontal: true,
                   userThumbUrl: user.thumbnailUrl),
               const SizedBox(
-                height: 36,
+                height: 28,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -467,6 +468,9 @@ class AudioPlayerWidget extends StatelessWidget {
                       isPaused: isPaused,
                       isStopped: isStopped)
                   : const SizedBox(),
+              const SizedBox(
+                height: 24,
+              ),
             ],
           ),
         ),

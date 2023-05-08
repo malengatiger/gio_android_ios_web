@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/data/location_request.dart';
 import 'package:geo_monitor/library/data/location_response.dart';
-import 'package:geo_monitor/library/ui/media/list/project_videos_page.dart';
 import 'package:geo_monitor/ui/activity/activity_header.dart';
 import 'package:geo_monitor/ui/activity/activity_stream_card.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -22,6 +21,7 @@ import '../../library/data/settings_model.dart';
 import '../../library/data/user.dart';
 import '../../library/data/video.dart';
 import '../../library/functions.dart';
+import '../../library/ui/loading_card.dart';
 import 'activity_list_card.dart';
 
 class ActivityList extends StatefulWidget {
@@ -203,7 +203,6 @@ class ActivityListState extends State<ActivityList>
                               onTapped: (act) {
                                 _handleTappedActivity(act);
                               },
-
                             ),
                           ),
                   ),
@@ -255,7 +254,7 @@ class ActivityListState extends State<ActivityList>
                       left: 24,
                       child: loadingActivities == null
                           ? const SizedBox()
-                          : LoadingCard(loadingActivities: loadingActivities!))
+                          : LoadingCard(loadingData: loadingActivities!))
                   : const SizedBox()
             ],
           );
@@ -306,7 +305,6 @@ class ActivityListState extends State<ActivityList>
                               onTapped: (act) {
                                 _handleTappedActivity(act);
                               },
-
                             ),
                           ),
                   ),
@@ -413,7 +411,8 @@ class ActivityListState extends State<ActivityList>
                               prefix: prefix!,
                               suffix: suffix!,
                               onRefreshRequested: () {
-                                pp('$mm onRefreshRequested D');                                setState(() {
+                                pp('$mm onRefreshRequested D');
+                                setState(() {
                                   forceRefresh = true;
                                 });
                               },
@@ -440,7 +439,6 @@ class ActivityListState extends State<ActivityList>
                               onTapped: (act) {
                                 _handleTappedActivity(act);
                               },
-
                             ),
                           ),
                   ),
@@ -452,7 +450,7 @@ class ActivityListState extends State<ActivityList>
                       left: 24,
                       child: loadingActivities == null
                           ? const SizedBox()
-                          : LoadingCard(loadingActivities: loadingActivities!))
+                          : LoadingCard(loadingData: loadingActivities!))
                   : const SizedBox()
             ],
           ),

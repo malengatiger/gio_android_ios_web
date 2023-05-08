@@ -1,5 +1,6 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:video_player/video_player.dart';
 
@@ -8,21 +9,25 @@ import '../../emojis.dart';
 import '../../functions.dart';
 import '../ratings/rating_adder.dart';
 
-class VideoPlayerTablet extends StatefulWidget {
-  const VideoPlayerTablet({
+class GioVideoPlayer extends StatefulWidget {
+  const GioVideoPlayer({
     Key? key,
     required this.video,
-    required this.onCloseRequested, required this.width,
+    required this.onCloseRequested,
+    required this.width,
+    required this.dataApiDog,
   }) : super(key: key);
 
   final Video video;
   final Function() onCloseRequested;
   final double width;
+  final DataApiDog dataApiDog;
+
   @override
-  VideoPlayerTabletState createState() => VideoPlayerTabletState();
+  GioVideoPlayerState createState() => GioVideoPlayerState();
 }
 
-class VideoPlayerTabletState extends State<VideoPlayerTablet>
+class GioVideoPlayerState extends State<GioVideoPlayer>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   VideoPlayerController? _videoPlayerController;
@@ -54,7 +59,14 @@ class VideoPlayerTabletState extends State<VideoPlayerTablet>
         pp('.......... size of video ... '
             'videoHeight: $videoHeight videoWidth: $videoWidth .... ');
 
-        _videoPlayerController!.addListener(_checkVideo);
+        _chewieController = ChewieController(
+            videoPlayerController: _videoPlayerController!,
+            allowedScreenSleep: false,
+            allowFullScreen: true,
+            showControls: true);
+
+        _chewieController!.addListener(_checkVideo);
+
         setState(() {
           if (_videoPlayerController != null) {
             videoDurationInSeconds =
@@ -111,7 +123,7 @@ class VideoPlayerTabletState extends State<VideoPlayerTablet>
     super.dispose();
   }
 
-  void _onFavorite() async {
+  void _onRateVideo() async {
     pp('$mm on favorite tapped - do da bizness! navigate to RatingAdder');
     showDialog(
         context: context,
@@ -122,12 +134,12 @@ class VideoPlayerTabletState extends State<VideoPlayerTablet>
                 child: Container(
                     color: Colors.black12,
                     child: RatingAdder(
-                      width: 500,
                       elevation: 8.0,
                       video: widget.video,
                       onDone: () {
                         Navigator.of(context).pop();
                       },
+                      dataApiDog: widget.dataApiDog,
                     )),
               ),
             ));
@@ -154,12 +166,13 @@ class VideoPlayerTabletState extends State<VideoPlayerTablet>
     }
 
     return SizedBox(
-      width: widget.width, height: height,
+      width: widget.width,
+      // height: height,
       child: Card(
         shape: getRoundedBorder(radius: 16),
         elevation: 8,
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(0.0),
           child: Column(
             children: [
               Row(
@@ -189,7 +202,7 @@ class VideoPlayerTabletState extends State<VideoPlayerTablet>
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(onPressed: _onFavorite, child: Text(E.heartBlue)),
+                  TextButton(onPressed: _onRateVideo, child: Text(E.heartBlue)),
                   const SizedBox(
                     width: 28,
                   ),
@@ -250,6 +263,7 @@ class VideoPlayerTabletState extends State<VideoPlayerTablet>
                                   },
                                   child: SizedBox(
                                       height: 500,
+                                      width: 500,
                                       child: VideoPlayer(
                                           _videoPlayerController!))),
                             )

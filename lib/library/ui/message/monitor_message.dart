@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
+import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:uuid/uuid.dart';
 import '../../api/data_api.dart';
 import '../../api/prefs_og.dart';
@@ -8,12 +10,18 @@ import '../../data/org_message.dart';
 import '../../functions.dart';
 
 class MonitorMessage extends StatefulWidget {
-  final Project project;
-  final User user;
+  final String projectId;
+  final String userId;
 
-  const MonitorMessage({super.key,
-    required this.project,
-    required this.user,
+  final CacheManager cacheManager;
+  final DataApiDog dataApiDog;
+
+  const MonitorMessage({
+    super.key,
+    required this.projectId,
+    required this.userId,
+    required this.cacheManager,
+    required this.dataApiDog,
   });
 
   @override
@@ -23,6 +31,22 @@ class MonitorMessage extends StatefulWidget {
 class MonitorMessageState extends State<MonitorMessage> {
   String frequency = monitorTwiceADay;
   bool isBusy = false;
+
+  Project? project;
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
+  void _getData() async {
+    user = await widget.cacheManager.getUserById(widget.userId);
+    project = await widget.cacheManager.getProjectById(projectId: widget.projectId);
+    setState(() {});
+  }
+
   void _onRadioButtonSelected(String selected) {
     pp('MessageMobile :  🥦 🥦 🥦 _onRadioButtonSelected: 🍊 $selected 🍊');
     setState(() {
@@ -40,22 +64,22 @@ class MonitorMessageState extends State<MonitorMessage> {
     setState(() {
       isBusy = true;
     });
-    var admin = await prefsOGx.getUser();
-    if (admin != null && admin.userId != widget.user.userId) {
+    var sender = await prefsOGx.getUser();
+    if (sender != null && sender.userId != user!.userId) {
       var msg = OrgMessage(
-          name: widget.user.name,
-          adminId: admin.userId,
-          adminName: admin.name,
-          projectName: widget.project.name,
+          name: user!.name,
+          adminId: sender.userId,
+          adminName: sender.name,
+          projectName: project!.name,
           frequency: frequency,
           message: 'Please collect info',
-          userId: widget.user.userId,
+          userId: user!.userId,
           created: DateTime.now().toUtc().toIso8601String(),
-          projectId: widget.project.projectId,
-          organizationId: widget.project.organizationId,
+          projectId: project!.projectId,
+          organizationId: project!.organizationId,
           orgMessageId: const Uuid().v4());
       try {
-        var res = await DataAPI.sendMessage(msg);
+        var res = await widget.dataApiDog.sendMessage(msg);
         pp('MessageMobile:  🏓  🏓  🏓 Response from server:  🏓 ${res.toJson()}  🏓');
       } catch (e) {
         // AppSnackbar.showErrorSnackbar(
@@ -78,8 +102,9 @@ class MonitorMessageState extends State<MonitorMessage> {
           ),
           title: AnimatedContainer(
             duration: const Duration(milliseconds: 1000),
-            width:  300.0,
-            child: Text(widget.project.name!,
+            width: 300.0,
+            child: Text(
+              project!.name!,
               style: Styles.blackBoldSmall,
             ),
           ),
@@ -112,12 +137,12 @@ class MonitorMessageState extends State<MonitorMessage> {
                   ),
                 ),
               )
-            :  ElevatedButton(
-                    onPressed: _sendMessage,
-                    child: Text(
-                      'Send Message',
-                      style: Styles.whiteSmall,
-                    )),
+            : ElevatedButton(
+                onPressed: _sendMessage,
+                child: Text(
+                  'Send Message',
+                  style: Styles.whiteSmall,
+                )),
         const SizedBox(
           height: 12,
         )

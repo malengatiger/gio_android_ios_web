@@ -7,6 +7,7 @@ import '../../library/api/prefs_og.dart';
 import '../../library/bloc/fcm_bloc.dart';
 import '../../library/bloc/isolate_handler.dart';
 import '../../library/bloc/organization_bloc.dart';
+import '../../library/bloc/project_bloc.dart';
 import '../../library/cache_manager.dart';
 import 'intro_page_viewer_landscape.dart';
 
@@ -17,6 +18,7 @@ class IntroMain extends StatefulWidget {
   final IsolateDataHandler isolateHandler;
   final FCMBloc fcmBloc;
   final OrganizationBloc organizationBloc;
+  final ProjectBloc projectBloc;
 
 
   const IntroMain({
@@ -24,7 +26,7 @@ class IntroMain extends StatefulWidget {
     required this.prefsOGx,
     required this.dataApiDog,
     required this.cacheManager,
-    required this.isolateHandler, required this.fcmBloc, required this.organizationBloc,
+    required this.isolateHandler, required this.fcmBloc, required this.organizationBloc, required this.projectBloc,
 
   }) : super(key: key);
   @override
@@ -57,12 +59,14 @@ class IntroMainState extends State<IntroMain>
         prefsOGx: widget.prefsOGx,
         dataApiDog: widget.dataApiDog,
         cacheManager: widget.cacheManager,
+        projectBloc: widget.projectBloc,
         isolateHandler: widget.isolateHandler,
       ),
       tablet: OrientationLayoutBuilder(
         portrait: (context) {
           return IntroPageViewerPortrait(
             fcmBloc: widget.fcmBloc,
+            projectBloc: widget.projectBloc,
             organizationBloc: widget.organizationBloc,
             prefsOGx: widget.prefsOGx,
             dataApiDog: widget.dataApiDog,
@@ -73,6 +77,7 @@ class IntroMainState extends State<IntroMain>
         landscape: (context) {
           return IntroPageViewerLandscape(
             prefsOGx: widget.prefsOGx,
+            projectBloc: widget.projectBloc,
             dataApiDog: widget.dataApiDog,
             cacheManager: widget.cacheManager,
             isolateHandler: widget.isolateHandler,

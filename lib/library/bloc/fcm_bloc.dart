@@ -199,7 +199,7 @@ class FCMBloc {
     }
 
     pp("$mm ..... subscribe to Gio FCM Topics ...........................");
-
+    final start = DateTime.now();
     try {
       await firebaseMessaging.subscribeToTopic('activities_${user.organizationId}');
       pp('$mm ..... subscribed to activities');
@@ -231,10 +231,11 @@ class FCMBloc {
       pp('$mm ..... subscribed to settings_');
       await firebaseMessaging.subscribeToTopic('geofenceEvents_${user.organizationId}');
       pp('$mm ..... subscribed to geofenceEvents_');
-
+      final end = DateTime.now();
       // prefsOGz.setFCMSubscriptionFlag();
       pp(
-          "$mm subscribeToTopics: 🍎 subscription process has been started for all 14 organization topics 🍎");
+          "\n\n$mm subscribeToTopics: 🍎 subscription process has been started for all 14 organization topics 🍎"
+              " Elapsed time: ${end.difference(start).inMilliseconds} milliseconds\n");
     } catch (e) {
       pp('$mm Problem with subscribing to topics! \n$e');
     }

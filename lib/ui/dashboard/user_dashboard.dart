@@ -2,14 +2,15 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/bloc/user_bloc.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
-import 'package:geo_monitor/library/ui/camera/video_player_tablet.dart';
+import 'package:geo_monitor/library/ui/camera/gio_video_player.dart';
 import 'package:geo_monitor/library/ui/maps/photo_map_tablet.dart';
 import 'package:geo_monitor/library/users/full_user_photo.dart';
 import 'package:geo_monitor/ui/activity/geo_activity.dart';
 import 'package:geo_monitor/ui/audio/audio_player_og.dart';
-import 'package:geo_monitor/ui/dashboard/photo_card.dart';
+import 'package:geo_monitor/ui/dashboard/photo_frame.dart';
 import 'package:geo_monitor/ui/dashboard/project_dashboard_mobile.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -35,16 +36,17 @@ import '../../library/functions.dart';
 import '../../library/generic_functions.dart';
 import '../../library/geofence/the_great_geofencer.dart';
 import '../../library/ui/maps/location_response_map.dart';
-import '../../library/ui/project_list/project_list_mobile.dart';
+import '../../library/ui/project_list/gio_projects.dart';
 import '../../utilities/constants.dart';
 import 'user_dashboard_grid.dart';
 
 class UserDashboard extends StatefulWidget {
   const UserDashboard({
     Key? key,
-    required this.user,
+    required this.user, required this.dataApiDog,
   }) : super(key: key);
   final User user;
+  final DataApiDog dataApiDog;
 
   @override
   UserDashboardState createState() => UserDashboardState();
@@ -656,9 +658,10 @@ class UserDashboardState extends State<UserDashboard>
                         left: 100,
                         right: 100,
                         top: 12,
-                        child: VideoPlayerTablet(
+                        child: GioVideoPlayer(
                           width: 400,
                           video: video!,
+                          dataApiDog: widget.dataApiDog,
                           onCloseRequested: () {
                             if (mounted) {
                               setState(() {
@@ -682,7 +685,7 @@ class UserDashboardState extends State<UserDashboard>
                                 _showAudio = false;
                               });
                             }
-                          },
+                          }, dataApiDog: widget.dataApiDog,
                         ))
                     : const SizedBox(),
               ],

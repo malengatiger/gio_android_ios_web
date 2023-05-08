@@ -203,8 +203,7 @@ TextStyle myTextStyleSubtitle(BuildContext context) {
 TextStyle myTextStyleSubtitleSmall(BuildContext context) {
   return GoogleFonts.roboto(
     textStyle: Theme.of(context).textTheme.titleMedium,
-    fontWeight: FontWeight.w600, fontSize: 12,
-
+    fontWeight: FontWeight.w600, fontSize: 12
   );
 }
 
@@ -232,9 +231,9 @@ TextStyle myTextStyleMediumBoldPrimaryColor(BuildContext context) {
 
 TextStyle myTextStyleMediumBold(BuildContext context) {
   return GoogleFonts.lato(
-    textStyle: Theme.of(context).textTheme.bodyMedium,
+    textStyle: Theme.of(context).textTheme.headlineMedium,
     fontWeight: FontWeight.w900,
-    fontSize: 14.0,
+    fontSize: 16.0,
   );
 }
 
@@ -252,6 +251,12 @@ TextStyle myTextStyleLarge(BuildContext context) {
       textStyle: Theme.of(context).textTheme.headlineLarge,
       fontWeight: FontWeight.w900, color: const Color(0xFF424343),
       fontSize: 34);
+}
+TextStyle myTextStyleMediumLarge(BuildContext context) {
+  return GoogleFonts.roboto(
+      textStyle: Theme.of(context).textTheme.headlineLarge,
+      fontWeight: FontWeight.w900, color: const Color(0xFF424343),
+      fontSize: 24);
 }
 TextStyle myTextStyleHeader(BuildContext context) {
   return GoogleFonts.roboto(
@@ -1015,8 +1020,8 @@ String getFmtDateShortWithSlash(String date, String locale) {
   Future.delayed(const Duration(milliseconds: 10));
 
   DateTime now = DateTime.parse(date).toLocal();
-  final format = DateFormat("dd/MM/yyyy  HH:mm", mLocale);
-  final formatUS = DateFormat("MM/dd/yyyy  HH:mm", mLocale);
+  final format = DateFormat("dd/MM/yyyy", mLocale);
+  final formatUS = DateFormat("MM/dd/yyyy", mLocale);
   if (mLocale.contains('en_US')) {
     final String result = formatUS.format(now);
     return result;

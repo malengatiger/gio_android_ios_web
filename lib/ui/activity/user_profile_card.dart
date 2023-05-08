@@ -75,7 +75,7 @@ class UserProfileCard extends StatelessWidget {
                   ),
               )
               : SizedBox(
-                  height: 80,
+                  height: 96,
                   child: Column(
                     children: [
                       const SizedBox(

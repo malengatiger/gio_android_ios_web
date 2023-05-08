@@ -71,7 +71,7 @@ class PrefsOGz {
           'one time isSubscribed, 🍎🍎🍎 next time not so much!');
       return false;
     } else {
-      pp("$mm FCMSubscription flag: 🧩 🧩 🧩 🧩 🧩 retrieved .. $isSubscribed 🔴🔴");
+      // pp("$mm FCMSubscription flag: 🧩 🧩 🧩 🧩 🧩 retrieved .. $isSubscribed 🔴🔴");
       return isSubscribed;
     }
   }

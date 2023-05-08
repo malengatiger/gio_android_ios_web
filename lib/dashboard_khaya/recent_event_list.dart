@@ -91,12 +91,12 @@ class EventView extends StatelessWidget {
         child: Column(mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(6.0),
               child: Row(mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   icon,
                   const SizedBox(
-                    width: 8,
+                    width: 4,
                   ),
                   SizedBox(
                     height: 32,

@@ -22,8 +22,23 @@ import '../../library/data/user.dart';
 import '../../library/data/video.dart';
 import '../../library/functions.dart';
 
-class ActivityListOg extends StatefulWidget {
-  const ActivityListOg({Key? key, required this.onPhotoTapped, required this.onVideoTapped, required this.onAudioTapped, required this.onUserTapped, required this.onProjectTapped, required this.onProjectPositionTapped, required this.onPolygonTapped, required this.onGeofenceEventTapped, required this.onOrgMessage, required this.onLocationResponse, required this.onLocationRequest, this.project, this.user}) : super(key: key);
+class GioActivities extends StatefulWidget {
+  const GioActivities(
+      {Key? key,
+      required this.onPhotoTapped,
+      required this.onVideoTapped,
+      required this.onAudioTapped,
+      required this.onUserTapped,
+      required this.onProjectTapped,
+      required this.onProjectPositionTapped,
+      required this.onPolygonTapped,
+      required this.onGeofenceEventTapped,
+      required this.onOrgMessage,
+      required this.onLocationResponse,
+      required this.onLocationRequest,
+      this.project,
+      this.user})
+      : super(key: key);
 
   final Function(Photo) onPhotoTapped;
   final Function(Video) onVideoTapped;
@@ -40,10 +55,10 @@ class ActivityListOg extends StatefulWidget {
   final User? user;
 
   @override
-  ActivityListOgState createState() => ActivityListOgState();
+  GioActivitiesState createState() => GioActivitiesState();
 }
 
-class ActivityListOgState extends State<ActivityListOg>
+class GioActivitiesState extends State<GioActivities>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late StreamSubscription<ActivityModel> subscription;
@@ -68,6 +83,7 @@ class ActivityListOgState extends State<ActivityListOg>
     _animationController.dispose();
     super.dispose();
   }
+
   void _onTapped(ActivityModel activity) async {
     pp('onTapped - ${activity.toJson()}');
     if (activity.photo != null) {
@@ -98,9 +114,17 @@ class ActivityListOgState extends State<ActivityListOg>
 
   @override
   Widget build(BuildContext context) {
-    return ScreenTypeLayout(
-      mobile:  MobileList(onTapped: _onTapped,),
-      tablet:  TabletList(onTapped: _onTapped,),
+    return ScreenTypeLayout.builder(
+      mobile: (context) {
+        return MobileList(
+          onTapped: _onTapped,
+        );
+      },
+      tablet: (ctx) {
+        return TabletList(
+          onTapped: _onTapped,
+        );
+      },
     );
   }
 }
@@ -125,9 +149,7 @@ class TabletListState extends State<TabletList> {
   void _setTexts() async {
     settings = await prefsOGx.getSettings();
     activityStrings = await ActivityStrings.getTranslated();
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   onTapped(ActivityModel act) {
@@ -137,14 +159,10 @@ class TabletListState extends State<TabletList> {
 
   @override
   Widget build(BuildContext context) {
-    return OrientationLayoutBuilder(
-        landscape: (context){
-          return  ActivityListCard(
-              onTapped: onTapped);
-        },
-        portrait: (context) {
-      return  ActivityListCard(
-              onTapped: onTapped);
+    return OrientationLayoutBuilder(landscape: (context) {
+      return ActivityListCard(onTapped: onTapped);
+    }, portrait: (context) {
+      return ActivityListCard(onTapped: onTapped);
     });
   }
 }
@@ -184,15 +202,18 @@ class _MobileListState extends State<MobileList> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text(title == null ? 'Activities' : title!, style: myTextStyleSmall(context),),
+        title: Text(
+          title == null ? 'Activities' : title!,
+          style: myTextStyleSmall(context),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ActivityListCard(
-                onTapped: (act){
-                  _onTapped(act);
-                },
-              ),
+          onTapped: (act) {
+            _onTapped(act);
+          },
+        ),
       ),
     ));
   }

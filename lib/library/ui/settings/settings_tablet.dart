@@ -72,7 +72,7 @@ class SettingsTabletState extends State<SettingsTablet>
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text(title == null ? 'Settings' : title!),
+        title: Text(title == null ? 'Settings' : title!, style: myTextStyleLarge(context),),
       ),
       body: OrientationLayoutBuilder(landscape: (ctx) {
         return Padding(

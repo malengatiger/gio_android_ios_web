@@ -67,8 +67,8 @@ class Initializer {
         'initializeGeo: App Settings are 🍎${settings.toJson()}🍎');
 
     final end = DateTime.now();
-    pp('$mx ${E.appleRed}${E.appleRed}}${E.appleGreen} '
-        ' initializeGeo: Time Elapsed: ${end.difference(start).inMilliseconds} milliseconds');
+    pp('\n\n$mx ${E.appleRed}${E.appleRed}}${E.appleGreen} '
+        ' initializeGeo: Time Elapsed: ${end.difference(start).inMilliseconds} milliseconds\n\n');
   }
 
   Future<void> heavyLifting(int numberOfDays) async {

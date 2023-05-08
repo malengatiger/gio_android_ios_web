@@ -10,6 +10,8 @@ import '../../l10n/translation_handler.dart';
 import '../../library/api/data_api_og.dart';
 import '../../library/bloc/fcm_bloc.dart';
 import '../../library/bloc/organization_bloc.dart';
+import '../../library/bloc/project_bloc.dart';
+import '../../library/cache_manager.dart';
 import '../../library/data/user.dart';
 import '../../library/generic_functions.dart';
 import '../../library/geofence/the_great_geofencer.dart';
@@ -21,11 +23,16 @@ class DashboardMain extends StatefulWidget {
     required this.dataApiDog,
     required this.fcmBloc,
     required this.organizationBloc,
+    required this.projectBloc,
+    required this.prefsOGx, required this.cacheManager,
   }) : super(key: key);
   final IsolateDataHandler isolateHandler;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
   final OrganizationBloc organizationBloc;
+  final ProjectBloc projectBloc;
+  final PrefsOGx prefsOGx;
+  final CacheManager cacheManager;
 
   @override
   DashboardMainState createState() => DashboardMainState();
@@ -171,6 +178,8 @@ class DashboardMainState extends State<DashboardMain>
                   isolateHandler: widget.isolateHandler,
                   fcmBloc: widget.fcmBloc,
                   organizationBloc: widget.organizationBloc,
+                  projectBloc: widget.projectBloc,
+                  prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                 ),
                 tablet: OrientationLayoutBuilder(
                   portrait: (context) {
@@ -178,7 +187,9 @@ class DashboardMainState extends State<DashboardMain>
                       dataApiDog: widget.dataApiDog,
                       isolateHandler: widget.isolateHandler,
                       fcmBloc: widget.fcmBloc,
-                      organizationBloc: widget.organizationBloc,
+                      projectBloc: widget.projectBloc,
+                      prefsOGx: widget.prefsOGx,
+                      organizationBloc: widget.organizationBloc, cacheManager: widget.cacheManager,
                     );
                   },
                   landscape: (context) {
@@ -187,6 +198,8 @@ class DashboardMainState extends State<DashboardMain>
                       isolateHandler: widget.isolateHandler,
                       fcmBloc: widget.fcmBloc,
                       organizationBloc: widget.organizationBloc,
+                      projectBloc: widget.projectBloc,
+                      prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                     );
                   },
                 ),

@@ -13,6 +13,7 @@ import '../../library/api/prefs_og.dart';
 import '../../library/bloc/fcm_bloc.dart';
 import '../../library/bloc/isolate_handler.dart';
 import '../../library/bloc/organization_bloc.dart';
+import '../../library/bloc/project_bloc.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/user.dart' as ur;
 import '../../library/emojis.dart';
@@ -27,7 +28,10 @@ class IntroPageViewerLandscape extends StatefulWidget {
       required this.prefsOGx,
       required this.dataApiDog,
       required this.cacheManager,
-      required this.isolateHandler, required this.fcmBloc, required this.organizationBloc})
+      required this.isolateHandler,
+      required this.fcmBloc,
+      required this.organizationBloc,
+      required this.projectBloc})
       : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
@@ -35,6 +39,7 @@ class IntroPageViewerLandscape extends StatefulWidget {
   final IsolateDataHandler isolateHandler;
   final FCMBloc fcmBloc;
   final OrganizationBloc organizationBloc;
+  final ProjectBloc projectBloc;
 
   @override
   State<IntroPageViewerLandscape> createState() =>
@@ -136,6 +141,8 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
                   isolateHandler: widget.isolateHandler,
                   fcmBloc: widget.fcmBloc,
                   organizationBloc: widget.organizationBloc,
+                  projectBloc: widget.projectBloc,
+                  prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                 )));
       } else {
         pp('$mm User is null,  🔆 🔆 🔆 🔆 cannot navigate to Dashboard');

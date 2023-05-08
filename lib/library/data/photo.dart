@@ -1,11 +1,12 @@
 import 'package:hive/hive.dart';
 
 import '../data/position.dart';
+import '../ui/media/time_line/media_grid.dart';
 
 part 'photo.g.dart';
 
 @HiveType(typeId: 4)
-class Photo extends HiveObject {
+class Photo extends HiveObject{
   @HiveField(0)
   String? url;
   @HiveField(1)

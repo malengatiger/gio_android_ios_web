@@ -165,7 +165,7 @@ class GeoUploader {
       String? url = getUrl();
       var token = await appAuth.getAuthToken();
       if (token != null) {
-        // pp('$xx http POST call: 😡😡😡 Firebase Auth Token: 💙️ Token is GOOD! 💙 ');
+        // pp('$xx http POST call: 😡😡😡 Firebase Auth Token: 💙️ Token is GOOD! 💙\n$token ');
       }
 
       String path = photoForUploading.filePath!;

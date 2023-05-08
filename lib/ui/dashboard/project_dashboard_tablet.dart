@@ -4,18 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
 import 'package:geo_monitor/library/ui/maps/project_map_mobile.dart';
 import 'package:geo_monitor/library/ui/maps/project_polygon_map_mobile.dart';
-import 'package:geo_monitor/library/ui/media/list/project_media_list_tablet.dart';
+import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
 import 'package:geo_monitor/ui/audio/audio_player_og.dart';
-import 'package:geo_monitor/ui/dashboard/photo_card.dart';
+import 'package:geo_monitor/ui/dashboard/photo_frame.dart';
 import 'package:geo_monitor/ui/dashboard/project_dashboard_grid.dart';
 import 'package:geo_monitor/ui/dashboard/project_dashboard_mobile.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:universal_platform/universal_platform.dart';
 
+import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
 import '../../library/bloc/connection_check.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
 import '../../library/bloc/theme_bloc.dart';
 import '../../library/cache_manager.dart';
@@ -32,7 +34,7 @@ import '../../library/data/settings_model.dart';
 import '../../library/data/user.dart';
 import '../../library/data/video.dart';
 import '../../library/functions.dart';
-import '../../library/ui/camera/video_player_tablet.dart';
+import '../../library/ui/camera/gio_video_player.dart';
 import '../../library/ui/maps/geofence_map_tablet.dart';
 import '../../library/ui/maps/location_response_map.dart';
 import '../../library/ui/maps/photo_map_tablet.dart';
@@ -41,10 +43,15 @@ import '../../utilities/constants.dart';
 import '../activity/geo_activity.dart';
 
 class ProjectDashboardTablet extends StatefulWidget {
-  const ProjectDashboardTablet({Key? key, required this.project})
+  const ProjectDashboardTablet({Key? key, required this.project, required this.projectBloc, required this.prefsOGx, required this.organizationBloc, required this.dataApiDog, required this.cacheManager})
       : super(key: key);
 
   final Project project;
+  final ProjectBloc projectBloc;
+  final PrefsOGx prefsOGx;
+  final OrganizationBloc organizationBloc;
+  final DataApiDog dataApiDog;
+  final CacheManager cacheManager;
 
   @override
   ProjectDashboardTabletState createState() => ProjectDashboardTabletState();
@@ -243,8 +250,12 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child: ProjectMediaListTablet(
+            child: ProjectMediaTimeline(
               project: widget.project,
+              projectBloc: widget.projectBloc,
+              organizationBloc: widget.organizationBloc,
+              prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+              dataApiDog: widget.dataApiDog,
             )));
   }
 
@@ -527,7 +538,7 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                   left: 100,
                   right: 100,
                   top: 12,
-                  child: VideoPlayerTablet(
+                  child: GioVideoPlayer(
                     width: 400,
                     video: video!,
                     onCloseRequested: () {
@@ -536,7 +547,7 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                           _showVideo = false;
                         });
                       }
-                    },
+                    }, dataApiDog: widget.dataApiDog,
                   ),
                 )
               : const SizedBox(),
@@ -553,7 +564,7 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                           _showAudio = false;
                         });
                       }
-                    },
+                    }, dataApiDog: widget.dataApiDog,
                   ))
               : const SizedBox(),
         ],

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geo_monitor/library/bloc/geo_uploader.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
+import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
@@ -15,7 +16,9 @@ import 'package:uuid/uuid.dart';
 
 import '../../../device_location/device_location_bloc.dart';
 import '../../../l10n/translation_handler.dart';
+import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
+import '../../bloc/organization_bloc.dart';
 import '../../bloc/photo_for_upload.dart';
 import '../../bloc/project_bloc.dart';
 import '../../cache_manager.dart';
@@ -29,13 +32,26 @@ import '../../data/video.dart';
 import '../../emojis.dart';
 import '../../functions.dart';
 import '../../generic_functions.dart';
-import '../media/list/project_media_list_mobile.dart';
 
 class PhotoHandler extends StatefulWidget {
-  const PhotoHandler({Key? key, required this.project, this.projectPosition})
+  const PhotoHandler(
+      {Key? key,
+      required this.project,
+      this.projectPosition,
+      required this.projectBloc,
+      required this.prefsOGx,
+      required this.organizationBloc,
+      required this.cacheManager,
+      required this.dataApiDog})
       : super(key: key);
   final Project project;
   final ProjectPosition? projectPosition;
+  final ProjectBloc projectBloc;
+  final PrefsOGx prefsOGx;
+  final OrganizationBloc organizationBloc;
+  final CacheManager cacheManager;
+  final DataApiDog dataApiDog;
+
   @override
   PhotoHandlerState createState() => PhotoHandlerState();
 }
@@ -70,10 +86,10 @@ class PhotoHandlerState extends State<PhotoHandler>
   }
 
   Future _setTexts() async {
-    sett == await prefsOGx.getSettings();
-    fileSavedWillUpload = await translator.translate('fileSavedWillUpload', sett.locale!);
-    takePicture =
-    await translator.translate('takePicture', sett.locale!);
+    sett == await widget.prefsOGx.getSettings();
+    fileSavedWillUpload =
+        await translator.translate('fileSavedWillUpload', sett.locale!);
+    takePicture = await translator.translate('takePicture', sett.locale!);
   }
 
   Future<void> _observeOrientation() async {
@@ -92,7 +108,6 @@ class PhotoHandlerState extends State<PhotoHandler>
       busy = true;
     });
     try {
-
       pp('$mm .......... getting project positions and polygons');
       user = await prefsOGx.getUser();
       polygons = await projectBloc.getProjectPolygons(
@@ -224,8 +239,9 @@ class PhotoHandlerState extends State<PhotoHandler>
     if (mounted) {
       showToast(
           context: context,
-          message: fileSavedWillUpload == null?
-          'Picture file saved on device, size: $m MB': fileSavedWillUpload!,
+          message: fileSavedWillUpload == null
+              ? 'Picture file saved on device, size: $m MB'
+              : fileSavedWillUpload!,
           backgroundColor: Theme.of(context).primaryColor,
           textStyle: Styles.whiteSmall,
           toastGravity: ToastGravity.TOP,
@@ -279,7 +295,7 @@ class PhotoHandlerState extends State<PhotoHandler>
     return mFile;
   }
 
-  void _navigateToList() {
+  void _navigateTimeline() {
     Navigator.of(context).pop();
     Navigator.push(
         context,
@@ -287,141 +303,92 @@ class PhotoHandlerState extends State<PhotoHandler>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(milliseconds: 1500),
-            child: ProjectMediaListMobile(project: widget.project)));
+            child: ProjectMediaTimeline(
+              project: widget.project,
+              projectBloc: widget.projectBloc,
+              organizationBloc: widget.organizationBloc,
+              prefsOGx: widget.prefsOGx,
+              cacheManager: widget.cacheManager,
+              dataApiDog: widget.dataApiDog,
+            )));
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScreenTypeLayout(
-      mobile: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(Icons.arrow_back_ios)),
-            title: Text(
-              '${widget.project.name}',
-              style: myTextStyleSmall(context),
-            ),
-            actions: [
-              IconButton(
-                  onPressed: _navigateToList,
-                  icon: Icon(
-                    Icons.list,
-                    color: Theme.of(context).primaryColor,
-                  )),
-            ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.arrow_back_ios)),
+          title: Text(
+            '${widget.project.name}',
+            style: myTextStyleSmall(context),
           ),
-          body: Stack(
-            children: [
-              finalFile == null
-                  ? Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage('assets/intro/pic2.jpg'),
-                            opacity: 0.1,
-                            fit: BoxFit.cover),
-                      ),
-                    )
-                  : Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: FileImage(finalFile!), fit: BoxFit.cover),
-                      ),
-                    ),
-              Positioned(
-                left: 12,
-                right: 12,
-                bottom: 20,
-                child: SizedBox(
-                  width: 240,
-                  height: 80,
-                  child: Card(
-                    elevation: 4,
-                    color: Colors.black38,
-                    shape: getRoundedBorder(radius: 16),
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        TextButton(
-                            onPressed: _startNextPhoto,
-                            child:  Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Text(takePicture == null?'Take Picture':takePicture!),
-                            )),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          actions: [
+            IconButton(
+                onPressed: _navigateTimeline,
+                icon: Icon(
+                  Icons.list,
+                  color: Theme.of(context).primaryColor,
+                )),
+          ],
         ),
-      ),
-      tablet: Stack(
-        children: [
-          finalFile == null
-              ? Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('assets/intro/pic2.jpg'),
-                        opacity: 0.1,
-                        fit: BoxFit.cover),
-                  ),
-                )
-              : Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: FileImage(finalFile!), fit: BoxFit.cover),
-                  ),
-                ),
-          Positioned(
-            left: 12,
-            right: 12,
-            bottom: 20,
-            child: SizedBox(
-              width: 240,
-              height: 80,
-              child: Card(
-                elevation: 4,
-                color: Colors.black38,
-                shape: getRoundedBorder(radius: 16),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 8,
+        body: Stack(
+          children: [
+            finalFile == null
+                ? Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('assets/intro/pic2.jpg'),
+                          opacity: 0.1,
+                          fit: BoxFit.cover),
                     ),
-                    TextButton(
-                        onPressed: _startNextPhoto,
-                        child: const Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: Text('Take Picture'),
-                        )),
-                  ],
+                  )
+                : Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: FileImage(finalFile!), fit: BoxFit.cover),
+                    ),
+                  ),
+            Positioned(
+              left: 12,
+              right: 12,
+              bottom: 20,
+              child: SizedBox(
+                width: 240,
+                height: 80,
+                child: Card(
+                  elevation: 4,
+                  color: Colors.black38,
+                  shape: getRoundedBorder(radius: 16),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      TextButton(
+                          onPressed: _startNextPhoto,
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(takePicture == null
+                                ? 'Take Picture'
+                                : takePicture!),
+                          )),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-
-  @override
-  onVideoReady(Video video) {}
-
-  @override
-  onAudioReady(Audio audio) {}
 }

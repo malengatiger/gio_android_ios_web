@@ -39,7 +39,7 @@ class TranslationHandler {
     if (value == null) {
       return 'UNAVAILABLE KEY: $key';
     }
-    pp('$mm translate $key using locale: 🌎$locale result: $value 🌎');
+    // pp('$mm translate $key using locale: 🌎$locale result: $value 🌎');
     return value;
   }
 

@@ -26,58 +26,60 @@ class ActivityHeader extends StatelessWidget {
     if (ori.name == 'landscape') {
       width = 200;
     }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        TextButton(
-          onPressed: () {
-            onRefreshRequested();
-          },
-          child: Row(
-            children: [
-              Text(
-                prefix,
-                style: myTextStyleSmall(context),
-              ),
-              const SizedBox(
-                width: 4,
-              ),
-              Text(
-                '$hours',
-                style: myTextStyleSmallBoldPrimaryColor(context),
-              ),
-              const SizedBox(
-                width: 4,
-              ),
-              Text(
-                suffix,
-                style: myTextStyleSmall(context),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(
-          width: 4,
-        ),
-        GestureDetector(
-          onTap: () {
-            onSortRequested();
-          },
-          child: bd.Badge(
-            badgeContent: Text(
-              '$number',
-              style: myTextStyleTiny(context),
+    return SizedBox(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          TextButton(
+            onPressed: () {
+              onRefreshRequested();
+            },
+            child: Row(
+              children: [
+                Text(
+                  prefix,
+                  style: myTextStyleSmall(context),
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                Text(
+                  '$hours',
+                  style: myTextStyleSmallBoldPrimaryColor(context),
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                Text(
+                  suffix,
+                  style: myTextStyleSmall(context),
+                ),
+              ],
             ),
-            badgeAnimation: const bd.BadgeAnimation.slide(
-                colorChangeAnimationDuration: Duration(milliseconds: 500)),
-            badgeStyle: bd.BadgeStyle(
-                elevation: 8,
-                borderRadius: BorderRadius.circular(2),
-                badgeColor: getRandomColor(),
-                padding: const EdgeInsets.all(12.0)),
           ),
-        ),
-      ],
+          const SizedBox(
+            width: 4,
+          ),
+          // GestureDetector(
+          //   onTap: () {
+          //     onSortRequested();
+          //   },
+          //   child: bd.Badge(
+          //     badgeContent: Text(
+          //       '$number',
+          //       style: myTextStyleTiny(context),
+          //     ),
+          //     badgeAnimation: const bd.BadgeAnimation.slide(
+          //         colorChangeAnimationDuration: Duration(milliseconds: 500)),
+          //     badgeStyle: bd.BadgeStyle(
+          //         elevation: 8,
+          //         borderRadius: BorderRadius.circular(2),
+          //         badgeColor: getRandomColor(),
+          //         padding: const EdgeInsets.all(12.0)),
+          //   ),
+          // ),
+        ],
+      ),
     );
   }
 }

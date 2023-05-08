@@ -16,7 +16,7 @@ import '../../library/data/settings_model.dart';
 import '../../library/data/user.dart';
 import '../../library/functions.dart';
 import '../../library/generic_functions.dart';
-import '../../library/ui/media/list/project_videos_page.dart';
+import '../../library/ui/loading_card.dart';
 import 'activity_stream_card.dart';
 
 class ActivityListCard extends StatefulWidget {
@@ -118,16 +118,16 @@ class _ActivityListCardState extends State<ActivityListCard> {
         final activityUser = await cacheManager.getUserById(activity.userId!);
         if (activityUser != null) {
           final translatedUserType =
-          await getTranslatedUserType(activityUser.userType!);
+              await getTranslatedUserType(activityUser.userType!);
           activity.translatedUserType = translatedUserType;
-          pp('🍎 translated userType:, translatedUserType: $translatedUserType');
+          // pp('🍎 translated userType:, translatedUserType: $translatedUserType');
         } else {
           pp('🍎 activityUser not found in cache; activity: ${activity.toJson()}');
           activity.translatedUserType = '';
         }
-      } else if (activity.user != null){
+      } else if (activity.user != null) {
         final translatedUserType =
-        await getTranslatedUserType(activity.user!.userType!);
+            await getTranslatedUserType(activity.user!.userType!);
         activity.translatedUserType = translatedUserType;
       } else {
         activity.translatedUserType = 'User type unknown';
@@ -206,7 +206,7 @@ class _ActivityListCardState extends State<ActivityListCard> {
 
   @override
   Widget build(BuildContext context) {
-    pp('$mm build: ......... 🍎🍎 activities: ${models.length}');
+    // pp('$mm build: ......... 🍎🍎 activities: ${models.length}');
     return Stack(
       children: [
         Column(
@@ -235,7 +235,9 @@ class _ActivityListCardState extends State<ActivityListCard> {
                         activityModel: act,
                         frontPadding: 24,
                         thinMode: true,
-                        width: 300, avatarRadius: 16, namePictureHorizontal: true,
+                        width: 300,
+                        avatarRadius: 16,
+                        namePictureHorizontal: true,
                       ),
                     );
                   }),
@@ -270,7 +272,7 @@ class _ActivityListCardState extends State<ActivityListCard> {
                 child: activityStrings == null
                     ? const SizedBox()
                     : LoadingCard(
-                        loadingActivities: activityStrings!.loadingActivities!))
+                        loadingData: activityStrings!.loadingActivities!))
             : const SizedBox()
       ],
     );

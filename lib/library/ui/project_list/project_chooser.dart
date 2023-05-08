@@ -1,9 +1,11 @@
 import 'package:animations/animations.dart';
 import 'package:badges/badges.dart' as bd;
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
 
 import '../../api/data_api.dart';
 import '../../api/prefs_og.dart';
+import '../../bloc/organization_bloc.dart';
 import '../../cache_manager.dart';
 import '../../data/project.dart';
 import '../../functions.dart';
@@ -57,7 +59,8 @@ class ProjectChooserState extends State<ProjectChooser>
     projects = await cacheManager.getOrganizationProjects();
     if (projects.isEmpty) {
       var user = await prefsOGx.getUser();
-      projects = await DataAPI.getOrganizationProjects(user!.organizationId!);
+      projects =
+          await dataApiDog.getOrganizationProjects(user!.organizationId!);
     }
     projects.sort((a, b) => b.created!.compareTo(a.created!));
 
@@ -189,5 +192,43 @@ class ProjectChooserState extends State<ProjectChooser>
               )
             ],
           );
+  }
+}
+
+class ProjectDropDown extends StatelessWidget {
+  const ProjectDropDown(
+      {Key? key,
+      required this.onSelected,
+      required this.title,
+      required this.height,
+      required this.width,
+      required this.projects,
+      required this.sortByDate,
+      this.padding})
+      : super(key: key);
+  final Function(Project) onSelected;
+  final String title;
+  final double height;
+  final double width;
+  final List<Project> projects;
+  final bool sortByDate;
+  final double? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    var items = <DropdownMenuItem<Project>>[];
+    if (sortByDate) {
+      projects.sort((a, b) => b.created!.compareTo(a.created!));
+    } else {
+      projects.sort((a, b) => a.name!.compareTo(b.name!));
+    }
+    return Padding(
+      padding: EdgeInsets.all(padding ?? 8.0),
+      child: DropdownButton(items: items, onChanged: onChanged),
+    );
+  }
+
+  void onChanged(value) {
+    onSelected(value);
   }
 }

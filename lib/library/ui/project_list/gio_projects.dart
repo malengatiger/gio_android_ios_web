@@ -1,21 +1,22 @@
 import 'dart:async';
 
-import 'package:animations/animations.dart';
 import 'package:badges/badges.dart' as bd;
 import 'package:flutter/material.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:geo_monitor/library/ui/maps/project_map_mobile.dart';
+import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
 import 'package:geo_monitor/library/ui/project_list/project_list_card.dart';
+import 'package:geo_monitor/ui/activity/geo_activity.dart';
 import 'package:geo_monitor/ui/dashboard/project_dashboard_mobile.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../../l10n/translation_handler.dart';
 import '../../../ui/audio/audio_recorder.dart';
+import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
-import '../../bloc/admin_bloc.dart';
 import '../../bloc/fcm_bloc.dart';
 import '../../bloc/geo_exception.dart';
 import '../../bloc/organization_bloc.dart';
@@ -33,9 +34,7 @@ import '../../generic_functions.dart';
 import '../maps/org_map_mobile.dart';
 import '../maps/project_map_main.dart';
 import '../maps/project_polygon_map_mobile.dart';
-import '../media/list/project_media_main.dart';
 import '../project_edit/project_edit_main.dart';
-import '../project_monitor/project_monitor_mobile.dart';
 import '../schedule/project_schedules_mobile.dart';
 
 const goToMedia = 1;
@@ -43,15 +42,32 @@ const goToMap = 2;
 const stayOnList = 3;
 const goToSchedule = 4;
 
-class ProjectListMobile extends StatefulWidget {
-  const ProjectListMobile({super.key, this.project, required this.instruction});
+class GioProjects extends StatefulWidget {
+  const GioProjects(
+      {Key? key,
+      this.project,
+      required this.instruction,
+      required this.projectBloc,
+      required this.prefsOGx,
+      required this.organizationBloc,
+      required this.cacheManager,
+      required this.dataApiDog,
+      required this.fcmBloc})
+      : super(key: key);
   final Project? project;
   final int instruction;
+  final ProjectBloc projectBloc;
+  final PrefsOGx prefsOGx;
+  final OrganizationBloc organizationBloc;
+  final CacheManager cacheManager;
+  final DataApiDog dataApiDog;
+  final FCMBloc fcmBloc;
+
   @override
-  ProjectListMobileState createState() => ProjectListMobileState();
+  State<GioProjects> createState() => _GioProjectsState();
 }
 
-class ProjectListMobileState extends State<ProjectListMobile>
+class _GioProjectsState extends State<GioProjects>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   var projects = <Project>[];
@@ -59,14 +75,15 @@ class ProjectListMobileState extends State<ProjectListMobile>
   bool isBusy = false;
   bool isProjectsByLocation = false;
   var userTypeLabel = 'Unknown User Type';
-  final mm = '🔵🔵🔵🔵 ProjectListMobile:  ';
+  final mm = '🔵🔵🔵🔵 GioProjects:  ';
   late StreamSubscription<String> killSubscription;
   late StreamSubscription<SettingsModel> settingsSubscriptionFCM;
 
   int numberOfDays = 30;
   bool sortedByName = true;
   bool openProjectActions = false;
-  String? organizationProjects, projectsNotFound, refreshData;
+  String? organizationProjects, projectsNotFound,
+      searchProjects, refreshData, search, projectsText;
 
   @override
   void initState() {
@@ -82,26 +99,33 @@ class ProjectListMobileState extends State<ProjectListMobile>
   }
 
   Future _setTexts() async {
-    var sett = await prefsOGx.getSettings();
+    var sett = await widget.prefsOGx.getSettings();
     organizationProjects =
         await translator.translate('organizationProjects', sett.locale!);
-    projectsNotFound = await translator.translate('projectsNotFound', sett.locale!);
+    projectsNotFound =
+        await translator.translate('projectsNotFound', sett.locale!);
     refreshData = await translator.translate('refreshData', sett.locale!);
+    search = await translator.translate('search', sett.locale!);
+    projectsText = await translator.translate('projects', sett.locale!);
+    searchProjects = await translator.translate('searchProjects', sett.locale!);
+
+
   }
 
   void _listen() {
-    settingsSubscriptionFCM = fcmBloc.settingsStream.listen((event) async {
+    settingsSubscriptionFCM =
+        widget.fcmBloc.settingsStream.listen((event) async {
       if (mounted) {
         await _setTexts();
         _getData(false);
       }
     });
-    fcmBloc.projectStream.listen((Project project) {
+    widget.fcmBloc.projectStream.listen((Project project) {
       if (mounted) {
         _getData(false);
       }
     });
-    adminBloc.projectStream.listen((List<Project> list) {
+    widget.projectBloc.projectStream.listen((List<Project> list) {
       projects = list;
       projects.sort((a, b) => a.name!.compareTo(b.name!));
 
@@ -139,8 +163,8 @@ class ProjectListMobileState extends State<ProjectListMobile>
     setState(() {
       isBusy = true;
     });
-    user = await prefsOGx.getUser();
-    var settings = await prefsOGx.getSettings();
+    user = await widget.prefsOGx.getUser();
+    var settings = await widget.prefsOGx.getSettings();
     numberOfDays = settings.numberOfDays!;
     if (user != null) {
       pp('$mm user found: ${user!.name!}');
@@ -183,6 +207,47 @@ class ProjectListMobileState extends State<ProjectListMobile>
     });
   }
 
+  var projectsToDisplay =  <Project> [];
+
+  void _runFilter(String text) {
+    pp('$mm .... _runFilter: text: $text ......');
+    if (text.isEmpty) {
+      pp('$mm .... text is empty ......');
+      projectsToDisplay.clear();
+      for (var project in projects) {
+        projectsToDisplay.add(project);
+      }
+      setState(() {
+      });
+      return;
+    }
+    projectsToDisplay.clear();
+
+    pp('$mm ...  filtering projects that contain: $text from ${projectNames.length} projects');
+    for (var name in projectNames) {
+      if (name.toLowerCase().contains(text.toLowerCase())) {
+        var proj = _findProject(name);
+        if (proj != null) {
+        projectsToDisplay.add(proj);
+        }
+      }
+    }
+    pp('$mm .... set state with projectsToDisplay: ${projectsToDisplay.length} ......');
+    setState(() {
+
+    });
+
+  }
+  Project? _findProject(String name) {
+    pp('$mm ... find project by name $name from ${projects.length}');
+    for (var project in projects) {
+      if (project.name!.toLowerCase() == name.toLowerCase()) {
+        return project;
+      }
+    }
+    return null;
+  }
+
   @override
   void dispose() {
     _animationController.dispose();
@@ -197,16 +262,18 @@ class ProjectListMobileState extends State<ProjectListMobile>
       });
     }
     try {
-      if (isProjectsByLocation) {
-        pp('$mm  🥏 🥏 🥏 getProjectsWithinRadius: $sliderValue km  🥏');
-        projects = await projectBloc.getProjectsWithinRadius(
-            radiusInKM: sliderValue, checkUserOrg: true);
-      } else {
-        pp('$mm  🥏 🥏 🥏 getOrganizationProjects, orgId: ${user!.organizationId} k 🥏');
-        projects = await organizationBloc.getOrganizationProjects(
-            organizationId: user!.organizationId!, forceRefresh: forceRefresh);
-      }
+      pp('$mm  🥏 🥏 🥏 getOrganizationProjects, orgId: ${user!.organizationId} k 🥏');
+      projects = await widget.organizationBloc.getOrganizationProjects(
+          organizationId: user!.organizationId!, forceRefresh: forceRefresh);
+
       projects.sort((a, b) => a.name!.compareTo(b.name!));
+      for (var p in projects) {
+        projectNames.add(p.name!);
+      }
+      projectsToDisplay.clear();
+      for (var project in projects) {
+        projectsToDisplay.add(project);
+      }
     } catch (e) {
       pp(e);
       if (mounted) {
@@ -214,14 +281,13 @@ class ProjectListMobileState extends State<ProjectListMobile>
           busy = false;
         });
         if (e is GeoException) {
-          var sett = await prefsOGx.getSettings();
+          var sett = await widget.prefsOGx.getSettings();
           errorHandler.handleError(exception: e);
-          final msg = await translator.translate(e.geTranslationKey(), sett.locale!);
+          final msg =
+              await translator.translate(e.geTranslationKey(), sett.locale!);
           if (mounted) {
             showToast(
-                backgroundColor: Theme
-                    .of(context)
-                    .primaryColor,
+                backgroundColor: Theme.of(context).primaryColor,
                 textStyle: myTextStyleMedium(context),
                 padding: 16,
                 duration: const Duration(seconds: 10),
@@ -267,7 +333,6 @@ class ProjectListMobileState extends State<ProjectListMobile>
             )));
   }
 
-
   void _navigateToProjectMedia(Project p) {
     pp('$mm _navigateToProjectMedia with project: 🔆🔆🔆${p.toJson()}🔆🔆🔆');
     Navigator.push(
@@ -276,7 +341,14 @@ class ProjectListMobileState extends State<ProjectListMobile>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(milliseconds: 1000),
-            child: ProjectMediaMain(project: p)));
+            child: ProjectMediaTimeline(
+              project: p,
+              projectBloc: widget.projectBloc,
+              organizationBloc: widget.organizationBloc,
+              prefsOGx: widget.prefsOGx,
+              cacheManager: widget.cacheManager,
+              dataApiDog: widget.dataApiDog,
+            )));
   }
 
   void _navigateToProjectSchedules(Project p) {
@@ -369,6 +441,11 @@ class ProjectListMobileState extends State<ProjectListMobile>
               duration: const Duration(milliseconds: 1000),
               child: ProjectDashboardMobile(
                 project: p,
+                projectBloc: widget.projectBloc,
+                organizationBloc: widget.organizationBloc,
+                prefsOGx: widget.prefsOGx,
+                dataApiDog: widget.dataApiDog,
+                cacheManager: widget.cacheManager,
               )));
     }
   }
@@ -512,20 +589,7 @@ class ProjectListMobileState extends State<ProjectListMobile>
             _navigateToProjectAudio(project);
           }),
     );
-    // menuItems.add(
-    //   FocusedMenuItem(
-    //       backgroundColor: Theme.of(context).primaryColor,
-    //
-    //       title: Text('Start Monitoring',
-    //           style: myTextStyleSmallBlack(context)),
-    //       trailingIcon: Icon(
-    //         Icons.lock_clock,
-    //         color: Theme.of(context).primaryColor,
-    //       ),
-    //       onPressed: () {
-    //         _navigateToMonitorStart(project);
-    //       }),
-    // );
+
     if (user!.userType == UserType.orgAdministrator) {
       menuItems.add(FocusedMenuItem(
           backgroundColor: Theme.of(context).primaryColor,
@@ -632,217 +696,246 @@ class ProjectListMobileState extends State<ProjectListMobile>
     return list;
   }
 
+  final projectNames = <String>[];
+  int _getIndex(String value) {
+    int index = 0;
+    for (var element in projectNames) {
+      if (value == element) {
+        break;
+      }
+      index++;
+    }
+    return index;
+  }
+
+  static String _displayStringForOption(Project project) => project.name!;
+  final TextEditingController _textEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final type = getThisDeviceType();
+    var searchWidth = 400.0;
+    if (type == 'phone') {
+      searchWidth = 300.0;
+    }
+
     return SafeArea(
         child: Scaffold(
-            key: _key,
-            appBar: AppBar(
-              actions: _getActions(),
-              bottom: PreferredSize(
-                preferredSize:
-                    Size.fromHeight(isProjectsByLocation ? 180 : 120),
-                child: Column(
+      appBar: AppBar(
+        title: Text(projectsText == null?
+          'Projects':projectsText!,
+          style: myTextStyleLarge(context),
+        ),
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(100),
+            child: Column(
+              children: [
+                Row(
                   children: [
-                    Text(
-                        user == null ? 'Unknown User' : user!.organizationName!,
-                        style: myTextStyleLargerPrimaryColor(context)),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    Text(
-                      organizationProjects == null
-                          ? 'Organization Projects'
-                          : organizationProjects!,
-                      style: myTextStyleMedium(context),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        isProjectsByLocation
-                            ? Row(
-                                children: [
-                                  SliderTheme(
-                                    data: SliderTheme.of(context).copyWith(
-                                      activeTrackColor:
-                                          Theme.of(context).primaryColor,
-                                      inactiveTrackColor: Colors.pink[100],
-                                      trackShape:
-                                          const RoundedRectSliderTrackShape(),
-                                      trackHeight: 2.0,
-                                      thumbShape: const RoundSliderThumbShape(
-                                          enabledThumbRadius: 12.0),
-                                      thumbColor: Colors.pinkAccent,
-                                      overlayColor: Colors.pink.withAlpha(32),
-                                      overlayShape:
-                                          const RoundSliderOverlayShape(
-                                              overlayRadius: 28.0),
-                                      tickMarkShape:
-                                          const RoundSliderTickMarkShape(),
-                                      activeTickMarkColor: Colors.indigo[700],
-                                      inactiveTickMarkColor: Colors.pink[100],
-                                      valueIndicatorShape:
-                                          const PaddleSliderValueIndicatorShape(),
-                                      valueIndicatorColor: Colors.pinkAccent,
-                                      valueIndicatorTextStyle:
-                                          myTextStyleSmall(context),
-                                    ),
-                                    child: Slider(
-                                      value: sliderValue,
-                                      min: 3,
-                                      max: 50,
-                                      divisions: 5,
-                                      label: '$sliderValue',
-                                      onChanged: _onSliderChanged,
-                                    ),
-                                  ),
-                                  Text(
-                                    '$sliderValue',
-                                    style: myNumberStyleMedium(context),
-                                  )
-                                ],
-                              )
-                            : Container(),
-                        const SizedBox(
-                          width: 24,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            // backgroundColor: Colors.brown[100],
-            body: isBusy
-                ? Center(
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 100,
-                        ),
-                        const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 4,
-                            backgroundColor: Colors.pink,
+                    SizedBox(
+                      width: searchWidth,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
+                        child: TextField(
+                          controller: _textEditingController,
+                          onChanged: (text) {
+                            pp(' ........... changing to: $text');
+                            _runFilter(text);
+                          },
+                          decoration: InputDecoration(
+                            label: Text(search == null? 'Search': search!),
+                            icon: const Icon(Icons.search),
+                            border: const OutlineInputBorder(),
+                            hintText: searchProjects == null? 'Search Projects': searchProjects!,
+                            hintStyle: myTextStyleSmall(context)
                           ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          isProjectsByLocation
-                              ? 'Finding Projects within $sliderValue KM'
-                              : refreshData == null
-                                  ? 'Finding Organization Projects ...'
-                                  : refreshData!,
-                          style: myTextStyleMedium(context),
-                        ),
-                      ],
+                        )
+                      ),
                     ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: projects.isEmpty
-                        ? Center(
-                            child: Text(
-                                projectsNotFound == null
-                                    ? 'Projects Not Found'
-                                    : projectsNotFound!,
-                                style: GoogleFonts.lato(
-                                    textStyle:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                    fontWeight: FontWeight.w900)),
-                          )
-                        : Stack(
-                            children: [
-                              GestureDetector(
-                                  onTap: _sort,
-                                  child: bd.Badge(
-                                    badgeStyle: bd.BadgeStyle(
-                                      badgeColor:
-                                          Theme.of(context).primaryColor,
-                                      elevation: 8,
-                                      padding: const EdgeInsets.all(8),
-                                    ),
-                                    position: bd.BadgePosition.topEnd(
-                                        top: -8, end: -2),
-                                    badgeContent: Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: Text('${projects.length}',
-                                          style: myNumberStyleSmall(context)),
-                                    ),
-                                    child: ProjectListCard(
-                                      projects: projects,
-                                      width: width,
-                                      horizontalPadding: 12,
-                                      navigateToDetail: _navigateToDetail,
-                                      navigateToProjectLocation:
-                                          _navigateToProjectLocation,
-                                      navigateToProjectMedia:
-                                          _navigateToProjectMedia,
-                                      navigateToProjectMap:
-                                          _navigateToProjectMap,
-                                      navigateToProjectPolygonMap:
-                                          _navigateToProjectPolygonMap,
-                                      navigateToProjectDashboard:
-                                          _navigateToProjectDashboard,
-                                      user: user!,
-                                      navigateToProjectDirections:
-                                          (project) async {
-                                        var poss = await cacheManager
-                                            .getProjectPositions(
-                                                project.projectId!);
-                                        if (poss.isNotEmpty) {
-                                          _navigateToDirections(
-                                            latitude: poss
-                                                .first.position!.coordinates[1],
-                                            longitude: poss
-                                                .first.position!.coordinates[0],
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  )),
-                              _showPositionChooser
-                                  ? Positioned(
-                                      child: AnimatedBuilder(
-                                        animation: _animationController,
-                                        builder: (BuildContext context,
-                                            Widget? child) {
-                                          return FadeScaleTransition(
-                                            animation: _animationController,
-                                            child: child,
-                                          );
-                                        },
-                                        child: ProjectLocationChooser(
-                                          onSelected: _onPositionSelected,
-                                          onClose: _onClose,
-                                          projectPositions: positions,
-                                          polygons: polygons,
-                                        ),
-                                      ),
-                                    )
-                                  : const SizedBox(),
-                            ],
-                          ))));
+                    const SizedBox(
+                      height: 24,
+                    )
+                  ],
+                )
+              ],
+            )),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.refresh)),
+        ],
+      ),
+      body: ScreenTypeLayout(
+        mobile: GestureDetector(
+            onTap: _sort,
+            child: bd.Badge(
+              badgeStyle: bd.BadgeStyle(
+                badgeColor: Theme.of(context).primaryColor,
+                elevation: 8,
+                padding: const EdgeInsets.all(8),
+              ),
+              position: bd.BadgePosition.topEnd(top: -2, end: 2),
+              badgeContent: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text('${projectsToDisplay.length}',
+                    style: myNumberStyleSmall(context)),
+              ),
+              child: user == null? const SizedBox(): ProjectListCard(
+                projects: projectsToDisplay,
+                width: width,
+                horizontalPadding: 12,
+                navigateToDetail: _navigateToDetail,
+                navigateToProjectLocation: _navigateToProjectLocation,
+                navigateToProjectMedia: _navigateToProjectMedia,
+                navigateToProjectMap: _navigateToProjectMap,
+                navigateToProjectPolygonMap: _navigateToProjectPolygonMap,
+                navigateToProjectDashboard: _navigateToProjectDashboard,
+                user: user!,
+                navigateToProjectDirections: (project) async {
+                  var poss = await cacheManager
+                      .getProjectPositions(project.projectId!);
+                  if (poss.isNotEmpty) {
+                    _navigateToDirections(
+                      latitude: poss.first.position!.coordinates[1],
+                      longitude: poss.first.position!.coordinates[0],
+                    );
+                  }
+                },
+              ),
+            )),
+        tablet: OrientationLayoutBuilder(
+          portrait: (ctx) {
+            return Row(
+              children: [
+                GestureDetector(
+                    onTap: _sort,
+                    child: bd.Badge(
+                      badgeStyle: bd.BadgeStyle(
+                        badgeColor: Theme.of(context).primaryColor,
+                        elevation: 8,
+                        padding: const EdgeInsets.all(8),
+                      ),
+                      position: bd.BadgePosition.topEnd(top: -2, end: -4),
+                      badgeContent: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text('${projectsToDisplay.length}',
+                            style: myNumberStyleSmall(context)),
+                      ),
+                      child: user == null? const SizedBox(): ProjectListCard(
+                        projects: projectsToDisplay,
+                        width: (width / 2) -20,
+                        horizontalPadding: 12,
+                        navigateToDetail: _navigateToDetail,
+                        navigateToProjectLocation: _navigateToProjectLocation,
+                        navigateToProjectMedia: _navigateToProjectMedia,
+                        navigateToProjectMap: _navigateToProjectMap,
+                        navigateToProjectPolygonMap:
+                            _navigateToProjectPolygonMap,
+                        navigateToProjectDashboard: _navigateToProjectDashboard,
+                        user: user!,
+                        navigateToProjectDirections: (project) async {
+                          var poss = await cacheManager
+                              .getProjectPositions(project.projectId!);
+                          if (poss.isNotEmpty) {
+                            _navigateToDirections(
+                              latitude: poss.first.position!.coordinates[1],
+                              longitude: poss.first.position!.coordinates[0],
+                            );
+                          }
+                        },
+                      ),
+                    )),
+                GeoActivity(
+                    width: (width / 2),
+                    thinMode: true,
+                    showPhoto: (p) {},
+                    showVideo: (p) {},
+                    showAudio: (p) {},
+                    forceRefresh: true,
+                    showLocationResponse: (p) {},
+                    showLocationRequest: (p) {},
+                    showUser: (p) {},
+                    showProjectPosition: (p) {},
+                    showOrgMessage: (p) {},
+                    showGeofenceEvent: (p) {},
+                    showProjectPolygon: (p) {}),
+              ],
+            );
+          },
+          landscape: (ctx) {
+            return Row(
+              children: [
+                GestureDetector(
+                    onTap: _sort,
+                    child: bd.Badge(
+                      badgeStyle: bd.BadgeStyle(
+                        badgeColor: Theme.of(context).primaryColor,
+                        elevation: 8,
+                        padding: const EdgeInsets.all(8),
+                      ),
+                      position: bd.BadgePosition.topEnd(top: -2, end: 2),
+                      badgeContent: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text('${projectsToDisplay.length}',
+                            style: myNumberStyleSmall(context)),
+                      ),
+                      child: ProjectListCard(
+                        projects: projectsToDisplay,
+                        width: width / 2,
+                        horizontalPadding: 12,
+                        navigateToDetail: _navigateToDetail,
+                        navigateToProjectLocation: _navigateToProjectLocation,
+                        navigateToProjectMedia: _navigateToProjectMedia,
+                        navigateToProjectMap: _navigateToProjectMap,
+                        navigateToProjectPolygonMap:
+                            _navigateToProjectPolygonMap,
+                        navigateToProjectDashboard: _navigateToProjectDashboard,
+                        user: user!,
+                        navigateToProjectDirections: (project) async {
+                          var poss = await cacheManager
+                              .getProjectPositions(project.projectId!);
+                          if (poss.isNotEmpty) {
+                            _navigateToDirections(
+                              latitude: poss.first.position!.coordinates[1],
+                              longitude: poss.first.position!.coordinates[0],
+                            );
+                          }
+                        },
+                      ),
+                    )),
+                GeoActivity(
+                    width: (width / 2) - 48,
+                    thinMode: true,
+                    showPhoto: (p) {},
+                    showVideo: (p) {},
+                    showAudio: (p) {},
+                    forceRefresh: true,
+                    showLocationResponse: (p) {},
+                    showLocationRequest: (p) {},
+                    showUser: (p) {},
+                    showProjectPosition: (p) {},
+                    showOrgMessage: (p) {},
+                    showGeofenceEvent: (p) {},
+                    showProjectPolygon: (p) {}),
+              ],
+            );
+          },
+        ),
+      ),
+    ));
   }
 
-  double sliderValue = 3.0;
-  void _onSliderChanged(double value) {
-    pp('ProjectListMobile  🥏 🥏 🥏 🥏 🥏 _onSliderChanged: $value');
-    setState(() {
-      sliderValue = value;
-    });
+  Widget _fieldBuilder(BuildContext context, TextEditingController textEditingController,
+      FocusNode focusNode, VoidCallback onFieldSubmitted) {
+    return TextField(
+      controller: textEditingController,
+      focusNode: focusNode,
+      decoration:  InputDecoration(
+        hintText: 'Enter project search',
+        label:  Text(search == null?'Project Search':search!, style: myTextStyleSmall(context),),
+        icon: Icon(Icons.search, color: Theme.of(context).primaryColor,)
 
-    _getData(true);
+      ),
+    );
   }
 }
+
+

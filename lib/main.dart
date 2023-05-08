@@ -11,12 +11,12 @@ import 'package:geo_monitor/initializer.dart';
 import 'package:geo_monitor/l10n/translation_handler.dart';
 import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
+import 'package:geo_monitor/library/bloc/project_bloc.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/splash/splash_page.dart';
 import 'package:geo_monitor/ui/dashboard/dashboard_main.dart';
 import 'package:geo_monitor/ui/intro/intro_main.dart';
-import 'package:geo_monitor/utilities/sharedprefs.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:page_transition/page_transition.dart';
@@ -29,6 +29,7 @@ import 'library/bloc/fcm_bloc.dart';
 import 'library/bloc/theme_bloc.dart';
 import 'library/cache_manager.dart';
 import 'library/emojis.dart';
+import 'library/ui/loading_card.dart';
 
 int themeIndex = 0;
 var locale = const Locale('en');
@@ -81,7 +82,7 @@ void main() async {
     pp('$mx $heartBlue translation service initialization started for locale👌 ${settings!.locale!}');
   }
 
-  await initializer.initializeGeo();
+  //await initializer.initializeGeo();
   // await SystemChrome.setPreferredOrientations([
   //   DeviceOrientation.portraitUp,
   //   DeviceOrientation.portraitDown,
@@ -122,29 +123,14 @@ class GeoApp extends ConsumerWidget {
             theme: themeBloc.getTheme(themeIndex).lightTheme,
             darkTheme: themeBloc.getTheme(themeIndex).darkTheme,
             themeMode: ThemeMode.system,
-
             // home:  const ComboAudio()
             home: AnimatedSplashScreen(
-              duration: 2000,
+              duration: 5000,
               splash: const SplashWidget(),
-              animationDuration: const Duration(milliseconds: 2000),
+              animationDuration: const Duration(milliseconds: 3000),
               curve: Curves.easeInCirc,
               splashIconSize: 160.0,
-              nextScreen: fbAuthedUser == null
-                  ? IntroMain(
-                      prefsOGx: prefsOGx,
-                      dataApiDog: dataApiDog,
-                      cacheManager: cacheManager,
-                      isolateHandler: dataHandler,
-                      fcmBloc: fcmBloc,
-                      organizationBloc: organizationBloc,
-                    )
-                  : DashboardMain(
-                      isolateHandler: dataHandler,
-                      dataApiDog: dataApiDog,
-                      fcmBloc: fcmBloc,
-                      organizationBloc: organizationBloc,
-                    ),
+              nextScreen: const LandingPage(),
               splashTransition: SplashTransition.fadeTransition,
               pageTransitionType: PageTransitionType.leftToRight,
               backgroundColor: Colors.pink.shade900,
@@ -206,4 +192,55 @@ StreamSubscription<String> listenForKill({required BuildContext context}) {
   });
 
   return sub;
+}
+
+class LandingPage extends StatefulWidget {
+  const LandingPage({Key? key}) : super(key: key);
+
+  @override
+  State<LandingPage> createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
+  bool busy = false;
+  @override
+  void initState() {
+    super.initState();
+    initialize();
+  }
+
+  void initialize() async {
+    setState(() {
+      busy = true;
+    });
+    fbAuthedUser = fb.FirebaseAuth.instance.currentUser;
+    await initializer.initializeGeo();
+    setState(() {
+      busy = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return busy
+        ? const LoadingCard(loadingData: 'loadingActivities')
+        : fbAuthedUser == null
+            ? IntroMain(
+                prefsOGx: prefsOGx,
+                dataApiDog: dataApiDog,
+                cacheManager: cacheManager,
+                isolateHandler: dataHandler,
+                fcmBloc: fcmBloc,
+                organizationBloc: organizationBloc,
+                projectBloc: projectBloc,
+              )
+            : DashboardMain(
+                isolateHandler: dataHandler,
+                dataApiDog: dataApiDog,
+                fcmBloc: fcmBloc,
+                projectBloc: projectBloc,
+                prefsOGx: prefsOGx,
+                organizationBloc: organizationBloc, cacheManager: cacheManager,
+              );
+  }
 }

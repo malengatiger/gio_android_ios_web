@@ -16,6 +16,7 @@ import '../../library/api/prefs_og.dart';
 import '../../library/bloc/fcm_bloc.dart';
 import '../../library/bloc/isolate_handler.dart';
 import '../../library/bloc/organization_bloc.dart';
+import '../../library/bloc/project_bloc.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/user.dart' as ur;
 import '../../library/emojis.dart';
@@ -25,7 +26,14 @@ import '../intro/intro_page_one.dart';
 
 class IntroPageViewerPortrait extends StatefulWidget {
   const IntroPageViewerPortrait({
-    Key? key, required this.prefsOGx, required this.dataApiDog, required this.cacheManager, required this.isolateHandler, required this.fcmBloc, required this.organizationBloc,
+    Key? key,
+    required this.prefsOGx,
+    required this.dataApiDog,
+    required this.cacheManager,
+    required this.isolateHandler,
+    required this.fcmBloc,
+    required this.organizationBloc,
+    required this.projectBloc,
   }) : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
@@ -33,7 +41,7 @@ class IntroPageViewerPortrait extends StatefulWidget {
   final IsolateDataHandler isolateHandler;
   final FCMBloc fcmBloc;
   final OrganizationBloc organizationBloc;
-
+  final ProjectBloc projectBloc;
 
   @override
   IntroPageViewerPortraitState createState() => IntroPageViewerPortraitState();
@@ -47,7 +55,6 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
   fb.FirebaseAuth firebaseAuth = fb.FirebaseAuth.instance;
   ur.User? user;
   String? signInFailed;
-
 
   final mm =
       '${E.pear}${E.pear}${E.pear}${E.pear} IntroPageViewerPortrait: ${E.pear} ';
@@ -65,11 +72,12 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
 
   Future _setTexts({String? selectedLocale}) async {
     settingsModel = await prefsOGx.getSettings();
-      settingsModel = getBaseSettings();
-      await prefsOGx.saveSettings(settingsModel!);
+    settingsModel = getBaseSettings();
+    await prefsOGx.saveSettings(settingsModel!);
 
     introStrings = await IntroStrings.getTranslated();
-    signInFailed = await translator.translate('signInFailed', settingsModel!.locale!);
+    signInFailed =
+        await translator.translate('signInFailed', settingsModel!.locale!);
     setState(() {});
   }
 
@@ -108,14 +116,19 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
               duration: const Duration(seconds: 2),
-              child:  DashboardKhaya(
+              child: DashboardKhaya(
                 dataApiDog: widget.dataApiDog,
-                isolateHandler: widget.isolateHandler, fcmBloc: widget.fcmBloc, organizationBloc: widget.organizationBloc,)));
+                isolateHandler: widget.isolateHandler,
+                fcmBloc: widget.fcmBloc,
+                organizationBloc: widget.organizationBloc,
+                projectBloc: widget.projectBloc,
+                prefsOGx: widget.prefsOGx,
+                cacheManager: widget.cacheManager,
+              )));
     } else {
       pp('User is null,  🔆 🔆 🔆 🔆 cannot navigate to Dashboard');
     }
   }
-
 
   Future<void> _navigateToSignIn() async {
     pp('$mm _navigateToSignIn ....... ');
@@ -126,8 +139,10 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child:  AuthSignIn(
-              prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager,
+            child: AuthSignIn(
+              prefsOGx: prefsOGx,
+              dataApiDog: dataApiDog,
+              cacheManager: cacheManager,
             )));
 
     pp('$mm _navigateToSignIn ....... back from PhoneLogin with maybe a user ..');
@@ -144,7 +159,8 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
           '${E.redDot}${E.redDot} NOT GOOD! ${E.redDot}');
       if (mounted) {
         showToast(
-            message: signInFailed == null?'Phone Sign In Failed':signInFailed!,
+            message:
+                signInFailed == null ? 'Phone Sign In Failed' : signInFailed!,
             duration: const Duration(seconds: 5),
             backgroundColor: Theme.of(context).primaryColor,
             padding: 12.0,
@@ -161,8 +177,10 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child:  AuthRegistrationMain(
-              prefsOGx: prefsOGx, dataApiDog: dataApiDog, cacheManager: cacheManager,
+            child: AuthRegistrationMain(
+              prefsOGx: prefsOGx,
+              dataApiDog: dataApiDog,
+              cacheManager: cacheManager,
             )));
 
     if (result is ur.User) {
@@ -230,7 +248,9 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
                   children: [
                     LocaleChooser(
                         onSelected: onLanguageSelected,
-                        hint: introStrings == null ? 'Select Language' : introStrings!.hint),
+                        hint: introStrings == null
+                            ? 'Select Language'
+                            : introStrings!.hint),
                   ],
                 )
               : Card(
@@ -243,8 +263,10 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
-                              onPressed: onSignIn, child:  Text(introStrings == null?
-                              'Sign In': introStrings!.signIn)),
+                              onPressed: onSignIn,
+                              child: Text(introStrings == null
+                                  ? 'Sign In'
+                                  : introStrings!.signIn)),
                           TextButton(
                               onPressed: onRegistration,
                               child: Text(introStrings == null
@@ -252,12 +274,14 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
                                   : introStrings!.registerOrganization)),
                         ],
                       ),
-                      Row(mainAxisAlignment: MainAxisAlignment.end,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           LocaleChooser(
                               onSelected: onLanguageSelected,
-                              hint: introStrings == null ? 'Select Language' : introStrings!.hint),
-
+                              hint: introStrings == null
+                                  ? 'Select Language'
+                                  : introStrings!.hint),
                         ],
                       )
                     ],
@@ -274,27 +298,37 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
               IntroPage(
                 title: 'Geo',
                 assetPath: 'assets/intro/pic2.jpg',
-                text: introStrings == null ? lorem : introStrings!.infrastructure,
+                text:
+                    introStrings == null ? lorem : introStrings!.infrastructure,
               ),
               IntroPage(
-                title: introStrings == null ? 'Organizations' : introStrings!.organizations,
+                title: introStrings == null
+                    ? 'Organizations'
+                    : introStrings!.organizations,
                 assetPath: 'assets/intro/pic5.jpg',
                 text: introStrings == null ? lorem : introStrings!.youth,
               ),
               IntroPage(
-                title: introStrings == null ? 'People' : introStrings!.managementPeople,
+                title: introStrings == null
+                    ? 'People'
+                    : introStrings!.managementPeople,
                 assetPath: 'assets/intro/pic1.jpg',
                 text: introStrings == null ? lorem : introStrings!.community,
               ),
               IntroPage(
-                title: introStrings == null ? 'Field Monitors' : introStrings!.fieldWorkers,
+                title: introStrings == null
+                    ? 'Field Monitors'
+                    : introStrings!.fieldWorkers,
                 assetPath: 'assets/intro/pic5.jpg',
                 text: lorem,
               ),
               IntroPage(
-                title: introStrings == null ? 'Thank You' : introStrings!.thankYou,
+                title:
+                    introStrings == null ? 'Thank You' : introStrings!.thankYou,
                 assetPath: 'assets/intro/pic3.webp',
-                text: introStrings == null ? lorem : introStrings!.thankYouMessage,
+                text: introStrings == null
+                    ? lorem
+                    : introStrings!.thankYouMessage,
               ),
             ],
           ),
@@ -348,7 +382,9 @@ class IntroStrings {
       infrastructure,
       govt,
       youth,
-      hint, signIn, signInFailed,
+      hint,
+      signIn,
+      signInFailed,
       community,
       registerOrganization;
 
@@ -364,14 +400,14 @@ class IntroStrings {
       required this.govt,
       required this.youth,
       required this.hint,
-        required this.signIn,
+      required this.signIn,
       required this.community,
-
       required this.registerOrganization});
 
   static Future<IntroStrings> getTranslated() async {
     var settingsModel = await prefsOGx.getSettings();
-    var hint = await translator.translate('selectLanguage', settingsModel!.locale!);
+    var hint =
+        await translator.translate('selectLanguage', settingsModel!.locale!);
 
     var signIn = await translator.translate('signIn', settingsModel.locale!);
     var organizations =
@@ -380,9 +416,12 @@ class IntroStrings {
         await translator.translate('managementPeople', settingsModel.locale!);
     var fieldWorkers =
         await translator.translate('fieldWorkers', settingsModel.locale!);
-    var executives = await translator.translate('executives', settingsModel.locale!);
-    var information = await translator.translate('information', settingsModel.locale!);
-    var thankYou = await translator.translate('thankYou', settingsModel.locale!);
+    var executives =
+        await translator.translate('executives', settingsModel.locale!);
+    var information =
+        await translator.translate('information', settingsModel.locale!);
+    var thankYou =
+        await translator.translate('thankYou', settingsModel.locale!);
     var thankYouMessage =
         await translator.translate('thankYouMessage', settingsModel.locale!);
 
@@ -390,9 +429,10 @@ class IntroStrings {
         await translator.translate('infrastructure', settingsModel.locale!);
     var govt = await translator.translate('govt', settingsModel.locale!);
     var youth = await translator.translate('youth', settingsModel.locale!);
-    var community = await translator.translate('community', settingsModel.locale!);
-    var registerOrganization =
-        await translator.translate('registerOrganization', settingsModel.locale!);
+    var community =
+        await translator.translate('community', settingsModel.locale!);
+    var registerOrganization = await translator.translate(
+        'registerOrganization', settingsModel.locale!);
 
     final m = IntroStrings(
         organizations: organizations,

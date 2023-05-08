@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:geo_monitor/library/ui/media/time_line/user_media_timeline.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/organization_bloc.dart';
+import '../../library/bloc/project_bloc.dart';
 import '../../library/bloc/user_bloc.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/field_monitor_schedule.dart';
@@ -12,10 +15,12 @@ import '../../library/data/user.dart';
 import '../../library/functions.dart';
 import '../../library/generic_functions.dart';
 import '../../library/ui/maps/project_map_mobile.dart';
-import '../../library/ui/media/user_media_list/user_media_list_mobile.dart';
 
 class SchedulesListMobile extends StatefulWidget {
-  const SchedulesListMobile({super.key});
+  const SchedulesListMobile({super.key, required this.projectBloc, required this.prefsOGx, required this.organizationBloc});
+  final ProjectBloc projectBloc;
+  final PrefsOGx prefsOGx;
+  final OrganizationBloc organizationBloc;
 
   @override
   SchedulesListMobileState createState() => SchedulesListMobileState();
@@ -67,7 +72,12 @@ class SchedulesListMobileState extends State<SchedulesListMobile>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child: UserMediaListMobile(user: _user!)));
+            child: UserMediaTimeline(
+              projectBloc: projectBloc,
+              organizationBloc: organizationBloc,
+              prefsOGx: prefsOGx,
+
+            )));
   }
 
   void _getData(bool refresh) async {

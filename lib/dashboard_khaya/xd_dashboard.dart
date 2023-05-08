@@ -20,11 +20,11 @@ import 'package:geo_monitor/library/data/user.dart';
 import 'package:geo_monitor/library/data/video.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/library/generic_functions.dart';
-import 'package:geo_monitor/library/ui/media/list/project_videos_page.dart';
-import 'package:geo_monitor/library/ui/project_list/project_list_main.dart';
+import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
+import 'package:geo_monitor/library/ui/project_list/gio_projects.dart';
 import 'package:geo_monitor/library/users/edit/user_edit_main.dart';
-import 'package:geo_monitor/library/users/list/user_list_mobile.dart';
-import 'package:geo_monitor/ui/activity/activity_list_og.dart';
+import 'package:geo_monitor/library/users/list/geo_user_list.dart';
+import 'package:geo_monitor/ui/activity/gio_activities.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -34,21 +34,35 @@ import '../l10n/translation_handler.dart';
 import '../library/api/data_api_og.dart';
 import '../library/bloc/fcm_bloc.dart';
 import '../library/bloc/isolate_handler.dart';
+import '../library/bloc/project_bloc.dart';
 import '../library/bloc/theme_bloc.dart';
+import '../library/cache_manager.dart';
 import '../library/data/data_bag.dart';
 import '../library/data/project.dart';
 import '../library/data/settings_model.dart';
+import '../library/ui/loading_card.dart';
 import '../library/ui/settings/settings_main.dart';
 import 'member_list.dart';
 
 class DashboardKhaya extends StatefulWidget {
-  const DashboardKhaya({Key? key, required this.isolateHandler, required this.dataApiDog, required this.fcmBloc, required this.organizationBloc}) : super(key: key);
+  const DashboardKhaya(
+      {Key? key,
+      required this.isolateHandler,
+      required this.dataApiDog,
+      required this.fcmBloc,
+      required this.organizationBloc,
+      required this.projectBloc,
+      required this.prefsOGx,
+      required this.cacheManager})
+      : super(key: key);
 
   final IsolateDataHandler isolateHandler;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
   final OrganizationBloc organizationBloc;
-
+  final ProjectBloc projectBloc;
+  final PrefsOGx prefsOGx;
+  final CacheManager cacheManager;
 
   @override
   State<DashboardKhaya> createState() => _DashboardKhayaState();
@@ -117,15 +131,15 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
       }
     }
   }
+
   Future<void> _handleNewSettings(SettingsModel settings) async {
     Locale newLocale = Locale(settings.locale!);
-     _setTexts();
+    _setTexts();
     final m =
-    LocaleAndTheme(themeIndex: settings.themeIndex!, locale: newLocale);
+        LocaleAndTheme(themeIndex: settings.themeIndex!, locale: newLocale);
     themeBloc.themeStreamController.sink.add(m);
     _getData(false);
   }
-
 
   void _listenForFCM() async {
     var android = UniversalPlatform.isAndroid;
@@ -134,20 +148,21 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
       pp('$mm 🍎 🍎 _listen to FCM message streams ... 🍎 🍎');
       geofenceSubscriptionFCM =
           widget.fcmBloc.geofenceStream.listen((GeofenceEvent event) async {
-            pp('$mm: 🍎geofenceSubscriptionFCM: 🍎 GeofenceEvent: '
-                'user ${event.user!.name} arrived: ${event.projectName} ');
-            _handleGeofenceEvent(event);
-          });
+        pp('$mm: 🍎geofenceSubscriptionFCM: 🍎 GeofenceEvent: '
+            'user ${event.user!.name} arrived: ${event.projectName} ');
+        _handleGeofenceEvent(event);
+      });
       projectSubscriptionFCM =
           widget.fcmBloc.projectStream.listen((Project project) async {
-            _getData(false);
-            if (mounted) {
-              pp('$mm: 🍎 🍎 project arrived: ${project.name} ... 🍎 🍎');
-              setState(() {});
-            }
-          });
+        _getData(false);
+        if (mounted) {
+          pp('$mm: 🍎 🍎 project arrived: ${project.name} ... 🍎 🍎');
+          setState(() {});
+        }
+      });
 
-      settingsSubscriptionFCM = widget.fcmBloc.settingsStream.listen((settings) async {
+      settingsSubscriptionFCM =
+          widget.fcmBloc.settingsStream.listen((settings) async {
         pp('$mm: 🍎🍎 settingsSubscriptionFCM: settings arrived with themeIndex: ${settings.themeIndex}... 🍎🍎');
         _handleNewSettings(settings);
       });
@@ -164,45 +179,45 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
         _getData(false);
       });
 
-      videoSubscriptionFCM = widget.fcmBloc.videoStream.listen((Video message) async {
+      videoSubscriptionFCM =
+          widget.fcmBloc.videoStream.listen((Video message) async {
         pp('$mm: 🍎 🍎 videoSubscriptionFCM video arrived... 🍎 🍎');
         _getData(false);
-
       });
-      audioSubscriptionFCM = widget.fcmBloc.audioStream.listen((Audio message) async {
+      audioSubscriptionFCM =
+          widget.fcmBloc.audioStream.listen((Audio message) async {
         pp('$mm: 🍎 🍎 audioSubscriptionFCM audio arrived... 🍎 🍎');
         _getData(false);
       });
-      projectPositionSubscriptionFCM =
-          widget.fcmBloc.projectPositionStream.listen((ProjectPosition message) async {
-            pp('$mm: 🍎 🍎 projectPositionSubscriptionFCM position arrived... 🍎 🍎');
-            _getData(false);
-          });
-      projectPolygonSubscriptionFCM =
-          widget.fcmBloc.projectPolygonStream.listen((ProjectPolygon message) async {
-            pp('$mm: 🍎 🍎 projectPolygonSubscriptionFCM polygon arrived... 🍎 🍎');
-            _getData(false);
-            if (mounted) {}
-          });
+      projectPositionSubscriptionFCM = widget.fcmBloc.projectPositionStream
+          .listen((ProjectPosition message) async {
+        pp('$mm: 🍎 🍎 projectPositionSubscriptionFCM position arrived... 🍎 🍎');
+        _getData(false);
+      });
+      projectPolygonSubscriptionFCM = widget.fcmBloc.projectPolygonStream
+          .listen((ProjectPolygon message) async {
+        pp('$mm: 🍎 🍎 projectPolygonSubscriptionFCM polygon arrived... 🍎 🍎');
+        _getData(false);
+        if (mounted) {}
+      });
       dataBagSubscription =
           widget.organizationBloc.dataBagStream.listen((DataBag bag) async {
-            pp('$mm: 🍎 🍎 dataBagStream bag arrived... 🍎 🍎');
-            if (bag.projects != null) {
-            projects = bag.projects!;
-            }
-            if (bag.projects != null) {
-              users = bag.users!;
-            }
-            if (mounted) {
-              setState(() {
-
-              });
-            }
-          });
+        pp('$mm: 🍎 🍎 dataBagStream bag arrived... 🍎 🍎');
+        if (bag.projects != null) {
+          projects = bag.projects!;
+        }
+        if (bag.projects != null) {
+          users = bag.users!;
+        }
+        if (mounted) {
+          setState(() {});
+        }
+      });
     } else {
       pp('App is running on the Web 👿👿👿firebase messaging is OFF 👿👿👿');
     }
   }
+
   var images = <Image>[];
 
   void _getData(bool forceRefresh) async {
@@ -236,17 +251,15 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
     });
   }
 
-  void _refresh() async {}
-
   void _setTexts() async {
     var sett = await prefsOGx.getSettings();
-    loadingDataText = await translator.translate('loadingActivities', sett.locale!);
+    loadingDataText =
+        await translator.translate('loadingActivities', sett.locale!);
     dashboardText = await translator.translate('dashboard', sett.locale!);
     eventsText = await translator.translate('events', sett.locale!);
     projectsText = await translator.translate('projects', sett.locale!);
     membersText = await translator.translate('members', sett.locale!);
-    recentEventsText =
-        await translator.translate('recentEvents', sett.locale!);
+    recentEventsText = await translator.translate('recentEvents', sett.locale!);
     setState(() {});
   }
 
@@ -261,31 +274,31 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
               type: PageTransitionType.scale,
               alignment: Alignment.center,
               duration: const Duration(seconds: 1),
-              child:  SettingsMain(isolateHandler: widget.isolateHandler, dataApiDog: widget.dataApiDog,)));
+              child: SettingsMain(
+                isolateHandler: widget.isolateHandler,
+                dataApiDog: widget.dataApiDog,
+              )));
     }
   }
 
   void _navigateToActivities() {
     pp(' 🌀🌀🌀🌀 .................. _navigateToActivities  ....');
+
     if (mounted) {
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.center,
-              duration: const Duration(seconds: 1),
-              child: ActivityListOg(
-                  onPhotoTapped: onPhotoTapped,
-                  onVideoTapped: onVideoTapped,
-                  onAudioTapped: onAudioTapped,
-                  onUserTapped: onUserTapped,
-                  onProjectTapped: onProjectTapped,
-                  onProjectPositionTapped: onProjectPositionTapped,
-                  onPolygonTapped: onPolygonTapped,
-                  onGeofenceEventTapped: onGeofenceEventTapped,
-                  onOrgMessage: onOrgMessage,
-                  onLocationResponse: onLocationResponse,
-                  onLocationRequest: onLocationRequest)));
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return GioActivities(
+            onPhotoTapped: onPhotoTapped,
+            onVideoTapped: onVideoTapped,
+            onAudioTapped: onAudioTapped,
+            onUserTapped: onUserTapped,
+            onProjectTapped: onProjectTapped,
+            onProjectPositionTapped: onProjectPositionTapped,
+            onPolygonTapped: onPolygonTapped,
+            onGeofenceEventTapped: onGeofenceEventTapped,
+            onOrgMessage: onOrgMessage,
+            onLocationResponse: onLocationResponse,
+            onLocationRequest: onLocationRequest);
+      }));
     }
   }
 
@@ -294,24 +307,28 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
     if (mounted) {
       Navigator.push(
           context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.center,
-              duration: const Duration(seconds: 1),
-              child: const ProjectListMain()));
+          MaterialPageRoute(
+            builder: (context) => GioProjects(
+              projectBloc: widget.projectBloc,
+              organizationBloc: widget.organizationBloc,
+              prefsOGx: widget.prefsOGx,
+              dataApiDog: widget.dataApiDog,
+              cacheManager: widget.cacheManager,
+              instruction: 0,
+              fcmBloc: widget.fcmBloc,
+            ),
+          ));
     }
   }
 
   void _navigateToMembers() {
-    pp(' 🌀🌀🌀🌀 .................. _navigateToSettings to Settings ....');
+    pp(' 🌀🌀🌀🌀 .................. _navigateToSettings to users ....');
     if (mounted) {
       Navigator.push(
           context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.center,
-              duration: const Duration(seconds: 1),
-              child: const UserListMobile()));
+          MaterialPageRoute(
+              builder: (context) =>
+                  GioUserList(dataApiDog: widget.dataApiDog)));
     }
   }
 
@@ -362,8 +379,24 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
     pp('🌀🌀🌀🌀 _onEventTapped; activityModel: ${act.toJson()}');
   }
 
-  void _onProjectTapped(Project project) async {
-    pp('🌀🌀🌀🌀 _onProjectTapped; project: ${project.toJson()}');
+  void onProjectTapped(Project project) async {
+    pp('🌀🌀🌀🌀 _onProjectTapped; navigate to timeLine: project: ${project.toJson()}');
+    if (mounted) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.center,
+              duration: const Duration(seconds: 1),
+              child: ProjectMediaTimeline(
+                projectBloc: widget.projectBloc,
+                prefsOGx: widget.prefsOGx,
+                project: project,
+                organizationBloc: widget.organizationBloc,
+                cacheManager: widget.cacheManager,
+                dataApiDog: widget.dataApiDog,
+              )));
+    }
   }
 
   void _onUserTapped(User user) async {
@@ -395,22 +428,23 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
   Widget build(BuildContext context) {
     var sigmaX = 12.0;
     var sigmaY = 12.0;
-    if (checkIfDarkMode()) {
-      sigmaX = 200.0;
-      sigmaY = 200.0;
-      pp('💜💜 We are in darkMode now: sigmaX: $sigmaX sigmaY: $sigmaY');
-    } else {
-      pp('💜💜 We are in lightMode now: sigmaX: $sigmaX sigmaY: $sigmaY');
-    }
+    // if (checkIfDarkMode()) {
+    //   sigmaX = 200.0;
+    //   sigmaY = 200.0;
+    //   pp('💜💜 We are in darkMode now: sigmaX: $sigmaX sigmaY: $sigmaY');
+    // } else {
+    //   pp('💜💜 We are in lightMode now: sigmaX: $sigmaX sigmaY: $sigmaY');
+    // }
     var width = MediaQuery.of(context).size.width;
     final deviceType = getThisDeviceType();
     if (deviceType != 'phone') {}
     return Scaffold(
       body: busy
-          ?  Center(
+          ? Center(
               child: LoadingCard(
-                  loadingActivities: loadingDataText == null?
-                  'Loading Data': loadingDataText!),
+                  loadingData: loadingDataText == null
+                      ? 'Loading Data'
+                      : loadingDataText!),
             )
           : ScreenTypeLayout(
               mobile: user == null
@@ -442,7 +476,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                         _onProjectsAcquired(projects);
                       },
                       onProjectTapped: (project) {
-                        _onProjectTapped(project);
+                        onProjectTapped(project);
                       },
                       onUserSubtitleTapped: () {
                         _onUserSubtitleTapped();
@@ -506,7 +540,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                             _onProjectsAcquired(projects);
                           },
                           onProjectTapped: (project) {
-                            _onProjectTapped(project);
+                            onProjectTapped(project);
                           },
                           onUserSubtitleTapped: () {
                             _onUserSubtitleTapped();
@@ -567,7 +601,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                             _onProjectsAcquired(projects);
                           },
                           onProjectTapped: (project) {
-                            _onProjectTapped(project);
+                            onProjectTapped(project);
                           },
                           onUserSubtitleTapped: () {
                             _onUserSubtitleTapped();
@@ -615,8 +649,6 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
   onVideoTapped(Video p1) {}
 
   onAudioTapped(Audio p1) {}
-
-  onProjectTapped(Project p1) {}
 
   onProjectPositionTapped(ProjectPosition p1) {}
 
@@ -835,27 +867,30 @@ class RealDashboard extends StatelessWidget {
                         onSearchTapped();
                       },
                       icon: Icon(
-                        Icons.search, color: Theme.of(context).primaryColor,
+                        Icons.search,
+                        color: Theme.of(context).primaryColor,
                       )),
                   IconButton(
                       onPressed: () {
                         onRefreshRequested();
                       },
-                      icon:  Icon(
-                        Icons.refresh,color: Theme.of(context).primaryColor,
+                      icon: Icon(
+                        Icons.refresh,
+                        color: Theme.of(context).primaryColor,
                       )),
                   IconButton(
                       onPressed: () {
                         onSettingsRequested();
                       },
-                      icon:  Icon(
-                        Icons.settings,color: Theme.of(context).primaryColor,
+                      icon: Icon(
+                        Icons.settings,
+                        color: Theme.of(context).primaryColor,
                       )),
                   const SizedBox(
                     width: 8,
                   ),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       onDeviceUserTapped();
                     },
                     child: CircleAvatar(

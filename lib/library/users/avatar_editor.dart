@@ -12,9 +12,7 @@ import 'package:geo_monitor/library/bloc/geo_exception.dart';
 import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:geo_monitor/library/errors/error_handler.dart';
 import 'package:geo_monitor/library/functions.dart';
-import 'package:geo_monitor/ui/dashboard/dashboard_mobile.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../l10n/translation_handler.dart';
