@@ -91,7 +91,7 @@ class Initializer {
     pp('$mx organizationDataRefresh starting ........................');
     pp('$mx start with delay of 5 seconds before data refresh ..............');
 
-    Future.delayed(const Duration(seconds: 30)).then((value) async {
+    Future.delayed(const Duration(seconds: 60 * 10)).then((value) async {
       pp('$mx start data refresh after delaying for 5 seconds');
 
       if (settings.organizationId != null) {

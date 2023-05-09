@@ -9,21 +9,28 @@ class LoadingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Center(
-      child: SizedBox(height: 200, child: Column(
-        children:  [
-          const SizedBox(height: 24,),
-          const SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 4,
-              backgroundColor: Colors.pink,
-            ),
-          ),
-          const SizedBox(height: 12,),
-          Text(loadingData, style: myTextStyleSmallBlack(context),)
-        ],
-      ),)
+      child: Card(
+        shape: getRoundedBorder(radius: 16),
+        elevation: 8,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SizedBox(height: 200, width:300, child: Column(
+            children:  [
+              const SizedBox(height: 80,),
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 4,
+                  backgroundColor: Colors.pink,
+                ),
+              ),
+              const SizedBox(height: 12,),
+              Text(loadingData, style: myTextStyleMedium(context),)
+            ],
+          ),),
+        ),
+      )
     );
   }
 }

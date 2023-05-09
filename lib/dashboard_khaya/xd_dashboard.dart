@@ -438,13 +438,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
   Widget build(BuildContext context) {
     var sigmaX = 12.0;
     var sigmaY = 12.0;
-    // if (checkIfDarkMode()) {
-    //   sigmaX = 200.0;
-    //   sigmaY = 200.0;
-    //   pp('💜💜 We are in darkMode now: sigmaX: $sigmaX sigmaY: $sigmaY');
-    // } else {
-    //   pp('💜💜 We are in lightMode now: sigmaX: $sigmaX sigmaY: $sigmaY');
-    // }
+
     var width = MediaQuery.of(context).size.width;
     final deviceType = getThisDeviceType();
     if (deviceType != 'phone') {}
