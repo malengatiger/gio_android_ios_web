@@ -47,16 +47,9 @@ import 'generic_functions.dart';
 const stillWorking = 201, doneCaching = 200;
 const String hiveName = 'GeoHive5d';
 
-CacheManager cacheManager = CacheManager._instance;
+late CacheManager cacheManager;
 
 class CacheManager {
-  static final CacheManager _instance = CacheManager._internal();
-
-  factory CacheManager() {
-    return _instance;
-  }
-
-  CacheManager._internal();
 
   Box<Organization>? _orgBox;
   Box<Project>? _projectBox;

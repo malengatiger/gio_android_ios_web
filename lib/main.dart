@@ -43,7 +43,6 @@ final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
 
   firebaseApp = await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform);
@@ -74,8 +73,6 @@ void main() async {
   }
   await dotenv.load(fileName: ".env");
   pp('$mx $heartBlue DotEnv has been loaded');
-
-  await Hive.initFlutter(hiveName);
 
   if (settings != null) {
     translator.translate('settings', settings!.locale!);

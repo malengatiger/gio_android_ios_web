@@ -227,11 +227,12 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
       setState(() {
         busy = true;
       });
-      projects = await organizationBloc.getOrganizationProjects(
-          organizationId: user!.organizationId!, forceRefresh: forceRefresh);
-      setState(() {
-        busy = true;
-      });
+      pp('$mm _getData .... forceRefresh: $forceRefresh  ');
+      final m = await getStartEndDates(numberOfDays: sett.numberOfDays!);
+      final bag = await organizationBloc.getOrganizationData(organizationId: user!.organizationId!,
+          forceRefresh: forceRefresh, startDate: m['startDate']!, endDate: m['endDate']!);
+      projects = bag.projects!;
+
       users = await organizationBloc.getUsers(
           organizationId: user!.organizationId!, forceRefresh: forceRefresh);
       setState(() {
@@ -243,7 +244,13 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
           hours: sett.activityStreamHours!);
     } catch (e) {
       if (mounted) {
-        showToast(message: '$e', context: context);
+        pp('$mm showSnack');
+        showSnackBar(
+            message: serverProblem == null ? 'Server Problem' : serverProblem!,
+            context: context,
+            backgroundColor: Theme.of(context).primaryColorDark,
+            duration: const Duration(seconds: 15),
+            padding: 16);
       }
     }
     setState(() {
@@ -251,6 +258,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
     });
   }
 
+  String? serverProblem;
   void _setTexts() async {
     var sett = await prefsOGx.getSettings();
     loadingDataText =
@@ -260,6 +268,8 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
     projectsText = await translator.translate('projects', sett.locale!);
     membersText = await translator.translate('members', sett.locale!);
     recentEventsText = await translator.translate('recentEvents', sett.locale!);
+    serverProblem = await translator.translate('serverProblem', sett.locale!);
+
     setState(() {});
   }
 

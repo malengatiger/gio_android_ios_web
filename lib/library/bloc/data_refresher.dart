@@ -11,8 +11,10 @@ import 'package:geo_monitor/library/bloc/fcm_bloc.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/errors/error_handler.dart';
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../device_location/device_location_bloc.dart';
 import '../../l10n/translation_handler.dart';
 import '../api/data_api_og.dart';
 import '../auth/app_auth.dart';
@@ -233,22 +235,31 @@ class DataRefresher {
     pp('$xx .......  startOrganizationRefresh in an isolate ...');
     late DataBag bag;
     try {
-      bag = await Isolate.run(() async => await refreshOrganizationDataInIsolate(
-          token: token,
-          directoryPath: directoryPath,
-          organizationId: organizationId,
-          startDate: startDate,
-          endDate: endDate,
-          url: url)).catchError((onError) {
+      bag = await Isolate.run(() async =>
+          await refreshOrganizationDataInIsolate(
+              token: token,
+              directoryPath: directoryPath,
+              organizationId: organizationId,
+              startDate: startDate,
+              endDate: endDate,
+              url: url)).catchError((onError) {
         pp('$xx ${E.redDot}${E.redDot}${E.redDot}${E.redDot} $onError - return null for dataBag ${E.redDot}${E.redDot}');
-        return DataBag(photos: [], videos: [], fieldMonitorSchedules: [], projectPositions: [], projects: [], audios: [], date: 'date', users: [], projectPolygons: [], settings: []);
+        return DataBag(
+            photos: [],
+            videos: [],
+            fieldMonitorSchedules: [],
+            projectPositions: [],
+            projects: [],
+            audios: [],
+            date: 'date',
+            users: [],
+            projectPolygons: [],
+            settings: []);
       });
     } on StateError catch (e, s) {
       pp('$xx ${E.redDot}${E.redDot} Isolate StateError, e: $e'); // In a bad state!
       pp('$xx ${E.redDot}${E.redDot} Isolate StateError, s: $s'); // In a bad state!
-
     }
-
 
     pp('$xx startOrganizationRefresh: isolate function completed, dataBag delivered; '
         'will be cached and sent to streams ...');
@@ -394,6 +405,7 @@ Future<DataBag> refreshOrganizationDataInIsolate(
   pp('$xz ............ refreshOrganizationDataInIsolate starting ....');
   DataBag? bag;
 
+  try {
   bag = await getOrganizationDataZippedFile(
       url: url,
       directoryPath: directoryPath,
@@ -401,6 +413,9 @@ Future<DataBag> refreshOrganizationDataInIsolate(
       startDate: startDate,
       endDate: endDate,
       token: token);
+  } catch (e) {
+    pp('$mm We have an issue here. $e');
+  }
   if (bag == null) {
     pp('$xz Bag not returned from getOrganizationDataZippedFile ');
     throw GeoException(
@@ -761,6 +776,7 @@ Future<http.Response> _sendRequestToBackend(String mUrl, String token) async {
   pp('$xz _sendRequestToBackend call:  🔆 🔆 🔆 calling : 💙  $mUrl  💙');
   var start = DateTime.now();
 
+
   Map<String, String> headers = {
     'Content-type': 'application/json',
     'Accept': '*/*',
@@ -792,44 +808,49 @@ Future<http.Response> _sendRequestToBackend(String mUrl, String token) async {
           'NOT GOOD, throwing up !! 😡 ${httpResponse.body}';
       pp(msg);
       pp('$xz Bad status code ... 😑');
-      throw GeoException(
+      final gex = GeoException(
           message: 'Bad status code: ${httpResponse.statusCode}',
           url: mUrl,
           translationKey: 'serverProblem',
           errorType: GeoException.socketException);
+      throw gex;
     } else {
       pp('$xz status is 200, 🍎 Return the httpResponse: '
           '${httpResponse.contentLength} bytes  🍎');
       return httpResponse;
     }
   } on SocketException {
-    pp('$xz No Internet connection, really means that server cannot be reached 😑');
-    throw GeoException(
+    pp('$xz SocketException: means that server cannot be reached 😑');
+    final gex = GeoException(
         message: 'Sever unreachable',
         url: mUrl,
         translationKey: 'serverProblem',
         errorType: GeoException.socketException);
+    throw gex;
   } on HttpException {
     pp("$xz HttpException occurred 😱");
-    throw GeoException(
+    final gex = GeoException(
         message: 'Server not around',
         url: mUrl,
         translationKey: 'serverProblem',
         errorType: GeoException.httpException);
+    throw gex;
   } on FormatException {
     pp("$xz Bad response format 👎");
-    throw GeoException(
+    final gex = GeoException(
         message: 'Bad response format',
         url: mUrl,
         translationKey: 'serverProblem',
         errorType: GeoException.formatException);
+    throw gex;
   } on TimeoutException {
     pp("$xz GET Request has timed out in $timeOutInSeconds seconds 👎");
-    throw GeoException(
+    final gex = GeoException(
         message: 'Request timed out',
         url: mUrl,
         translationKey: 'networkProblem',
         errorType: GeoException.timeoutException);
+    throw gex;
   }
 }
 

@@ -253,10 +253,11 @@ class OrganizationBloc {
   Future<List<User>> getUsers(
       {required String organizationId, required bool forceRefresh}) async {
     var users = await cacheManager.getUsers();
+    pp('$mm getOrganizationUsers ... users: ${users.length} ');
 
     if (users.isEmpty || forceRefresh) {
       users = await dataApiDog.findUsersByOrganization(organizationId);
-      pp('$mm getOrganizationUsers ... _users: ${users.length} ... will add to cache');
+      pp('$mm getOrganizationUsers ... users: ${users.length} ... will add to cache');
     }
     userController.sink.add(users);
 
@@ -375,7 +376,7 @@ class OrganizationBloc {
   Future<List<Project>> getOrganizationProjects(
       {required String organizationId, required bool forceRefresh}) async {
     var projects = await cacheManager.getOrganizationProjects();
-
+    pp('💜💜💜💜 OrgBloc: getOrganizationProjects found: ${projects.length}');
     try {
       if (projects.isEmpty || forceRefresh) {
         projects = await dataApiDog.findProjectsByOrganization(organizationId);

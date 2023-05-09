@@ -446,9 +446,9 @@ class DataApiDog {
 
   Future<List<ProjectPosition>> getOrganizationProjectPositions(
       String organizationId, String startDate, String endDate) async {
+    final list = <ProjectPosition>[];
     var result = await _sendHttpGET(
         '${url!}getOrganizationProjectPositions?organizationId=$organizationId&startDate=$startDate&endDate=$endDate');
-    List<ProjectPosition> list = [];
     result.forEach((m) {
       list.add(ProjectPosition.fromJson(m));
     });
