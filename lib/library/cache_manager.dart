@@ -45,7 +45,7 @@ import 'functions.dart';
 import 'generic_functions.dart';
 
 const stillWorking = 201, doneCaching = 200;
-const String hiveName = 'GeoHive5d';
+const String hiveName = 'GeoHive5e';
 
 late CacheManager cacheManager;
 
@@ -91,20 +91,9 @@ class CacheManager {
 
   bool _isInitialized = false;
 
-  Future initialize({bool? forceInitialization = false}) async {
-    // fileCounter = await prefsOGx.getFileCounter();
-    if (forceInitialization != null) {
-      if (forceInitialization) {
-        pp('\n\n$mm Setting up Hive, forceInitialization = $forceInitialization');
-        Hive.initFlutter(hiveName);
-        await _doTheInitializationWork();
-        await clearAllBoxes();
-        return;
-      }
-    }
+  Future initialize() async {
     if (!_isInitialized) {
       pp('\n\n$mm Setting Hive files to existing suffix');
-      Hive.initFlutter(hiveName);
       await _doTheInitializationWork();
       return;
     }
@@ -153,7 +142,7 @@ class CacheManager {
           ' Hive has been initialized and boxes opened ${E.leaf}${E.leaf}${E.leaf}\n');
     } catch (e) {
       p('🔴🔴 We have a problem 🔴 opening Hive boxes: $e');
-      throw Exception('Problem with device database');
+      throw Exception('Problem with Hive Initialization ');
     }
   }
 

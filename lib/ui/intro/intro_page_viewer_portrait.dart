@@ -33,7 +33,7 @@ class IntroPageViewerPortrait extends StatefulWidget {
     required this.isolateHandler,
     required this.fcmBloc,
     required this.organizationBloc,
-    required this.projectBloc,
+    required this.projectBloc, required this.dataHandler,
   }) : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
@@ -42,6 +42,8 @@ class IntroPageViewerPortrait extends StatefulWidget {
   final FCMBloc fcmBloc;
   final OrganizationBloc organizationBloc;
   final ProjectBloc projectBloc;
+  final IsolateDataHandler dataHandler;
+
 
   @override
   IntroPageViewerPortraitState createState() => IntroPageViewerPortraitState();
@@ -98,7 +100,7 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
       //todo - ensure that the right thing gets done!
       prefsOGx.deleteUser();
       firebaseAuth.signOut();
-      cacheManager.initialize(forceInitialization: true);
+      cacheManager.initialize();
       pp('$mm _getAuthenticationStatus .......  '
           '${E.redDot}${E.redDot}${E.redDot}'
           'the device should be ready for sign in or registration');
@@ -118,7 +120,7 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
               duration: const Duration(seconds: 2),
               child: DashboardKhaya(
                 dataApiDog: widget.dataApiDog,
-                isolateHandler: widget.isolateHandler,
+                dataHandler: widget.isolateHandler,
                 fcmBloc: widget.fcmBloc,
                 organizationBloc: widget.organizationBloc,
                 projectBloc: widget.projectBloc,

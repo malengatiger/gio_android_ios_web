@@ -28,18 +28,18 @@ class IntroPageViewerLandscape extends StatefulWidget {
       required this.prefsOGx,
       required this.dataApiDog,
       required this.cacheManager,
-      required this.isolateHandler,
       required this.fcmBloc,
       required this.organizationBloc,
-      required this.projectBloc})
+      required this.projectBloc, required this.dataHandler})
       : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
-  final IsolateDataHandler isolateHandler;
   final FCMBloc fcmBloc;
   final OrganizationBloc organizationBloc;
   final ProjectBloc projectBloc;
+  final IsolateDataHandler dataHandler;
+
 
   @override
   State<IntroPageViewerLandscape> createState() =>
@@ -103,7 +103,7 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
   void _getAuthenticationStatus() async {
     pp('\n\n$mm _getAuthenticationStatus ....... '
         'check both Firebase user ang Geo user');
-    var user = await prefsOGx.getUser();
+    var user = await widget.prefsOGx.getUser();
     var firebaseUser = firebaseAuth.currentUser;
 
     if (user != null && firebaseUser != null) {
@@ -117,7 +117,7 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
       //todo - ensure that the right thing gets done!
       prefsOGx.deleteUser();
       firebaseAuth.signOut();
-      cacheManager.initialize(forceInitialization: true);
+      cacheManager.initialize();
       pp('$mm _getAuthenticationStatus .......  '
           '${E.redDot}${E.redDot}${E.redDot}'
           'the device should be ready for sign in or registration');
@@ -138,8 +138,8 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
                 duration: const Duration(milliseconds: 2000),
                 child: DashboardMain(
                   dataApiDog: widget.dataApiDog,
-                  isolateHandler: widget.isolateHandler,
                   fcmBloc: widget.fcmBloc,
+                  dataHandler: widget.dataHandler,
                   organizationBloc: widget.organizationBloc,
                   projectBloc: widget.projectBloc,
                   prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,

@@ -78,8 +78,7 @@ void main() async {
     translator.translate('settings', settings!.locale!);
     pp('$mx $heartBlue translation service initialization started for locale👌 ${settings!.locale!}');
   }
-
-  //await initializer.initializeGeo();
+  await initializer.initializeGeo();
   // await SystemChrome.setPreferredOrientations([
   //   DeviceOrientation.portraitUp,
   //   DeviceOrientation.portraitDown,
@@ -211,7 +210,7 @@ class _LandingPageState extends State<LandingPage> {
       busy = true;
     });
     fbAuthedUser = fb.FirebaseAuth.instance.currentUser;
-    await initializer.initializeGeo();
+    //await initializer.initializeGeo();
     setState(() {
       busy = false;
     });
@@ -232,7 +231,7 @@ class _LandingPageState extends State<LandingPage> {
                 projectBloc: projectBloc,
               )
             : DashboardMain(
-                isolateHandler: dataHandler,
+                dataHandler: dataHandler,
                 dataApiDog: dataApiDog,
                 fcmBloc: fcmBloc,
                 projectBloc: projectBloc,

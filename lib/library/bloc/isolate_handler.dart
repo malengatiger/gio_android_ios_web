@@ -71,6 +71,7 @@ class IsolateDataHandler {
 
     await _startIsolate(gioParams);
   }
+
   Future getUserData(String userId) async {
     pp('$xx handleOrganization;  🦊collect parameters from SettingsModel ...');
     myReceivePort = ReceivePort();
@@ -103,7 +104,6 @@ class IsolateDataHandler {
     myReceivePort.listen((message) {
       if (message is DataBag) {
         pp('$xx The bag has been received!');
-        printDataBag(message);
         _cacheTheData(message);
         if (gioParams.organizationId != null) {
           _sendOrganizationDataToStreams(message);
@@ -144,6 +144,10 @@ class IsolateDataHandler {
 
   Future<void> _cacheTheData(DataBag? bag) async {
     pp('$xx zipped Data returned from server, adding to Hive cache ...');
+    if (bag == null) {
+      return;
+    }
+    printDataBag(bag!);
     final start = DateTime.now();
     await cacheManager.addProjects(projects: bag!.projects!);
     await cacheManager.addProjectPolygons(polygons: bag.projectPolygons!);
@@ -170,8 +174,10 @@ class IsolateDataHandler {
     }
     final end = DateTime.now();
 
-    pp('$xx Org Data saved in Hive cache ... 🍎 '
+    pp('$xx Organization Data saved in Hive cache ... 🍎 '
         '${end.difference(start).inSeconds} seconds elapsed');
+
+
   }
 }
 

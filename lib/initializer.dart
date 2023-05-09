@@ -34,7 +34,6 @@ class Initializer {
     pp('$mx initializeGeo: ... GET CACHED SETTINGS; set themeIndex .............. ');
 
     final start = DateTime.now();
-    final settings = await prefsOGx.getSettings();
 
     locationBloc = DeviceLocationBloc(Location());
     cacheManager = CacheManager();
@@ -50,8 +49,8 @@ class Initializer {
 
     organizationBloc = OrganizationBloc(dataApiDog, cacheManager);
     theGreatGeofencer = TheGreatGeofencer(dataApiDog, prefsOGx);
-
     dataHandler = IsolateDataHandler(prefsOGx, appAuth, cacheManager);
+
 
     projectBloc = ProjectBloc(dataApiDog, cacheManager, dataHandler);
     userBloc = UserBloc(dataApiDog, cacheManager, dataHandler);
@@ -64,23 +63,23 @@ class Initializer {
 
     FirebaseMessaging.instance.requestPermission();
 
-    heavyLifting(settings.numberOfDays!);
+    heavyLifting();
     pp('$mx ${E.heartGreen}${E.heartGreen}}${E.heartGreen} '
-        'initializeGeo: App Settings are 🍎${settings.toJson()}🍎');
+        'initializeGeo complete! ... 🍎');
 
     final end = DateTime.now();
     pp('\n\n$mx ${E.appleRed}${E.appleRed}}${E.appleGreen} '
         ' initializeGeo: Time Elapsed: ${end.difference(start).inMilliseconds} milliseconds\n\n');
   }
 
-  Future<void> heavyLifting(int numberOfDays) async {
+  Future<void> heavyLifting() async {
+    final settings = await prefsOGx.getSettings();
 
     pp('$mx heavyLifting: fcm initialization starting .................');
     await Hive.initFlutter(hiveName);
+    await cacheManager.initialize();
 
-    await cacheManager.initialize(forceInitialization: false);
     await fcmBloc.initialize();
-    var settings = await prefsOGx.getSettings();
     if (settings.organizationId != null) {
       pp('$mx heavyLifting: manageMediaUploads starting ...............');
       geoUploader.manageMediaUploads();
@@ -91,7 +90,7 @@ class Initializer {
     pp('$mx organizationDataRefresh starting ........................');
     pp('$mx start with delay of 5 seconds before data refresh ..............');
 
-    Future.delayed(const Duration(seconds: 60 * 10)).then((value) async {
+    Future.delayed(const Duration(seconds: 5)).then((value) async {
       pp('$mx start data refresh after delaying for 5 seconds');
 
       if (settings.organizationId != null) {

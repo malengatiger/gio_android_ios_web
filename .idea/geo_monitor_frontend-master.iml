@@ -12,6 +12,7 @@
       <excludeFolder url="file://$MODULE_DIR$/linux/flutter/ephemeral" />
       <excludeFolder url="file://$MODULE_DIR$/macos/Flutter/ephemeral" />
       <excludeFolder url="file://$MODULE_DIR$/windows/flutter/ephemeral" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/Runner.xcworkspace/xcuserdata" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

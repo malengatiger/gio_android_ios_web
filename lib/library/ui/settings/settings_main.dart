@@ -8,28 +8,28 @@ import 'settings_tablet.dart';
 
 class SettingsMain extends StatelessWidget {
   const SettingsMain(
-      {Key? key, required this.isolateHandler, required this.dataApiDog})
+      {Key? key, required this.dataHandler, required this.dataApiDog})
       : super(key: key);
-  final IsolateDataHandler isolateHandler;
+  final IsolateDataHandler dataHandler;
   final DataApiDog dataApiDog;
 
   @override
   Widget build(BuildContext context) {
     return ScreenTypeLayout(
       mobile: SettingsMobile(
-        isolateHandler: isolateHandler,
+        isolateHandler: dataHandler,
         dataApiDog: dataApiDog,
       ),
       tablet: OrientationLayoutBuilder(
         portrait: (context) {
           return SettingsTablet(
-            isolateHandler: isolateHandler,
+            isolateHandler: dataHandler,
             dataApiDog: dataApiDog,
           );
         },
         landscape: (context) {
           return SettingsTablet(
-            isolateHandler: isolateHandler,
+            isolateHandler: dataHandler,
             dataApiDog: dataApiDog,
           );
         },

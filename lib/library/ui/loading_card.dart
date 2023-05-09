@@ -18,10 +18,10 @@ class LoadingCard extends StatelessWidget {
             children:  [
               const SizedBox(height: 80,),
               const SizedBox(
-                width: 20,
-                height: 20,
+                width: 24,
+                height: 24,
                 child: CircularProgressIndicator(
-                  strokeWidth: 4,
+                  strokeWidth: 6,
                   backgroundColor: Colors.pink,
                 ),
               ),

@@ -47,22 +47,21 @@ import 'member_list.dart';
 class DashboardKhaya extends StatefulWidget {
   const DashboardKhaya(
       {Key? key,
-      required this.isolateHandler,
       required this.dataApiDog,
       required this.fcmBloc,
       required this.organizationBloc,
       required this.projectBloc,
       required this.prefsOGx,
-      required this.cacheManager})
+      required this.cacheManager, required this.dataHandler})
       : super(key: key);
 
-  final IsolateDataHandler isolateHandler;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
   final OrganizationBloc organizationBloc;
   final ProjectBloc projectBloc;
   final PrefsOGx prefsOGx;
   final CacheManager cacheManager;
+  final IsolateDataHandler dataHandler;
 
   @override
   State<DashboardKhaya> createState() => _DashboardKhayaState();
@@ -105,13 +104,14 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
   late StreamSubscription<SettingsModel> settingsSubscription;
 
   late StreamSubscription<DataBag> dataBagSubscription;
+  static const mm = '🥬🥬🥬🥬🥬🥬DashboardKhaya: 🥬🥬';
 
   @override
   void initState() {
     super.initState();
     _listenForFCM();
     _setTexts();
-    _getData(false);
+    _getCachedData();
   }
 
   Future<void> _handleGeofenceEvent(GeofenceEvent event) async {
@@ -220,24 +220,53 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
 
   var images = <Image>[];
 
-  void _getData(bool forceRefresh) async {
-    user = await prefsOGx.getUser();
-    final sett = await prefsOGx.getSettings();
+  void _getCachedData() async {
+    user = await widget.prefsOGx.getUser();
     try {
       setState(() {
         busy = true;
       });
+      pp('$mm _getCachedData .... ');
+      projects = await widget.cacheManager.getOrganizationProjects();
+      users = await widget.cacheManager.getUsers();
+      events = await widget.cacheManager.getActivities();
+      pp('$mm _getCachedData .... projects: ${projects.length} users: ${users.length} events: ${events.length}');
+      setState(() {
+        busy = false;
+      });
+      _getData(false);
+    } catch (e) {
+      if (mounted) {
+        pp('$mm showSnack');
+        showSnackBar(
+            message: serverProblem == null ? 'Server Problem' : serverProblem!,
+            context: context,
+            backgroundColor: Theme.of(context).primaryColorDark,
+            duration: const Duration(seconds: 15),
+            padding: 16);
+      }
+    }
+    setState(() {
+      busy = false;
+    });
+  }
+
+  void _getData(bool forceRefresh) async {
+    user = await prefsOGx.getUser();
+    final sett = await prefsOGx.getSettings();
+    try {
       pp('$mm _getData .... forceRefresh: $forceRefresh  ');
       final m = await getStartEndDates(numberOfDays: sett.numberOfDays!);
-      final bag = await organizationBloc.getOrganizationData(organizationId: user!.organizationId!,
-          forceRefresh: forceRefresh, startDate: m['startDate']!, endDate: m['endDate']!);
+      final bag = await organizationBloc.getOrganizationData(
+          organizationId: user!.organizationId!,
+          forceRefresh: forceRefresh,
+          startDate: m['startDate']!,
+          endDate: m['endDate']!);
       projects = bag.projects!;
 
       users = await organizationBloc.getUsers(
           organizationId: user!.organizationId!, forceRefresh: forceRefresh);
-      setState(() {
-        busy = true;
-      });
+
       events = await organizationBloc.getOrganizationActivity(
           organizationId: user!.organizationId!,
           forceRefresh: forceRefresh,
@@ -253,9 +282,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
             padding: 16);
       }
     }
-    setState(() {
-      busy = false;
-    });
+    setState(() {});
   }
 
   String? serverProblem;
@@ -285,7 +312,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
               alignment: Alignment.center,
               duration: const Duration(seconds: 1),
               child: SettingsMain(
-                isolateHandler: widget.isolateHandler,
+                dataHandler: widget.dataHandler,
                 dataApiDog: widget.dataApiDog,
               )));
     }

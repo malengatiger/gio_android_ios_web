@@ -19,20 +19,20 @@ import '../../library/geofence/the_great_geofencer.dart';
 class DashboardMain extends StatefulWidget {
   const DashboardMain({
     Key? key,
-    required this.isolateHandler,
     required this.dataApiDog,
     required this.fcmBloc,
     required this.organizationBloc,
     required this.projectBloc,
-    required this.prefsOGx, required this.cacheManager,
+    required this.prefsOGx, required this.cacheManager, required this.dataHandler,
   }) : super(key: key);
-  final IsolateDataHandler isolateHandler;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
   final OrganizationBloc organizationBloc;
   final ProjectBloc projectBloc;
   final PrefsOGx prefsOGx;
   final CacheManager cacheManager;
+  final IsolateDataHandler dataHandler;
+
 
   @override
   DashboardMainState createState() => DashboardMainState();
@@ -175,7 +175,7 @@ class DashboardMainState extends State<DashboardMain>
               child: ScreenTypeLayout(
                 mobile: DashboardKhaya(
                   dataApiDog: widget.dataApiDog,
-                  isolateHandler: widget.isolateHandler,
+                  dataHandler: widget.dataHandler,
                   fcmBloc: widget.fcmBloc,
                   organizationBloc: widget.organizationBloc,
                   projectBloc: widget.projectBloc,
@@ -185,7 +185,7 @@ class DashboardMainState extends State<DashboardMain>
                   portrait: (context) {
                     return DashboardKhaya(
                       dataApiDog: widget.dataApiDog,
-                      isolateHandler: widget.isolateHandler,
+                      dataHandler: widget.dataHandler,
                       fcmBloc: widget.fcmBloc,
                       projectBloc: widget.projectBloc,
                       prefsOGx: widget.prefsOGx,
@@ -195,7 +195,7 @@ class DashboardMainState extends State<DashboardMain>
                   landscape: (context) {
                     return DashboardKhaya(
                       dataApiDog: widget.dataApiDog,
-                      isolateHandler: widget.isolateHandler,
+                      dataHandler: widget.dataHandler,
                       fcmBloc: widget.fcmBloc,
                       organizationBloc: widget.organizationBloc,
                       projectBloc: widget.projectBloc,

@@ -9,8 +9,6 @@ W
 'lib/ui/questionnaire/choice_editor.dart,c/0/c0508077a79fbfec1c06c90b4752011ab8dd80e8
 N
 lib/library/auth/app_auth.dart,2/7/27b9d1ff643c291d720302ce7d07ba0aad90d666
-N
-lib/library/bloc/zip_bloc.dart,7/b/7b267bf2f28c379ad8802fab282b883448e2dbe6
 @
 ios/Podfile.lock,6/f/6fc5efc9eba1a38c53e9a557a6ebda2b662185e1
 S
@@ -626,9 +624,6 @@ F
 getHourlyForecast.json,a/1/a1bad0ef6d9cd6707910cbcdb1ba995b484f5835
 =
 firebase.json,5/9/59951656e3803454427cfe9d761fed1df10b7528
-:
-
-.gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
 \
 ,lib/ui/dashboard/project_dashboard_grid.dart,4/2/42a28d2c953a85a8acb10c2cd3922edce237b421
 T
@@ -695,8 +690,6 @@ O
 lib/library/bloc/user_bloc.dart,3/7/37ea2b81ac67f74222110ea461c86398e7b23a5f
 R
 "lib/library/bloc/project_bloc.dart,a/e/ae4935cde6cd5f0a2c6c0ef188ddb17d5b9071d5
-Z
-*lib/library/ui/settings/settings_main.dart,8/0/80a049148f2da3cb71d50e2180a48f8ab2e542aa
 \
 ,lib/library/ui/settings/settings_mobile.dart,3/c/3cc5c75ecd3d90ee79ab914473a215899b1b20c4
 Z
@@ -735,8 +728,6 @@ Q
 !.idea/libraries/Dart_Packages.xml,f/c/fc67c2d2441e33af1dbd1e910281523d1ce74b4a
 T
 $lib/library/users/avatar_editor.dart,0/d/0d24328766e39a266f008e43768dab9c02754e4f
-\
-,lib/ui/intro/intro_page_viewer_portrait.dart,4/0/4015d0c2131c515dd365a6c9f95dd04699e9e756
 [
 +lib/library/ui/camera/gio_video_player.dart,7/f/7fa202aaf73086dcf8b24682cf1cadd5623c5f54
 C
@@ -747,8 +738,6 @@ Q
 !lib/ui/activity/geo_activity.dart,b/3/b32b83fb2ff7163bd72b9e937fed8946a47d5641
 R
 "lib/ui/activity/activity_list.dart,a/5/a55a4aa3beb88e93bbb8668fabe5f1867792910f
-N
-lib/library/bloc/fcm_bloc.dart,a/e/ae73d6a3cb5b2c49c9d1485ebf9ab308c81e196f
 C
 assets/l10n/st.json,1/9/19cbced6cd2b02266f6cd706a9cdede23245ee37
 C
@@ -759,8 +748,6 @@ C
 assets/l10n/pt.json,f/5/f57be9274a6ec6729aaaa2120252ab59a8b0c284
 C
 assets/l10n/fr.json,3/f/3f3cc9d6e518ea5d7315bb268ce2d414d4930d1e
-P
- lib/library/ui/loading_card.dart,b/0/b09069a7af08a6673c369463c06eb9d5decac6a4
 \
 ,lib/library/ui/settings/settings_tablet.dart,3/b/3bf5db5f445553576e8d4d7a378286839f4cde8a
 C
@@ -797,15 +784,9 @@ U
 %lib/library/ui/media/video_cover.dart,2/3/2390cf4835cefc9d897ce66bc4bafe2494972838
 g
 7lib/library/ui/media/time_line/user_media_timeline.dart,0/a/0a0a0b6559740c97c9ce7d6f4b9b730848bec74e
-T
-$lib/ui/dashboard/dashboard_main.dart,f/e/fe9f89aac9efd38904b68b982061ce2ac0f464ab
 Y
 )lib/library/ui/media/list/audio_card.dart,7/e/7ee7d2dd1ebc71f5ca41f2f3dd66e85838da1a13
 T
 $lib/ui/dashboard/user_dashboard.dart,d/c/dc7968fc0a76a31184ddda0d3c45f76526426736
 ^
 .lib/ui/dashboard/project_dashboard_tablet.dart,a/a/aa28cf4e88149adcc3cc3fe6d1c32777024a97fd
-]
--lib/ui/intro/intro_page_viewer_landscape.dart,c/1/c190973070223956c46810492a1ac5e97ac4f31d
-L
-lib/ui/intro/intro_main.dart,7/5/752d33aad102a896b4943c1147a4ad0fc9cd379d

@@ -189,6 +189,7 @@ class OrganizationBloc {
     final numberOfDays = eDate.difference(sDate).inDays;
     final projects = await getOrganizationProjects(organizationId: organizationId, forceRefresh: false);
     final users = await cacheManager.getUsers();
+    pp('$mm g');
     if (forceRefresh) {
       pp('$mm get data from server .....................; '
           'forceRefresh: $forceRefresh; if true do the refresh ...');
@@ -273,10 +274,14 @@ class OrganizationBloc {
     pp('$mm getOrganizationProjectPositions found ${projectPositions.length} positions in local cache ');
 
     if (projectPositions.isEmpty || forceRefresh) {
+      try {
       projectPositions = await dataApiDog.getOrganizationProjectPositions(
           organizationId, startDate, endDate);
       pp('$mm getOrganizationProjectPositions found ${projectPositions.length} positions from remote database ');
       await cacheManager.addProjectPositions(positions: projectPositions);
+      } catch (e) {
+
+      }
     }
     var list = <ProjectPosition>[];
     for (var pos in projectPositions) {
