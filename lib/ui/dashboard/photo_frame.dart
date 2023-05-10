@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
-import 'package:geo_monitor/library/ui/maps/photo_map_tablet.dart';
+import 'package:geo_monitor/library/ui/maps/photo_map.dart';
 import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
 import 'package:geo_monitor/library/ui/message/monitor_message.dart';
 import 'package:geo_monitor/library/ui/ratings/rating_adder.dart';

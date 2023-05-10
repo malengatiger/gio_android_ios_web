@@ -14,6 +14,7 @@ import '../../../l10n/translation_handler.dart';
 import '../../api/data_api_og.dart';
 import '../../bloc/fcm_bloc.dart';
 import '../../bloc/isolate_handler.dart';
+import '../../bloc/organization_bloc.dart';
 import '../../data/location_response.dart';
 import '../../data/settings_model.dart';
 import '../../functions.dart';
@@ -21,10 +22,16 @@ import '../maps/location_response_map.dart';
 
 class SettingsTablet extends StatefulWidget {
   const SettingsTablet(
-      {Key? key, required this.isolateHandler, required this.dataApiDog})
+      {Key? key,
+      required this.dataApiDog,
+      required this.prefsOGx,
+      required this.organizationBloc,
+      required this.dataHandler})
       : super(key: key);
-  final IsolateDataHandler isolateHandler;
   final DataApiDog dataApiDog;
+  final PrefsOGx prefsOGx;
+  final OrganizationBloc organizationBloc;
+  final IsolateDataHandler dataHandler;
 
   @override
   SettingsTabletState createState() => SettingsTabletState();
@@ -72,7 +79,10 @@ class SettingsTabletState extends State<SettingsTablet>
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text(title == null ? 'Settings' : title!, style: myTextStyleLarge(context),),
+        title: Text(
+          title == null ? 'Settings' : title!,
+          style: myTextStyleLarge(context),
+        ),
       ),
       body: OrientationLayoutBuilder(landscape: (ctx) {
         return Padding(
@@ -91,8 +101,10 @@ class SettingsTabletState extends State<SettingsTablet>
                       //todo - set texts
                       _handleOnLocaleChanged(locale);
                     },
-                    isolateHandler: widget.isolateHandler,
+                    dataHandler: widget.dataHandler,
                     dataApiDog: widget.dataApiDog,
+                    prefsOGx: widget.prefsOGx,
+                    organizationBloc: widget.organizationBloc,
                   ),
                 ),
               ),
@@ -131,8 +143,10 @@ class SettingsTabletState extends State<SettingsTablet>
                     _handleOnLocaleChanged(locale);
                   },
                   padding: 20,
-                  isolateHandler: widget.isolateHandler,
+                  dataHandler: widget.dataHandler,
                   dataApiDog: widget.dataApiDog,
+                  prefsOGx: widget.prefsOGx,
+                  organizationBloc: widget.organizationBloc,
                 ),
               ),
             ),

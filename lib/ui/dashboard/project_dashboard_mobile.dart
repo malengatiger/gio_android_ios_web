@@ -40,7 +40,7 @@ class ProjectDashboardMobile extends StatefulWidget {
     required this.prefsOGx,
     required this.organizationBloc,
     required this.dataApiDog,
-    required this.cacheManager,
+    required this.cacheManager, required this.fcmBloc,
   }) : super(key: key);
   final Project project;
   final User? user;
@@ -49,6 +49,8 @@ class ProjectDashboardMobile extends StatefulWidget {
   final OrganizationBloc organizationBloc;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
+  final FCMBloc fcmBloc;
+
   @override
   ProjectDashboardMobileState createState() => ProjectDashboardMobileState();
 }
@@ -234,7 +236,7 @@ class ProjectDashboardMobileState extends State<ProjectDashboardMobile>
               organizationBloc: widget.organizationBloc,
               prefsOGx: widget.prefsOGx,
               cacheManager: widget.cacheManager,
-              dataApiDog: widget.dataApiDog,
+              dataApiDog: widget.dataApiDog, fcmBloc: widget.fcmBloc,
             )));
   }
 

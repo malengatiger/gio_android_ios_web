@@ -347,7 +347,7 @@ class _GioProjectsState extends State<GioProjects>
               organizationBloc: widget.organizationBloc,
               prefsOGx: widget.prefsOGx,
               cacheManager: widget.cacheManager,
-              dataApiDog: widget.dataApiDog,
+              dataApiDog: widget.dataApiDog, fcmBloc: widget.fcmBloc,
             )));
   }
 
@@ -444,6 +444,7 @@ class _GioProjectsState extends State<GioProjects>
                 projectBloc: widget.projectBloc,
                 organizationBloc: widget.organizationBloc,
                 prefsOGx: widget.prefsOGx,
+                fcmBloc: fcmBloc,
                 dataApiDog: widget.dataApiDog,
                 cacheManager: widget.cacheManager,
               )));

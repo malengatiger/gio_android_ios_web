@@ -13,7 +13,6 @@ doc/api/
 gradle/local.properties
 # dotenv environment variables file
 .env*
-.idea/sonarlint/
 
 # Avoid committing generated Javascript files:
 *.dart.js
@@ -26,3 +25,4 @@ gradle/local.properties
 
 .flutter-plugins
 .flutter-plugins-dependencies
+/.idea/sonarlint

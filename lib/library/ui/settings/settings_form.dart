@@ -25,12 +25,14 @@ class SettingsForm extends StatefulWidget {
       {Key? key,
       required this.padding,
       required this.onLocaleChanged,
-      required this.isolateHandler, required this.dataApiDog})
+      required this.dataApiDog, required this.prefsOGx, required this.organizationBloc, required this.dataHandler})
       : super(key: key);
   final double padding;
   final Function(String locale) onLocaleChanged;
-  final IsolateDataHandler isolateHandler;
   final DataApiDog dataApiDog;
+  final PrefsOGx prefsOGx;
+  final OrganizationBloc organizationBloc;
+  final IsolateDataHandler dataHandler;
   @override
   State<SettingsForm> createState() => SettingsFormState();
 }
@@ -294,16 +296,17 @@ class SettingsFormState extends State<SettingsForm> {
       var s = await widget.dataApiDog.addSettings(settingsModel!);
       pp('\n\n🔵🔵🔵 settings sent to database: ${s.toJson()}');
 
-      await prefsOGx.saveSettings(s);
-      organizationBloc.settingsController.sink.add(s);
+      await widget.prefsOGx.saveSettings(s);
+      widget.organizationBloc.settingsController.sink.add(s);
       themeBloc.changeToTheme(s.themeIndex!);
-      dataHandler.getOrganizationData();
+      widget.dataHandler.getOrganizationData();
     } catch (e) {
       pp(e);
       if (mounted) {
-        showToast(
-            duration: const Duration(seconds: 5),
+        showSnackBar(
+            duration: const Duration(seconds: 10),
             message: '$e',
+            backgroundColor: Theme.of(context).primaryColorDark,
             context: context);
       }
     }

@@ -37,13 +37,21 @@ import '../../library/functions.dart';
 import '../../library/ui/camera/gio_video_player.dart';
 import '../../library/ui/maps/geofence_map_tablet.dart';
 import '../../library/ui/maps/location_response_map.dart';
-import '../../library/ui/maps/photo_map_tablet.dart';
+import '../../library/ui/maps/photo_map.dart';
 import '../../library/ui/maps/project_map_main.dart';
 import '../../utilities/constants.dart';
 import '../activity/geo_activity.dart';
 
 class ProjectDashboardTablet extends StatefulWidget {
-  const ProjectDashboardTablet({Key? key, required this.project, required this.projectBloc, required this.prefsOGx, required this.organizationBloc, required this.dataApiDog, required this.cacheManager})
+  const ProjectDashboardTablet(
+      {Key? key,
+      required this.project,
+      required this.projectBloc,
+      required this.prefsOGx,
+      required this.organizationBloc,
+      required this.dataApiDog,
+      required this.cacheManager,
+      required this.fcmBloc})
       : super(key: key);
 
   final Project project;
@@ -52,6 +60,7 @@ class ProjectDashboardTablet extends StatefulWidget {
   final OrganizationBloc organizationBloc;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
+  final FCMBloc fcmBloc;
 
   @override
   ProjectDashboardTabletState createState() => ProjectDashboardTabletState();
@@ -96,6 +105,7 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
     var sett = await prefsOGx.getSettings();
     dashboardStrings = await DashboardStrings.getTranslated();
   }
+
   var type = '';
   void _getData(bool forceRefresh) async {
     pp('$mm ............................................Refreshing data ....');
@@ -185,8 +195,8 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
       settingsSubscriptionFCM = fcmBloc.settingsStream.listen((settings) async {
         pp('$mm: 🍎🍎 settings arrived with themeIndex: ${settings.themeIndex}... 🍎🍎');
         Locale newLocale = Locale(settings!.locale!);
-        final m = LocaleAndTheme(themeIndex: settings!.themeIndex!,
-            locale: newLocale);
+        final m = LocaleAndTheme(
+            themeIndex: settings!.themeIndex!, locale: newLocale);
         themeBloc.themeStreamController.sink.add(m);
         if (mounted) {
           setState(() {});
@@ -254,12 +264,12 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
               project: widget.project,
               projectBloc: widget.projectBloc,
               organizationBloc: widget.organizationBloc,
-              prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+              prefsOGx: widget.prefsOGx,
+              cacheManager: widget.cacheManager,
               dataApiDog: widget.dataApiDog,
+              fcmBloc: widget.fcmBloc,
             )));
   }
-
-
 
   bool _showPhoto = false;
   bool _showVideo = false;
@@ -395,13 +405,15 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                   width: (width / 2),
                   // height: 500,
                   child: Center(
-                    child: dashboardStrings == null? const SizedBox():ProjectDashboardGrid(
-                        dashboardStrings: dashboardStrings!,
-                        crossAxisCount: 3,
-                        topPadding: 32,
-                        showProjectName: true,
-                        onTypeTapped: onTypeTapped,
-                        project: widget.project),
+                    child: dashboardStrings == null
+                        ? const SizedBox()
+                        : ProjectDashboardGrid(
+                            dashboardStrings: dashboardStrings!,
+                            crossAxisCount: 3,
+                            topPadding: 32,
+                            showProjectName: true,
+                            onTypeTapped: onTypeTapped,
+                            project: widget.project),
                   ),
                 ),
                 GeoActivity(
@@ -427,13 +439,15 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                     _navigateToGeofenceMap(event);
                   },
                   showProjectPolygon: (polygon) async {
-                    var proj = await cacheManager.getProjectById(projectId: polygon.projectId!);
+                    var proj = await cacheManager.getProjectById(
+                        projectId: polygon.projectId!);
                     if (proj != null) {
                       _navigateToProjectMap(proj);
                     }
                   },
                   showProjectPosition: (position) async {
-                    var proj = await cacheManager.getProjectById(projectId: position.projectId!);
+                    var proj = await cacheManager.getProjectById(
+                        projectId: position.projectId!);
                     if (proj != null) {
                       _navigateToProjectMap(proj);
                     }
@@ -448,13 +462,15 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                 SizedBox(
                   width: (width / 2) + 80,
                   child: Center(
-                    child: dashboardStrings == null? const SizedBox():ProjectDashboardGrid(
-                        dashboardStrings: dashboardStrings!,
-                        crossAxisCount: 2,
-                        topPadding: 80,
-                        showProjectName: true,
-                        onTypeTapped: onTypeTapped,
-                        project: widget.project),
+                    child: dashboardStrings == null
+                        ? const SizedBox()
+                        : ProjectDashboardGrid(
+                            dashboardStrings: dashboardStrings!,
+                            crossAxisCount: 2,
+                            topPadding: 80,
+                            showProjectName: true,
+                            onTypeTapped: onTypeTapped,
+                            project: widget.project),
                   ),
                 ),
                 GeoActivity(
@@ -516,19 +532,21 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                           });
                         },
                         child: PhotoCard(
-                            photo: photo!,
+                          photo: photo!,
                           translatedDate: translatedDate!,
-                            elevation: 8.0,
-                            onMapRequested: (photo) {
-                              _navigateToPhotoMap();
-                            },
-                            onRatingRequested: (photo) {
-                              pp('show rating ui');
-                            }, onPhotoCardClose: (){
-                          setState(() {
-                            _showPhoto = false;
-                          });
-                        },),
+                          elevation: 8.0,
+                          onMapRequested: (photo) {
+                            _navigateToPhotoMap();
+                          },
+                          onRatingRequested: (photo) {
+                            pp('show rating ui');
+                          },
+                          onPhotoCardClose: () {
+                            setState(() {
+                              _showPhoto = false;
+                            });
+                          },
+                        ),
                       ),
                     ),
                   ))
@@ -547,7 +565,8 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                           _showVideo = false;
                         });
                       }
-                    }, dataApiDog: widget.dataApiDog,
+                    },
+                    dataApiDog: widget.dataApiDog,
                   ),
                 )
               : const SizedBox(),
@@ -564,7 +583,8 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                           _showAudio = false;
                         });
                       }
-                    }, dataApiDog: widget.dataApiDog,
+                    },
+                    dataApiDog: widget.dataApiDog,
                   ))
               : const SizedBox(),
         ],

@@ -5,6 +5,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/fcm_bloc.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
 import '../../library/cache_manager.dart';
@@ -18,7 +19,7 @@ class ProjectDashboardMain extends StatelessWidget {
       required this.prefsOGx,
       required this.organizationBloc,
       required this.dataApiDog,
-      required this.cacheManager})
+      required this.cacheManager, required this.fcmBloc})
       : super(key: key);
   final Project project;
   final ProjectBloc projectBloc;
@@ -26,6 +27,8 @@ class ProjectDashboardMain extends StatelessWidget {
   final OrganizationBloc organizationBloc;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
+  final FCMBloc fcmBloc;
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +39,14 @@ class ProjectDashboardMain extends StatelessWidget {
           organizationBloc: organizationBloc,
           prefsOGx: prefsOGx,
           dataApiDog: dataApiDog,
+          fcmBloc: fcmBloc,
           cacheManager: cacheManager,
         ),
         tablet: ProjectDashboardTablet(
           project: project,
           projectBloc: projectBloc,
           organizationBloc: organizationBloc,
+          fcmBloc: fcmBloc,
           dataApiDog: dataApiDog,
           cacheManager: cacheManager,
           prefsOGx: prefsOGx,

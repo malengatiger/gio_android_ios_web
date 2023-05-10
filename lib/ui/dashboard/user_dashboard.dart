@@ -6,7 +6,7 @@ import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/bloc/user_bloc.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
 import 'package:geo_monitor/library/ui/camera/gio_video_player.dart';
-import 'package:geo_monitor/library/ui/maps/photo_map_tablet.dart';
+import 'package:geo_monitor/library/ui/maps/photo_map.dart';
 import 'package:geo_monitor/library/users/full_user_photo.dart';
 import 'package:geo_monitor/ui/activity/geo_activity.dart';
 import 'package:geo_monitor/ui/audio/audio_player_og.dart';

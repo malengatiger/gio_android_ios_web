@@ -126,7 +126,25 @@ class GeoApp extends ConsumerWidget {
               animationDuration: const Duration(milliseconds: 3000),
               curve: Curves.easeInCirc,
               splashIconSize: 160.0,
-              nextScreen: const LandingPage(),
+              nextScreen: fbAuthedUser == null
+                  ? IntroMain(
+                      prefsOGx: prefsOGx,
+                      dataApiDog: dataApiDog,
+                      cacheManager: cacheManager,
+                      isolateHandler: dataHandler,
+                      fcmBloc: fcmBloc,
+                      organizationBloc: organizationBloc,
+                      projectBloc: projectBloc,
+                    )
+                  : DashboardMain(
+                      dataHandler: dataHandler,
+                      dataApiDog: dataApiDog,
+                      fcmBloc: fcmBloc,
+                      projectBloc: projectBloc,
+                      prefsOGx: prefsOGx,
+                      organizationBloc: organizationBloc,
+                      cacheManager: cacheManager,
+                    ),
               splashTransition: SplashTransition.fadeTransition,
               pageTransitionType: PageTransitionType.leftToRight,
               backgroundColor: Colors.pink.shade900,
@@ -236,7 +254,8 @@ class _LandingPageState extends State<LandingPage> {
                 fcmBloc: fcmBloc,
                 projectBloc: projectBloc,
                 prefsOGx: prefsOGx,
-                organizationBloc: organizationBloc, cacheManager: cacheManager,
+                organizationBloc: organizationBloc,
+                cacheManager: cacheManager,
               );
   }
 }

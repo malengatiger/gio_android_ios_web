@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
+import 'package:geo_monitor/library/bloc/fcm_bloc.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/data/audio.dart';
 import 'package:geo_monitor/library/data/photo.dart';
@@ -29,7 +32,7 @@ class ProjectMediaTimeline extends StatefulWidget {
       required this.organizationBloc,
       this.project,
       required this.cacheManager,
-      required this.dataApiDog})
+      required this.dataApiDog, required this.fcmBloc})
       : super(key: key);
 
   final ProjectBloc projectBloc;
@@ -38,6 +41,7 @@ class ProjectMediaTimeline extends StatefulWidget {
   final Project? project;
   final CacheManager cacheManager;
   final DataApiDog dataApiDog;
+  final FCMBloc fcmBloc;
 
   @override
   ProjectMediaTimelineState createState() => ProjectMediaTimelineState();
@@ -57,6 +61,9 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
       endText,
       sendMemberMessage,
       durationText;
+  late StreamSubscription<Photo> photoSub;
+  late StreamSubscription<Video> videoSub;
+  late StreamSubscription<Audio> audioSub;
 
   static const mm = '🐸🐸🐸 ProjectMediaTimeline: 🐸🐸🐸🐸 ';
 
@@ -65,6 +72,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     _controller = AnimationController(vsync: this);
     super.initState();
     pp('$mm ............ initState ..........');
+    _listen();
     _checkProject();
   }
 
@@ -99,6 +107,32 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     sendMemberMessage = await translator.translate('sendMemberMessage', locale);
 
     setState(() {});
+  }
+  void _listen() async {
+    photoSub = widget.fcmBloc.photoStream.listen((photo) {
+      photos.insert(0, photo);
+      if (mounted) {
+        setState(() {
+
+        });
+      }
+    });
+    videoSub = widget.fcmBloc.videoStream.listen((video) {
+      videos.insert(0, video);
+      if (mounted) {
+        setState(() {
+
+        });
+      }
+    });
+    audioSub = widget.fcmBloc.audioStream.listen((audio) {
+      audios.insert(0, audio);
+      if (mounted) {
+        setState(() {
+
+        });
+      }
+    });
   }
 
   Future _getProjects(bool forceRefresh) async {
@@ -166,6 +200,9 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
   @override
   void dispose() {
     _controller.dispose();
+    photoSub.cancel();
+    videoSub.cancel();
+    audioSub.cancel();
     super.dispose();
   }
 
@@ -422,7 +459,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                   prefsOGx: widget.prefsOGx,
                   organizationBloc: widget.organizationBloc,
                   cacheManager: widget.cacheManager,
-                  dataApiDog: widget.dataApiDog)));
+                  dataApiDog: widget.dataApiDog, fcmBloc: widget.fcmBloc,)));
     }
   }
 

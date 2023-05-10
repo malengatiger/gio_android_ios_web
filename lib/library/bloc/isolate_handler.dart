@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/data_refresher.dart';
+import 'package:geo_monitor/library/bloc/location_request_handler.dart';
 import 'package:geo_monitor/library/bloc/project_bloc.dart';
 import 'package:geo_monitor/library/bloc/user_bloc.dart';
 import 'package:geo_monitor/library/bloc/zip_bloc.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../api/data_api_og.dart';
 import '../auth/app_auth.dart';
 import '../cache_manager.dart';
 import '../data/data_bag.dart';
@@ -19,12 +22,16 @@ late IsolateDataHandler dataHandler;
 
 class IsolateDataHandler {
   static const xx = ' 🎁 🎁 🎁 🎁 🎁 🎁 IsolateDataHandler:  🎁 ';
-  IsolateDataHandler(this.prefsOGx, this.appAuth, this.cacheManager);
+  IsolateDataHandler(this.prefsOGx, this.appAuth, this.cacheManager) {
+     }
 
   final PrefsOGx prefsOGx;
   final AppAuth appAuth;
   final CacheManager cacheManager;
-
+   OrganizationBloc? organizationBloc;
+   ProjectBloc? projectBloc;
+   UserBloc? userBloc;
+   FCMBloc? fcmBloc;
 
   late ReceivePort myReceivePort;
 
@@ -34,6 +41,8 @@ class IsolateDataHandler {
     final token = await appAuth.getAuthToken();
     final map = await getStartEndDates(numberOfDays: sett.numberOfDays!);
     final dir = await getApplicationDocumentsDirectory();
+    organizationBloc = OrganizationBloc(dataApiDog, cacheManager);
+    fcmBloc = FCMBloc(FirebaseMessaging.instance, cacheManager, locationRequestHandler);
 
     myReceivePort = ReceivePort();
     var gioParams = GioParams(
@@ -49,9 +58,12 @@ class IsolateDataHandler {
 
     await _startIsolate(gioParams);
   }
+
   Future getProjectData(String projectId) async {
     pp('$xx handleOrganization;  🦊collect parameters from SettingsModel ...');
     myReceivePort = ReceivePort();
+    projectBloc = ProjectBloc(dataApiDog, cacheManager, this);
+    fcmBloc = FCMBloc(FirebaseMessaging.instance, cacheManager, locationRequestHandler);
 
     final sett = await prefsOGx.getSettings();
     final token = await appAuth.getAuthToken();
@@ -75,6 +87,9 @@ class IsolateDataHandler {
   Future getUserData(String userId) async {
     pp('$xx handleOrganization;  🦊collect parameters from SettingsModel ...');
     myReceivePort = ReceivePort();
+    userBloc = UserBloc(dataApiDog, cacheManager, this);
+    fcmBloc = FCMBloc(FirebaseMessaging.instance, cacheManager, locationRequestHandler);
+
 
     final sett = await prefsOGx.getSettings();
     final token = await appAuth.getAuthToken();
@@ -103,7 +118,7 @@ class IsolateDataHandler {
 
     myReceivePort.listen((message) {
       if (message is DataBag) {
-        pp('$xx The bag has been received!');
+        pp('$xx The bag from the Isolate has been received!');
         _cacheTheData(message);
         if (gioParams.organizationId != null) {
           _sendOrganizationDataToStreams(message);
@@ -119,7 +134,8 @@ class IsolateDataHandler {
       }
     });
 
-    await Isolate.spawn<GioParams>(_heavyTaskInsideIsolate, gioParams).catchError((err) {
+    await Isolate.spawn<GioParams>(_heavyTaskInsideIsolate, gioParams)
+        .catchError((err) {
       pp('$xx catchError: $err');
       return Future<Isolate>.delayed(const Duration(milliseconds: 1));
     }).whenComplete(() {
@@ -128,17 +144,17 @@ class IsolateDataHandler {
   }
 
   void _sendOrganizationDataToStreams(DataBag bag) {
-    organizationBloc.dataBagController.sink.add(bag);
+    organizationBloc?.dataBagController.sink.add(bag);
     pp('$xx Organization Data sent to dataBagStream  ...');
   }
 
   void _sendProjectDataToStreams(DataBag bag) {
-    projectBloc.dataBagController.sink.add(bag);
+    projectBloc?.dataBagController.sink.add(bag);
     pp('$xx Project Data sent to dataBagStream  ...');
   }
 
   void _sendUserDataToStreams(DataBag bag) {
-    userBloc.dataBagController.sink.add(bag);
+    userBloc?.dataBagController.sink.add(bag);
     pp('$xx User Data sent to dataBagStream  ...');
   }
 
@@ -169,15 +185,13 @@ class IsolateDataHandler {
     for (var element in bag.users!) {
       if (element.userId == user!.userId) {
         await prefsOGx.saveUser(element);
-        fcmBloc.userController.sink.add(element);
+        fcmBloc?.userController.sink.add(element);
       }
     }
     final end = DateTime.now();
 
     pp('$xx Organization Data saved in Hive cache ... 🍎 '
         '${end.difference(start).inSeconds} seconds elapsed');
-
-
   }
 }
 
@@ -207,9 +221,10 @@ class GioParams {
 
 ///running inside isolate
 void _heavyTaskInsideIsolate(GioParams gioParams) async {
+  pp('_heavyTaskInsideIsolate starting ................');
   gioParams.sendPort.send('Heavy Task starting ....');
 
-   DataBag? bag;
+  DataBag? bag;
   if (gioParams.organizationId != null) {
     bag = await refreshOrganizationDataInIsolate(
         token: gioParams.token,

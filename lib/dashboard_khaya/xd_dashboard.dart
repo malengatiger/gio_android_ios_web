@@ -20,6 +20,7 @@ import 'package:geo_monitor/library/data/user.dart';
 import 'package:geo_monitor/library/data/video.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/library/generic_functions.dart';
+import 'package:geo_monitor/library/ui/media/photo_cover.dart';
 import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
 import 'package:geo_monitor/library/ui/project_list/gio_projects.dart';
 import 'package:geo_monitor/library/users/edit/user_edit_main.dart';
@@ -200,6 +201,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
         _getData(false);
         if (mounted) {}
       });
+
       dataBagSubscription =
           widget.organizationBloc.dataBagStream.listen((DataBag bag) async {
         pp('$mm: 🍎 🍎 dataBagStream bag arrived... 🍎 🍎');
@@ -313,7 +315,8 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
               duration: const Duration(seconds: 1),
               child: SettingsMain(
                 dataHandler: widget.dataHandler,
-                dataApiDog: widget.dataApiDog,
+                dataApiDog: widget.dataApiDog, prefsOGx: widget.prefsOGx,
+                organizationBloc: widget.organizationBloc,
               )));
     }
   }
@@ -414,6 +417,44 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
 
   void _onEventTapped(ActivityModel act) async {
     pp('🌀🌀🌀🌀 _onEventTapped; activityModel: ${act.toJson()}');
+    if (act.photo != null) {
+      // widget.onPhotoTapped(act.photo!);
+      pp(' 🌀🌀🌀🌀 .................. _navigate to Photo....');
+      if (mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PhotoCover(
+                photo: act.photo!,
+              ),
+            ));
+      }
+
+    }
+    if (act.video != null) {
+      // widget.onVideoTapped(act.video!);
+    }
+
+    if (act.audio != null) {
+      // widget.onAudioTapped(act.audio!);
+    }
+
+    if (act.user != null) {}
+    if (act.projectPosition != null) {
+      // widget.onProjectPositionTapped(act.projectPosition!);
+    }
+    if (act.locationRequest != null) {
+      // widget.onLocationRequest(act.locationRequest!);
+    }
+    if (act.locationResponse != null) {
+      // widget.onLocationResponse(act.locationResponse!);
+    }
+    if (act.geofenceEvent != null) {
+      // widget.onGeofenceEventTapped(act.geofenceEvent!);
+    }
+    if (act.orgMessage != null) {
+      // widget.onOrgMessage(act.orgMessage!);
+    }
   }
 
   void onProjectTapped(Project project) async {
@@ -429,6 +470,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                 projectBloc: widget.projectBloc,
                 prefsOGx: widget.prefsOGx,
                 project: project,
+                fcmBloc: widget.fcmBloc,
                 organizationBloc: widget.organizationBloc,
                 cacheManager: widget.cacheManager,
                 dataApiDog: widget.dataApiDog,
@@ -893,14 +935,14 @@ class RealDashboard extends StatelessWidget {
                 ),
                 title: const XdHeader(),
                 actions: [
-                  IconButton(
-                      onPressed: () {
-                        onSearchTapped();
-                      },
-                      icon: Icon(
-                        Icons.search,
-                        color: Theme.of(context).primaryColor,
-                      )),
+                  // IconButton(
+                  //     onPressed: () {
+                  //       onSearchTapped();
+                  //     },
+                  //     icon: Icon(
+                  //       Icons.search,
+                  //       color: Theme.of(context).primaryColor,
+                  //     )),
                   IconButton(
                       onPressed: () {
                         onRefreshRequested();
@@ -925,7 +967,7 @@ class RealDashboard extends StatelessWidget {
                       onDeviceUserTapped();
                     },
                     child: CircleAvatar(
-                      radius: 16,
+                      radius: 20,
                       backgroundImage: NetworkImage(user.thumbnailUrl!),
                     ),
                   ),

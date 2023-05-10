@@ -28,7 +28,7 @@ class PhotoMap extends StatefulWidget {
 
 class PhotoMapState extends State<PhotoMap>
     with SingleTickerProviderStateMixin {
-  final mm = '🔷🔷🔷PhotoMapTablet: ';
+  final mm = '🔷🔷🔷PhotoMap: ';
   late AnimationController _animationController;
   final Completer<GoogleMapController> _mapController = Completer();
 
@@ -72,12 +72,10 @@ class PhotoMapState extends State<PhotoMap>
 
   Future _setTexts() async {
     final sett = await prefsOGx.getSettings();
-    photoLocationText = await translator.translate('photoLocation',
-        sett!.locale!);
+    photoLocationText =
+        await translator.translate('photoLocation', sett!.locale!);
     myDate = getFmtDate(widget.photo.created!, sett!.locale!);
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   void _getUser() async {
@@ -140,14 +138,33 @@ class PhotoMapState extends State<PhotoMap>
 
   @override
   Widget build(BuildContext context) {
+    var photoHeight = 0.0;
+    var photoWidth = 0.0;
+    final deviceType = getThisDeviceType();
+    if (deviceType == 'phone') {
+      if (widget.photo.landscape == 0) {
+        photoHeight = 200;
+        photoWidth = 160;
+      } else {
+        photoHeight = 160;
+        photoWidth = 200;
+      }
+    } else {
+      if (widget.photo.landscape == 0) {
+        photoHeight = 300;
+        photoWidth = 400;
+      } else {
+        photoHeight = 400;
+        photoWidth = 300;
+      }
+    }
 
-    var deviceType = getThisDeviceType();
     return SafeArea(
       child: Scaffold(
         key: _key,
         appBar: AppBar(
-          title: Text(photoLocationText == null?
-            'Photo Location':photoLocationText! ,
+          title: Text(
+            photoLocationText == null ? 'Photo Location' : photoLocationText!,
             style: myTextStyleMediumBold(context),
           ),
           bottom: PreferredSize(
@@ -213,134 +230,72 @@ class PhotoMapState extends State<PhotoMap>
               buildingsEnabled: true,
               zoomControlsEnabled: true,
             ),
-            _showLargePhoto
-                ? Positioned(
-                    child: AnimatedBuilder(
-                      animation: _animationController,
-                      builder: (BuildContext context, Widget? child) {
-                        return FadeScaleTransition(
-                          animation: _animationController,
-                          child: child,
-                        );
-                      },
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _showLargePhoto = !_showLargePhoto;
-                          });
-                          _animationController.reset();
-                          _animationController.forward();
-                        },
-                        child: Card(
-                          elevation: 8,
-                          color: Colors.black38,
-                          child: SizedBox(
-                            height: 660,
-                            width: 480,
-                            child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                Expanded(
-                                  child: InteractiveViewer(
-                                    child: Image.network(
-                                      widget.photo.url!,
-                                      height: 600,
-                                      width: 460,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                Text(
-                                 myDate == null? widget.photo.created!: myDate!,
-                                  style: myTextStyleSmall(context),
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                Text(
-                                  '${widget.photo.userName}',
-                                  style: myTextStyleSmallBoldPrimaryColor(context),
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                              ],
+            Positioned(
+              left: 0,
+              top: 0,
+              child: AnimatedBuilder(
+                animation: _animationController,
+                builder: (BuildContext context, Widget? child) {
+                  return FadeScaleTransition(
+                    animation: _animationController,
+                    child: child,
+                  );
+                },
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _showLargePhoto = !_showLargePhoto;
+                    });
+                    _animationController.reset();
+                    _animationController.forward();
+                  },
+                  child: Card(
+                    elevation: 8,
+                    shape: getRoundedBorder(radius: 12),
+                    color: Colors.black38,
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: SizedBox(
+                        // width: deviceType == 'phone' ? 100 : 220,
+                        // height: deviceType == 'phone' ? 120 : 340,
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 12,
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                : Positioned(
-                    left: 12,
-                    top: 12,
-                    child: AnimatedBuilder(
-                      animation: _animationController,
-                      builder: (BuildContext context, Widget? child) {
-                        return FadeScaleTransition(
-                          animation: _animationController,
-                          child: child,
-                        );
-                      },
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _showLargePhoto = !_showLargePhoto;
-                          });
-                          _animationController.reset();
-                          _animationController.forward();
-                        },
-                        child: Card(
-                          elevation: 8,
-                          shape: getRoundedBorder(radius: 12),
-                          color: Colors.black38,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: SizedBox(
-                              // width: deviceType == 'phone' ? 100 : 220,
-                              // height: deviceType == 'phone' ? 120 : 340,
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 12,
-                                  ),
-                                  InteractiveViewer(
-                                    child: Image.network(
-                                      widget.photo.thumbnailUrl!,
-                                      width: deviceType == 'phone' ? 240 : 300,
-                                      height: deviceType == 'phone' ? 300 : 400,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Text(myDate == null?widget.photo.created!:myDate!,
-                                    style: myTextStyleSmall(context),
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Text(
-                                    '${widget.photo.userName}',
-                                    style: myTextStyleSmallBoldPrimaryColor(context),
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                ],
+                            InteractiveViewer(
+                              child: Image.network(
+                                widget.photo.thumbnailUrl!,
+                                width: photoWidth,
+                                height: photoHeight,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                          ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              myDate == null ? widget.photo.created! : myDate!,
+                              style: myTextStyleSmall(context),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              '${widget.photo.userName}',
+                              style: myTextStyleSmallBoldPrimaryColor(context),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

@@ -73,11 +73,10 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
   IntroStrings? introStrings;
 
   Future _setTexts({String? selectedLocale}) async {
-    settingsModel = await prefsOGx.getSettings();
-    settingsModel = getBaseSettings();
-    await prefsOGx.saveSettings(settingsModel!);
+    settingsModel = await widget.prefsOGx.getSettings();
+    await widget.prefsOGx.saveSettings(settingsModel!);
 
-    introStrings = await IntroStrings.getTranslated();
+    introStrings = await IntroStrings.getTranslated(settingsModel!.locale!);
     signInFailed =
         await translator.translate('signInFailed', settingsModel!.locale!);
     setState(() {});
@@ -225,11 +224,9 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
   }
 
   onLanguageSelected(Locale p1, String p2) async {
-    pp('$mm locale selected: $p1 - $p2, will save in new settings ... ');
-
-    final baseSettings = getBaseSettings();
-    baseSettings.locale = p1.languageCode;
-    await prefsOGx.saveSettings(baseSettings);
+    pp('$mm locale selected: Locale: ${p1.languageCode} ${p1.countryCode} - p2: $p2, will save in new settings ... ');
+    settingsModel!.locale = p1.languageCode;
+    await prefsOGx.saveSettings(settingsModel!);
     await _setTexts(selectedLocale: p1.languageCode);
   }
 
@@ -406,35 +403,34 @@ class IntroStrings {
       required this.community,
       required this.registerOrganization});
 
-  static Future<IntroStrings> getTranslated() async {
-    var settingsModel = await prefsOGx.getSettings();
+  static Future<IntroStrings> getTranslated(String locale) async {
     var hint =
-        await translator.translate('selectLanguage', settingsModel!.locale!);
+        await translator.translate('selectLanguage', locale);
 
-    var signIn = await translator.translate('signIn', settingsModel.locale!);
+    var signIn = await translator.translate('signIn', locale);
     var organizations =
-        await translator.translate('organizations', settingsModel.locale!);
+        await translator.translate('organizations', locale);
     var managementPeople =
-        await translator.translate('managementPeople', settingsModel.locale!);
+        await translator.translate('managementPeople', locale);
     var fieldWorkers =
-        await translator.translate('fieldWorkers', settingsModel.locale!);
+        await translator.translate('fieldWorkers', locale);
     var executives =
-        await translator.translate('executives', settingsModel.locale!);
+        await translator.translate('executives', locale);
     var information =
-        await translator.translate('information', settingsModel.locale!);
+        await translator.translate('information', locale);
     var thankYou =
-        await translator.translate('thankYou', settingsModel.locale!);
+        await translator.translate('thankYou', locale);
     var thankYouMessage =
-        await translator.translate('thankYouMessage', settingsModel.locale!);
+        await translator.translate('thankYouMessage', locale);
 
     var infrastructure =
-        await translator.translate('infrastructure', settingsModel.locale!);
-    var govt = await translator.translate('govt', settingsModel.locale!);
-    var youth = await translator.translate('youth', settingsModel.locale!);
+        await translator.translate('infrastructure', locale);
+    var govt = await translator.translate('govt', locale);
+    var youth = await translator.translate('youth', locale);
     var community =
-        await translator.translate('community', settingsModel.locale!);
+        await translator.translate('community', locale);
     var registerOrganization = await translator.translate(
-        'registerOrganization', settingsModel.locale!);
+        'registerOrganization', locale);
 
     final m = IntroStrings(
         organizations: organizations,

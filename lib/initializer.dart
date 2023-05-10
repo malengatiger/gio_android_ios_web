@@ -49,13 +49,14 @@ class Initializer {
 
     organizationBloc = OrganizationBloc(dataApiDog, cacheManager);
     theGreatGeofencer = TheGreatGeofencer(dataApiDog, prefsOGx);
+    locationRequestHandler = LocationRequestHandler(dataApiDog);
+
     dataHandler = IsolateDataHandler(prefsOGx, appAuth, cacheManager);
 
 
     projectBloc = ProjectBloc(dataApiDog, cacheManager, dataHandler);
     userBloc = UserBloc(dataApiDog, cacheManager, dataHandler);
 
-    locationRequestHandler = LocationRequestHandler(dataApiDog);
     fcmBloc = FCMBloc(FirebaseMessaging.instance, cacheManager, locationRequestHandler);
 
     pp('$mx  '
@@ -63,7 +64,11 @@ class Initializer {
 
     FirebaseMessaging.instance.requestPermission();
 
-    heavyLifting();
+    Future.delayed(const Duration(milliseconds: 2000)).then((value) {
+      pp('$mx Heavy lifting after delay of 2 seconds');
+      heavyLifting();
+    });
+
     pp('$mx ${E.heartGreen}${E.heartGreen}}${E.heartGreen} '
         'initializeGeo complete! ... 🍎');
 
@@ -74,7 +79,6 @@ class Initializer {
 
   Future<void> heavyLifting() async {
     final settings = await prefsOGx.getSettings();
-
     pp('$mx heavyLifting: fcm initialization starting .................');
     await Hive.initFlutter(hiveName);
     await cacheManager.initialize();

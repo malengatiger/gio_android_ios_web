@@ -18,6 +18,7 @@ import '../../../device_location/device_location_bloc.dart';
 import '../../../l10n/translation_handler.dart';
 import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
+import '../../bloc/fcm_bloc.dart';
 import '../../bloc/organization_bloc.dart';
 import '../../bloc/photo_for_upload.dart';
 import '../../bloc/project_bloc.dart';
@@ -42,7 +43,7 @@ class PhotoHandler extends StatefulWidget {
       required this.prefsOGx,
       required this.organizationBloc,
       required this.cacheManager,
-      required this.dataApiDog})
+      required this.dataApiDog, required this.fcmBloc})
       : super(key: key);
   final Project project;
   final ProjectPosition? projectPosition;
@@ -51,6 +52,7 @@ class PhotoHandler extends StatefulWidget {
   final OrganizationBloc organizationBloc;
   final CacheManager cacheManager;
   final DataApiDog dataApiDog;
+  final FCMBloc fcmBloc;
 
   @override
   PhotoHandlerState createState() => PhotoHandlerState();
@@ -86,7 +88,7 @@ class PhotoHandlerState extends State<PhotoHandler>
   }
 
   Future _setTexts() async {
-    sett == await widget.prefsOGx.getSettings();
+    sett = await widget.prefsOGx.getSettings();
     fileSavedWillUpload =
         await translator.translate('fileSavedWillUpload', sett.locale!);
     takePicture = await translator.translate('takePicture', sett.locale!);
@@ -309,7 +311,7 @@ class PhotoHandlerState extends State<PhotoHandler>
               organizationBloc: widget.organizationBloc,
               prefsOGx: widget.prefsOGx,
               cacheManager: widget.cacheManager,
-              dataApiDog: widget.dataApiDog,
+              dataApiDog: widget.dataApiDog, fcmBloc: widget.fcmBloc,
             )));
   }
 

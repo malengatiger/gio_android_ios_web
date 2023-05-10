@@ -9,6 +9,7 @@ import '../../../l10n/translation_handler.dart';
 import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
 import '../../bloc/fcm_bloc.dart';
+import '../../bloc/organization_bloc.dart';
 import '../../cache_manager.dart';
 import '../../data/project.dart';
 import '../../data/settings_model.dart';
@@ -17,12 +18,19 @@ import '../../functions.dart';
 import '../../generic_functions.dart';
 
 class SettingsMobile extends StatefulWidget {
-  const SettingsMobile({Key? key, required this.isolateHandler, required this.dataApiDog}) : super(key: key);
+  const SettingsMobile(
+      {Key? key,
+      required this.isolateHandler,
+      required this.dataApiDog,
+      required this.prefsOGx,
+      required this.organizationBloc})
+      : super(key: key);
 
   final IsolateDataHandler isolateHandler;
   final DataApiDog dataApiDog;
 
-
+  final PrefsOGx prefsOGx;
+  final OrganizationBloc organizationBloc;
   @override
   SettingsMobileState createState() => SettingsMobileState();
 }
@@ -38,7 +46,6 @@ class SettingsMobileState extends State<SettingsMobile>
   var activityController = TextEditingController(text: '24');
 
   late StreamSubscription<SettingsModel> settingsSubscriptionFCM;
-
 
   var orgSettings = <SettingsModel>[];
 
@@ -68,7 +75,7 @@ class SettingsMobileState extends State<SettingsMobile>
 
   Future _setTexts() async {
     settingsModel = await prefsOGx.getSettings();
-      title = await translator.translate('settings', settingsModel!.locale!);
+    title = await translator.translate('settings', settingsModel!.locale!);
     user = await prefsOGx.getUser();
     if (user!.userType! == UserType.fieldMonitor) {
       showMonitorForm = true;
@@ -77,16 +84,13 @@ class SettingsMobileState extends State<SettingsMobile>
   }
 
   void _listenToFCM() async {
-
     settingsSubscriptionFCM =
         fcmBloc.settingsStream.listen((SettingsModel event) async {
-          if (mounted) {
-            await _setTexts();
-          }
-        });
-
+      if (mounted) {
+        await _setTexts();
+      }
+    });
   }
-
 
   void _getOrganizationSettings() async {
     pp('🍎🍎 ............. getting user from prefs ...');
@@ -99,7 +103,7 @@ class SettingsMobileState extends State<SettingsMobile>
     } catch (e) {
       pp(e);
       if (mounted) {
-        showToast(
+        showSnackBar(
             duration: const Duration(seconds: 5),
             message: '$e',
             context: context);
@@ -126,8 +130,8 @@ class SettingsMobileState extends State<SettingsMobile>
           title == null ? 'Settings' : title!,
           style: myTextStyleMediumBold(context),
         ),
-        bottom:  PreferredSize(
-          preferredSize: Size.fromHeight(showMonitorForm? 12: 8),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(showMonitorForm ? 12 : 8),
           child: const SizedBox(),
         ),
       ),
@@ -157,8 +161,11 @@ class SettingsMobileState extends State<SettingsMobile>
                       padding: 8,
                       onLocaleChanged: (String locale) {
                         _handleOnLocaleChanged(locale);
-                      }, isolateHandler: widget.isolateHandler,
-                dataApiDog: widget.dataApiDog,
+                      },
+                      dataApiDog: widget.dataApiDog,
+                      prefsOGx: widget.prefsOGx,
+                      organizationBloc: widget.organizationBloc,
+                      dataHandler: widget.isolateHandler,
                     ),
             ),
     ));
