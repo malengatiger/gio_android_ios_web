@@ -13,7 +13,7 @@ doc/api/
 gradle/local.properties
 # dotenv environment variables file
 .env*
-
+.idea/sonarlint/
 # Avoid committing generated Javascript files:
 *.dart.js
 *.info.json      # Produced by the --dump-info flag.

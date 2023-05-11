@@ -79,8 +79,6 @@ J
 lib/ui/audio/seek_bar.dart,a/4/a4bcc660c9a469cab4bf191d710634652a949a9a
 R
 "lib/ui/project/project_editor.dart,d/2/d237b9bd489712aba7e6673f273aa57323754e19
-Y
-)lib/ui/activity/activity_stream_card.dart,d/2/d278cd09ded49a185062495482af5a0c4c703a1f
 L
 lib/ui/intro/web_viewer.dart,5/c/5cfa1c72ff754ae6a27016370695affba9016129
 Z
@@ -107,8 +105,6 @@ W
 'lib/ui/visualizer/audio_visualizer.dart,8/f/8f1bb5312955dd3e7aaf2155c4fba4fe3bcc52e5
 K
 lib/l10n/locale_keys.g.dart,3/6/366b7b77a469ef644a1c811ce8b36b66d935bed8
-S
-#lib/ui/activity/activity_cards.dart,8/5/85631ea714a562ddd943b93c2cf5454818589fd1
 W
 'lib/ui/dashboard/dashboard_element.dart,2/8/28598815ffb3303cfbfb115abe6c7bd7af42988e
 \
@@ -139,8 +135,6 @@ P
  lib/library/ui/round_number.dart,3/1/31ed15a6bd6ac716ad50627524c4f565b85d9594
 T
 $lib/library/ui/questionare_list.dart,0/f/0fc8e0148289762b755137719820ceb06c946e41
-P
- lib/library/ui/project_list.dart,2/2/221f742e0269d9f0df0d9f97c15966a96d5bab15
 T
 $lib/library/ui/media/video_grid.dart,0/8/089e2dc7de8709bca11bde0dae9fe6fb3e072091
 W
@@ -477,8 +471,6 @@ c
 -test/unit_test/library/api/get_data_test.dart,9/b/9b987689504a78e7a29a76d2a0601a7e531f84a0
 =
 linux/main.cc,7/7/77ed47152ab3585d070f0b1236a1ec91d1ecb3a9
-R
-"lib/dashboard_khaya/xd_header.dart,8/7/87a9a5d59981965cf667669cf2c2e300d2103a05
 T
 $lib/dashboard_khaya/member_list.dart,7/c/7c81e80837b35aefd0e297d546d60d79ae752215
 A
@@ -694,10 +686,6 @@ $lib/library/ui/media/photo_grid.dart,b/7/b7aae7d3cb17033d5545e1bf53d051d37a1f7
 +lib/library/ui/maps/project_map_mobile.dart,2/e/2ec61e9c1e17bd762ca3436484da8eec3091288f
 b
 2lib/library/ui/project_list/project_list_card.dart,b/9/b9216320af48053debd39773b4bad857553c61a8
-P
- lib/ui/audio/audio_recorder.dart,6/8/68ba0347d698b387fc409c879914b7e330fa9484
-S
-#lib/ui/audio/audio_recorder_og.dart,5/3/53049215c8f450747f084e7fb5ce0acf018af248
 [
 +lib/library/ui/message/monitor_message.dart,f/3/f39fabd719a6e333729305728c6b44f204edb2f4
 N
@@ -746,8 +734,6 @@ C
 +lib/ui/schedules/schedules_list_mobile.dart,a/e/aecd896bccbb17be8b8880726bb03c8261f49cb8
 U
 %lib/dashboard_khaya/project_list.dart,4/1/412dab5559ee5656431103f4386334a4a13fdf68
-W
-'lib/ui/activity/activity_list_card.dart,7/d/7de0b7b8f242b987d8be563db3950c93807ef3b1
 `
 0lib/library/ui/project_list/project_chooser.dart,4/d/4d5c8b2e9f02c2e4a2c185fc3304262df5a642a3
 ^
@@ -768,32 +754,22 @@ Y
 )lib/library/ui/media/list/audio_card.dart,7/e/7ee7d2dd1ebc71f5ca41f2f3dd66e85838da1a13
 V
 &lib/ui/activity/user_profile_card.dart,8/e/8eda2379b02a7e703de54b937b3380df72af3818
-Z
-*lib/dashboard_khaya/recent_event_list.dart,4/6/46f3f6d8cd53e542a05de34471da2002a4feafd9
 Y
 )lib/ui/activity/activity_list_tablet.dart,1/e/1e8f6cca17060bb47bba42f7d4c6f8d03957274e
 <
 pubspec.yaml,e/8/e8e045469170189f1d6ef12576bd01af132b1018
 T
 $lib/ui/activity/activity_header.dart,7/f/7fdb37c03b3eab22eab615998d590b1c09172298
-S
-#lib/ui/activity/gio_activities.dart,9/7/97f00582bdd27949b2bd38445ae9bde45e2e1c82
 Y
 )lib/library/users/list/geo_user_list.dart,9/d/9dbae7a5e0f9d9df856d18f641d7b211b6a27bd8
-J
-lib/library/functions.dart,2/2/225122cfb53e949a8f9edb84cbe772d4b4d73b07
 Y
 )lib/library/ui/camera/video_controls.dart,c/8/c8fe98c155c82a1db847409dcee531bcb4e88f8c
 E
 lib/l10n/my_keys.dart,1/b/1bc97497c84bf2179a04983aaa15a5f75ea3a892
 R
 "lib/library/bloc/geo_uploader.dart,f/f/ff332ea0e5ce7028e89f2a5fe22989d1b3cbb75d
-]
--lib/library/geofence/the_great_geofencer.dart,d/1/d1b6e76b0d41cc2103b63314c4309f28deec34c5
 U
 %lib/library/errors/error_handler.dart,3/f/3fae94ff17c8fdb8496cdc8af0997a1a31ab307f
-P
- lib/library/api/data_api_og.dart,9/0/902144369ded84e9ef11c4532e9077ba40d707fb
 N
 lib/library/bloc/zip_bloc.dart,7/b/7b267bf2f28c379ad8802fab282b883448e2dbe6
 T

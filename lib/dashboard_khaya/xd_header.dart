@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+
+import '../ui/intro/intro_main.dart';
 
 class XdHeader extends StatefulWidget {
-  const XdHeader({Key? key}) : super(key: key);
+  const XdHeader({Key? key, required this.navigateToIntro}) : super(key: key);
+  final Function navigateToIntro;
 
   @override
   XdHeaderState createState() => XdHeaderState();
@@ -10,6 +14,7 @@ class XdHeader extends StatefulWidget {
 class XdHeaderState extends State<XdHeader>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+
 
   @override
   void initState() {
@@ -26,7 +31,12 @@ class XdHeaderState extends State<XdHeader>
   @override
   Widget build(BuildContext context) {
     return SizedBox(width: 48,
-      child: Image.asset('assets/gio.png', height: 48, width: 48,),
+      child: GestureDetector(
+          onTap: (){
+            widget.navigateToIntro();
+          },
+          child: Image.asset('assets/gio.png', height: 48, width: 48,)),
     );
   }
+
 }

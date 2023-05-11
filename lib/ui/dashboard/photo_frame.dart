@@ -295,13 +295,16 @@ class PhotoFrameState extends State<PhotoFrame> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: GestureDetector(
-          onTap: _showSheet,
-          child: PhotoHeader(
+        title: const Text(''),
+        bottom: PreferredSize( preferredSize: const Size.fromHeight(64), child: Column(
+          children: [
+            PhotoHeader(
               title: widget.photo.projectName!,
               date: widget.photo.created!,
-              locale: widget.locale),
-        ),
+              locale: widget.locale, userUrl: widget.photo.userUrl!,),
+            const SizedBox(height: 12,),
+          ],
+        )),
       ),
       body: Stack(
         children: [
@@ -522,14 +525,14 @@ class PhotoHeader extends StatelessWidget {
     Key? key,
     required this.title,
     required this.date,
-    required this.locale,
+    required this.locale, required this.userUrl,
   }) : super(key: key);
   final String title;
-  final String date, locale;
+  final String date, locale, userUrl;
 
   @override
   Widget build(BuildContext context) {
-    final mStart = getFmtDateShortWithSlash(date, locale);
+    final mStart = getFmtDate(date, locale);
     var vertical = false;
     final type = getThisDeviceType();
     if (type == 'phone') {
@@ -548,11 +551,16 @@ class PhotoHeader extends StatelessWidget {
                 const SizedBox(
                   height: 8,
                 ),
-                Row(
+                Row(mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       mStart,
                       style: myTextStyleSmall(context),
+                    ),
+                    const SizedBox(width: 16,),
+                    CircleAvatar(
+                      radius: 16,
+                      backgroundImage: NetworkImage(userUrl),
                     ),
                   ],
                 )

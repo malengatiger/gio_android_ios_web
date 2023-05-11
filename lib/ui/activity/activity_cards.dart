@@ -29,7 +29,7 @@ class ThinCard extends StatelessWidget {
     final localDate = DateTime.parse(model.date!).toLocal().toIso8601String();
     final dt = getFmtDate(localDate, locale);
     return SizedBox(
-      width: width,
+      width: width, height: 160,
       child: Card(
         shape: getRoundedBorder(radius: 16),
         child: Padding(
@@ -77,7 +77,7 @@ class ThinCard extends StatelessWidget {
                     model.userName == null
                         ? const SizedBox()
                         : UserProfileCard(
-                            namePictureHorizontal: false,
+                            namePictureHorizontal: namePictureHorizontal,
                             padding: 0,
                             elevation: 2,
                             userType: userType,

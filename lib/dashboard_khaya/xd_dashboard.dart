@@ -25,7 +25,10 @@ import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.da
 import 'package:geo_monitor/library/ui/project_list/gio_projects.dart';
 import 'package:geo_monitor/library/users/edit/user_edit_main.dart';
 import 'package:geo_monitor/library/users/list/geo_user_list.dart';
+import 'package:geo_monitor/main.dart';
 import 'package:geo_monitor/ui/activity/gio_activities.dart';
+import 'package:geo_monitor/ui/dashboard/photo_frame.dart';
+import 'package:geo_monitor/ui/intro/intro_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -53,7 +56,8 @@ class DashboardKhaya extends StatefulWidget {
       required this.organizationBloc,
       required this.projectBloc,
       required this.prefsOGx,
-      required this.cacheManager, required this.dataHandler})
+      required this.cacheManager,
+      required this.dataHandler})
       : super(key: key);
 
   final DataApiDog dataApiDog;
@@ -103,6 +107,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
   late StreamSubscription<Project> projectSubscription;
 
   late StreamSubscription<SettingsModel> settingsSubscription;
+  late StreamSubscription<ActivityModel> activitySubscription;
 
   late StreamSubscription<DataBag> dataBagSubscription;
   static const mm = '🥬🥬🥬🥬🥬🥬DashboardKhaya: 🥬🥬';
@@ -115,10 +120,29 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
     _getCachedData();
   }
 
+  @override
+  void dispose() {
+    settingsSubscription.cancel();
+    activitySubscription.cancel();
+    dataBagSubscription.cancel();
+    audioSubscription.cancel();
+    photoSubscription.cancel();
+    videoSubscription.cancel();
+    settingsSubscriptionFCM.cancel();
+    userSubscriptionFCM.cancel();
+    geofenceSubscription.cancel();
+    projectPositionSubscription.cancel();
+    projectPositionSubscriptionFCM.cancel();
+    projectPolygonSubscription.cancel();
+    projectPolygonSubscriptionFCM.cancel();
+    super.dispose();
+  }
+
   Future<void> _handleGeofenceEvent(GeofenceEvent event) async {
     pp('$mm _handleGeofenceEvent ... ');
+    //events.insert(0, event);
     var settings = await prefsOGx.getSettings();
-    var arr = await translator.translate('memberArrived', settings!.locale!);
+    var arr = await translator.translate('memberArrived', settings.locale!);
     if (event.projectName != null) {
       var arrivedAt = arr.replaceAll('\$project', event.projectName!);
       if (mounted) {
@@ -152,6 +176,15 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
         pp('$mm: 🍎geofenceSubscriptionFCM: 🍎 GeofenceEvent: '
             'user ${event.user!.name} arrived: ${event.projectName} ');
         _handleGeofenceEvent(event);
+      });
+      activitySubscription =
+          widget.fcmBloc.activityStream.listen((ActivityModel event) async {
+        pp('$mm: 🍎activitySubscription: 🍎 ActivityModel: '
+            ' ${event.toJson()} ');
+        events.insert(0, event);
+        if (mounted) {
+          setState(() {});
+        }
       });
       projectSubscriptionFCM =
           widget.fcmBloc.projectStream.listen((Project project) async {
@@ -221,8 +254,9 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
   }
 
   var images = <Image>[];
-
+  late SettingsModel settingsModel;
   void _getCachedData() async {
+    settingsModel = await widget.prefsOGx.getSettings();
     user = await widget.prefsOGx.getUser();
     try {
       setState(() {
@@ -271,7 +305,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
 
       events = await organizationBloc.getOrganizationActivity(
           organizationId: user!.organizationId!,
-          forceRefresh: forceRefresh,
+          forceRefresh: true,
           hours: sett.activityStreamHours!);
     } catch (e) {
       if (mounted) {
@@ -288,16 +322,19 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
   }
 
   String? serverProblem;
+  late SettingsModel settings;
   void _setTexts() async {
-    var sett = await prefsOGx.getSettings();
+    settings = await prefsOGx.getSettings();
     loadingDataText =
-        await translator.translate('loadingActivities', sett.locale!);
-    dashboardText = await translator.translate('dashboard', sett.locale!);
-    eventsText = await translator.translate('events', sett.locale!);
-    projectsText = await translator.translate('projects', sett.locale!);
-    membersText = await translator.translate('members', sett.locale!);
-    recentEventsText = await translator.translate('recentEvents', sett.locale!);
-    serverProblem = await translator.translate('serverProblem', sett.locale!);
+        await translator.translate('loadingActivities', settings.locale!);
+    dashboardText = await translator.translate('dashboard', settings.locale!);
+    eventsText = await translator.translate('events', settings.locale!);
+    projectsText = await translator.translate('projects', settings.locale!);
+    membersText = await translator.translate('members', settings.locale!);
+    recentEventsText =
+        await translator.translate('recentEvents', settings.locale!);
+    serverProblem =
+        await translator.translate('serverProblem', settings.locale!);
 
     setState(() {});
   }
@@ -315,7 +352,8 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
               duration: const Duration(seconds: 1),
               child: SettingsMain(
                 dataHandler: widget.dataHandler,
-                dataApiDog: widget.dataApiDog, prefsOGx: widget.prefsOGx,
+                dataApiDog: widget.dataApiDog,
+                prefsOGx: widget.prefsOGx,
                 organizationBloc: widget.organizationBloc,
               )));
     }
@@ -340,6 +378,46 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
             onLocationRequest: onLocationRequest);
       }));
     }
+  }
+
+  void navigateToIntro() {
+    // if (mounted) {
+    //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+    //     return IntroMain(
+    //         prefsOGx: widget.prefsOGx,
+    //         dataApiDog: widget.dataApiDog,
+    //         cacheManager: widget.cacheManager,
+    //         isolateHandler: widget.dataHandler,
+    //         fcmBloc: widget.fcmBloc,
+    //         organizationBloc: widget.organizationBloc,
+    //         projectBloc: widget.projectBloc);
+    //   }));
+    // }
+    Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => IntroMain(
+              prefsOGx: widget.prefsOGx,
+              dataApiDog: widget.dataApiDog,
+              cacheManager: widget.cacheManager,
+              isolateHandler: widget.dataHandler,
+              fcmBloc: widget.fcmBloc,
+              organizationBloc: widget.organizationBloc,
+              projectBloc: widget.projectBloc),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInCirc;
+
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+        ));
   }
 
   void _navigateToProjects() {
@@ -418,18 +496,27 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
   void _onEventTapped(ActivityModel act) async {
     pp('🌀🌀🌀🌀 _onEventTapped; activityModel: ${act.toJson()}');
     if (act.photo != null) {
-      // widget.onPhotoTapped(act.photo!);
       pp(' 🌀🌀🌀🌀 .................. _navigate to Photo....');
       if (mounted) {
         Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => PhotoCover(
-                photo: act.photo!,
-              ),
-            ));
+            PageTransition(
+                type: PageTransitionType.scale,
+                alignment: Alignment.topLeft,
+                duration: const Duration(milliseconds: 1000),
+                child: PhotoFrame(
+                  photo: act.photo!,
+                  onMapRequested: (photo) {},
+                  onRatingRequested: (photo) {},
+                  elevation: 8.0,
+                  cacheManager: widget.cacheManager,
+                  dataApiDog: widget.dataApiDog,
+                  onPhotoCardClose: () {},
+                  translatedDate: '',
+                  locale: settingsModel.locale!,
+                  prefsOGx: widget.prefsOGx,
+                )));
       }
-
     }
     if (act.video != null) {
       // widget.onVideoTapped(act.video!);
@@ -526,6 +613,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                       projects: projects,
                       users: users,
                       events: events,
+                      locale: settings.locale!,
                       totalEvents: totalEvents,
                       totalProjects: totalProjects,
                       totalUsers: totalUsers,
@@ -578,7 +666,10 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                       onDeviceUserTapped: () {
                         _onDeviceUserTapped();
                       },
-                      centerTopCards: false,
+                      centerTopCards: true,
+                      navigateToIntro: () {
+                        navigateToIntro();
+                      },
                     ),
               tablet: OrientationLayoutBuilder(
                 portrait: (context) {
@@ -586,10 +677,11 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                       ? const SizedBox()
                       : RealDashboard(
                           topCardSpacing: 16.0,
-                          centerTopCards: false,
+                          centerTopCards: true,
                           projects: projects,
                           users: users,
                           events: events,
+                          locale: settings.locale!,
                           forceRefresh: forceRefresh,
                           totalEvents: totalEvents,
                           totalProjects: totalProjects,
@@ -641,7 +733,11 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                           },
                           onDeviceUserTapped: () {
                             _onDeviceUserTapped();
-                          });
+                          },
+                          navigateToIntro: () {
+                            navigateToIntro();
+                          },
+                        );
                 },
                 landscape: (context) {
                   return user == null
@@ -664,6 +760,9 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                           recentEventsText: recentEventsText!,
                           user: user!,
                           width: width,
+                          navigateToIntro: () {
+                            navigateToIntro();
+                          },
                           onEventTapped: (event) {
                             _onEventTapped(event);
                           },
@@ -704,6 +803,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                             _onDeviceUserTapped();
                           },
                           centerTopCards: true,
+                          locale: settings.locale!,
                         );
                 },
               ),
@@ -766,6 +866,8 @@ class RealDashboard extends StatelessWidget {
     this.topCardSpacing,
     required this.centerTopCards,
     required this.recentEventsText,
+    required this.navigateToIntro,
+    required this.locale,
   }) : super(key: key);
 
   final Function onEventsSubtitleTapped;
@@ -789,6 +891,7 @@ class RealDashboard extends StatelessWidget {
       eventsText,
       projectsText,
       membersText,
+      locale,
       recentEventsText;
   final bool forceRefresh;
 
@@ -797,6 +900,7 @@ class RealDashboard extends StatelessWidget {
   final List<User> users;
   final double? topCardSpacing;
   final bool centerTopCards;
+  final Function navigateToIntro;
 
   @override
   Widget build(BuildContext context) {
@@ -817,10 +921,7 @@ class RealDashboard extends StatelessWidget {
                         children: [
                           Text(
                             dashboardText,
-                            style: TextStyle(
-                                fontSize: 24,
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.w800),
+                            style: myTextStyleLargePrimaryColor(context),
                           ),
                         ],
                       ),
@@ -874,6 +975,7 @@ class RealDashboard extends StatelessWidget {
                           onEventTapped(act);
                         },
                         activities: events,
+                        locale: locale,
                       ),
                       const SizedBox(
                         height: 36,
@@ -933,7 +1035,11 @@ class RealDashboard extends StatelessWidget {
                     ),
                   ),
                 ),
-                title: const XdHeader(),
+                title: XdHeader(
+                  navigateToIntro: () {
+                    navigateToIntro();
+                  },
+                ),
                 actions: [
                   // IconButton(
                   //     onPressed: () {

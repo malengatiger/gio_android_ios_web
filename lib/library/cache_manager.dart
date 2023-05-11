@@ -1491,13 +1491,17 @@ class CacheManager {
     var key =
         '${geofenceEvent.user!.userId!}_${geofenceEvent.projectPositionId}';
     _geofenceEventBox?.put(key, geofenceEvent);
-    pp('$mm GeofenceEvent added to local cache: ${geofenceEvent.projectName}');
+    pp('$mm GeofenceEvent added to local cache: ............................ ${geofenceEvent.projectName}');
   }
 
   Future addCommunity({required Community community}) async {
     var key = '${community.countryId}_${community.communityId}';
     _communityBox?.put(key, community);
-    pp('$mm Community added to local cache: ${community.name}');
+    try {
+      pp('$mm Community added to local cache: .............................${community.name}');
+    } catch (e, s) {
+      print(s);
+    }
   }
 
   Future addOrganization({required Organization organization}) async {

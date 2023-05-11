@@ -12,13 +12,11 @@ import 'package:geo_monitor/l10n/translation_handler.dart';
 import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/bloc/project_bloc.dart';
-import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/splash/splash_page.dart';
 import 'package:geo_monitor/ui/dashboard/dashboard_main.dart';
 import 'package:geo_monitor/ui/intro/intro_main.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:universal_platform/universal_platform.dart';
 
@@ -33,7 +31,6 @@ import 'library/ui/loading_card.dart';
 
 int themeIndex = 0;
 var locale = const Locale('en');
-SettingsModel? settings;
 late FirebaseApp firebaseApp;
 fb.User? fbAuthedUser;
 final mx =
@@ -53,7 +50,7 @@ void main() async {
   pp('$mx main: setting up GetStorage ...');
   await GetStorage.init(cacheName);
   prefsOGx = PrefsOGx();
-  settings = await prefsOGx.getSettings();
+  var settings = await prefsOGx.getSettings();
   locale = Locale(settings!.locale!);
 
   /// check user auth status

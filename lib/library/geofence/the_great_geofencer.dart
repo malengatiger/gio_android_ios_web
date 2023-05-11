@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/bloc/geo_exception.dart';
 import 'package:geo_monitor/library/data/position.dart';
+import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/errors/error_handler.dart';
 import 'package:geofence_service/geofence_service.dart';
 import 'package:geofence_service/models/geofence.dart' as geo;
@@ -45,13 +46,13 @@ class TheGreatGeofencer {
 
   final _geofenceList = <geo.Geofence>[];
   User? _user;
+  late SettingsModel settingsModel;
 
   Future<List<ProjectPosition>> _findProjectPositionsByLocation(
       {required String organizationId,
       required double latitude,
       required double longitude,
       required double radiusInKM}) async {
-
     var mList = await dataApiDog.findProjectPositionsByLocation(
         organizationId: organizationId,
         latitude: latitude,
@@ -64,6 +65,7 @@ class TheGreatGeofencer {
   Future buildGeofences({double? radiusInKM}) async {
     pp('$xx buildGeofences .... build geofences for the organization started ... 🌀 ');
     _user ??= await prefsOGx.getUser();
+    settingsModel = await prefsOGx.getSettings();
     if (_user == null) {
       return;
     }
@@ -98,14 +100,16 @@ class TheGreatGeofencer {
 
     int cnt = 0;
     for (var pos in mList) {
-      await addGeofence(projectPosition: pos);
+      await addGeofence(
+          projectPosition: pos,
+          radius: settingsModel.distanceFromProject!.toDouble());
       cnt++;
       if (cnt > 98) {
         break;
       }
     }
 
-    pp('$xx ${_geofenceList.length} geofences added to list');
+    pp('\n$xx ${_geofenceList.length} geofences added to service\n');
     geofenceService.addGeofenceList(_geofenceList);
 
     geofenceService.addGeofenceStatusChangeListener(
@@ -135,9 +139,12 @@ class TheGreatGeofencer {
           '🔆🔆🔆 will wait for geofence status changes ... 🔵🔵🔵🔵🔵 ');
     } catch (e) {
       pp('\n\n$xx GeofenceService failed to start: 🔴 $e 🔴 }');
-      errorHandler.handleError(exception: GeoException(message: 'GeofenceService failed to start',
-          translationKey: 'serverProblem', errorType: GeoException.formatException,
-          url: 'n/a'));
+      errorHandler.handleError(
+          exception: GeoException(
+              message: 'GeofenceService failed to start',
+              translationKey: 'serverProblem',
+              errorType: GeoException.formatException,
+              url: 'n/a'));
     }
   }
 
@@ -208,7 +215,7 @@ class TheGreatGeofencer {
     pp('$xx about to send geofence event to backend ... ');
     try {
       var gfe = await dataApiDog.addGeofenceEvent(event);
-      pp('$xx geofence event added to database for ${event.projectName}');
+      pp('$xx geofence event added to database for ${event.projectName} - 🍎 ${event.date} 🍎');
       _streamController.sink.add(gfe);
     } catch (e) {
       pp('$xx failed to add geofence event');
@@ -225,7 +232,9 @@ class TheGreatGeofencer {
     }
   }
 
-  Future addGeofence({required ProjectPosition projectPosition}) async {
+  Future addGeofence(
+      {required ProjectPosition projectPosition,
+      required double radius}) async {
     projectPosition.nearestCities = [];
     if (projectPosition.position != null) {
       var fence = Geofence(
@@ -234,17 +243,17 @@ class TheGreatGeofencer {
         latitude: projectPosition.position!.coordinates[1],
         longitude: projectPosition.position!.coordinates[0],
         radius: [
-          GeofenceRadius(id: 'radius_100m', length: 100),
-          GeofenceRadius(id: 'radius_200m', length: 200),
+          GeofenceRadius(id: 'radius_from_settings', length: radius),
         ],
       );
 
       _geofenceList.add(fence);
-      pp('$xx added Geofence : 👽👽👽 ${projectPosition.projectName} 👽👽👽👽 '
-          '_geofenceList now has ${_geofenceList.length} fences 🍎 ');
+      pp('$xx added Geofence : 👽👽👽 ${projectPosition.projectName} 👽👽 ${projectPosition.position!.coordinates}'
+          '  🍎 ');
     } else {
       pp('🔴🔴🔴🔴🔴🔴 project position is null, WTF??? ${projectPosition.projectName}');
     }
+
   }
 
   var defaultRadiusInKM = 100.0;

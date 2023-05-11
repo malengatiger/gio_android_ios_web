@@ -139,7 +139,7 @@ class ActivityStreamCardState extends State<ActivityStreamCard> {
             model: widget.activityModel,
             locale: widget.locale,
             width: 428,
-            avatarRadius: 24.0,
+            avatarRadius: 16.0,
             height: height,
             userType: translatedUserType == null
                 ? activityUser!.userType!

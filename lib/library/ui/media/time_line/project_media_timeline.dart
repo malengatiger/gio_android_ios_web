@@ -11,10 +11,12 @@ import 'package:geo_monitor/library/ui/camera/gio_video_player.dart';
 import 'package:geo_monitor/library/ui/camera/photo_handler.dart';
 import 'package:geo_monitor/library/ui/media/time_line/media_grid.dart';
 import 'package:geo_monitor/ui/audio/audio_player_og.dart';
+import 'package:geo_monitor/ui/audio/audio_recorder_og.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../../../l10n/translation_handler.dart';
+import '../../../../ui/audio/audio_recorder.dart';
 import '../../../../ui/dashboard/photo_frame.dart';
 import '../../../api/data_api_og.dart';
 import '../../../bloc/project_bloc.dart';
@@ -108,6 +110,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
 
     setState(() {});
   }
+
   void _listen() async {
     photoSub = widget.fcmBloc.photoStream.listen((photo) {
       photos.insert(0, photo);
@@ -328,43 +331,52 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                 )
               : Stack(
                   children: [
-                    ScreenTypeLayout(
-                      mobile: MediaGrid(
-                          photos: photos,
-                          videos: videos,
-                          audios: audios,
-                          durationText:
-                              durationText == null ? 'Duration' : durationText!,
-                          onVideoTapped: onVideoTapped,
-                          onAudioTapped: onAudioTapped,
-                          onPhotoTapped: onPhotoTapped,
-                          crossAxisCount: 2),
-                      tablet: OrientationLayoutBuilder(landscape: (context) {
-                        return MediaGrid(
+                    ScreenTypeLayout.builder(
+                      mobile: (context){
+                        return  MediaGrid(
                             photos: photos,
                             videos: videos,
                             audios: audios,
-                            durationText: durationText == null
-                                ? 'Duration'
-                                : durationText!,
+                            durationText:
+                            durationText == null ? 'Duration' : durationText!,
                             onVideoTapped: onVideoTapped,
                             onAudioTapped: onAudioTapped,
                             onPhotoTapped: onPhotoTapped,
-                            crossAxisCount: 5);
-                      }, portrait: (context) {
-                        return MediaGrid(
-                            photos: photos,
-                            videos: videos,
-                            audios: audios,
-                            durationText: durationText == null
-                                ? 'Duration'
-                                : durationText!,
-                            onVideoTapped: onVideoTapped,
-                            onAudioTapped: onAudioTapped,
-                            onPhotoTapped: onPhotoTapped,
-                            crossAxisCount: 4);
-                      }),
+                            crossAxisCount: 2);
+                      },
+                      tablet: (ctx){
+                        return OrientationLayoutBuilder(
+                            landscape: (ctx){
+                              return MediaGrid(
+                                  photos: photos,
+                                  videos: videos,
+                                  audios: audios,
+                                  durationText: durationText == null
+                                      ? 'Duration'
+                                      : durationText!,
+                                  onVideoTapped: onVideoTapped,
+                                  onAudioTapped: onAudioTapped,
+                                  onPhotoTapped: onPhotoTapped,
+                                  crossAxisCount: 6);
+                            },
+                            portrait: (ctx){
+                          return MediaGrid(
+                              photos: photos,
+                              videos: videos,
+                              audios: audios,
+                              durationText: durationText == null
+                                  ? 'Duration'
+                                  : durationText!,
+                              onVideoTapped: onVideoTapped,
+                              onAudioTapped: onAudioTapped,
+                              onPhotoTapped: onPhotoTapped,
+                              crossAxisCount: 4);
+                        });
+                      },
+
                     ),
+
+
                     playAudio
                         ? Positioned(
                             left: audioLeftPadding,
@@ -469,6 +481,11 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
 
   void _onMakeAudio() {
     pp('$mm _onMakeAudio ..............');
+    if (mounted) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return AudioRecorder(onCloseRequested: (){}, project: widget.project!);
+      }));
+    }
   }
 }
 
