@@ -25,13 +25,16 @@ class ActivityListCard extends StatefulWidget {
       required this.onTapped,
       this.topPadding,
       this.user,
-      this.project})
+      this.project, required this.prefsOGx, required this.cacheManager})
       : super(key: key);
 
   final Function(ActivityModel) onTapped;
   final double? topPadding;
   final User? user;
   final Project? project;
+  final PrefsOGx prefsOGx;
+  final CacheManager cacheManager;
+
   // final bool refresh;
   // final Function(List<ActivityModel>) onRefreshed;
 
@@ -44,12 +47,14 @@ class _ActivityListCardState extends State<ActivityListCard> {
   late StreamSubscription<SettingsModel> settingsSubscriptionFCM;
   SettingsModel? settings;
   ActivityStrings? activityStrings;
-  String? locale, prefix, suffix;
+  String? locale, prefix, suffix, loadingActivities;
 
   var models = <ActivityModel>[];
   static const userActive = 0, projectActive = 1, orgActive = 2;
   late int activeType;
   bool loading = false;
+  var users = <User>[];
+  bool busy = false, loadingSettings = false;
 
   @override
   void initState() {
@@ -60,12 +65,19 @@ class _ActivityListCardState extends State<ActivityListCard> {
   }
 
   Future _setTexts() async {
+    setState(() {
+      loadingSettings = true;
+    });
     settings = await prefsOGx.getSettings();
-    activityStrings = await ActivityStrings.getTranslated();
+    activityStrings = await ActivityStrings.getTranslated(settings!.locale!);
     var sub = await translator.translate('activityTitle', settings!.locale!);
+
     int index = sub.indexOf('\$');
     prefix = sub.substring(0, index);
     suffix = sub.substring(index + 6);
+    setState(() {
+      loadingSettings = false;
+    });
   }
 
   Future _getData(bool forceRefresh) async {
@@ -76,7 +88,8 @@ class _ActivityListCardState extends State<ActivityListCard> {
     }
     pp('$mm ... getting activity data ... 🔵forceRefresh: $forceRefresh');
     try {
-      settings = await prefsOGx.getSettings();
+      users = await widget.cacheManager.getUsers();
+      settings = await widget.prefsOGx.getSettings();
       var hours = settings!.activityStreamHours!;
       pp('$mm ... get Activity (n hours) ... : $hours');
       if (widget.project != null) {
@@ -207,7 +220,10 @@ class _ActivityListCardState extends State<ActivityListCard> {
   @override
   Widget build(BuildContext context) {
     // pp('$mm build: ......... 🍎🍎 activities: ${models.length}');
-    return Stack(
+    if (loadingSettings) {
+      return const SizedBox();
+    }
+    return busy? Center(child: LoadingCard(loadingData: activityStrings!.loadingActivities!)): Stack(
       children: [
         Column(
           children: [
@@ -230,14 +246,13 @@ class _ActivityListCardState extends State<ActivityListCard> {
                       },
                       child: ActivityStreamCard(
                         translatedUserType: type,
-                        locale: settings!.locale!,
                         activityStrings: activityStrings!,
                         activityModel: act,
                         frontPadding: 24,
                         thinMode: true,
                         width: 300,
                         avatarRadius: 16,
-                        namePictureHorizontal: true,
+                        namePictureHorizontal: true, users: users,
                       ),
                     );
                   }),

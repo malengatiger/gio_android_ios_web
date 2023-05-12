@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:geo_monitor/library/api/data_api.dart';
+
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/data_refresher.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
@@ -9,6 +9,7 @@ import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/functions.dart';
 
 import '../../l10n/translation_handler.dart';
+import '../../library/api/data_api_og.dart';
 import '../../library/generic_functions.dart';
 
 class AuthEmailSignIn extends StatefulWidget {
@@ -91,7 +92,7 @@ class AuthEmailSignInState extends State<AuthEmailSignIn> {
           email: email, password: password);
 
       if (userCred.user != null) {
-        var user = await DataAPI.getUserById(userId: userCred.user!.uid);
+        var user = await dataApiDog.getUserById(userId: userCred.user!.uid);
         if (user != null) {
           await prefsOGx.saveUser(user);
           var map = await getStartEndDates();
@@ -103,7 +104,7 @@ class AuthEmailSignInState extends State<AuthEmailSignIn> {
               startDate: startDate!,
               endDate: endDate!);
           var settingsList =
-              await DataAPI.getOrganizationSettings(user.organizationId!);
+              await dataApiDog.getOrganizationSettings(user.organizationId!);
           settingsList.sort((a, b) => b.created!.compareTo(a.created!));
 
           await prefsOGx.saveSettings(settingsList.first);

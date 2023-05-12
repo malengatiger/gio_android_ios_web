@@ -300,7 +300,6 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                 ];
               }, onSelected: (index) {
                 pp('$mm ...................... action index: $index');
-
                 switch (index) {
                   case 0:
                     if (projectSelected != null) {

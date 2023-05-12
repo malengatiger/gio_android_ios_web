@@ -5,16 +5,14 @@ import 'dart:isolate';
 import 'dart:math';
 
 import 'package:archive/archive_io.dart';
-import 'package:geo_monitor/library/api/data_api.dart';
+
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/fcm_bloc.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/errors/error_handler.dart';
 import 'package:http/http.dart' as http;
-import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../device_location/device_location_bloc.dart';
 import '../../l10n/translation_handler.dart';
 import '../api/data_api_og.dart';
 import '../auth/app_auth.dart';
@@ -124,7 +122,7 @@ class DataRefresher {
           date: DateTime.now().toIso8601String(),
           users: [],
           projectPolygons: [],
-          settings: []);
+          settings: [], activityModels: []);
     }
     return null;
   }
@@ -254,7 +252,7 @@ class DataRefresher {
             date: 'date',
             users: [],
             projectPolygons: [],
-            settings: []);
+            settings: [], activityModels: []);
       });
     } on StateError catch (e, s) {
       pp('$xx ${E.redDot}${E.redDot} Isolate StateError, e: $e'); // In a bad state!

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/bloc/project_bloc.dart';
 import 'package:geo_monitor/library/ui/maps/project_map_mobile.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
@@ -6,7 +7,6 @@ import 'package:uuid/uuid.dart';
 
 import '../../../l10n/translation_handler.dart';
 import '../../api/prefs_og.dart';
-import '../../bloc/admin_bloc.dart';
 import '../../bloc/organization_bloc.dart';
 import '../../cache_manager.dart';
 import '../../data/project.dart';
@@ -118,14 +118,14 @@ class ProjectEditMobileState extends State<ProjectEditMobile>
               projectPositions: [],
               ratings: [],
               projectId: uuid.v4());
-          var m = await adminBloc.addProject(mProject);
+          var m = await projectBloc.addProject(mProject);
           pp('🎽 🎽 🎽 _submit: new project added .........  ${m.toJson()}');
         } else {
           pp('😡 😡 😡 _submit existing project for update, soon! 🌸 ......... ');
           widget.project!.name = nameController.text;
           widget.project!.description = descController.text;
           mProject = widget.project!;
-          var m = await adminBloc.updateProject(widget.project!);
+          var m = await projectBloc.updateProject(widget.project!);
           pp('🎽 🎽 🎽 _submit: new project updated .........  ${m.toJson()}');
         }
         setState(() {

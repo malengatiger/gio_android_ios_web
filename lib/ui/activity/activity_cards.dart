@@ -32,6 +32,8 @@ class ThinCard extends StatelessWidget {
       width: width, height: 160,
       child: Card(
         shape: getRoundedBorder(radius: 16),
+        elevation: 2,
+
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: SizedBox(
@@ -79,8 +81,6 @@ class ThinCard extends StatelessWidget {
                         : UserProfileCard(
                             namePictureHorizontal: namePictureHorizontal,
                             padding: 0,
-                            elevation: 2,
-                            userType: userType,
                             userName: model.userName!,
                             avatarRadius: avatarRadius,
                             textStyle: myTextStyleSmall(context),

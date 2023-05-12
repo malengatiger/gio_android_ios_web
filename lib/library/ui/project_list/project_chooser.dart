@@ -3,9 +3,7 @@ import 'package:badges/badges.dart' as bd;
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/api/data_api_og.dart';
 
-import '../../api/data_api.dart';
 import '../../api/prefs_og.dart';
-import '../../bloc/organization_bloc.dart';
 import '../../cache_manager.dart';
 import '../../data/project.dart';
 import '../../functions.dart';

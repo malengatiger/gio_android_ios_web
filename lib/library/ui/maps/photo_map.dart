@@ -165,10 +165,10 @@ class PhotoMapState extends State<PhotoMap>
         appBar: AppBar(
           title: Text(
             photoLocationText == null ? 'Photo Location' : photoLocationText!,
-            style: myTextStyleMediumBold(context),
+            style: myTextStyleMediumLarge(context),
           ),
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(60),
+            preferredSize: const Size.fromHeight(84),
             child: Column(
               children: [
                 Row(
@@ -180,7 +180,7 @@ class PhotoMapState extends State<PhotoMap>
                     Flexible(
                       child: Text(
                         widget.photo.projectName!,
-                        style: myTextStyleLargePrimaryColor(context),
+                        style: myTextStyleMediumLargePrimaryColor(context),
                       ),
                     ),
                     const SizedBox(
@@ -201,6 +201,7 @@ class PhotoMapState extends State<PhotoMap>
                             ),
                           )
                         : const SizedBox(),
+
                   ],
                 ),
                 const SizedBox(

@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:animations/animations.dart';
 import 'package:badges/badges.dart' as bd;
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/fcm_bloc.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
@@ -14,7 +15,6 @@ import 'package:uuid/uuid.dart';
 
 import '../../../device_location/device_location_bloc.dart';
 import '../../../l10n/translation_handler.dart';
-import '../../api/data_api.dart';
 import '../../cache_manager.dart';
 import '../../data/city.dart';
 import '../../data/photo.dart';
@@ -358,7 +358,7 @@ class ProjectMapMobileState extends State<ProjectMapMobile>
         return;
       }
       pp('Go and find nearest cities to this location : lat: $_latitude lng: $_longitude ...');
-      List<City> cities = await DataAPI.findCitiesByLocation(
+      List<City> cities = await dataApiDog.findCitiesByLocation(
           latitude: _latitude, longitude: _longitude, radiusInKM: 5.0);
 
       pp('$mm Cities around this project position: ${cities.length}');
@@ -381,7 +381,7 @@ class ProjectMapMobileState extends State<ProjectMapMobile>
           organizationId: widget.project.organizationId,
           projectId: widget.project.projectId);
 
-      var resultPosition = await DataAPI.addProjectPosition(position: pos);
+      var resultPosition = await dataApiDog.addProjectPosition(position: pos);
       organizationBloc.addProjectPositionToStream(resultPosition);
       projectPositions.add(resultPosition);
       _addMarkers();

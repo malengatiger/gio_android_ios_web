@@ -249,13 +249,19 @@ TextStyle myTextStyleMediumBoldGrey(BuildContext context) {
 TextStyle myTextStyleLarge(BuildContext context) {
   return GoogleFonts.roboto(
       textStyle: Theme.of(context).textTheme.headlineLarge,
-      fontWeight: FontWeight.w900, color: const Color(0xFF424343),
-      fontSize: 34);
+      fontWeight: FontWeight.w900,
+      fontSize: 28);
 }
 TextStyle myTextStyleMediumLarge(BuildContext context) {
   return GoogleFonts.roboto(
       textStyle: Theme.of(context).textTheme.headlineLarge,
       fontWeight: FontWeight.w900, color: const Color(0xFF424343),
+      fontSize: 24);
+}
+TextStyle myTextStyleMediumLargePrimaryColor(BuildContext context) {
+  return GoogleFonts.roboto(
+      textStyle: Theme.of(context).textTheme.headlineLarge,
+      fontWeight: FontWeight.w900, color: Theme.of(context).primaryColor,
       fontSize: 24);
 }
 TextStyle myTextStyleHeader(BuildContext context) {

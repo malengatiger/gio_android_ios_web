@@ -39,6 +39,7 @@ class ActivityModelAdapter extends TypeAdapter<ActivityModel> {
       orgMessage: fields[16] as OrgMessage?,
       userType: fields[21] as String?,
       translatedUserType: fields[22] as String?,
+      settingsModel: fields[23] as SettingsModel?,
       userThumbnailUrl: fields[20] as String?,
     );
   }
@@ -46,7 +47,7 @@ class ActivityModelAdapter extends TypeAdapter<ActivityModel> {
   @override
   void write(BinaryWriter writer, ActivityModel obj) {
     writer
-      ..writeByte(23)
+      ..writeByte(24)
       ..writeByte(0)
       ..write(obj.activityModelId)
       ..writeByte(1)
@@ -92,7 +93,9 @@ class ActivityModelAdapter extends TypeAdapter<ActivityModel> {
       ..writeByte(21)
       ..write(obj.userType)
       ..writeByte(22)
-      ..write(obj.translatedUserType);
+      ..write(obj.translatedUserType)
+      ..writeByte(23)
+      ..write(obj.settingsModel);
   }
 
   @override

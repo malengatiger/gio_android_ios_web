@@ -82,8 +82,12 @@ class _GioProjectsState extends State<GioProjects>
   int numberOfDays = 30;
   bool sortedByName = true;
   bool openProjectActions = false;
-  String? organizationProjects, projectsNotFound,
-      searchProjects, refreshData, search, projectsText;
+  String? organizationProjects,
+      projectsNotFound,
+      searchProjects,
+      refreshData,
+      search,
+      projectsText;
 
   @override
   void initState() {
@@ -108,8 +112,6 @@ class _GioProjectsState extends State<GioProjects>
     search = await translator.translate('search', sett.locale!);
     projectsText = await translator.translate('projects', sett.locale!);
     searchProjects = await translator.translate('searchProjects', sett.locale!);
-
-
   }
 
   void _listen() {
@@ -207,7 +209,7 @@ class _GioProjectsState extends State<GioProjects>
     });
   }
 
-  var projectsToDisplay =  <Project> [];
+  var projectsToDisplay = <Project>[];
 
   void _runFilter(String text) {
     pp('$mm .... _runFilter: text: $text ......');
@@ -217,8 +219,7 @@ class _GioProjectsState extends State<GioProjects>
       for (var project in projects) {
         projectsToDisplay.add(project);
       }
-      setState(() {
-      });
+      setState(() {});
       return;
     }
     projectsToDisplay.clear();
@@ -228,16 +229,14 @@ class _GioProjectsState extends State<GioProjects>
       if (name.toLowerCase().contains(text.toLowerCase())) {
         var proj = _findProject(name);
         if (proj != null) {
-        projectsToDisplay.add(proj);
+          projectsToDisplay.add(proj);
         }
       }
     }
     pp('$mm .... set state with projectsToDisplay: ${projectsToDisplay.length} ......');
-    setState(() {
-
-    });
-
+    setState(() {});
   }
+
   Project? _findProject(String name) {
     pp('$mm ... find project by name $name from ${projects.length}');
     for (var project in projects) {
@@ -317,7 +316,15 @@ class _GioProjectsState extends State<GioProjects>
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
               duration: const Duration(milliseconds: 1500),
-              child: ProjectEditMain(p)));
+              child: ProjectEditMain(
+                p,
+                prefsOGx: widget.prefsOGx,
+                cacheManager: widget.cacheManager,
+                fcmBloc: widget.fcmBloc,
+                organizationBloc: widget.organizationBloc,
+                projectBloc: widget.projectBloc,
+                dataApiDog: widget.dataApiDog,
+              )));
     }
   }
 
@@ -347,7 +354,8 @@ class _GioProjectsState extends State<GioProjects>
               organizationBloc: widget.organizationBloc,
               prefsOGx: widget.prefsOGx,
               cacheManager: widget.cacheManager,
-              dataApiDog: widget.dataApiDog, fcmBloc: widget.fcmBloc,
+              dataApiDog: widget.dataApiDog,
+              fcmBloc: widget.fcmBloc,
             )));
   }
 
@@ -723,8 +731,8 @@ class _GioProjectsState extends State<GioProjects>
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text(projectsText == null?
-          'Projects':projectsText!,
+        title: Text(
+          projectsText == null ? 'Projects' : projectsText!,
           style: myTextStyleLarge(context),
         ),
         bottom: PreferredSize(
@@ -736,22 +744,24 @@ class _GioProjectsState extends State<GioProjects>
                     SizedBox(
                       width: searchWidth,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
-                        child: TextField(
-                          controller: _textEditingController,
-                          onChanged: (text) {
-                            pp(' ........... changing to: $text');
-                            _runFilter(text);
-                          },
-                          decoration: InputDecoration(
-                            label: Text(search == null? 'Search': search!),
-                            icon: const Icon(Icons.search),
-                            border: const OutlineInputBorder(),
-                            hintText: searchProjects == null? 'Search Projects': searchProjects!,
-                            hintStyle: myTextStyleSmall(context)
-                          ),
-                        )
-                      ),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 20.0, horizontal: 12.0),
+                          child: TextField(
+                            controller: _textEditingController,
+                            onChanged: (text) {
+                              pp(' ........... changing to: $text');
+                              _runFilter(text);
+                            },
+                            decoration: InputDecoration(
+                                label:
+                                    Text(search == null ? 'Search' : search!),
+                                icon: const Icon(Icons.search),
+                                border: const OutlineInputBorder(),
+                                hintText: searchProjects == null
+                                    ? 'Search Projects'
+                                    : searchProjects!,
+                                hintStyle: myTextStyleSmall(context)),
+                          )),
                     ),
                     const SizedBox(
                       height: 24,
@@ -779,28 +789,30 @@ class _GioProjectsState extends State<GioProjects>
                 child: Text('${projectsToDisplay.length}',
                     style: myNumberStyleSmall(context)),
               ),
-              child: user == null? const SizedBox(): ProjectListCard(
-                projects: projectsToDisplay,
-                width: width,
-                horizontalPadding: 12,
-                navigateToDetail: _navigateToDetail,
-                navigateToProjectLocation: _navigateToProjectLocation,
-                navigateToProjectMedia: _navigateToProjectMedia,
-                navigateToProjectMap: _navigateToProjectMap,
-                navigateToProjectPolygonMap: _navigateToProjectPolygonMap,
-                navigateToProjectDashboard: _navigateToProjectDashboard,
-                user: user!,
-                navigateToProjectDirections: (project) async {
-                  var poss = await cacheManager
-                      .getProjectPositions(project.projectId!);
-                  if (poss.isNotEmpty) {
-                    _navigateToDirections(
-                      latitude: poss.first.position!.coordinates[1],
-                      longitude: poss.first.position!.coordinates[0],
-                    );
-                  }
-                },
-              ),
+              child: user == null
+                  ? const SizedBox()
+                  : ProjectListCard(
+                      projects: projectsToDisplay,
+                      width: width,
+                      horizontalPadding: 12,
+                      navigateToDetail: _navigateToDetail,
+                      navigateToProjectLocation: _navigateToProjectLocation,
+                      navigateToProjectMedia: _navigateToProjectMedia,
+                      navigateToProjectMap: _navigateToProjectMap,
+                      navigateToProjectPolygonMap: _navigateToProjectPolygonMap,
+                      navigateToProjectDashboard: _navigateToProjectDashboard,
+                      user: user!,
+                      navigateToProjectDirections: (project) async {
+                        var poss = await cacheManager
+                            .getProjectPositions(project.projectId!);
+                        if (poss.isNotEmpty) {
+                          _navigateToDirections(
+                            latitude: poss.first.position!.coordinates[1],
+                            longitude: poss.first.position!.coordinates[0],
+                          );
+                        }
+                      },
+                    ),
             )),
         tablet: OrientationLayoutBuilder(
           portrait: (ctx) {
@@ -820,33 +832,46 @@ class _GioProjectsState extends State<GioProjects>
                         child: Text('${projectsToDisplay.length}',
                             style: myNumberStyleSmall(context)),
                       ),
-                      child: user == null? const SizedBox(): ProjectListCard(
-                        projects: projectsToDisplay,
-                        width: (width / 2) -20,
-                        horizontalPadding: 12,
-                        navigateToDetail: _navigateToDetail,
-                        navigateToProjectLocation: _navigateToProjectLocation,
-                        navigateToProjectMedia: _navigateToProjectMedia,
-                        navigateToProjectMap: _navigateToProjectMap,
-                        navigateToProjectPolygonMap:
-                            _navigateToProjectPolygonMap,
-                        navigateToProjectDashboard: _navigateToProjectDashboard,
-                        user: user!,
-                        navigateToProjectDirections: (project) async {
-                          var poss = await cacheManager
-                              .getProjectPositions(project.projectId!);
-                          if (poss.isNotEmpty) {
-                            _navigateToDirections(
-                              latitude: poss.first.position!.coordinates[1],
-                              longitude: poss.first.position!.coordinates[0],
-                            );
-                          }
-                        },
-                      ),
+                      child: user == null
+                          ? const SizedBox()
+                          : ProjectListCard(
+                              projects: projectsToDisplay,
+                              width: (width / 2) - 20,
+                              horizontalPadding: 12,
+                              navigateToDetail: _navigateToDetail,
+                              navigateToProjectLocation:
+                                  _navigateToProjectLocation,
+                              navigateToProjectMedia: _navigateToProjectMedia,
+                              navigateToProjectMap: _navigateToProjectMap,
+                              navigateToProjectPolygonMap:
+                                  _navigateToProjectPolygonMap,
+                              navigateToProjectDashboard:
+                                  _navigateToProjectDashboard,
+                              user: user!,
+                              navigateToProjectDirections: (project) async {
+                                var poss = await cacheManager
+                                    .getProjectPositions(project.projectId!);
+                                if (poss.isNotEmpty) {
+                                  _navigateToDirections(
+                                    latitude:
+                                        poss.first.position!.coordinates[1],
+                                    longitude:
+                                        poss.first.position!.coordinates[0],
+                                  );
+                                }
+                              },
+                            ),
                     )),
                 GeoActivity(
                     width: (width / 2),
                     thinMode: true,
+                    prefsOGx: widget.prefsOGx,
+                    cacheManager: widget.cacheManager,
+                    dataApiDog: widget.dataApiDog,
+                    organizationBloc: widget.organizationBloc,
+                    projectBloc: widget.projectBloc,
+                    fcmBloc: widget.fcmBloc,
+                    project: null,
                     showPhoto: (p) {},
                     showVideo: (p) {},
                     showAudio: (p) {},
@@ -905,6 +930,13 @@ class _GioProjectsState extends State<GioProjects>
                 GeoActivity(
                     width: (width / 2) - 48,
                     thinMode: true,
+                    prefsOGx: widget.prefsOGx,
+                    cacheManager: widget.cacheManager,
+                    fcmBloc: widget.fcmBloc,
+                    organizationBloc: widget.organizationBloc,
+                    projectBloc: widget.projectBloc,
+                    project: widget.project,
+                    dataApiDog: widget.dataApiDog,
                     showPhoto: (p) {},
                     showVideo: (p) {},
                     showAudio: (p) {},
@@ -924,19 +956,24 @@ class _GioProjectsState extends State<GioProjects>
     ));
   }
 
-  Widget _fieldBuilder(BuildContext context, TextEditingController textEditingController,
-      FocusNode focusNode, VoidCallback onFieldSubmitted) {
+  Widget _fieldBuilder(
+      BuildContext context,
+      TextEditingController textEditingController,
+      FocusNode focusNode,
+      VoidCallback onFieldSubmitted) {
     return TextField(
       controller: textEditingController,
       focusNode: focusNode,
-      decoration:  InputDecoration(
-        hintText: 'Enter project search',
-        label:  Text(search == null?'Project Search':search!, style: myTextStyleSmall(context),),
-        icon: Icon(Icons.search, color: Theme.of(context).primaryColor,)
-
-      ),
+      decoration: InputDecoration(
+          hintText: 'Enter project search',
+          label: Text(
+            search == null ? 'Project Search' : search!,
+            style: myTextStyleSmall(context),
+          ),
+          icon: Icon(
+            Icons.search,
+            color: Theme.of(context).primaryColor,
+          )),
     );
   }
 }
-
-

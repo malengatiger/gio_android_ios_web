@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
 
 import '../../../l10n/translation_handler.dart';
-import '../../api/data_api.dart';
+
+import '../../api/data_api_og.dart';
 import '../../cache_manager.dart';
 import '../../data/country.dart';
 import '../../data/settings_model.dart';
@@ -38,7 +39,7 @@ class CountryChooserState extends State<CountryChooser> {
     settings = await prefsOGx.getSettings();
     countries = await cacheManager.getCountries();
     if (countries.isEmpty) {
-      countries = await DataAPI.getCountries();
+      countries = await dataApiDog.getCountries();
     }
     countries.sort((a, b) => a.name!.compareTo(b.name!));
     await _buildDropDown();

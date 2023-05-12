@@ -12,11 +12,11 @@ class UserProfileCard extends StatelessWidget {
       this.userThumbUrl,
       this.elevation,
       required this.namePictureHorizontal,
-      this.userType, this.height})
+      this.height})
       : super(key: key);
 
   final String userName;
-  final String? userThumbUrl, userType;
+  final String? userThumbUrl;
   final double? padding, width, avatarRadius;
   final TextStyle? textStyle;
   final double? elevation, height;
@@ -25,14 +25,14 @@ class UserProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width ?? 240, height: height ?? 80,
+      width: width ?? 300, height: height ?? 60,
       child: Card(
         elevation: elevation ?? 8.0,
         shape: getRoundedBorder(radius: 16),
         child: Padding(
-          padding: EdgeInsets.all(padding ?? 8),
+          padding: EdgeInsets.all(padding ?? 2),
           child: namePictureHorizontal
-              ? SizedBox(height: userType == null? 12: 100,
+              ? SizedBox(height: 80,
                 child: Column(mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
@@ -47,24 +47,12 @@ class UserProfileCard extends StatelessWidget {
                                     backgroundImage: NetworkImage(userThumbUrl!,),
                                   ),
                             const SizedBox(
-                              width: 16,
+                              width: 8,
                             ),
-                            SizedBox(height: 48,
-                              child: Column(mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      userName,
-                                      style: textStyle ?? myTextStyleSmall(context),
-                                    ),
-                                  ),
-                                  userType == null
-                                      ? const SizedBox()
-                                      : Text(
-                                    userType!,
-                                    style: myTextStyleTiniest(context),
-                                  ),
-                                ],
+                            Flexible(
+                              child: Text(
+                                userName,
+                                style: textStyle ?? myTextStyleSmall(context),
                               ),
                             ),
                           ],
@@ -101,12 +89,7 @@ class UserProfileCard extends StatelessWidget {
                                 style: textStyle ?? myTextStyleSmall(context),
                               ),
                             ),
-                            userType == null
-                                ?  Text('User type unavailable', style: myTextStyleTiny(context),)
-                                : Text(
-                              userType!,
-                              style: myTextStyleTiniest(context),
-                            )
+
                           ],
                         ),
                       ),

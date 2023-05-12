@@ -178,9 +178,12 @@ class _UserListCardState extends State<UserListCard> {
             const SizedBox(
               height: 32,
             ),
-            Text(
-              widget.deviceUser.organizationName!,
-              style: myTextStyleLargePrimaryColor(context),
+            Padding(
+              padding: const EdgeInsets.only(left:16.0),
+              child: Text(
+                widget.deviceUser.organizationName!,
+                style: myTextStyleMediumLargePrimaryColor(context),
+              ),
             ),
             const SizedBox(
               height: 12,

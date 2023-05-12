@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:geo_monitor/library/data/location_request.dart';
 import 'package:geo_monitor/library/data/location_response.dart';
 import 'package:geo_monitor/ui/activity/activity_header.dart';
@@ -39,7 +40,7 @@ class ActivityList extends StatefulWidget {
     required this.user,
     required this.project,
     required this.onLocationResponse,
-    required this.onLocationRequest,
+    required this.onLocationRequest, required this.prefsOGx, required this.cacheManager,
   }) : super(key: key);
 
   final Function(Photo) onPhotoTapped;
@@ -56,6 +57,8 @@ class ActivityList extends StatefulWidget {
 
   final User? user;
   final Project? project;
+  final PrefsOGx prefsOGx;
+  final CacheManager cacheManager;
 
   @override
   State<ActivityList> createState() => ActivityListState();
@@ -116,7 +119,7 @@ class ActivityListState extends State<ActivityList>
           await translator.translate('organizationActivity', settings!.locale!);
       name = user!.organizationName;
     }
-    activityStrings = await ActivityStrings.getTranslated();
+    activityStrings = await ActivityStrings.getTranslated(settings!.locale!);
     loadingActivities =
         await translator.translate('loadingActivities', settings!.locale!);
 
@@ -200,6 +203,7 @@ class ActivityListState extends State<ActivityList>
                             padding: const EdgeInsets.all(16.0),
                             child: ActivityListCard(
                               topPadding: 0.0,
+                              prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                               onTapped: (act) {
                                 _handleTappedActivity(act);
                               },
@@ -304,7 +308,7 @@ class ActivityListState extends State<ActivityList>
                               topPadding: 0.0,
                               onTapped: (act) {
                                 _handleTappedActivity(act);
-                              },
+                              }, prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                             ),
                           ),
                   ),
@@ -436,6 +440,7 @@ class ActivityListState extends State<ActivityList>
                             padding: const EdgeInsets.all(16.0),
                             child: ActivityListCard(
                               topPadding: 0.0,
+                              prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                               onTapped: (act) {
                                 _handleTappedActivity(act);
                               },

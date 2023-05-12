@@ -292,6 +292,13 @@ class PhotoFrameState extends State<PhotoFrame> {
       pp('🌸🌸🌸🌸🌸🌸 photoCover landscape photo: ${widget.photo.photoId} '
           '- ${widget.photo.created}');
     }
+    var leftPadding = 100.0;
+    var rightPadding = 100.0;
+    final deviceType = getThisDeviceType();
+    if (deviceType == 'phone') {
+      leftPadding = 20;
+      rightPadding = 20;
+    }
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -353,8 +360,8 @@ class PhotoFrameState extends State<PhotoFrame> {
               : const SizedBox(),
           showRatingAdder
               ? Positioned(
-                  left: 100,
-                  right: 100,
+                  left: leftPadding,
+                  right: rightPadding,
                   bottom: 100,
                   child: RatingAdder(
                     photo: widget.photo,

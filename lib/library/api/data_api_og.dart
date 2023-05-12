@@ -616,7 +616,7 @@ class DataApiDog {
         projectPositions: [],
         projectPolygons: [],
         date: DateTime.now().toIso8601String(),
-        settings: []);
+        settings: [], activityModels: []);
 
     var result = await _sendHttpGET(
         '${url!}getProjectData?projectId=$projectId&startDate=$startDate&endDate=$endDate');

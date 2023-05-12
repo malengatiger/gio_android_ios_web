@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/bloc/photo_for_upload.dart';
 import 'package:geo_monitor/library/bloc/video_for_upload.dart';
@@ -15,7 +16,6 @@ import 'package:uuid/uuid.dart';
 
 import '../../device_location/device_location_bloc.dart';
 import '../../l10n/translation_handler.dart';
-import '../api/data_api.dart';
 import '../api/prefs_og.dart';
 import '../data/audio.dart';
 import '../data/photo.dart';
@@ -128,7 +128,7 @@ class CloudStorageBloc {
           durationInSeconds: dur!.inSeconds);
 
       try {
-        var result = await DataAPI.addAudio(audio);
+        var result = await dataApiDog.addAudio(audio);
         await cacheManager.removeUploadedAudio(audio: audioForUpload);
         await organizationBloc.addAudioToStream(result);
         listener.onFileUploadComplete(url, uploadTask.snapshot.totalBytes,
@@ -235,7 +235,7 @@ class CloudStorageBloc {
           landscape: width > height ? 0 : 1,
           userUrl: user!.imageUrl);
 
-      await DataAPI.addPhoto(photo);
+      await dataApiDog.addPhoto(photo);
       await cacheManager.removeUploadedPhoto(photo: photoForUpload);
       pp('\n$mm upload process completed, tell the faithful listener!.');
 
@@ -325,7 +325,7 @@ class CloudStorageBloc {
           userUrl: _user!.imageUrl,
           size: 0.0);
 
-      await DataAPI.addVideo(video);
+      await dataApiDog.addVideo(video);
       await cacheManager.removeUploadedVideo(video: videoForUpload);
       pp('$mm video upload process completed, tell the faithful listener!.\n');
       listener.onFileUploadComplete(

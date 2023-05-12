@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:uuid/uuid.dart';
 
-import '../../api/data_api.dart';
+import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
 import '../../data/org_message.dart';
 import '../../functions.dart';
@@ -56,7 +56,7 @@ class GenericMessageState extends State<GenericMessage> {
           projectId: widget.project == null? null: widget.project!.projectId,
           organizationId: widget.project == null? null: widget.project!.organizationId, orgMessageId: const Uuid().v4());
       try {
-        var res = await DataAPI.sendMessage(msg);
+        var res = await dataApiDog.sendMessage(msg);
         pp('GenericMessage:  🏓  🏓  🏓 Response from server:  🏓 ${res.toJson()}  🏓');
       } catch (e) {
         // AppSnackbar.showErrorSnackbar(

@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   connectivity_plus_windows
   desktop_webview_auth
+  firebase_core
   permission_handler_windows
   record_windows
   url_launcher_windows

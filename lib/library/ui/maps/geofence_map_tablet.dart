@@ -14,19 +14,19 @@ import '../../data/project_position.dart';
 import '../../data/user.dart';
 import '../../functions.dart';
 
-class GeofenceMapTablet extends StatefulWidget {
+class GeofenceMap extends StatefulWidget {
   final GeofenceEvent geofenceEvent;
 
-  const GeofenceMapTablet({
+  const GeofenceMap({
     super.key,
     required this.geofenceEvent,
   });
 
   @override
-  GeofenceMapTabletState createState() => GeofenceMapTabletState();
+  GeofenceMapState createState() => GeofenceMapState();
 }
 
-class GeofenceMapTabletState extends State<GeofenceMapTablet>
+class GeofenceMapState extends State<GeofenceMap>
     with SingleTickerProviderStateMixin {
   final mm = '🔷🔷🔷GeofenceMapTablet: ';
   late AnimationController _animationController;
@@ -139,10 +139,6 @@ class GeofenceMapTabletState extends State<GeofenceMapTablet>
 
   @override
   Widget build(BuildContext context) {
-    // String formattedDate =
-    //     DateFormat.yMMMEd().format(DateTime.parse(widget.geofenceEvent.date!));
-    var time =
-        TimeOfDay.fromDateTime(DateTime.parse(widget.geofenceEvent.date!));
     var showPicture = false;
     if (widget.geofenceEvent.user != null) {
       if (widget.geofenceEvent.user!.thumbnailUrl != null) {
@@ -166,7 +162,7 @@ class GeofenceMapTabletState extends State<GeofenceMapTablet>
               children: [
                 Text(
                   widget.geofenceEvent.projectName!,
-                  style: myTextStyleLargePrimaryColor(context),
+                  style: myTextStyleMediumLargePrimaryColor(context),
                 ),
                 const SizedBox(
                   height: 16,
@@ -217,8 +213,8 @@ class GeofenceMapTabletState extends State<GeofenceMapTablet>
                           elevation: 8,
                           color: Colors.black38,
                           child: SizedBox(
-                            height: deviceType == 'phone' ? 120 : 660,
-                            width: deviceType == 'phone' ? 80 : 480,
+                            height: deviceType == 'phone' ? 64 : 240,
+                            width: deviceType == 'phone' ? 64 : 480,
                             child: Column(
                               children: [
                                 const SizedBox(
@@ -262,8 +258,8 @@ class GeofenceMapTabletState extends State<GeofenceMapTablet>
                     ),
                   )
                 : Positioned(
-                    left: 12,
-                    top: 12,
+                    left: 2,
+                    top: 2,
                     child: AnimatedBuilder(
                       animation: _animationController,
                       builder: (BuildContext context, Widget? child) {
@@ -288,7 +284,7 @@ class GeofenceMapTabletState extends State<GeofenceMapTablet>
                             padding: const EdgeInsets.all(8.0),
                             child: SizedBox(
                               // height: deviceType == 'phone'? 140: 420,
-                              width: deviceType == 'phone' ? 160 : 220,
+                              width: deviceType == 'phone' ? 100 : 160,
                               child: Column(
                                 children: [
                                   const SizedBox(
@@ -299,8 +295,6 @@ class GeofenceMapTabletState extends State<GeofenceMapTablet>
                                           child: Image.network(
                                             widget.geofenceEvent.user!
                                                 .thumbnailUrl!,
-                                            // height: deviceType == 'phone'? 140: 420,
-                                            // width: deviceType == 'phone'? 140: 220,
                                             fit: BoxFit.fill,
                                           ),
                                         )
@@ -312,7 +306,7 @@ class GeofenceMapTabletState extends State<GeofenceMapTablet>
                                     translatedDate == null
                                         ? widget.geofenceEvent.date!
                                         : translatedDate!,
-                                    style: myTextStyleSmallBoldPrimaryColor(context),
+                                    style: myTextStyleTiny(context),
                                   ),
                                   const SizedBox(
                                     height: 8,

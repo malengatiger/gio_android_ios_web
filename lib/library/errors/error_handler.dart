@@ -4,7 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:geo_monitor/device_location/device_location_bloc.dart';
-import 'package:geo_monitor/library/api/data_api.dart';
+
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:geo_monitor/library/data/app_error.dart';

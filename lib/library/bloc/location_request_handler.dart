@@ -6,7 +6,6 @@ import 'package:geo_monitor/library/data/location_request.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../l10n/translation_handler.dart';
-import '../api/data_api.dart';
 import '../cache_manager.dart';
 import '../data/location_response.dart';
 import '../data/position.dart';

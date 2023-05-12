@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/bloc/project_bloc.dart';
 
 import 'package:page_transition/page_transition.dart';
 
+import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
-import '../../library/bloc/admin_bloc.dart';
 import '../../library/data/community.dart';
 import '../../library/data/project.dart';
 import '../../library/data/user.dart';
@@ -317,7 +318,7 @@ class ProjectDetailState extends State<ProjectDetail> {
   void _onRefresh() async {
     try {
       debugPrint('✳️ ✳️ ✳️ ......  refresh project');
-      project = await adminBloc.findProjectById(project.projectId!);
+     // project = await dataApiDog.getproje(project.projectId!);
       debugPrint('✳️ ✳️ ✳️ ......  refresh project done, set state ...');
       setState(() {});
     } catch (e) {

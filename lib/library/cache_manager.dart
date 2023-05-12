@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/audio_for_upload.dart';
 import 'package:geo_monitor/library/bloc/photo_for_upload.dart';
 import 'package:geo_monitor/library/bloc/video_for_upload.dart';
@@ -990,17 +991,6 @@ class CacheManager {
   Future<DataBag> getOrganizationData({required String organizationId}) async {
     pp('$mm ............. getOrganizationData starting ...');
     final start = DateTime.now();
-    // if (!_isInitialized) {
-    //   pp('$mm$mm getOrganizationData: Hive not initialized yet; waiting for 3 seconds ... ${DateTime.now().toIso8601String()}');
-    //   await Future.delayed(const Duration(seconds: 3));
-    //   pp('$mm$mm getOrganizationData: Done waiting ... ${DateTime.now().toIso8601String()}');
-    //   if (_isInitialized) {
-    //     pp('$mm$mm getOrganizationData: Hive initialized!!');
-    //   } else {
-    //     getOrganizationData(organizationId: organizationId);
-    //   }
-    //
-    // }
 
     final projects = await getOrganizationProjects();
     final users = await getUsers();
@@ -1012,12 +1002,16 @@ class CacheManager {
     final schedules = await getOrganizationMonitorSchedules();
     final positions = await getOrganizationProjectPositions();
     final polygons = await getOrganizationProjectPolygons();
+    final sett = await prefsOGx.getSettings();
+    final acts = await getActivitiesWithinHours(sett.activityStreamHours!);
+
     final end1 = DateTime.now();
 
     pp('$mm getOrganizationData: 🍎 ${end1.difference(start).inSeconds} seconds elapsed');
 
 
     final bag = DataBag(
+        activityModels: acts,
         photos: photos,
         videos: videos,
         fieldMonitorSchedules: schedules,
@@ -1062,6 +1056,7 @@ class CacheManager {
         projectPositions: positions,
         projects: projects,
         audios: audios,
+        activityModels: [],
         projectPolygons: polygons,
         date: DateTime.now().toUtc().toIso8601String(),
         users: users,

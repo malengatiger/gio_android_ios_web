@@ -9,6 +9,7 @@ import '../../l10n/translation_handler.dart';
 import '../../library/api/prefs_og.dart';
 import '../../library/bloc/project_bloc.dart';
 import '../../library/bloc/user_bloc.dart';
+import '../../library/cache_manager.dart';
 import '../../library/data/activity_model.dart';
 import '../../library/data/audio.dart';
 import '../../library/data/geofence_event.dart';
@@ -44,7 +45,7 @@ class ActivityListTablet extends StatefulWidget {
     this.user,
     this.project,
     required this.onLocationResponse,
-    required this.onLocationRequest,
+    required this.onLocationRequest, required this.prefsOGx, required this.cacheManager,
   }) : super(key: key);
   final double width;
   final bool thinMode;
@@ -62,6 +63,9 @@ class ActivityListTablet extends StatefulWidget {
 
   final User? user;
   final Project? project;
+  final PrefsOGx prefsOGx;
+  final CacheManager cacheManager;
+
 
   @override
   State<ActivityListTablet> createState() => _ActivityListTabletState();
@@ -94,9 +98,9 @@ class _ActivityListTabletState extends State<ActivityListTablet>
 
   SettingsModel? sett;
   Future _setTexts() async {
-    sett = await prefsOGx.getSettings();
+    sett = await widget.prefsOGx.getSettings();
 
-    activityStrings = await ActivityStrings.getTranslated();
+    activityStrings = await ActivityStrings.getTranslated(sett!.locale!);
     setState(() {});
   }
 
@@ -323,7 +327,7 @@ class _ActivityListTabletState extends State<ActivityListTablet>
           // height: height - 100,
           child: ActivityListCard(
             onTapped: _handleTappedActivity,
-
+            prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
           ),
         ),
         Positioned(

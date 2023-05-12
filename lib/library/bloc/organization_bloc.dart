@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:geo_monitor/library/bloc/data_refresher.dart';
 import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/theme_bloc.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
@@ -8,7 +7,6 @@ import 'package:geo_monitor/library/data/project_summary.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 
 import '../../l10n/translation_handler.dart';
-import '../api/data_api.dart';
 import '../api/data_api_og.dart';
 import '../cache_manager.dart';
 import '../data/audio.dart';
@@ -193,9 +191,7 @@ class OrganizationBloc {
     if (forceRefresh) {
       pp('$mm get data from server .....................; '
           'forceRefresh: $forceRefresh; if true do the refresh ...');
-      await getLatestSettings(organizationId);
-
-      dataHandler.getOrganizationData();
+      await dataHandler.getOrganizationData();
       bag!.projects = projects;
       bag.users = users;
       return bag;
@@ -204,7 +200,7 @@ class OrganizationBloc {
       if (bag.isEmpty()) {
         pp('$mm bag is empty. No organization data anywhere yet? ... '
             'will force refresh, forceRefresh: $forceRefresh');
-        dataHandler.getOrganizationData();
+        await dataHandler.getOrganizationData();
         bag.projects = projects;
         bag.users = users;
         return bag;
@@ -227,28 +223,6 @@ class OrganizationBloc {
     pp('\n$mm filtered bag .... ${end2.difference(start2)} seconds elapsed for filter');
     printDataBag(mBag);
     return mBag;
-  }
-
-  Future<DataBag> refreshOrganizationData(
-      {required String organizationId,
-      required String startDate,
-      required String endDate}) async {
-
-    pp('$mm getOrganizationData ... photos, videos and schedules etc.');
-    pp('$mm get data from server .....................');
-    var bag = await zipBloc.getOrganizationDataZippedFile(
-        organizationId, startDate, endDate);
-
-    return bag!;
-  }
-
-  void _putContentsOfBagIntoStreams(DataBag bag) {
-    // pp('$mm _putContentsOfBagIntoStreams: .................................... '
-    try {
-      dataBagController.sink.add(bag);
-    } catch (e) {
-      pp('$mm _putContentsOfBagIntoStreams ERROR - $e');
-    }
   }
 
   Future<List<User>> getUsers(
@@ -414,7 +388,7 @@ class OrganizationBloc {
       pp('$mm 💜💜💜💜 getOrganizationActivity found: 💜 ${activities.length} activities ; organizationId: $organizationId 💜');
       return activities;
     } catch (e) {
-      pp('$mm $e');
+      pp('$mm PROBLEMO SENOR!! $e');
       rethrow;
     }
   }

@@ -20,6 +20,7 @@ import 'package:geo_monitor/library/data/user.dart';
 import 'package:geo_monitor/library/data/video.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/library/generic_functions.dart';
+import 'package:geo_monitor/library/ui/maps/photo_map.dart';
 import 'package:geo_monitor/library/ui/media/photo_cover.dart';
 import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
 import 'package:geo_monitor/library/ui/project_list/gio_projects.dart';
@@ -27,8 +28,10 @@ import 'package:geo_monitor/library/users/edit/user_edit_main.dart';
 import 'package:geo_monitor/library/users/list/geo_user_list.dart';
 import 'package:geo_monitor/main.dart';
 import 'package:geo_monitor/ui/activity/gio_activities.dart';
+import 'package:geo_monitor/ui/audio/audio_player_og.dart';
 import 'package:geo_monitor/ui/dashboard/photo_frame.dart';
 import 'package:geo_monitor/ui/intro/intro_main.dart';
+import 'package:geo_monitor/utils/audio_player.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -41,10 +44,12 @@ import '../library/bloc/isolate_handler.dart';
 import '../library/bloc/project_bloc.dart';
 import '../library/bloc/theme_bloc.dart';
 import '../library/cache_manager.dart';
+import '../library/data/activity_type_enum.dart';
 import '../library/data/data_bag.dart';
 import '../library/data/project.dart';
 import '../library/data/settings_model.dart';
 import '../library/ui/loading_card.dart';
+import '../library/ui/maps/geofence_map_tablet.dart';
 import '../library/ui/settings/settings_main.dart';
 import 'member_list.dart';
 
@@ -69,10 +74,10 @@ class DashboardKhaya extends StatefulWidget {
   final IsolateDataHandler dataHandler;
 
   @override
-  State<DashboardKhaya> createState() => _DashboardKhayaState();
+  State<DashboardKhaya> createState() => DashboardKhayaState();
 }
 
-class _DashboardKhayaState extends State<DashboardKhaya> {
+class DashboardKhayaState extends State<DashboardKhaya> {
   var totalEvents = 0;
   var totalProjects = 0;
   var totalUsers = 0;
@@ -288,28 +293,29 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
   }
 
   void _getData(bool forceRefresh) async {
-    user = await prefsOGx.getUser();
-    final sett = await prefsOGx.getSettings();
+    user = await widget.prefsOGx.getUser();
+    final sett = await widget.prefsOGx.getSettings();
     try {
       pp('$mm _getData .... forceRefresh: $forceRefresh  ');
       final m = await getStartEndDates(numberOfDays: sett.numberOfDays!);
-      final bag = await organizationBloc.getOrganizationData(
+      final bag = await widget.organizationBloc.getOrganizationData(
           organizationId: user!.organizationId!,
           forceRefresh: forceRefresh,
           startDate: m['startDate']!,
           endDate: m['endDate']!);
       projects = bag.projects!;
-
-      users = await organizationBloc.getUsers(
+      pp('$mm projects found : ${projects.length}');
+      users = await widget.organizationBloc.getUsers(
           organizationId: user!.organizationId!, forceRefresh: forceRefresh);
+      pp('$mm users found : ${projects.length}');
 
-      events = await organizationBloc.getOrganizationActivity(
+      events = await widget.organizationBloc.getOrganizationActivity(
           organizationId: user!.organizationId!,
           forceRefresh: true,
           hours: sett.activityStreamHours!);
     } catch (e) {
       if (mounted) {
-        pp('$mm showSnack');
+        pp('$mm showSnack with error : $e');
         showSnackBar(
             message: serverProblem == null ? 'Server Problem' : serverProblem!,
             context: context,
@@ -322,9 +328,10 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
   }
 
   String? serverProblem;
+  late String deviceType;
   late SettingsModel settings;
   void _setTexts() async {
-    settings = await prefsOGx.getSettings();
+    settings = await widget.prefsOGx.getSettings();
     loadingDataText =
         await translator.translate('loadingActivities', settings.locale!);
     dashboardText = await translator.translate('dashboard', settings.locale!);
@@ -336,6 +343,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
     serverProblem =
         await translator.translate('serverProblem', settings.locale!);
 
+    deviceType = getThisDeviceType();
     setState(() {});
   }
 
@@ -354,7 +362,11 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                 dataHandler: widget.dataHandler,
                 dataApiDog: widget.dataApiDog,
                 prefsOGx: widget.prefsOGx,
+                cacheManager: widget.cacheManager,
+                project: null,
+                fcmBloc: widget.fcmBloc,
                 organizationBloc: widget.organizationBloc,
+                projectBloc: widget.projectBloc,
               )));
     }
   }
@@ -365,17 +377,25 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
     if (mounted) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return GioActivities(
-            onPhotoTapped: onPhotoTapped,
-            onVideoTapped: onVideoTapped,
-            onAudioTapped: onAudioTapped,
-            onUserTapped: onUserTapped,
-            onProjectTapped: onProjectTapped,
-            onProjectPositionTapped: onProjectPositionTapped,
-            onPolygonTapped: onPolygonTapped,
-            onGeofenceEventTapped: onGeofenceEventTapped,
-            onOrgMessage: onOrgMessage,
-            onLocationResponse: onLocationResponse,
-            onLocationRequest: onLocationRequest);
+          fcmBloc: widget.fcmBloc,
+          organizationBloc: widget.organizationBloc,
+          projectBloc: widget.projectBloc,
+          dataApiDog: widget.dataApiDog,
+          project: null,
+          onPhotoTapped: onPhotoTapped,
+          onVideoTapped: onVideoTapped,
+          onAudioTapped: onAudioTapped,
+          onUserTapped: onUserTapped,
+          onProjectTapped: onProjectTapped,
+          onProjectPositionTapped: onProjectPositionTapped,
+          onPolygonTapped: onPolygonTapped,
+          onGeofenceEventTapped: onGeofenceEventTapped,
+          onOrgMessage: onOrgMessage,
+          onLocationResponse: onLocationResponse,
+          onLocationRequest: onLocationRequest,
+          prefsOGx: widget.prefsOGx,
+          cacheManager: widget.cacheManager,
+        );
       }));
     }
   }
@@ -445,8 +465,13 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  GioUserList(dataApiDog: widget.dataApiDog)));
+              builder: (context) => GioUserList(
+                  fcmBloc: widget.fcmBloc,
+                  organizationBloc: widget.organizationBloc,
+                  projectBloc: widget.projectBloc,
+                  prefsOGx: widget.prefsOGx,
+                  cacheManager: widget.cacheManager,
+                  dataApiDog: widget.dataApiDog)));
     }
   }
 
@@ -463,7 +488,15 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
               type: PageTransitionType.scale,
               alignment: Alignment.center,
               duration: const Duration(seconds: 1),
-              child: UserEditMain(user)));
+              child: UserEditMain(
+                user,
+                fcmBloc: widget.fcmBloc,
+                organizationBloc: widget.organizationBloc,
+                projectBloc: widget.projectBloc,
+                dataApiDog: widget.dataApiDog,
+                prefsOGx: widget.prefsOGx,
+                cacheManager: widget.cacheManager,
+              )));
     }
   }
 
@@ -494,9 +527,110 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
   }
 
   void _onEventTapped(ActivityModel act) async {
-    pp('🌀🌀🌀🌀 _onEventTapped; activityModel: ${act.toJson()}');
-    if (act.photo != null) {
-      pp(' 🌀🌀🌀🌀 .................. _navigate to Photo....');
+    pp('$mm 🌀🌀🌀🌀 _onEventTapped; activityModel: ${act.toJson()}\n');
+
+    switch (act.activityType!) {
+      case ActivityType.projectAdded:
+        // TODO: Handle this case.
+        break;
+      case ActivityType.photoAdded:
+        onPhotoTapped(act.photo!);
+        break;
+      case ActivityType.videoAdded:
+        onVideoTapped(act.video!);
+        break;
+      case ActivityType.audioAdded:
+        onAudioTapped(act.audio!);
+        break;
+      case ActivityType.messageAdded:
+        onOrgMessage(act.orgMessage!);
+        break;
+      case ActivityType.userAddedOrModified:
+        onUserTapped(act.user!);
+        break;
+      case ActivityType.positionAdded:
+        onProjectPositionTapped(act.projectPosition!);
+        break;
+      case ActivityType.polygonAdded:
+        // TODO: Handle this case.
+        break;
+      case ActivityType.settingsChanged:
+        onSettingsChanged(act.settingsModel!);
+        break;
+      case ActivityType.geofenceEventAdded:
+        onGeofenceEventTapped(act.geofenceEvent!);
+        break;
+      case ActivityType.conditionAdded:
+        // TODO: Handle this case.
+        break;
+      case ActivityType.locationRequest:
+        onLocationRequest(act.locationRequest!);
+        break;
+      case ActivityType.locationResponse:
+        onLocationResponse(act.locationResponse!);
+        break;
+      case ActivityType.kill:
+        // TODO: Handle this case.
+        break;
+    }
+  }
+
+  onSettingsChanged(SettingsModel p1) {
+    pp('🌀🌀🌀🌀 onSettingsChanged; ${p1.toJson()}');
+    if (deviceType == 'phone') {}
+    if (mounted) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.fade,
+              alignment: Alignment.topLeft,
+              duration: const Duration(milliseconds: 1000),
+              child: SettingsMain(
+                  dataHandler: widget.dataHandler,
+                  dataApiDog: widget.dataApiDog,
+                  prefsOGx: widget.prefsOGx,
+                  organizationBloc: widget.organizationBloc,
+                  cacheManager: widget.cacheManager,
+                  projectBloc: widget.projectBloc,
+                  fcmBloc: widget.fcmBloc)));
+    }
+  }
+
+  onLocationRequest(LocationRequest p1) {
+    pp('🌀🌀🌀🌀 onLocationRequest; ${p1.toJson()}');
+    if (deviceType == 'phone') {}
+  }
+
+  onUserTapped(User p1) {
+    pp('🌀🌀🌀🌀 onUserTapped; ${p1.toJson()}');
+    if (deviceType == 'phone') {
+      if (mounted) {
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.fade,
+                alignment: Alignment.topLeft,
+                duration: const Duration(milliseconds: 1000),
+                child: UserEditMain(user,
+                    prefsOGx: widget.prefsOGx,
+                    cacheManager: widget.cacheManager,
+                    projectBloc: widget.projectBloc,
+                    organizationBloc: widget.organizationBloc,
+                    dataApiDog: widget.dataApiDog,
+                    fcmBloc: widget.fcmBloc)));
+      }
+    }
+  }
+
+  onLocationResponse(LocationResponse p1) {
+    pp('🌀🌀🌀🌀 onLocationResponse; ${p1.toJson()}');
+    if (deviceType == 'phone') {}
+  }
+
+  onPhotoTapped(Photo p1) {
+    pp('🌀🌀🌀🌀 onPhotoTapped; ${p1.toJson()}');
+
+    if (deviceType == 'phone') {
       if (mounted) {
         Navigator.push(
             context,
@@ -505,7 +639,7 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                 alignment: Alignment.topLeft,
                 duration: const Duration(milliseconds: 1000),
                 child: PhotoFrame(
-                  photo: act.photo!,
+                  photo: p1,
                   onMapRequested: (photo) {},
                   onRatingRequested: (photo) {},
                   elevation: 8.0,
@@ -517,35 +651,81 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                   prefsOGx: widget.prefsOGx,
                 )));
       }
-    }
-    if (act.video != null) {
-      // widget.onVideoTapped(act.video!);
-    }
+    } else {}
+  }
 
-    if (act.audio != null) {
-      // widget.onAudioTapped(act.audio!);
+  onVideoTapped(Video p1) {
+    pp('🌀🌀🌀🌀 onVideoTapped; ${p1.toJson()}');
+    setState(() {
+      video = p1;
+    });
+    if (deviceType == 'phone') {
+    } else {
+      setState(() {
+        playAudio = false;
+        playVideo = true;
+      });
     }
+  }
 
-    if (act.user != null) {}
-    if (act.projectPosition != null) {
-      // widget.onProjectPositionTapped(act.projectPosition!);
+  Audio? audio;
+  Video? video;
+  Photo? photo;
+
+  onAudioTapped(Audio p1) {
+    pp('🌀🌀🌀🌀 onAudioTapped; ${p1.toJson()}');
+    setState(() {
+      audio = p1;
+    });
+    if (deviceType == 'phone') {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (ctx) => AudioPlayerOG(
+              audio: audio!,
+              onCloseRequested: () {
+                setState(() {
+                  playAudio = false;
+                });
+              },
+              dataApiDog: widget.dataApiDog)));
+    } else {
+      setState(() {
+        playAudio = true;
+        playVideo = false;
+      });
     }
-    if (act.locationRequest != null) {
-      // widget.onLocationRequest(act.locationRequest!);
-    }
-    if (act.locationResponse != null) {
-      // widget.onLocationResponse(act.locationResponse!);
-    }
-    if (act.geofenceEvent != null) {
-      // widget.onGeofenceEventTapped(act.geofenceEvent!);
-    }
-    if (act.orgMessage != null) {
-      // widget.onOrgMessage(act.orgMessage!);
-    }
+  }
+
+  onProjectPositionTapped(ProjectPosition p1) {
+    pp('🌀🌀🌀🌀 onProjectPositionTapped; ${p1.toJson()}');
+    if (deviceType == 'phone') {}
+  }
+
+  onPolygonTapped(ProjectPolygon p1) {
+    pp('🌀🌀🌀🌀 onPolygonTapped; ${p1.toJson()}');
+    if (deviceType == 'phone') {}
+  }
+
+  onGeofenceEventTapped(GeofenceEvent p1) {
+    pp('🌀🌀🌀🌀 onGeofenceEventTapped; ${p1.toJson()}');
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.center,
+            duration: const Duration(seconds: 1),
+            child: GeofenceMap(
+              geofenceEvent: p1,
+            )));
+  }
+
+  onOrgMessage(OrgMessage p1) {
+    pp('🌀🌀🌀🌀 onOrgMessage; ${p1.toJson()}');
+    if (deviceType == 'phone') {}
   }
 
   void onProjectTapped(Project project) async {
     pp('🌀🌀🌀🌀 _onProjectTapped; navigate to timeLine: project: ${project.toJson()}');
+    if (deviceType == 'phone') {}
     if (mounted) {
       Navigator.push(
           context,
@@ -563,10 +743,6 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                 dataApiDog: widget.dataApiDog,
               )));
     }
-  }
-
-  void _onUserTapped(User user) async {
-    pp('🌀🌀🌀🌀 _onUserTapped; user: ${user.toJson()}');
   }
 
   void _onProjectsAcquired(int projects) async {
@@ -590,6 +766,12 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
     });
   }
 
+  bool isPlaying = false;
+  bool isPaused = false;
+  bool isStopped = true;
+  bool isBuffering = false;
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     var sigmaX = 12.0;
@@ -606,230 +788,244 @@ class _DashboardKhayaState extends State<DashboardKhaya> {
                       ? 'Loading Data'
                       : loadingDataText!),
             )
-          : ScreenTypeLayout(
-              mobile: user == null
-                  ? const SizedBox()
-                  : RealDashboard(
-                      projects: projects,
-                      users: users,
-                      events: events,
-                      locale: settings.locale!,
-                      totalEvents: totalEvents,
-                      totalProjects: totalProjects,
-                      totalUsers: totalUsers,
-                      sigmaX: sigmaX,
-                      sigmaY: sigmaY,
-                      user: user!,
-                      width: width,
-                      forceRefresh: forceRefresh,
-                      membersText: membersText!,
-                      projectsText: projectsText!,
-                      eventsText: eventsText!,
-                      dashboardText: dashboardText!,
-                      recentEventsText: recentEventsText!,
-                      onEventTapped: (event) {
-                        _onEventTapped(event);
+          : ScreenTypeLayout.builder(
+              mobile: (ctx) {
+                return user == null
+                    ? const SizedBox()
+                    : RealDashboard(
+                        projects: projects,
+                        users: users,
+                        events: events,
+                        locale: settings.locale!,
+                        totalEvents: totalEvents,
+                        totalProjects: totalProjects,
+                        totalUsers: totalUsers,
+                        sigmaX: sigmaX,
+                        sigmaY: sigmaY,
+                        user: user!,
+                        width: width,
+                        forceRefresh: forceRefresh,
+                        membersText: membersText!,
+                        projectsText: projectsText!,
+                        eventsText: eventsText!,
+                        dashboardText: dashboardText!,
+                        recentEventsText: recentEventsText!,
+                        onEventTapped: (event) {
+                          _onEventTapped(event);
+                        },
+                        onProjectSubtitleTapped: () {
+                          _onProjectSubtitleTapped();
+                        },
+                        onProjectsAcquired: (projects) {
+                          _onProjectsAcquired(projects);
+                        },
+                        onProjectTapped: (project) {
+                          onProjectTapped(project);
+                        },
+                        onUserSubtitleTapped: () {
+                          _onUserSubtitleTapped();
+                        },
+                        onUsersAcquired: (users) {
+                          _onUsersAcquired(users);
+                        },
+                        onUserTapped: (user) {
+                          onUserTapped(user);
+                        },
+                        onEventsSubtitleTapped: () {
+                          _onEventsSubtitleTapped();
+                        },
+                        onEventsAcquired: (events) {
+                          _onEventsAcquired(events);
+                        },
+                        onRefreshRequested: () {
+                          _onRefreshRequested();
+                        },
+                        onSearchTapped: () {
+                          _onSearchTapped();
+                        },
+                        onSettingsRequested: () {
+                          _onSettingsRequested();
+                        },
+                        onDeviceUserTapped: () {
+                          _onDeviceUserTapped();
+                        },
+                        centerTopCards: true,
+                        navigateToIntro: () {
+                          navigateToIntro();
+                        },
+                        navigateToActivities: () {
+                          _navigateToActivities();
+                        },
+                      );
+              },
+              tablet: (ctx) {
+                return Stack(
+                  children: [
+                    OrientationLayoutBuilder(
+                      portrait: (context) {
+                        return user == null
+                            ? const SizedBox()
+                            : RealDashboard(
+                                topCardSpacing: 16.0,
+                                centerTopCards: true,
+                                projects: projects,
+                                users: users,
+                                events: events,
+                                navigateToActivities: () {
+                                  _navigateToActivities();
+                                },
+                                locale: settings.locale!,
+                                forceRefresh: forceRefresh,
+                                totalEvents: totalEvents,
+                                totalProjects: totalProjects,
+                                totalUsers: totalUsers,
+                                sigmaX: sigmaX,
+                                sigmaY: sigmaY,
+                                user: user!,
+                                width: width,
+                                membersText: membersText!,
+                                projectsText: projectsText!,
+                                eventsText: eventsText!,
+                                dashboardText: dashboardText!,
+                                recentEventsText: recentEventsText!,
+                                onEventTapped: (event) {
+                                  _onEventTapped(event);
+                                },
+                                onProjectSubtitleTapped: () {
+                                  _onProjectSubtitleTapped();
+                                },
+                                onProjectsAcquired: (projects) {
+                                  _onProjectsAcquired(projects);
+                                },
+                                onProjectTapped: (project) {
+                                  onProjectTapped(project);
+                                },
+                                onUserSubtitleTapped: () {
+                                  _onUserSubtitleTapped();
+                                },
+                                onUsersAcquired: (users) {
+                                  _onUsersAcquired(users);
+                                },
+                                onUserTapped: (user) {
+                                  onUserTapped(user);
+                                },
+                                onEventsSubtitleTapped: () {
+                                  _onEventsSubtitleTapped();
+                                },
+                                onEventsAcquired: (events) {
+                                  _onEventsAcquired(events);
+                                },
+                                onRefreshRequested: () {
+                                  _onRefreshRequested();
+                                },
+                                onSearchTapped: () {
+                                  _onSearchTapped();
+                                },
+                                onSettingsRequested: () {
+                                  _onSettingsRequested();
+                                },
+                                onDeviceUserTapped: () {
+                                  _onDeviceUserTapped();
+                                },
+                                navigateToIntro: () {
+                                  navigateToIntro();
+                                },
+                              );
                       },
-                      onProjectSubtitleTapped: () {
-                        _onProjectSubtitleTapped();
-                      },
-                      onProjectsAcquired: (projects) {
-                        _onProjectsAcquired(projects);
-                      },
-                      onProjectTapped: (project) {
-                        onProjectTapped(project);
-                      },
-                      onUserSubtitleTapped: () {
-                        _onUserSubtitleTapped();
-                      },
-                      onUsersAcquired: (users) {
-                        _onUsersAcquired(users);
-                      },
-                      onUserTapped: (user) {
-                        _onUserTapped(user);
-                      },
-                      onEventsSubtitleTapped: () {
-                        _onEventsSubtitleTapped();
-                      },
-                      onEventsAcquired: (events) {
-                        _onEventsAcquired(events);
-                      },
-                      onRefreshRequested: () {
-                        _onRefreshRequested();
-                      },
-                      onSearchTapped: () {
-                        _onSearchTapped();
-                      },
-                      onSettingsRequested: () {
-                        _onSettingsRequested();
-                      },
-                      onDeviceUserTapped: () {
-                        _onDeviceUserTapped();
-                      },
-                      centerTopCards: true,
-                      navigateToIntro: () {
-                        navigateToIntro();
+                      landscape: (context) {
+                        return user == null
+                            ? const SizedBox()
+                            : RealDashboard(
+                                topCardSpacing: 16,
+                                forceRefresh: forceRefresh,
+                                projects: projects,
+                                users: users,
+                                events: events,
+                                navigateToActivities: () {
+                                  _navigateToActivities();
+                                },
+                                totalEvents: totalEvents,
+                                totalProjects: totalProjects,
+                                totalUsers: totalUsers,
+                                sigmaX: sigmaX,
+                                sigmaY: sigmaY,
+                                membersText: membersText!,
+                                projectsText: projectsText!,
+                                eventsText: eventsText!,
+                                dashboardText: dashboardText!,
+                                recentEventsText: recentEventsText!,
+                                user: user!,
+                                width: width,
+                                navigateToIntro: () {
+                                  navigateToIntro();
+                                },
+                                onEventTapped: (event) {
+                                  _onEventTapped(event);
+                                },
+                                onProjectSubtitleTapped: () {
+                                  _onProjectSubtitleTapped();
+                                },
+                                onProjectsAcquired: (projects) {
+                                  _onProjectsAcquired(projects);
+                                },
+                                onProjectTapped: (project) {
+                                  onProjectTapped(project);
+                                },
+                                onUserSubtitleTapped: () {
+                                  _onUserSubtitleTapped();
+                                },
+                                onUsersAcquired: (users) {
+                                  _onUsersAcquired(users);
+                                },
+                                onUserTapped: (user) {
+                                  onUserTapped(user);
+                                },
+                                onEventsSubtitleTapped: () {
+                                  _onEventsSubtitleTapped();
+                                },
+                                onEventsAcquired: (events) {
+                                  _onEventsAcquired(events);
+                                },
+                                onRefreshRequested: () {
+                                  _onRefreshRequested();
+                                },
+                                onSearchTapped: () {
+                                  _onSearchTapped();
+                                },
+                                onSettingsRequested: () {
+                                  _onSettingsRequested();
+                                },
+                                onDeviceUserTapped: () {
+                                  _onDeviceUserTapped();
+                                },
+                                centerTopCards: true,
+                                locale: settings.locale!,
+                              );
                       },
                     ),
-              tablet: OrientationLayoutBuilder(
-                portrait: (context) {
-                  return user == null
-                      ? const SizedBox()
-                      : RealDashboard(
-                          topCardSpacing: 16.0,
-                          centerTopCards: true,
-                          projects: projects,
-                          users: users,
-                          events: events,
-                          locale: settings.locale!,
-                          forceRefresh: forceRefresh,
-                          totalEvents: totalEvents,
-                          totalProjects: totalProjects,
-                          totalUsers: totalUsers,
-                          sigmaX: sigmaX,
-                          sigmaY: sigmaY,
-                          user: user!,
-                          width: width,
-                          membersText: membersText!,
-                          projectsText: projectsText!,
-                          eventsText: eventsText!,
-                          dashboardText: dashboardText!,
-                          recentEventsText: recentEventsText!,
-                          onEventTapped: (event) {
-                            _onEventTapped(event);
-                          },
-                          onProjectSubtitleTapped: () {
-                            _onProjectSubtitleTapped();
-                          },
-                          onProjectsAcquired: (projects) {
-                            _onProjectsAcquired(projects);
-                          },
-                          onProjectTapped: (project) {
-                            onProjectTapped(project);
-                          },
-                          onUserSubtitleTapped: () {
-                            _onUserSubtitleTapped();
-                          },
-                          onUsersAcquired: (users) {
-                            _onUsersAcquired(users);
-                          },
-                          onUserTapped: (user) {
-                            _onUserTapped(user);
-                          },
-                          onEventsSubtitleTapped: () {
-                            _onEventsSubtitleTapped();
-                          },
-                          onEventsAcquired: (events) {
-                            _onEventsAcquired(events);
-                          },
-                          onRefreshRequested: () {
-                            _onRefreshRequested();
-                          },
-                          onSearchTapped: () {
-                            _onSearchTapped();
-                          },
-                          onSettingsRequested: () {
-                            _onSettingsRequested();
-                          },
-                          onDeviceUserTapped: () {
-                            _onDeviceUserTapped();
-                          },
-                          navigateToIntro: () {
-                            navigateToIntro();
-                          },
-                        );
-                },
-                landscape: (context) {
-                  return user == null
-                      ? const SizedBox()
-                      : RealDashboard(
-                          topCardSpacing: 16,
-                          forceRefresh: forceRefresh,
-                          projects: projects,
-                          users: users,
-                          events: events,
-                          totalEvents: totalEvents,
-                          totalProjects: totalProjects,
-                          totalUsers: totalUsers,
-                          sigmaX: sigmaX,
-                          sigmaY: sigmaY,
-                          membersText: membersText!,
-                          projectsText: projectsText!,
-                          eventsText: eventsText!,
-                          dashboardText: dashboardText!,
-                          recentEventsText: recentEventsText!,
-                          user: user!,
-                          width: width,
-                          navigateToIntro: () {
-                            navigateToIntro();
-                          },
-                          onEventTapped: (event) {
-                            _onEventTapped(event);
-                          },
-                          onProjectSubtitleTapped: () {
-                            _onProjectSubtitleTapped();
-                          },
-                          onProjectsAcquired: (projects) {
-                            _onProjectsAcquired(projects);
-                          },
-                          onProjectTapped: (project) {
-                            onProjectTapped(project);
-                          },
-                          onUserSubtitleTapped: () {
-                            _onUserSubtitleTapped();
-                          },
-                          onUsersAcquired: (users) {
-                            _onUsersAcquired(users);
-                          },
-                          onUserTapped: (user) {
-                            _onUserTapped(user);
-                          },
-                          onEventsSubtitleTapped: () {
-                            _onEventsSubtitleTapped();
-                          },
-                          onEventsAcquired: (events) {
-                            _onEventsAcquired(events);
-                          },
-                          onRefreshRequested: () {
-                            _onRefreshRequested();
-                          },
-                          onSearchTapped: () {
-                            _onSearchTapped();
-                          },
-                          onSettingsRequested: () {
-                            _onSettingsRequested();
-                          },
-                          onDeviceUserTapped: () {
-                            _onDeviceUserTapped();
-                          },
-                          centerTopCards: true,
-                          locale: settings.locale!,
-                        );
-                },
-              ),
+                    playAudio
+                        ? Positioned(
+                            child: AudioPlayerOG(
+                            audio: audio!,
+                            onCloseRequested: () {},
+                            dataApiDog: widget.dataApiDog,
+                          ))
+                        : const SizedBox()
+                  ],
+                );
+              },
             ),
     );
   }
 
-  onLocationRequest(LocationRequest p1) {}
+  bool playAudio = false;
+  bool playVideo = false;
 
-  onUserTapped(User p1) {}
+  onStop() {}
 
-  onLocationResponse(LocationResponse p1) {}
+  onPlay() {}
 
-  onPhotoTapped(Photo p1) {}
-
-  onVideoTapped(Video p1) {}
-
-  onAudioTapped(Audio p1) {}
-
-  onProjectPositionTapped(ProjectPosition p1) {}
-
-  onPolygonTapped(ProjectPolygon p1) {}
-
-  onGeofenceEventTapped(GeofenceEvent p1) {}
-
-  onOrgMessage(OrgMessage p1) {}
+  onPause() {}
 }
 
 class RealDashboard extends StatelessWidget {
@@ -868,6 +1064,7 @@ class RealDashboard extends StatelessWidget {
     required this.recentEventsText,
     required this.navigateToIntro,
     required this.locale,
+    required this.navigateToActivities,
   }) : super(key: key);
 
   final Function onEventsSubtitleTapped;
@@ -900,7 +1097,7 @@ class RealDashboard extends StatelessWidget {
   final List<User> users;
   final double? topCardSpacing;
   final bool centerTopCards;
-  final Function navigateToIntro;
+  final Function navigateToIntro, navigateToActivities;
 
   @override
   Widget build(BuildContext context) {
@@ -934,6 +1131,7 @@ class RealDashboard extends StatelessWidget {
                           number: totalEvents,
                           color: Colors.blue),
                       const SizedBox(height: 12),
+
                       Row(
                         mainAxisAlignment: centerTopCards
                             ? MainAxisAlignment.center
@@ -963,9 +1161,14 @@ class RealDashboard extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            recentEventsText,
-                            style: myTextStyleSubtitleSmall(context),
+                          TextButton(
+                            onPressed: () {
+                              navigateToActivities();
+                            },
+                            child: Text(
+                              recentEventsText,
+                              style: myTextStyleSmall(context),
+                            ),
                           ),
                         ],
                       ),

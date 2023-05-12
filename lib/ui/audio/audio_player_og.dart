@@ -115,9 +115,17 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
       await player.setReleaseMode(ReleaseMode.release);
       await player.setVolume(1.0);
 
-      player.onPlayerComplete.listen((event) {
+      player.onPlayerComplete.listen((event) async {
         pp('$mm onPlayerComplete');
-        _stop();
+        await player.stop();
+        setState(() {
+          isPlaying = false;
+          isPaused = false;
+          isStopped = true;
+          _showWave = false;
+          isLoading = false;
+        });
+
       });
       player.onPlayerStateChanged.listen((PlayerState playerState) {
         pp('$mm onPlayerStateChanged, playerState: 🔵 $playerState');
@@ -187,7 +195,7 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
         isPlaying = false;
         isPaused = false;
         isStopped = true;
-        _showWave = true;
+        _showWave = false;
         isLoading = false;
       });
       final deviceType = getThisDeviceType();
@@ -196,10 +204,13 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
           Navigator.of(context).pop();
         }
       }
-      widget.onCloseRequested();
+
     } catch (e) {
       pp('$mm player ERROR: $e');
     }
+  }
+  void _close() {
+    widget.onCloseRequested();
   }
 
   void _resume() async {
@@ -272,7 +283,8 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
             child: Scaffold(
             appBar: AppBar(
               title:
-                  Text(playAudioClip == null ? 'Play Audio' : playAudioClip!),
+                  Text(playAudioClip == null ? 'Play Audio' : playAudioClip!,
+                    style: myTextStyleMediumLarge(context),),
             ),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -280,7 +292,9 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
                   ? const SizedBox()
                   : AudioPlayerWidget(
                               onRatingRequested: _onFavorite,
-                              onStopRequested: _stop,
+                              onStopRequested: (){
+                                widget.onCloseRequested();
+                              },
                               user: user!,
                               padding: 36,
                               projectName: widget.audio.projectName!,
@@ -397,7 +411,7 @@ class AudioPlayerWidget extends StatelessWidget {
                   SizedBox(
                     width: deviceType == 'phone' ? 0 : 24,
                   ),
-                  IconButton(
+                  deviceType == 'phone'? const SizedBox() : IconButton(
                       onPressed: () {
                         onStopRequested();
                       },
@@ -409,7 +423,7 @@ class AudioPlayerWidget extends StatelessWidget {
               ),
               Text(
                 projectName,
-                style: myTextStyleLargePrimaryColor(context),
+                style: myTextStyleMediumLargePrimaryColor(context),
               ),
                SizedBox(
                 height: padding,

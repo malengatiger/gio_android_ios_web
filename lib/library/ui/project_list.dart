@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../api/data_api.dart';
+import '../api/data_api_og.dart';
 import '../api/prefs_og.dart';
 import '../data/user.dart';
 import '../data/project.dart';
@@ -33,7 +33,7 @@ class ProjectListState extends State<ProjectList> {
     setState(() {
       isBusy = true;
     });
-    projects = await DataAPI.findProjectsByOrganization(user!.organizationId!);
+    projects = await dataApiDog.findProjectsByOrganization(user!.organizationId!);
     setState(() {
       isBusy = false;
     });

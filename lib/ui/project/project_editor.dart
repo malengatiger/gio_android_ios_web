@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
-import '../../library/bloc/admin_bloc.dart';
 import '../../library/data/project.dart';
 import '../../library/data/user.dart';
 import '../../library/functions.dart';
@@ -180,7 +180,7 @@ class ProjectEditorState extends State<ProjectEditor> {
       return;
     }
     try {
-      mProject = await adminBloc.addProject(mProject!);
+      mProject = await dataApiDog.addProject(mProject!);
     } catch (e) {
       pp(e);
       _showError('$e');

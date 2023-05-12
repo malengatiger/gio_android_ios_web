@@ -12,7 +12,10 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 import '../../l10n/translation_handler.dart';
+import '../../library/api/data_api_og.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/project_bloc.dart';
+import '../../library/cache_manager.dart';
 import '../../library/data/audio.dart';
 import '../../library/data/location_request.dart';
 import '../../library/data/org_message.dart';
@@ -34,7 +37,7 @@ class GeoActivity extends StatefulWidget {
     required this.showVideo,
     required this.showAudio,
     this.user,
-    this.project,
+    required this.project,
     required this.forceRefresh,
     required this.showLocationResponse,
     required this.showLocationRequest,
@@ -43,6 +46,12 @@ class GeoActivity extends StatefulWidget {
     required this.showOrgMessage,
     required this.showGeofenceEvent,
     required this.showProjectPolygon,
+    required this.prefsOGx,
+    required this.cacheManager,
+    required this.projectBloc,
+    required this.organizationBloc,
+    required this.dataApiDog,
+    required this.fcmBloc,
   }) : super(key: key);
   final double width;
   final bool thinMode;
@@ -59,8 +68,14 @@ class GeoActivity extends StatefulWidget {
   final Function(ProjectPolygon) showProjectPolygon;
 
   final User? user;
-  final Project? project;
   final bool forceRefresh;
+  final PrefsOGx prefsOGx;
+  final CacheManager cacheManager;
+  final ProjectBloc projectBloc;
+  final Project? project;
+  final OrganizationBloc organizationBloc;
+  final DataApiDog dataApiDog;
+  final FCMBloc fcmBloc;
 
   @override
   GeoActivityState createState() => GeoActivityState();
@@ -121,7 +136,6 @@ class GeoActivityState extends State<GeoActivity>
 
       activitySubscriptionFCM =
           fcmBloc.activityStream.listen((ActivityModel event) {
-
         if (mounted) {
           pp('$mm activitySubscriptionFCM: DOING NOTHING!!!!!!!!!!!!!!');
           setState(() {});
@@ -132,12 +146,13 @@ class GeoActivityState extends State<GeoActivity>
           fcmBloc.geofenceStream.listen((GeofenceEvent event) async {
         pp('$mm: 🍎geofenceSubscriptionFCM: 🍎 GeofenceEvent: '
             'user ${event.user!.name} arrived: ${event.projectName} ');
-       _handleGeofenceEvent(event);
+        _handleGeofenceEvent(event);
       });
     } else {
       pp('App is running on the Web 👿👿👿firebase messaging is OFF 👿👿👿');
     }
   }
+
   Future<void> _handleGeofenceEvent(GeofenceEvent event) async {
     pp('$mm _handleGeofenceEvent ....');
     var settings = await prefsOGx.getSettings();
@@ -147,9 +162,7 @@ class GeoActivityState extends State<GeoActivity>
       if (mounted) {
         showToast(
             duration: const Duration(seconds: 5),
-            backgroundColor: Theme
-                .of(context)
-                .primaryColor,
+            backgroundColor: Theme.of(context).primaryColor,
             padding: 20,
             textStyle: myTextStyleMedium(context),
             message: arrivedAt,
@@ -178,6 +191,12 @@ class GeoActivityState extends State<GeoActivity>
                   mobile: GioActivities(
                     project: widget.project,
                     user: widget.user,
+                    prefsOGx: widget.prefsOGx,
+                    cacheManager: widget.cacheManager,
+                    fcmBloc: widget.fcmBloc,
+                    organizationBloc: widget.organizationBloc,
+                    projectBloc: widget.projectBloc,
+                    dataApiDog: widget.dataApiDog,
                     onPhotoTapped: (photo) {
                       widget.showPhoto(photo);
                     },
@@ -213,8 +232,14 @@ class GeoActivityState extends State<GeoActivity>
                       return settings == null
                           ? const SizedBox()
                           : GioActivities(
+                              prefsOGx: widget.prefsOGx,
+                              cacheManager: widget.cacheManager,
                               user: widget.user,
                               project: widget.project,
+                              fcmBloc: widget.fcmBloc,
+                              organizationBloc: widget.organizationBloc,
+                              projectBloc: widget.projectBloc,
+                              dataApiDog: widget.dataApiDog,
                               onPhotoTapped: (photo) {
                                 widget.showPhoto(photo);
                               },
@@ -252,6 +277,12 @@ class GeoActivityState extends State<GeoActivity>
                           : GioActivities(
                               user: widget.user,
                               project: widget.project,
+                              prefsOGx: widget.prefsOGx,
+                              cacheManager: widget.cacheManager,
+                              fcmBloc: widget.fcmBloc,
+                              organizationBloc: widget.organizationBloc,
+                              projectBloc: widget.projectBloc,
+                              dataApiDog: widget.dataApiDog,
                               onPhotoTapped: (photo) {
                                 widget.showPhoto(photo);
                               },
@@ -290,5 +321,3 @@ class GeoActivityState extends State<GeoActivity>
           );
   }
 }
-
-

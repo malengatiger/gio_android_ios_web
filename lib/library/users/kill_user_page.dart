@@ -1,9 +1,10 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:geo_monitor/library/api/data_api.dart';
+
 import 'package:geo_monitor/library/emojis.dart';
 import 'package:geo_monitor/library/generic_functions.dart';
 
+import '../api/data_api_og.dart';
 import '../api/prefs_og.dart';
 import '../data/user.dart';
 import '../functions.dart';
@@ -46,7 +47,7 @@ class KillUserPageState extends State<KillUserPage>
       busy = true;
     });
     try {
-      var res = await DataAPI.killUser(
+      var res = await dataApiDog.killUser(
           userId: widget.user.userId!, killerId: killer!.userId!);
       pp('\n$mm ... someone has gotten killed! ${res.toJson()}\n');
       if (mounted) {

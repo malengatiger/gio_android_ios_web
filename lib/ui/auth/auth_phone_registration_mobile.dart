@@ -15,7 +15,6 @@ import 'package:uuid/uuid.dart';
 
 import '../../device_location/device_location_bloc.dart';
 import '../../l10n/translation_handler.dart';
-import '../../library/api/data_api.dart';
 import '../../library/api/data_api_og.dart';
 import '../../library/bloc/theme_bloc.dart';
 import '../../library/data/user.dart' as ur;
@@ -292,7 +291,7 @@ class AuthPhoneRegistrationMobileState
           latitude: loc.latitude,
           longitude: loc.longitude);
 
-      var resultBag = await DataAPI.registerOrganization(bag);
+      var resultBag = await dataApiDog.registerOrganization(bag);
       await cacheManager.addOrganization(organization: resultBag.organization!);
       user!.password = const Uuid().v4();
       // var result = await DataAPI.updateAuthedUser(user!);

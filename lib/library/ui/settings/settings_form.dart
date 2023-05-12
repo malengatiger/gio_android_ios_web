@@ -3,14 +3,12 @@ import 'dart:async';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/api/data_api_og.dart';
-import 'package:geo_monitor/library/bloc/data_refresher.dart';
 import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../l10n/translation_handler.dart';
-import '../../api/data_api.dart';
 import '../../api/prefs_og.dart';
 import '../../bloc/fcm_bloc.dart';
 import '../../bloc/theme_bloc.dart';

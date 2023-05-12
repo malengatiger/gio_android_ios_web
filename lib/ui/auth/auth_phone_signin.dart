@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/api/data_api_og.dart';
-import 'package:geo_monitor/library/bloc/zip_bloc.dart';
+import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
-import 'package:geo_monitor/utilities/sharedprefs.dart';
 
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -93,9 +92,7 @@ class AuthPhoneSignInState extends State<AuthPhoneSignIn>
   void _onSignedIn(ur.User user) async {
     final sett = await widget.prefsOGx.getSettings();
 
-    final map = await getStartEndDates(numberOfDays: sett.numberOfDays!);
-    zipBloc.getOrganizationDataZippedFile(
-        user.organizationId!, map['startDate']!, map['endDate']!);
+    dataHandler.getOrganizationData();
     if (mounted) {
       Navigator.of(context).pop(user);
     }

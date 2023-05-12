@@ -5,7 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geo_monitor/library/api/data_api.dart';
+
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/fcm_bloc.dart';
 import 'package:geo_monitor/library/bloc/geo_exception.dart';
@@ -16,6 +16,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../l10n/translation_handler.dart';
+import '../api/data_api_og.dart';
 import '../data/settings_model.dart';
 import '../data/user.dart';
 import '../generic_functions.dart';
@@ -253,7 +254,7 @@ class UserProfilePictureEditorState extends State<UserProfilePictureEditor>
     pp('\n\n$mm User database entry to be updated: ${widget.user.name}\n');
 
     try {
-      await DataAPI.updateUser(widget.user);
+      await dataApiDog.updateUser(widget.user);
       var me = await prefsOGx.getUser();
       if (widget.user.userId == me!.userId) {
         await prefsOGx.saveUser(widget.user);

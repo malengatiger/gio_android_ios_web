@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/ui/activity/geo_activity.dart';
 import 'package:geocoding/geocoding.dart';
-// import 'package:geolocator/geolocator.dart' as geo;
-// import 'package:location/location.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../device_location/device_location_bloc.dart';
 import '../../../l10n/translation_handler.dart';
-import '../../api/data_api.dart';
+import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
+import '../../bloc/fcm_bloc.dart';
 import '../../bloc/organization_bloc.dart';
 import '../../bloc/project_bloc.dart';
 import '../../cache_manager.dart';
@@ -29,7 +28,14 @@ import '../maps/project_polygon_map_mobile.dart';
 
 class ProjectLocationHandler extends StatefulWidget {
   final Project project;
-  const ProjectLocationHandler(this.project, {super.key});
+  final PrefsOGx prefsOGx;
+  final CacheManager cacheManager;
+  final ProjectBloc projectBloc;
+  final OrganizationBloc organizationBloc;
+  final DataApiDog dataApiDog;
+  final FCMBloc fcmBloc;
+
+  const ProjectLocationHandler(this.project, {super.key, required this.prefsOGx, required this.cacheManager, required this.projectBloc, required this.organizationBloc, required this.dataApiDog, required this.fcmBloc});
 
   @override
   ProjectLocationHandlerState createState() => ProjectLocationHandlerState();
@@ -189,7 +195,7 @@ class ProjectLocationHandlerState extends State<ProjectLocationHandler>
     }
 
     try {
-      List<City> cities = await DataAPI.findCitiesByLocation(
+      List<City> cities = await dataApiDog.findCitiesByLocation(
           latitude: latitude!, longitude: longitude!, radiusInKM: 10.0);
       pp('$mm Cities found for project position: ${cities.length}');
       pp('$mm submitting current position ..........');
@@ -221,7 +227,7 @@ class ProjectLocationHandlerState extends State<ProjectLocationHandler>
           nearestCities: cities,
           projectPositionId: const Uuid().v4());
       try {
-        var m = await DataAPI.addProjectPosition(position: projectPosition);
+        var m = await dataApiDog.addProjectPosition(position: projectPosition);
         pp('$mm  _submit: new projectPosition added .........  🍅 ${m.toJson()} 🍅');
         organizationBloc.addProjectPositionToStream(m);
         _getProjectPositions(false);
@@ -452,7 +458,13 @@ class ProjectLocationHandlerState extends State<ProjectLocationHandler>
                         padding: const EdgeInsets.symmetric(horizontal: 28.0),
                         child: GeoActivity(
                             width: (width / 2) - 80,
+                            prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                             thinMode: false,
+                            fcmBloc: widget.fcmBloc,
+                            organizationBloc: widget.organizationBloc,
+                            projectBloc: widget.projectBloc,
+                            project: widget.project,
+                            dataApiDog: widget.dataApiDog,
                             showPhoto: (p) {},
                             showVideo: (p) {},
                             showAudio: (p) {},
@@ -491,6 +503,12 @@ class ProjectLocationHandlerState extends State<ProjectLocationHandler>
                       GeoActivity(
                           width: (width / 2) - 80,
                           thinMode: false,
+                          fcmBloc: widget.fcmBloc,
+                          organizationBloc: widget.organizationBloc,
+                          projectBloc: widget.projectBloc,
+                          project: widget.project,
+                          dataApiDog: widget.dataApiDog,
+                          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                           showPhoto: (p) {},
                           showVideo: (p) {},
                           showAudio: (p) {},

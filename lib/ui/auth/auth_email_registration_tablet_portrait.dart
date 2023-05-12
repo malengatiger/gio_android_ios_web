@@ -12,7 +12,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../device_location/device_location_bloc.dart';
 import '../../l10n/translation_handler.dart';
-import '../../library/api/data_api.dart';
+import '../../library/api/data_api_og.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/user.dart' as ur;
 import '../../library/functions.dart';
@@ -179,7 +179,7 @@ class AuthEmailRegistrationPortraitState
     var sett = getBaseSettings();
     sett.organizationId = org.organizationId!;
 
-    var mSettings = await DataAPI.addSettings(sett);
+    var mSettings = await dataApiDog.addSettings(sett);
 
     await prefsOGx.saveSettings(mSettings);
 
@@ -196,7 +196,7 @@ class AuthEmailRegistrationPortraitState
           latitude: loc.latitude,
           longitude: loc.longitude);
 
-      var resultBag = await DataAPI.registerOrganization(bag);
+      var resultBag = await dataApiDog.registerOrganization(bag);
       await firebaseAuth.signOut();
       var cred = await firebaseAuth.signInWithEmailAndPassword(
           email: user!.email!, password: password);

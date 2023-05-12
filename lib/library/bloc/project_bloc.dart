@@ -4,7 +4,6 @@ import 'package:geo_monitor/library/data/activity_model.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 
 import '../../device_location/device_location_bloc.dart';
-import '../api/data_api.dart';
 import '../api/data_api_og.dart';
 import '../api/prefs_og.dart';
 import '../cache_manager.dart';
@@ -287,6 +286,7 @@ class ProjectBloc {
         audios: audios,
         date: DateTime.now().toUtc().toIso8601String(),
         users: [],
+        activityModels: [],
         projectPolygons: polygons,
         settings: settings);
 
@@ -296,6 +296,15 @@ class ProjectBloc {
 
 
     return dataBag;
+  }
+
+  Future updateProject(Project project) async {
+    final m = await dataApiDog.updateProject(project);
+    return m;
+  }
+  Future addProject(Project project) async {
+    final m = await dataApiDog.addProject(project);
+    return m;
   }
 
   Future<DataBag> refreshProjectData(
@@ -333,7 +342,7 @@ class ProjectBloc {
         date: DateTime.now().toUtc().toIso8601String(),
         users: [],
         projectPolygons: polygons,
-        settings: []);
+        settings: [], activityModels: []);
     pp('$mm project data bag loaded: ... photos: ${photos.length}, videos: ${videos.length} and audios: ${audios.length} ...');
     return bag;
   }

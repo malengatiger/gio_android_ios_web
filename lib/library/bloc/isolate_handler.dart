@@ -28,7 +28,7 @@ class IsolateDataHandler {
   final PrefsOGx prefsOGx;
   final AppAuth appAuth;
   final CacheManager cacheManager;
-   OrganizationBloc? organizationBloc;
+   // OrganizationBloc? organizationBloc;
    ProjectBloc? projectBloc;
    UserBloc? userBloc;
    FCMBloc? fcmBloc;
@@ -41,7 +41,7 @@ class IsolateDataHandler {
     final token = await appAuth.getAuthToken();
     final map = await getStartEndDates(numberOfDays: sett.numberOfDays!);
     final dir = await getApplicationDocumentsDirectory();
-    organizationBloc = OrganizationBloc(dataApiDog, cacheManager);
+    // organizationBloc = OrganizationBloc(dataApiDog, cacheManager);
     fcmBloc = FCMBloc(FirebaseMessaging.instance, cacheManager, locationRequestHandler);
 
     myReceivePort = ReceivePort();
@@ -144,7 +144,7 @@ class IsolateDataHandler {
   }
 
   void _sendOrganizationDataToStreams(DataBag bag) {
-    organizationBloc?.dataBagController.sink.add(bag);
+    organizationBloc!.dataBagController.sink.add(bag);
     pp('$xx Organization Data sent to dataBagStream  ...');
   }
 

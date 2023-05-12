@@ -12,7 +12,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../device_location/device_location_bloc.dart';
 import '../../../l10n/translation_handler.dart';
-import '../../api/data_api.dart';
+import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
 import '../../bloc/project_bloc.dart';
 import '../../cache_manager.dart';
@@ -226,7 +226,7 @@ class ProjectPolygonMapMobileState extends State<ProjectPolygonMapMobile>
       _longitude = _myPoints.first.longitude;
 
       pp('Go and find nearest cities to this location : lat: $_latitude lng: $_longitude ...');
-      List<City> cities = await DataAPI.findCitiesByLocation(
+      List<City> cities = await dataApiDog.findCitiesByLocation(
           latitude: _latitude, longitude: _longitude, radiusInKM: 5.0);
 
       pp('$mm Cities around this project polygon: ${cities.length}');
@@ -254,7 +254,7 @@ class ProjectPolygonMapMobileState extends State<ProjectPolygonMapMobile>
           organizationId: widget.project.organizationId,
           projectId: widget.project.projectId);
 
-      var resultPolygon = await DataAPI.addProjectPolygon(polygon: pos);
+      var resultPolygon = await dataApiDog.addProjectPolygon(polygon: pos);
       pp('$mm polygon saved in DB. we are good to go! '
           '🍏🍏${resultPolygon.toJson()}🍏🍏 ');
       organizationBloc.addProjectPolygonToStream(resultPolygon);

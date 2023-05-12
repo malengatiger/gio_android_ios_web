@@ -14,7 +14,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../device_location/device_location_bloc.dart';
 import '../../../l10n/translation_handler.dart';
-import '../../api/data_api.dart';
+import '../../api/data_api_og.dart';
 import '../../cache_manager.dart';
 import '../../data/city.dart';
 import '../../data/photo.dart';
@@ -359,7 +359,7 @@ class ProjectMapTabletState extends State<ProjectMapTablet>
         return;
       }
       pp('Go and find nearest cities to this location : lat: $_longPressLat lng: $_longPressLng ...');
-      List<City> cities = await DataAPI.findCitiesByLocation(
+      List<City> cities = await dataApiDog.findCitiesByLocation(
           latitude: _longPressLat, longitude: _longPressLng, radiusInKM: 5.0);
 
       pp('$mm Cities around this project position: ${cities.length}');
@@ -383,7 +383,7 @@ class ProjectMapTabletState extends State<ProjectMapTablet>
           organizationId: widget.project.organizationId,
           projectId: widget.project.projectId);
 
-      var resultPosition = await DataAPI.addProjectPosition(position: pos);
+      var resultPosition = await dataApiDog.addProjectPosition(position: pos);
       organizationBloc.addProjectPositionToStream(resultPosition);
       projectPositions.add(resultPosition);
       _addMarkers();

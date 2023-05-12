@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:uuid/uuid.dart';
-import '../../api/data_api.dart';
 import '../../api/prefs_og.dart';
 import '../../data/project.dart';
 import '../../data/user.dart';

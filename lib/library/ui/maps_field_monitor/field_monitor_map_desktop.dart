@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../api/data_api.dart';
+import '../../api/data_api_og.dart';
 import '../../data/user.dart';
 import '../../data/position.dart';
 import '../../functions.dart';
@@ -99,7 +99,7 @@ class FieldMonitorMapDesktopState extends State<FieldMonitorMapDesktop>
     });
     try {
       widget.user.position = Position(coordinates: [lng, lat], type: 'Point');
-      var result = await DataAPI.updateUser(widget.user);
+      var result = await dataApiDog.updateUser(widget.user);
       pp('💜 💜 💜 💜 💜 💜 Response : ${result.toJson()}');
     } catch (e) {
       pp(e);

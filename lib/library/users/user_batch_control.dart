@@ -216,7 +216,6 @@ class UserBatchControlState extends State<UserBatchControl>
                                       padding: 0.0,
                                       textStyle: myTextStyleMediumBold(context),
                                       avatarRadius: 16,
-                                      userType: mUser.userType,
                                       namePictureHorizontal: false),
                                 );
                               }),

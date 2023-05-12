@@ -4,7 +4,6 @@ import 'package:geo_monitor/library/functions.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../l10n/translation_handler.dart';
-import '../../bloc/admin_bloc.dart';
 import '../../bloc/project_bloc.dart';
 import '../../cache_manager.dart';
 import '../../data/project.dart';
@@ -121,7 +120,7 @@ class ProjectEditCardState extends State<ProjectEditCard>
               projectPositions: [],
               ratings: [],
               projectId: uuid.v4());
-          project = await adminBloc.addProject(project!);
+          project = await projectBloc.addProject(project!);
           pp('🎽 🎽 🎽 _submit: new project added .........  ${project!.toJson()}');
         } else {
           pp('😡 😡 😡 _submit existing project for update, soon! 🌸 ......... ');
@@ -132,7 +131,7 @@ class ProjectEditCardState extends State<ProjectEditCard>
           widget.project!.monitorMaxDistanceInMetres = dist;
           project = widget.project;
 
-          var m = await adminBloc.updateProject(widget.project!);
+          var m = await projectBloc.updateProject(widget.project!);
           pp('🎽 🎽 🎽 _submit: new project updated .........  ${m.toJson()}');
         }
 

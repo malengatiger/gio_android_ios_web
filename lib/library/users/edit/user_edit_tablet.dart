@@ -10,17 +10,33 @@ import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../../l10n/translation_handler.dart';
+import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
+import '../../bloc/fcm_bloc.dart';
+import '../../bloc/organization_bloc.dart';
+import '../../bloc/project_bloc.dart';
+import '../../cache_manager.dart';
 import '../../data/country.dart';
 import '../../data/location_response.dart';
+import '../../data/project.dart';
 import '../../data/user.dart' as ar;
 import '../../functions.dart';
 import '../../ui/maps/location_response_map.dart';
 
 class UserEditTablet extends StatefulWidget {
   final ar.User? user;
+  final PrefsOGx prefsOGx;
+  final CacheManager cacheManager;
+  final ProjectBloc projectBloc;
+  final Project? project;
+  final OrganizationBloc organizationBloc;
+  final DataApiDog dataApiDog;
+  final FCMBloc fcmBloc;
 
-  const UserEditTablet({super.key, this.user});
+  const UserEditTablet({super.key, this.user,
+    required this.prefsOGx, required this.cacheManager,
+    required this.projectBloc, this.project,
+    required this.organizationBloc, required this.dataApiDog, required this.fcmBloc});
 
   @override
   UserEditTabletState createState() => UserEditTabletState();
@@ -127,10 +143,16 @@ class UserEditTabletState extends State<UserEditTablet>
                       GeoActivity(
                           width: (width / 2) - 40,
                           thinMode: true,
+                          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                           showPhoto: showPhoto,
                           showVideo: showVideo,
                           showAudio: showAudio,
                           showUser: (user) {},
+                          fcmBloc: widget.fcmBloc,
+                          organizationBloc: widget.organizationBloc,
+                          projectBloc: widget.projectBloc,
+                          project: widget.project,
+                          dataApiDog: widget.dataApiDog,
                           showLocationRequest: (req) {},
                           showLocationResponse: (resp) {
                             _navigateToLocationResponseMap(resp);
@@ -181,10 +203,16 @@ class UserEditTabletState extends State<UserEditTablet>
                       GeoActivity(
                           width: (width / 2) - 100,
                           thinMode: true,
+                          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                           showPhoto: showPhoto,
                           showVideo: showVideo,
                           showAudio: showAudio,
                           showUser: (user) {},
+                          fcmBloc: widget.fcmBloc,
+                          organizationBloc: widget.organizationBloc,
+                          projectBloc: widget.projectBloc,
+                          project: widget.project,
+                          dataApiDog: widget.dataApiDog,
                           showLocationRequest: (req) {},
                           showLocationResponse: (resp) {
                             _navigateToLocationResponseMap(resp);

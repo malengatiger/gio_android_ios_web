@@ -20,6 +20,8 @@ import '../../../ui/dashboard/photo_frame.dart';
 import '../../bloc/fcm_bloc.dart';
 import '../../bloc/geo_exception.dart';
 import '../../bloc/location_request_handler.dart';
+import '../../bloc/project_bloc.dart';
+import '../../cache_manager.dart';
 import '../../data/audio.dart';
 import '../../data/location_response.dart';
 import '../../data/settings_model.dart';
@@ -38,10 +40,16 @@ import '../user_batch_control.dart';
 class GioUserList extends StatefulWidget {
   const GioUserList({
     Key? key,
-    required this.dataApiDog,
+    required this.dataApiDog, required this.prefsOGx, required this.cacheManager, required this.projectBloc, required this.organizationBloc, required this.fcmBloc,
   }) : super(key: key);
 
   final DataApiDog dataApiDog;
+  final PrefsOGx prefsOGx;
+  final CacheManager cacheManager;
+  final ProjectBloc projectBloc;
+  final OrganizationBloc organizationBloc;
+  final FCMBloc fcmBloc;
+
 
   @override
   State<GioUserList> createState() => _GioUserListState();
@@ -169,7 +177,7 @@ class _GioUserListState extends State<GioUserList> {
   String? subTitle;
   Future _setTexts() async {
     var sett = await prefsOGx.getSettings();
-    title = await translator.translate('organizationMembers', sett!.locale!);
+    title = await translator.translate('members', sett!.locale!);
     subTitle =
         await translator.translate('administratorsMembers', sett!.locale!);
     setState(() {});
@@ -220,7 +228,13 @@ class _GioUserListState extends State<GioUserList> {
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child: UserDashboard(user: user, dataApiDog: widget.dataApiDog,)));
+            child: UserDashboard(
+              fcmBloc: widget.fcmBloc,
+              organizationBloc: widget.organizationBloc,
+              projectBloc: widget.projectBloc,
+              dataApiDog: widget.dataApiDog,
+              prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+              user: user, )));
   }
 
   void navigateToUserBatchUpload(User? user) async {
@@ -302,7 +316,14 @@ class _GioUserListState extends State<GioUserList> {
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child: UserEditTablet(user: user)));
+            child: UserEditTablet(
+                fcmBloc: widget.fcmBloc,
+                organizationBloc: widget.organizationBloc,
+                projectBloc: widget.projectBloc,
+                project: null,
+                dataApiDog: widget.dataApiDog,
+                prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+                user: user)));
   }
 
   Future<void> navigateToKillPage(User user) async {
@@ -350,7 +371,13 @@ class _GioUserListState extends State<GioUserList> {
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child: UserDashboard(user: user, dataApiDog: widget.dataApiDog,)));
+            child: UserDashboard(
+              fcmBloc: widget.fcmBloc,
+              organizationBloc: widget.organizationBloc,
+              projectBloc: widget.projectBloc,
+              dataApiDog: widget.dataApiDog,
+              prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+              user: user, )));
   }
 
 
@@ -374,6 +401,73 @@ class _GioUserListState extends State<GioUserList> {
     setState(() {});
   }
 
+  List<Widget> _getActions() {
+    final type = getThisDeviceType();
+    if (type == 'phone') {
+      return [PopupMenuButton(itemBuilder: (ctx) {
+        return [
+          PopupMenuItem(
+              value: 0,
+              child: Icon(
+                Icons.add,
+                color: Theme.of(context).primaryColor,
+              )),
+          PopupMenuItem(
+              value: 1,
+              child: Icon(
+                Icons.people,
+                color: Theme.of(context).primaryColor,
+              )),
+          PopupMenuItem(
+              value: 2,
+              child: Icon(
+                Icons.refresh,
+                color: Theme.of(context).primaryColor,
+              )),
+        ];
+      }, onSelected: (index) {
+        pp('$mm ...................... action index: $index');
+        switch (index) {
+          case 0:
+            navigateToUserEdit(null);
+            break;
+          case 1:
+            navigateToUserBatchUpload(null);
+            break;
+          case 2:
+            _getData(true);
+            break;
+        }
+      }),];
+    } else {
+      return [
+        IconButton(
+            onPressed: () {
+              navigateToUserEdit(null);
+            },
+            icon: Icon(
+              Icons.add,
+              color: Theme.of(context).primaryColor,
+            )),
+        IconButton(
+            onPressed: () {
+              navigateToUserBatchUpload(null);
+            },
+            icon: Icon(
+              Icons.people,
+              color: Theme.of(context).primaryColor,
+            )),
+        IconButton(
+            onPressed: () {
+              _getData(true);
+            },
+            icon: Icon(
+              Icons.refresh,
+              color: Theme.of(context).primaryColor,
+            ))
+      ];
+    }
+  }
   @override
   Widget build(BuildContext context) {
     var amInPortrait = false;
@@ -381,7 +475,7 @@ class _GioUserListState extends State<GioUserList> {
     var style = myTextStyleLarge(context);
     final type = getThisDeviceType();
     if (type == 'phone') {
-      style = myTextStyleMediumBold(context);
+      style = myTextStyleMediumLarge(context);
     }
     if (ori == 'portrait') {
       amInPortrait = true;
@@ -391,35 +485,10 @@ class _GioUserListState extends State<GioUserList> {
         appBar: AppBar(
           centerTitle: true,
           title: Text(
-            title == null ? 'Organization Members' : title!,
+            title == null ? 'Members' : title!,
             style: style,
           ),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  navigateToUserEdit(null);
-                },
-                icon: Icon(
-                  Icons.add,
-                  color: Theme.of(context).primaryColor,
-                )),
-            IconButton(
-                onPressed: () {
-                  navigateToUserBatchUpload(null);
-                },
-                icon: Icon(
-                  Icons.people,
-                  color: Theme.of(context).primaryColor,
-                )),
-            IconButton(
-                onPressed: () {
-                  _getData(true);
-                },
-                icon: Icon(
-                  Icons.refresh,
-                  color: Theme.of(context).primaryColor,
-                ))
-          ],
+          actions:  _getActions(),
         ),
         body: Stack(
           children: [
@@ -517,9 +586,15 @@ class _GioUserListState extends State<GioUserList> {
                       GeoActivity(
                           width: mWidth / 2,
                           thinMode: false,
+                          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                           showPhoto: showPhoto,
                           showVideo: showVideo,
                           showAudio: showAudio,
+                          fcmBloc: widget.fcmBloc,
+                          organizationBloc: widget.organizationBloc,
+                          projectBloc: widget.projectBloc,
+                          project: null,
+                          dataApiDog: widget.dataApiDog,
                           showUser: (user) {},
                           showLocationRequest: (req) {},
                           showLocationResponse: (resp) {
@@ -584,9 +659,15 @@ class _GioUserListState extends State<GioUserList> {
                       GeoActivity(
                           width: (mWidth / 2),
                           thinMode: true,
+                          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                           showPhoto: showPhoto,
                           showVideo: showVideo,
                           showAudio: showAudio,
+                          fcmBloc: widget.fcmBloc,
+                          organizationBloc: widget.organizationBloc,
+                          projectBloc: widget.projectBloc,
+                          project: null,
+                          dataApiDog: widget.dataApiDog,
                           showUser: (user) {},
                           showLocationRequest: (req) {},
                           showLocationResponse: (resp) {

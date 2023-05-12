@@ -15,7 +15,10 @@ import '../../api/data_api_og.dart';
 import '../../bloc/fcm_bloc.dart';
 import '../../bloc/isolate_handler.dart';
 import '../../bloc/organization_bloc.dart';
+import '../../bloc/project_bloc.dart';
+import '../../cache_manager.dart';
 import '../../data/location_response.dart';
+import '../../data/project.dart';
 import '../../data/settings_model.dart';
 import '../../functions.dart';
 import '../maps/location_response_map.dart';
@@ -26,12 +29,17 @@ class SettingsTablet extends StatefulWidget {
       required this.dataApiDog,
       required this.prefsOGx,
       required this.organizationBloc,
-      required this.dataHandler})
+      required this.dataHandler, required this.cacheManager, required this.projectBloc, required this.project, required this.fcmBloc})
       : super(key: key);
   final DataApiDog dataApiDog;
   final PrefsOGx prefsOGx;
   final OrganizationBloc organizationBloc;
   final IsolateDataHandler dataHandler;
+  final CacheManager cacheManager;
+  final ProjectBloc projectBloc;
+  final Project? project;
+  final FCMBloc fcmBloc;
+
 
   @override
   SettingsTabletState createState() => SettingsTabletState();
@@ -114,9 +122,15 @@ class SettingsTabletState extends State<SettingsTablet>
               GeoActivity(
                   width: (size.width / 2) - 20,
                   thinMode: false,
+                  prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                   showPhoto: showPhoto,
                   showVideo: showVideo,
                   showAudio: showAudio,
+                  fcmBloc: widget.fcmBloc,
+                  organizationBloc: widget.organizationBloc,
+                  projectBloc: widget.projectBloc,
+                  project: widget.project,
+                  dataApiDog: widget.dataApiDog,
                   showUser: (user) {},
                   showLocationRequest: (req) {},
                   showLocationResponse: (resp) {
@@ -153,9 +167,15 @@ class SettingsTabletState extends State<SettingsTablet>
             GeoActivity(
                 width: (size.width / 2),
                 thinMode: false,
+                prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                 showPhoto: showPhoto,
                 showVideo: showVideo,
                 showAudio: showAudio,
+                fcmBloc: widget.fcmBloc,
+                organizationBloc: widget.organizationBloc,
+                projectBloc: widget.projectBloc,
+                project: widget.project,
+                dataApiDog: widget.dataApiDog,
                 showUser: (user) {},
                 showLocationRequest: (req) {},
                 showLocationResponse: (resp) {

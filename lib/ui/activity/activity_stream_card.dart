@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
+import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/ui/activity/user_profile_card.dart';
 
@@ -20,7 +21,7 @@ class ActivityStreamCard extends StatefulWidget {
       required this.thinMode,
       required this.width,
       required this.activityStrings,
-      required this.locale, required this.translatedUserType, required this.avatarRadius, required this.namePictureHorizontal})
+      required this.translatedUserType, required this.avatarRadius, required this.namePictureHorizontal, required this.users})
       : super(key: key);
 
   final ActivityModel activityModel;
@@ -28,10 +29,11 @@ class ActivityStreamCard extends StatefulWidget {
   final bool thinMode;
   final double width;
   final ActivityStrings activityStrings;
-  final String locale;
+  // final String locale;
   final String translatedUserType;
   final double avatarRadius;
   final bool namePictureHorizontal;
+  final List<User> users;
 
   @override
   ActivityStreamCardState createState() => ActivityStreamCardState();
@@ -41,34 +43,39 @@ class ActivityStreamCardState extends State<ActivityStreamCard> {
   int count = 0;
 
   static const mm = '🌿🌿🌿🌿🌿🌿 ActivityStreamCard: 🌿 ';
-  String? locale;
+  late String locale;
+  bool busy = false;
+  late SettingsModel settings;
   @override
   void initState() {
     super.initState();
-    _getLocale();
-    _getUser();
+    _getLocaleAndUser();
   }
 
   User? activityUser;
   String? translatedUserType;
 
-  Future _getUser() async {
+  void _getLocaleAndUser() async {
+    setState(() {
+      busy = true;
+    });
+    settings = await prefsOGx.getSettings();
+    locale = settings.locale!;
     if (widget.activityModel.userId != null) {
-      activityUser =
-      await cacheManager.getUserById(widget.activityModel.userId!);
+      for (var user in widget.users) {
+        if (user.userId == widget.activityModel.userId) {
+          activityUser = user;
+        }
+      }
     }
 
-    setState(() {});
-  }
-
-  void _getLocale() async {
-    var sett = await prefsOGx.getSettings();
-    locale = sett.locale;
+    setState(() {
+      busy = false;
+    });
   }
 
   Widget _getUserAdded(Icon icon, String msg) {
-    final dt = getFmtDate(widget.activityModel.date!, widget.locale);
-    // pp('$mm _getUserAdded, msg: $msg');
+    final dt = getFmtDate(widget.activityModel.date!, locale);
     final ori = MediaQuery.of(context).orientation;
     var width = 128.0;
     if (ori.name == 'landscape') {
@@ -105,12 +112,9 @@ class ActivityStreamCardState extends State<ActivityStreamCard> {
                         children: [
                           UserProfileCard(
                               userName: widget.activityModel.userName!,
-                              padding: 2,
+                              padding: 0,
                               elevation: 2,
                               avatarRadius: widget.avatarRadius,
-                              userType: translatedUserType == null
-                                  ? activityUser!.userType!
-                                  : translatedUserType!,
                               userThumbUrl: widget.activityModel.userThumbnailUrl,
                               namePictureHorizontal: widget.namePictureHorizontal),
                         ],
@@ -120,7 +124,7 @@ class ActivityStreamCardState extends State<ActivityStreamCard> {
                   ),
                   Text(
                     msg,
-                    style: myTextStyleTiny(context),
+                    style: myTextStyleSmallBoldPrimaryColor(context),
                   ),
                   const SizedBox(
                     height: 0,
@@ -137,9 +141,9 @@ class ActivityStreamCardState extends State<ActivityStreamCard> {
         ? const SizedBox()
         : ThinCard(
             model: widget.activityModel,
-            locale: widget.locale,
+            locale: locale!,
             width: 428,
-            avatarRadius: 16.0,
+            avatarRadius: 14.0,
             height: height,
             userType: translatedUserType == null
                 ? activityUser!.userType!
@@ -151,7 +155,7 @@ class ActivityStreamCardState extends State<ActivityStreamCard> {
   }
 
   Widget _getShortie(Icon icon, String msg) {
-    final dt = getFmtDate(widget.activityModel.date!, widget.locale);
+    final dt = getFmtDate(widget.activityModel.date!, locale!);
     // pp('$mm _getShortie, msg: $msg');
     return Card(
       shape: getRoundedBorder(radius: 16),
@@ -195,11 +199,13 @@ class ActivityStreamCardState extends State<ActivityStreamCard> {
 
   @override
   Widget build(BuildContext context) {
+    if (busy) {
+      return const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(),);
+    }
     late Icon icon;
     late String message;
     // pp('$mm activityType: ${widget.activityModel.activityType}');
     switch (widget.activityModel.activityType!) {
-
       case ActivityType.projectAdded:
         icon = Icon(Icons.access_time, color: Theme.of(context).primaryColor);
         message = widget.activityStrings.projectAdded == null
@@ -322,34 +328,33 @@ class ActivityStrings {
       required this.requestMemberLocation,
       required this.settingsChanged});
 
-  static Future<ActivityStrings?> getTranslated() async {
-    var sett = await prefsOGx.getSettings();
-    final projectAdded = await translator.translate('projectAdded', sett!.locale!);
+  static Future<ActivityStrings?> getTranslated(String locale) async {
+    final projectAdded = await translator.translate('projectAdded', locale);
     final projectLocationAdded =
-        await translator.translate('projectLocationAdded', sett.locale!);
+        await translator.translate('projectLocationAdded', locale);
     final projectAreaAdded =
-        await translator.translate('projectAreaAdded', sett.locale!);
+        await translator.translate('projectAreaAdded', locale);
     final memberAtProject =
-        await translator.translate('memberAtProject', sett.locale!);
+        await translator.translate('memberAtProject', locale);
     final settingsChanged =
-        await translator.translate('settingsChanged', sett.locale!);
+        await translator.translate('settingsChanged', locale);
     final memberAddedChanged =
-        await translator.translate('memberAddedChanged', sett.locale!);
-    final at = await translator.translate('at', sett.locale!);
-    final arr = await translator.translate('arrivedAt', sett.locale!);
+        await translator.translate('memberAddedChanged', locale);
+    final at = await translator.translate('at', locale);
+    final arr = await translator.translate('arrivedAt', locale);
     final arrivedAt = arr.replaceAll('\$project', '');
     final conditionAdded =
-        await translator.translate('conditionAdded', sett.locale!);
+        await translator.translate('conditionAdded', locale);
     final memberLocationResponse =
-        await translator.translate('memberLocationResponse', sett.locale!);
+        await translator.translate('memberLocationResponse', locale);
     final requestMemberLocation =
-        await translator.translate('requestMemberLocation', sett.locale!);
-    final noActivities = await translator.translate('noActivities', sett.locale!);
+        await translator.translate('requestMemberLocation', locale);
+    final noActivities = await translator.translate('noActivities', locale);
 
     final loadingActivities =
-        await translator.translate('loadingActivities', sett.locale!);
+        await translator.translate('loadingActivities', locale);
 
-    final tapToRefresh = await translator.translate('tapToRefresh', sett!.locale!);
+    final tapToRefresh = await translator.translate('tapToRefresh', locale);
 
     var activityStrings = ActivityStrings(
         tapToRefresh: tapToRefresh,

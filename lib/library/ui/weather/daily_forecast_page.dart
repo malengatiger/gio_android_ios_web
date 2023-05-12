@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:lat_lng_to_timezone/lat_lng_to_timezone.dart';
 
-import '../../api/data_api.dart';
+
+import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
 import '../../bloc/organization_bloc.dart';
 import '../../data/project_position.dart';
@@ -74,7 +75,7 @@ class DailyForecastPageState extends State<DailyForecastPage>
         for (var pos in mPositions) {
           String tz = latLngToTimezoneString(
               pos.position!.coordinates[1], pos.position!.coordinates[0]);
-          final forecasts = await DataAPI.getDailyForecast(
+          final forecasts = await dataApiDog.getDailyForecast(
               latitude: pos.position!.coordinates[1],
               longitude: pos.position!.coordinates[0],
               timeZone: tz,

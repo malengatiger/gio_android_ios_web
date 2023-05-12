@@ -6,7 +6,12 @@ import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../../ui/activity/geo_activity.dart';
+import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
+import '../../bloc/fcm_bloc.dart';
+import '../../bloc/organization_bloc.dart';
+import '../../bloc/project_bloc.dart';
+import '../../cache_manager.dart';
 import '../../data/location_response.dart';
 import '../../data/project.dart';
 import '../../data/user.dart';
@@ -15,7 +20,22 @@ import '../maps/location_response_map.dart';
 
 class ProjectEditorTablet extends StatefulWidget {
   final Project? project;
-  const ProjectEditorTablet({this.project, super.key});
+  final PrefsOGx prefsOGx;
+  final CacheManager cacheManager;
+  final ProjectBloc projectBloc;
+  final OrganizationBloc organizationBloc;
+  final DataApiDog dataApiDog;
+  final FCMBloc fcmBloc;
+
+  const ProjectEditorTablet(
+      {this.project,
+      super.key,
+      required this.prefsOGx,
+      required this.cacheManager,
+      required this.projectBloc,
+      required this.organizationBloc,
+      required this.dataApiDog,
+      required this.fcmBloc});
 
   @override
   ProjectEditorTabletState createState() => ProjectEditorTabletState();
@@ -29,8 +49,13 @@ class ProjectEditorTabletState extends State<ProjectEditorTablet>
   var maxController = TextEditingController(text: '500.0');
   var isBusy = false;
 
-  String? projectEditor, newProject, editProject, submitProject,
-      projectName, descriptionOfProject, maximumMonitoringDistance;
+  String? projectEditor,
+      newProject,
+      editProject,
+      submitProject,
+      projectName,
+      descriptionOfProject,
+      maximumMonitoringDistance;
 
   User? admin;
 
@@ -49,9 +74,7 @@ class ProjectEditorTabletState extends State<ProjectEditorTablet>
     editProject = await translator.translate('editProject', sett.locale!);
     newProject = await translator.translate('newProject', sett.locale!);
 
-    setState(() {
-
-    });
+    setState(() {});
     if (admin != null) {
       pp('🎽 🎽 🎽 We have an admin user? 🎽 🎽 🎽 ${admin!.name!}');
       setState(() {});
@@ -80,7 +103,14 @@ class ProjectEditorTabletState extends State<ProjectEditorTablet>
             type: PageTransitionType.fade,
             alignment: Alignment.bottomRight,
             duration: const Duration(seconds: 1),
-            child: ProjectLocationHandler(mProject)));
+            child: ProjectLocationHandler(
+                fcmBloc: widget.fcmBloc,
+                organizationBloc: widget.organizationBloc,
+                projectBloc: widget.projectBloc,
+                dataApiDog: widget.dataApiDog,
+                prefsOGx: widget.prefsOGx,
+                cacheManager: widget.cacheManager,
+                mProject)));
     if (mounted) {
       Navigator.pop(context);
     }
@@ -102,8 +132,8 @@ class ProjectEditorTabletState extends State<ProjectEditorTablet>
       child: Scaffold(
         key: _key,
         appBar: AppBar(
-          title: Text(projectEditor == null?
-            'Project Editor': projectEditor!,
+          title: Text(
+            projectEditor == null ? 'Project Editor' : projectEditor!,
             style: myTextStyleLarge(context),
           ),
           actions: [
@@ -126,8 +156,13 @@ class ProjectEditorTabletState extends State<ProjectEditorTablet>
                   height: 28,
                 ),
                 Text(
-                  widget.project == null ? newProject == null?'New Project':newProject! :
-                  editProject == null? 'Edit Project': editProject!,
+                  widget.project == null
+                      ? newProject == null
+                          ? 'New Project'
+                          : newProject!
+                      : editProject == null
+                          ? 'Edit Project'
+                          : editProject!,
                   style: myTextStyleMedium(context),
                 ),
                 const SizedBox(
@@ -164,22 +199,29 @@ class ProjectEditorTabletState extends State<ProjectEditorTablet>
                   width: 64,
                 ),
                 GeoActivity(
-                    width: (width / 2) - 200,
-                    thinMode: true,
-                    project: widget.project,
-                    showPhoto: (photo) {},
-                    showVideo: (video) {},
-                    showAudio: (audio) {},
-                    showUser: (user) {},
-                    showLocationRequest: (req) {},
-                    showLocationResponse: (resp) {
-                      _navigateToLocationResponseMap(resp);
-                    },
-                    showGeofenceEvent: (event) {},
-                    showProjectPolygon: (polygon) {},
-                    showProjectPosition: (position) {},
-                    showOrgMessage: (message) {},
-                    forceRefresh: false),
+                  width: (width / 2) - 200,
+                  thinMode: true,
+                  fcmBloc: widget.fcmBloc,
+                  organizationBloc: widget.organizationBloc,
+                  projectBloc: widget.projectBloc,
+                  project: widget.project!,
+                  showPhoto: (photo) {},
+                  showVideo: (video) {},
+                  showAudio: (audio) {},
+                  showUser: (user) {},
+                  showLocationRequest: (req) {},
+                  showLocationResponse: (resp) {
+                    _navigateToLocationResponseMap(resp);
+                  },
+                  showGeofenceEvent: (event) {},
+                  showProjectPolygon: (polygon) {},
+                  showProjectPosition: (position) {},
+                  showOrgMessage: (message) {},
+                  forceRefresh: false,
+                  prefsOGx: widget.prefsOGx,
+                  cacheManager: widget.cacheManager,
+                  dataApiDog: widget.dataApiDog,
+                ),
               ],
             ),
           );
@@ -204,7 +246,13 @@ class ProjectEditorTabletState extends State<ProjectEditorTablet>
                 GeoActivity(
                     width: (width / 2) - 80,
                     thinMode: true,
+                    fcmBloc: widget.fcmBloc,
+                    organizationBloc: widget.organizationBloc,
+                    projectBloc: widget.projectBloc,
                     project: widget.project,
+                    prefsOGx: widget.prefsOGx,
+                    cacheManager: widget.cacheManager,
+                    dataApiDog: widget.dataApiDog,
                     showPhoto: (photo) {},
                     showVideo: (video) {},
                     showAudio: (audio) {},

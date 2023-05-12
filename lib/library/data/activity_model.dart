@@ -2,6 +2,7 @@ import 'package:geo_monitor/library/data/photo.dart';
 import 'package:geo_monitor/library/data/project.dart';
 import 'package:geo_monitor/library/data/project_polygon.dart';
 import 'package:geo_monitor/library/data/project_position.dart';
+import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/data/video.dart';
 import 'package:hive/hive.dart';
 
@@ -68,6 +69,8 @@ class ActivityModel extends HiveObject {
   String? userType;
   @HiveField(22)
   String? translatedUserType;
+  @HiveField(23)
+  SettingsModel? settingsModel;
 
   ActivityModel({
     required this.activityModelId,
@@ -92,6 +95,7 @@ class ActivityModel extends HiveObject {
     required this.orgMessage,
     required this.userType,
     required this.translatedUserType,
+    required this.settingsModel,
     required this.userThumbnailUrl,
   });
 
@@ -112,6 +116,9 @@ class ActivityModel extends HiveObject {
     projectName = data['projectName'];
     userThumbnailUrl = data['userThumbnailUrl'];
     if (data[''] != null) {}
+    if (data['settingsModel'] != null) {
+      settingsModel = SettingsModel.fromJson(data['settingsModel']);
+    }
     if (data['locationResponse'] != null) {
       locationResponse = LocationResponse.fromJson(data['locationResponse']);
     }
@@ -174,6 +181,7 @@ class ActivityModel extends HiveObject {
       'user': user == null ? null : user!.toJson(),
       'geofenceEvent': geofenceEvent == null ? null : geofenceEvent!.toJson(),
       'orgMessage': orgMessage == null ? null : orgMessage!.toJson(),
+      'settingsModel': settingsModel == null ? null : settingsModel!.toJson(),
     };
     return map;
   }

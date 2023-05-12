@@ -25,6 +25,7 @@ class DataBagAdapter extends TypeAdapter<DataBag> {
       audios: (fields[8] as List?)?.cast<Audio>(),
       date: fields[5] as String?,
       users: (fields[6] as List?)?.cast<User>(),
+      activityModels: (fields[10] as List?)?.cast<ActivityModel>(),
       projectPolygons: (fields[7] as List?)?.cast<ProjectPolygon>(),
       settings: (fields[9] as List?)?.cast<SettingsModel>(),
     );
@@ -33,7 +34,7 @@ class DataBagAdapter extends TypeAdapter<DataBag> {
   @override
   void write(BinaryWriter writer, DataBag obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.photos)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class DataBagAdapter extends TypeAdapter<DataBag> {
       ..writeByte(8)
       ..write(obj.audios)
       ..writeByte(9)
-      ..write(obj.settings);
+      ..write(obj.settings)
+      ..writeByte(10)
+      ..write(obj.activityModels);
   }
 
   @override

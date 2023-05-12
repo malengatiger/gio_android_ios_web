@@ -344,7 +344,7 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child: GeofenceMapTablet(
+            child: GeofenceMap(
               geofenceEvent: event!,
             )));
   }
@@ -420,7 +420,12 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                   width: (width / 2) - 120,
                   forceRefresh: true,
                   project: widget.project,
+                  prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                   thinMode: false,
+                  fcmBloc: widget.fcmBloc,
+                  organizationBloc: widget.organizationBloc,
+                  projectBloc: widget.projectBloc,
+                  dataApiDog: widget.dataApiDog,
                   showPhoto: (photo) {
                     _displayPhoto(photo);
                   },
@@ -477,6 +482,11 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                   width: (width / 2) - 80,
                   forceRefresh: true,
                   project: widget.project,
+                  prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+                  fcmBloc: widget.fcmBloc,
+                  organizationBloc: widget.organizationBloc,
+                  projectBloc: widget.projectBloc,
+                  dataApiDog: widget.dataApiDog,
                   thinMode: false,
                   showPhoto: (photo) {
                     _displayPhoto(photo);

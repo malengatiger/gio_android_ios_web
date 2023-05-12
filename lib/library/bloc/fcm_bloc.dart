@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart' as fb;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/bloc/data_refresher.dart';
 import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/location_request_handler.dart';
@@ -14,7 +15,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 import '../../device_location/device_location_bloc.dart';
-import '../api/data_api.dart';
 import '../api/prefs_og.dart';
 import '../auth/app_auth.dart';
 import '../cache_manager.dart';
@@ -139,7 +139,7 @@ class FCMBloc {
       firebaseMessaging.onTokenRefresh.listen((newToken) {
         pp("$mm onTokenRefresh: 🍎 🍎 🍎 update user: token: $newToken ... 🍎 🍎 ");
         user!.fcmRegistration = newToken;
-        DataAPI.updateUser(user!);
+        dataApiDog.updateUser(user!);
       });
 
       // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project

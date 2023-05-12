@@ -19,6 +19,8 @@ import 'package:universal_platform/universal_platform.dart';
 import '../../l10n/translation_handler.dart';
 import '../../library/api/prefs_og.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/organization_bloc.dart';
+import '../../library/bloc/project_bloc.dart';
 import '../../library/bloc/theme_bloc.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/audio.dart';
@@ -44,9 +46,17 @@ class UserDashboard extends StatefulWidget {
   const UserDashboard({
     Key? key,
     required this.user, required this.dataApiDog,
+    required this.prefsOGx, required this.cacheManager,
+    required this.projectBloc,  required this.organizationBloc, required this.fcmBloc,
   }) : super(key: key);
   final User user;
   final DataApiDog dataApiDog;
+  final PrefsOGx prefsOGx;
+  final CacheManager cacheManager;
+  final ProjectBloc projectBloc;
+  // final Project? project;
+  final OrganizationBloc organizationBloc;
+  final FCMBloc fcmBloc;
 
   @override
   UserDashboardState createState() => UserDashboardState();
@@ -384,6 +394,12 @@ class UserDashboardState extends State<UserDashboard>
               child: GeoActivity(
                   user: widget.user,
                   width: 400,
+                  fcmBloc: widget.fcmBloc,
+                  organizationBloc: widget.organizationBloc,
+                  projectBloc: widget.projectBloc,
+                  project: null,
+                  dataApiDog: widget.dataApiDog,
+                  prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                   thinMode: true,
                   showPhoto: _displayPhoto,
                   showVideo: _displayVideo,
@@ -546,8 +562,14 @@ class UserDashboardState extends State<UserDashboard>
                                 ),
                                 GeoActivity(
                                     user: widget.user,
+                                    prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                                     width: (width / 2) - 60,
                                     thinMode: true,
+                                    fcmBloc: widget.fcmBloc,
+                                    organizationBloc: widget.organizationBloc,
+                                    projectBloc: widget.projectBloc,
+                                    project: null,
+                                    dataApiDog: widget.dataApiDog,
                                     showPhoto: _displayPhoto,
                                     showVideo: _displayVideo,
                                     showAudio: _displayAudio,
@@ -597,11 +619,17 @@ class UserDashboardState extends State<UserDashboard>
                                 GeoActivity(
                                     width: (width / 2) - 120,
                                     thinMode: false,
+                                    prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                                     user: widget.user,
                                     showPhoto: _displayPhoto,
                                     showVideo: _displayVideo,
                                     showAudio: _displayAudio,
                                     showUser: (user) {},
+                                    fcmBloc: widget.fcmBloc,
+                                    organizationBloc: widget.organizationBloc,
+                                    projectBloc: widget.projectBloc,
+                                    project: null,
+                                    dataApiDog: widget.dataApiDog,
                                     showLocationRequest: (req) {},
                                     showLocationResponse: (resp) {
                                       _navigateToLocationResponseMap(resp);
