@@ -411,7 +411,7 @@ class ProjectMapMobileState extends State<ProjectMapMobile>
           centerTitle: true,
           title: Text(title == null?
             'Project Locations & Areas':title!,
-            style: myTextStyleLarge(context),
+            style: myTextStyleMediumLarge(context),
           ),
           actions: [
             IconButton(
@@ -425,7 +425,7 @@ class ProjectMapMobileState extends State<ProjectMapMobile>
                 ))
           ],
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(60),
+            preferredSize: const Size.fromHeight(80),
             child: Column(
               children: [
                 Row(
@@ -437,7 +437,7 @@ class ProjectMapMobileState extends State<ProjectMapMobile>
                     Flexible(
                       child: Text(
                         widget.project.name!,
-                        style: myTextStyleLargePrimaryColor(context),
+                        style: myTextStyleMediumLargePrimaryColor(context),
                       ),
                     ),
                     const SizedBox(

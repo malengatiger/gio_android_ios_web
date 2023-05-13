@@ -21,6 +21,7 @@ import 'package:geo_monitor/library/data/video.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/library/generic_functions.dart';
 import 'package:geo_monitor/library/ui/maps/photo_map.dart';
+import 'package:geo_monitor/library/ui/maps/project_map_mobile.dart';
 import 'package:geo_monitor/library/ui/media/photo_cover.dart';
 import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
 import 'package:geo_monitor/library/ui/project_list/gio_projects.dart';
@@ -51,6 +52,7 @@ import '../library/data/project.dart';
 import '../library/data/settings_model.dart';
 import '../library/ui/loading_card.dart';
 import '../library/ui/maps/geofence_map_tablet.dart';
+import '../library/ui/maps/project_polygon_map_mobile.dart';
 import '../library/ui/settings/settings_main.dart';
 import 'member_list.dart';
 
@@ -562,7 +564,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
         onProjectPositionTapped(act.projectPosition!);
         break;
       case ActivityType.polygonAdded:
-        // TODO: Handle this case.
+        onProjectPolygonTapped(act.projectPolygon!);
         break;
       case ActivityType.settingsChanged:
         onSettingsChanged(act.settingsModel!);
@@ -705,9 +707,38 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     }
   }
 
-  onProjectPositionTapped(ProjectPosition p1) {
+  onProjectPositionTapped(ProjectPosition p1) async {
     pp('🌀🌀🌀🌀 onProjectPositionTapped; ${p1.toJson()}');
+    final proj = await widget.cacheManager.getProjectById(projectId: p1.projectId!);
+
     if (deviceType == 'phone') {}
+    if (mounted) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: const Duration(milliseconds: 1000),
+              child:  ProjectMapMobile(
+                project: proj!,
+              )));
+    }
+  }
+  onProjectPolygonTapped(ProjectPolygon p1) async {
+    pp('🌀🌀🌀🌀 onProjectPolygonTapped; ${p1.toJson()}');
+    final proj = await widget.cacheManager.getProjectById(projectId: p1.projectId!);
+    if (deviceType == 'phone') {}
+    if (mounted) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: const Duration(milliseconds: 1000),
+              child:  ProjectPolygonMapMobile(
+                project: proj!,
+              )));
+    }
   }
 
   onPolygonTapped(ProjectPolygon p1) {

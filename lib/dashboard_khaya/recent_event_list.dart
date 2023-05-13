@@ -14,10 +14,10 @@ class RecentEventList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var width = 320.0;
+    var width = 340.0;
     final deviceType = getThisDeviceType();
     if (deviceType == 'phone') {
-      width = 300.0;
+      width = 332.0;
     }
     return busy
         ? const Center(
@@ -103,6 +103,12 @@ class EventView extends StatelessWidget {
       icon = const Icon(Icons.location_on_sharp);
       userUrl = activity.userThumbnailUrl;
     }
+    if (activity.projectPolygon != null) {
+      icon = const Icon(Icons.manage_accounts_outlined,
+        color: Colors.yellow,
+      );
+      userUrl = activity.userThumbnailUrl;
+    }
     if (activity.activityType == ActivityType.settingsChanged) {
       icon = const Icon(
         Icons.settings,
@@ -119,7 +125,7 @@ class EventView extends StatelessWidget {
           shape: getRoundedBorder(radius: 12),
           elevation: 8,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(4.0),
             child: Row(
               children: [
                 icon,
@@ -132,10 +138,12 @@ class EventView extends StatelessWidget {
                     children: [
                       activity.projectName == null
                           ? const SizedBox()
-                          : Text(
-                              activity.projectName!,
-                              style: myTextStyleSmallPrimaryColor(context),
-                            ),
+                          : Flexible(
+                            child: Text(
+                                activity.projectName!,
+                                style: myTextStyleSmallPrimaryColor(context),
+                              ),
+                          ),
                       const SizedBox(
                         height: 8,
                       ),

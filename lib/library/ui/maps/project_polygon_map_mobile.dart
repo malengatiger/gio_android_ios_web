@@ -290,47 +290,29 @@ class ProjectPolygonMapMobileState extends State<ProjectPolygonMapMobile>
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          // backgroundColor: Colors.white,
+          title: Text(
+            title == null ? 'Project Monitoring Areas' : title!,
+            style: myTextStyleMediumLarge(context),
+          ),
           elevation: 0.0,
           titleSpacing: 10.0,
           centerTitle: true,
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(120),
+            preferredSize: const Size.fromHeight(80),
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      title == null ? 'Project Monitoring Areas' : title!,
-                      style: myTextStyleLarge(context),
-                    ),
-                    const SizedBox(
-                      width: 28,
-                    ),
-                    busy
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 4,
-                              backgroundColor: Colors.pink,
-                            ),
-                          )
-                        : const SizedBox(),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Flexible(
-                        child: Text(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left:16.0),
+                          child: Text(
                       '${widget.project.name}',
                       style: myTextStyleMediumPrimaryColor(context),
-                    )),
+                    ),
+                        )),
                     const SizedBox(
                       width: 16,
                     ),
@@ -383,13 +365,13 @@ class ProjectPolygonMapMobileState extends State<ProjectPolygonMapMobile>
                       size: 16,
                       color: Theme.of(context).primaryColor,
                     )),
-            IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.close,
-                  size: 20,
-                  color: Theme.of(context).primaryColor,
-                )),
+            // IconButton(
+            //     onPressed: () {},
+            //     icon: Icon(
+            //       Icons.close,
+            //       size: 20,
+            //       color: Theme.of(context).primaryColor,
+            //     )),
           ],
         ),
         body: Stack(
