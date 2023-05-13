@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/dashboard_khaya/project_list.dart';
 import 'package:geo_monitor/dashboard_khaya/recent_event_list.dart';
@@ -265,12 +266,11 @@ class DashboardKhayaState extends State<DashboardKhaya> {
   void _getUser() async {
     user = await widget.prefsOGx.getUser();
     settingsModel = await widget.prefsOGx.getSettings();
-    setState(() {
-
-    });
+    setState(() {});
     _setTexts();
     _getCachedData();
   }
+
   void _getCachedData() async {
     try {
       setState(() {
@@ -307,7 +307,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
       setState(() {
         busy = true;
       });
-      final m = await getStartEndDates(numberOfDays: settingsModel.numberOfDays!);
+      final m =
+          await getStartEndDates(numberOfDays: settingsModel.numberOfDays!);
       final bag = await widget.organizationBloc.getOrganizationData(
           organizationId: user!.organizationId!,
           forceRefresh: forceRefresh,
@@ -709,7 +710,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
 
   onProjectPositionTapped(ProjectPosition p1) async {
     pp('🌀🌀🌀🌀 onProjectPositionTapped; ${p1.toJson()}');
-    final proj = await widget.cacheManager.getProjectById(projectId: p1.projectId!);
+    final proj =
+        await widget.cacheManager.getProjectById(projectId: p1.projectId!);
 
     if (deviceType == 'phone') {}
     if (mounted) {
@@ -719,14 +721,16 @@ class DashboardKhayaState extends State<DashboardKhaya> {
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
               duration: const Duration(milliseconds: 1000),
-              child:  ProjectMapMobile(
+              child: ProjectMapMobile(
                 project: proj!,
               )));
     }
   }
+
   onProjectPolygonTapped(ProjectPolygon p1) async {
     pp('🌀🌀🌀🌀 onProjectPolygonTapped; ${p1.toJson()}');
-    final proj = await widget.cacheManager.getProjectById(projectId: p1.projectId!);
+    final proj =
+        await widget.cacheManager.getProjectById(projectId: p1.projectId!);
     if (deviceType == 'phone') {}
     if (mounted) {
       Navigator.push(
@@ -735,7 +739,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
               type: PageTransitionType.scale,
               alignment: Alignment.topLeft,
               duration: const Duration(milliseconds: 1000),
-              child:  ProjectPolygonMapMobile(
+              child: ProjectPolygonMapMobile(
                 project: proj!,
               )));
     }
@@ -1151,6 +1155,79 @@ class RealDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final type = getThisDeviceType();
+    final tabletActions = <Widget>[
+      IconButton(
+          onPressed: () {
+            onRefreshRequested();
+          },
+          icon: Icon(
+            Icons.refresh,
+            color: Theme.of(context).primaryColor,
+          )),
+      IconButton(
+          onPressed: () {
+            onSettingsRequested();
+          },
+          icon: Icon(
+            Icons.settings,
+            color: Theme.of(context).primaryColor,
+          )),
+      const SizedBox(
+        width: 8,
+      ),
+      GestureDetector(
+        onTap: () {
+          onDeviceUserTapped();
+        },
+        child: CircleAvatar(
+          radius: 14,
+          backgroundImage: NetworkImage(user.thumbnailUrl!),
+        ),
+      ),
+      const SizedBox(
+        width: 16,
+      ),
+    ];
+    final phoneActions = <Widget>[
+      PopupMenuButton(
+        elevation: 8,
+        itemBuilder: (context) {
+        return [
+          PopupMenuItem(
+              value: 1,
+              child: Icon(
+                Icons.refresh,
+                color: Theme.of(context).primaryColor,
+              )),
+          PopupMenuItem(
+              value: 2,
+              child: Icon(
+                Icons.settings,
+                color: Theme.of(context).primaryColor,
+              )),
+          PopupMenuItem(
+            value: 3,
+            child: CircleAvatar(
+                radius: 16.0,
+                backgroundImage: NetworkImage(user.thumbnailUrl!)),
+          )
+        ];
+      }, onSelected: (index){
+        switch (index) {
+          case 1:
+            onRefreshRequested();
+            break;
+          case 2:
+            onSettingsRequested();
+            break;
+          case 3:
+            onDeviceUserTapped();
+            break;
+        }
+      },)
+    ];
+
     return SizedBox(
       width: width,
       child: Stack(
@@ -1256,47 +1333,7 @@ class RealDashboard extends StatelessWidget {
                     navigateToIntro();
                   },
                 ),
-                actions: [
-                  // IconButton(
-                  //     onPressed: () {
-                  //       onSearchTapped();
-                  //     },
-                  //     icon: Icon(
-                  //       Icons.search,
-                  //       color: Theme.of(context).primaryColor,
-                  //     )),
-                  IconButton(
-                      onPressed: () {
-                        onRefreshRequested();
-                      },
-                      icon: Icon(
-                        Icons.refresh,
-                        color: Theme.of(context).primaryColor,
-                      )),
-                  IconButton(
-                      onPressed: () {
-                        onSettingsRequested();
-                      },
-                      icon: Icon(
-                        Icons.settings,
-                        color: Theme.of(context).primaryColor,
-                      )),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      onDeviceUserTapped();
-                    },
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundImage: NetworkImage(user.thumbnailUrl!),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                ],
+                actions: type == 'phone' ? phoneActions : tabletActions,
               ),
             ),
           ),

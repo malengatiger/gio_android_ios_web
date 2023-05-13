@@ -100,11 +100,11 @@ class EventView extends StatelessWidget {
       userUrl = activity.userThumbnailUrl;
     }
     if (activity.projectPosition != null) {
-      icon = const Icon(Icons.location_on_sharp);
+      icon = const Icon(Icons.location_on_sharp, color: Colors.green,);
       userUrl = activity.userThumbnailUrl;
     }
     if (activity.projectPolygon != null) {
-      icon = const Icon(Icons.manage_accounts_outlined,
+      icon = const Icon(Icons.location_on_rounded,
         color: Colors.yellow,
       );
       userUrl = activity.userThumbnailUrl;
@@ -120,48 +120,50 @@ class EventView extends StatelessWidget {
     final date = getFmtDate(activity.date!, locale);
 
     return SizedBox(
-        width: width,
+        width: width, height: 100,
         child: Card(
           shape: getRoundedBorder(radius: 12),
           elevation: 8,
           child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Row(
-              children: [
-                icon,
-                const SizedBox(
-                  width: 8,
-                ),
-                SizedBox(
-                  height: 48,
-                  child: Column(
-                    children: [
-                      activity.projectName == null
-                          ? const SizedBox()
-                          : Flexible(
-                            child: Text(
-                                activity.projectName!,
-                                style: myTextStyleSmallPrimaryColor(context),
-                              ),
-                          ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        date,
-                        style: myTextStyleTiny(context),
-                      ),
-                    ],
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  icon,
+                  const SizedBox(
+                    width: 8,
                   ),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                userUrl == null? const SizedBox(): CircleAvatar(
-                  backgroundImage: NetworkImage(userUrl),
-                  radius: 14,
-                )
-              ],
+                  SizedBox(
+                    height: 48,
+                    child: Column(
+                      children: [
+                        activity.projectName == null
+                            ? const SizedBox()
+                            : Flexible(
+                              child: Text(
+                                  activity.projectName!,
+                                  style: myTextStyleSmallPrimaryColor(context),
+                                ),
+                            ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          date,
+                          style: myTextStyleTiny(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  userUrl == null? const SizedBox(): CircleAvatar(
+                    backgroundImage: NetworkImage(userUrl),
+                    radius: 14,
+                  )
+                ],
+              ),
             ),
           ),
         ));

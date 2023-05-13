@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/functions.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../ui/intro/intro_main.dart';
@@ -30,12 +31,23 @@ class XdHeaderState extends State<XdHeader>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(width: 48,
+    final type = getThisDeviceType();
+    var width = 200.0;
+    if (type == 'phone') {
+      width = 100.0;
+    }
+    return SizedBox(width: 300,
       child: GestureDetector(
           onTap: (){
             widget.navigateToIntro();
           },
-          child: Image.asset('assets/gio.png', height: 48, width: 48,)),
+          child: Row(mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Image.asset('assets/gio.png', height: 40, width: 40,),
+              SizedBox(width: width,),
+              Text('Gio', style: myTextStyleLarge(context),),
+            ],
+          )),
     );
   }
 

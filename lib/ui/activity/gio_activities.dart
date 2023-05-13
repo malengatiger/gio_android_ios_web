@@ -233,7 +233,7 @@ class _MobileListState extends State<MobileList> {
   void _setTexts() async {
     settings = await prefsOGx.getSettings();
     activityStrings = await ActivityStrings.getTranslated(settings!.locale!);
-    title = await translator.translate('projectActivities', settings!.locale!);
+    title = await translator.translate('activities', settings!.locale!);
   }
 
   void _navigateToTimeline() {
