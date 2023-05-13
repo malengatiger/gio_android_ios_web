@@ -139,7 +139,7 @@ class IsolateDataHandler {
       pp('$xx catchError: $err');
       return Future<Isolate>.delayed(const Duration(milliseconds: 1));
     }).whenComplete(() {
-      pp('$xx whenComplete: 💙💙 Isolate seems to be done!\n\n');
+      pp('$xx whenComplete: 💙💙 why is this event fired anyway??? ... things are nowhere near complete!\n\n');
     });
   }
 
@@ -221,8 +221,10 @@ class GioParams {
 
 ///running inside isolate
 void _heavyTaskInsideIsolate(GioParams gioParams) async {
-  pp('_heavyTaskInsideIsolate starting ................');
-  gioParams.sendPort.send('Heavy Task starting ....');
+  const xx = '🐤🐤🐤🐤 _heavyTaskInsideIsolate: 🐤🐤🐤🐤 ';
+
+  pp('$xx starting ................');
+  gioParams.sendPort.send('Heavy Task starting .... call method for org or project or user ...');
 
   DataBag? bag;
   if (gioParams.organizationId != null) {
@@ -253,6 +255,6 @@ void _heavyTaskInsideIsolate(GioParams gioParams) async {
         directoryPath: gioParams.directoryPath);
   }
 
-  pp('🔷🔷🔷🔷 heavyTaskInsideIsolate completed, 🔷bag returned to the other side');
+  pp('🔷🔷🔷🔷 heavyTaskInsideIsolate completed, 🔷bag to be returned to the other side via sendPort');
   gioParams.sendPort.send(bag);
 }

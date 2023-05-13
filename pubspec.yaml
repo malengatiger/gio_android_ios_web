@@ -98,6 +98,7 @@ dependencies:
   audioplayers: ^3.0.1
 #  adobe_xd: ^2.0.1
   video_player: ^2.6.1
+  dio:
 
 
 dev_dependencies:

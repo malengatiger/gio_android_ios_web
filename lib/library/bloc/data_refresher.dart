@@ -400,7 +400,7 @@ Future<DataBag> refreshOrganizationDataInIsolate(
     required String endDate,
     required String url,
     required String directoryPath}) async {
-  pp('$xz ............ refreshOrganizationDataInIsolate starting ....');
+  pp('$xz ............ refreshOrganizationDataInIsolate starting .... calling getOrganizationDataZippedFile');
   DataBag? bag;
 
   try {
@@ -422,7 +422,7 @@ Future<DataBag> refreshOrganizationDataInIsolate(
         translationKey: 'serverProblem',
         errorType: GeoException.socketException);
   }
-
+  pp('$xz ............ refreshOrganizationDataInIsolate ended. returning bag');
   return bag;
 }
 

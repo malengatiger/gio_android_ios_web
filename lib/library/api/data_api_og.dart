@@ -98,6 +98,7 @@ class DataApiDog {
   Future<SettingsModel> addSettings(SettingsModel settings) async {
     Map bag = settings.toJson();
     var result = await _callWebAPIPost('${url!}addSettings', bag);
+    pp('$xz $result');
     var s = SettingsModel.fromJson(result);
     pp('$xz settings from db: ${s.toJson()}');
     await cacheManager.addSettings(settings: s);

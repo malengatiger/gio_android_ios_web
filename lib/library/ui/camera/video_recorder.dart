@@ -454,7 +454,7 @@ class VideoRecorderState extends State<VideoRecorder>
                                     ),
                                     Text(
                                       fileSize,
-                                      style: myNumberStyleLargePrimaryColor(
+                                      style: myNumberStyleLargerPrimaryColor(
                                           context),
                                     ),
                                   ],
@@ -473,7 +473,7 @@ class VideoRecorderState extends State<VideoRecorder>
                                     ),
                                     Text(
                                       getHourMinuteSecond(finalDuration),
-                                      style: myNumberStyleLargePrimaryColor(
+                                      style: myNumberStyleLargerPrimaryColor(
                                           context),
                                     ),
                                   ],
@@ -581,7 +581,7 @@ class VideoRecorderState extends State<VideoRecorder>
                                     ),
                                     Text(
                                       fileSize,
-                                      style: myNumberStyleLargePrimaryColor(
+                                      style: myNumberStyleLargerPrimaryColor(
                                           context),
                                     ),
                                   ],
@@ -600,7 +600,7 @@ class VideoRecorderState extends State<VideoRecorder>
                                     ),
                                     Text(
                                       getHourMinuteSecond(finalDuration),
-                                      style: myNumberStyleLargePrimaryColor(
+                                      style: myNumberStyleLargerPrimaryColor(
                                           context),
                                     ),
                                   ],

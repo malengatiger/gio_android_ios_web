@@ -291,7 +291,7 @@ class _DayForecastCardState extends State<DayForecastCard> {
                       ),
                       Text(
                         '${widget.forecast.minTemperature}',
-                        style: myNumberStyleLargePrimaryColor(context),
+                        style: myNumberStyleLargerPrimaryColor(context),
                       ),
                       Text(
                         ' \u2103 ',
@@ -331,7 +331,7 @@ class RainAndShowers extends StatelessWidget {
                 ),
                 Text(
                   '${rain * 100}',
-                  style: myNumberStyleLargePrimaryColor(context),
+                  style: myNumberStyleLargerPrimaryColor(context),
                 ),
                 const SizedBox(
                   width: 4,
@@ -350,7 +350,7 @@ class RainAndShowers extends StatelessWidget {
                 ),
                 Text(
                   '$showers',
-                  style: myNumberStyleLargePrimaryColor(context),
+                  style: myNumberStyleLargerPrimaryColor(context),
                 ),
                 const SizedBox(
                   width: 4,

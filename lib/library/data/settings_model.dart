@@ -46,8 +46,8 @@ class SettingsModel {
       required this.projectId,
       required this.numberOfDays,
       required this.locale,
-        required this.translatedMessage,
-        required this.translatedTitle,
+      required this.translatedMessage,
+      required this.translatedTitle,
       required this.activityStreamHours});
 
   SettingsModel.fromJson(Map data) {

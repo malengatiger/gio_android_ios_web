@@ -151,8 +151,6 @@ e
 .lib/library/ui/schedule/scheduler_desktop.dart,5/c/5c92dd39faed797e488efe917394c82fa60fb09b
 ]
 -lib/library/ui/camera/flick_video_player.dart,b/f/bfa4a8ea6e2b5475ef9c30d77bb17ab993288864
-Y
-)lib/library/ui/camera/video_recorder.dart,b/a/ba583e030b56bbb71702057086a9f7ef175bd1ab
 \
 ,lib/library/ui/camera/play_video_chewie.dart,d/0/d00c8989c1f252b4a7d6b358e3f2533e98c977c6
 W
@@ -207,8 +205,6 @@ M
 lib/library/data/section.dart,b/5/b524e1e53361143ff5ca08469ee95c46da7a5f2b
 W
 'lib/library/data/project_polygon.g.dart,6/7/67ad9767e1b36ae12b02e83d46607a9afe6b7d18
-T
-$lib/library/data/settings_model.dart,c/e/ce632bbee2768538a8aa674ff7488060be5f307d
 J
 lib/library/data/city.dart,d/c/dc97c5d3972981a9b7f09e4540ecd76cabcdf9db
 V
@@ -457,8 +453,6 @@ H
 assets/files/people.json,2/6/269cbb9a0f278b6a1ae99db402d681b91ddb04d1
 G
 assets/files/people.csv,0/0/00d79e0e826397b2e114a1189d6848b9dda3fd65
-D
-android/build.gradle,1/3/13f012f60e18f38225ce59137db2e07d5d70b29c
 G
 android/settings.gradle,a/4/a44f117a07597d287cedd2edb512680ab4b470f0
 B
@@ -524,8 +518,6 @@ F
 firebase.json,5/9/59951656e3803454427cfe9d761fed1df10b7528
 \
 ,lib/ui/dashboard/project_dashboard_grid.dart,4/2/42a28d2c953a85a8acb10c2cd3922edce237b421
-T
-$lib/ui/dashboard/dashboard_grid.dart,1/2/12fc49c626a181d8f74702b24604c5e3b54b9ff0
 N
 test/widget_test/app_test.dart,3/3/339edbebd7a8777cbd8b133d98f09f54a9c4b3a3
 J
@@ -642,8 +634,6 @@ T
 $lib/ui/activity/activity_header.dart,7/f/7fdb37c03b3eab22eab615998d590b1c09172298
 Y
 )lib/library/ui/camera/video_controls.dart,c/8/c8fe98c155c82a1db847409dcee531bcb4e88f8c
-E
-lib/l10n/my_keys.dart,1/b/1bc97497c84bf2179a04983aaa15a5f75ea3a892
 R
 "lib/library/bloc/geo_uploader.dart,f/f/ff332ea0e5ce7028e89f2a5fe22989d1b3cbb75d
 T

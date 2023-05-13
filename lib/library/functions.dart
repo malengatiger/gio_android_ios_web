@@ -313,20 +313,22 @@ TextStyle myNumberStyleLarge(BuildContext context) {
   );
 }
 
-TextStyle myNumberStyleLargePrimaryColor(BuildContext context) {
+TextStyle myNumberStyleLargerPrimaryColor(BuildContext context) {
   return GoogleFonts.secularOne(
       textStyle: Theme.of(context).textTheme.titleLarge,
       color: Theme.of(context).primaryColor,
       fontWeight: FontWeight.w900,
-      fontSize: 24);
+      fontSize: 28);
 }
 
 TextStyle myNumberStyleLarger(BuildContext context) {
   return GoogleFonts.secularOne(
-      textStyle: Theme.of(context).textTheme.bodyLarge,
+      textStyle: Theme.of(context).textTheme.titleLarge,
       fontWeight: FontWeight.w900,
+      color: Theme.of(context).primaryColorLight,
       fontSize: 28);
 }
+
 
 TextStyle myNumberStyleLargest(BuildContext context) {
   return GoogleFonts.secularOne(

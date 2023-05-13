@@ -297,7 +297,7 @@ class SettingsFormState extends State<SettingsForm> {
       await widget.prefsOGx.saveSettings(s);
       widget.organizationBloc.settingsController.sink.add(s);
       themeBloc.changeToTheme(s.themeIndex!);
-      widget.dataHandler.getOrganizationData();
+      await widget.dataHandler.getOrganizationData();
     } catch (e) {
       pp(e);
       if (mounted) {

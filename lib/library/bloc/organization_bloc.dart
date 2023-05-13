@@ -32,7 +32,7 @@ late OrganizationBloc organizationBloc;
 class OrganizationBloc {
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
-  
+
   OrganizationBloc(this.dataApiDog, this.cacheManager) {
     pp('$mm OrganizationBloc constructed');
   }
@@ -41,9 +41,9 @@ class OrganizationBloc {
   final StreamController<DataBag> dataBagController =
       StreamController.broadcast();
   final StreamController<SettingsModel> settingsController =
-  StreamController.broadcast();
+      StreamController.broadcast();
   final StreamController<List<MonitorReport>> _reportController =
-  StreamController.broadcast();
+      StreamController.broadcast();
   final StreamController<List<User>> userController =
       StreamController.broadcast();
   final StreamController<List<Community>> communityController =
@@ -176,34 +176,41 @@ class OrganizationBloc {
       required bool forceRefresh,
       required String startDate,
       required String endDate}) async {
-
     pp('$mm getOrganizationData ... photos, videos and schedules'
         ' ... forceRefresh: $forceRefresh');
 
     final start = DateTime.now();
-    DataBag? bag;
+    DataBag bag = DataBag(
+        photos: [],
+        videos: [],
+        fieldMonitorSchedules: [],
+        projectPositions: [],
+        projects: [],
+        audios: [],
+        date: 'date',
+        users: [],
+        activityModels: [],
+        projectPolygons: [],
+        settings: []);
     final sDate = DateTime.parse(startDate);
     final eDate = DateTime.parse(endDate);
     final numberOfDays = eDate.difference(sDate).inDays;
-    final projects = await getOrganizationProjects(organizationId: organizationId, forceRefresh: false);
+    final projects = await getOrganizationProjects(
+        organizationId: organizationId, forceRefresh: false);
     final users = await cacheManager.getUsers();
     pp('$mm g');
     if (forceRefresh) {
       pp('$mm get data from server .....................; '
           'forceRefresh: $forceRefresh; if true do the refresh ...');
       await dataHandler.getOrganizationData();
-      bag!.projects = projects;
-      bag.users = users;
       return bag;
     } else {
-      bag = await cacheManager.getOrganizationData(organizationId: organizationId);
+      bag = await cacheManager.getOrganizationData(
+          organizationId: organizationId);
       if (bag.isEmpty()) {
         pp('$mm bag is empty. No organization data anywhere yet? ... '
             'will force refresh, forceRefresh: $forceRefresh');
         await dataHandler.getOrganizationData();
-        bag.projects = projects;
-        bag.users = users;
-        return bag;
       }
     }
     final end = DateTime.now();
@@ -249,13 +256,11 @@ class OrganizationBloc {
 
     if (projectPositions.isEmpty || forceRefresh) {
       try {
-      projectPositions = await dataApiDog.getOrganizationProjectPositions(
-          organizationId, startDate, endDate);
-      pp('$mm getOrganizationProjectPositions found ${projectPositions.length} positions from remote database ');
-      await cacheManager.addProjectPositions(positions: projectPositions);
-      } catch (e) {
-
-      }
+        projectPositions = await dataApiDog.getOrganizationProjectPositions(
+            organizationId, startDate, endDate);
+        pp('$mm getOrganizationProjectPositions found ${projectPositions.length} positions from remote database ');
+        await cacheManager.addProjectPositions(positions: projectPositions);
+      } catch (e) {}
     }
     var list = <ProjectPosition>[];
     for (var pos in projectPositions) {
@@ -278,8 +283,8 @@ class OrganizationBloc {
     pp('$mm getProjectPolygons found ${projectPolygons.length} polygons in local cache ');
 
     if (projectPolygons.isEmpty || forceRefresh) {
-      projectPolygons =
-          await dataApiDog.getProjectPolygons(organizationId, startDate, endDate);
+      projectPolygons = await dataApiDog.getProjectPolygons(
+          organizationId, startDate, endDate);
       pp('$mm getProjectPolygons found ${projectPolygons.length} polygons from remote database ');
       await cacheManager.addProjectPolygons(polygons: projectPolygons);
     }
@@ -392,16 +397,16 @@ class OrganizationBloc {
       rethrow;
     }
   }
-  Future<List<ActivityModel>> getCachedOrganizationActivity(
-      {required String organizationId,
-        required int hours,
-       }) async {
-      var activities = await cacheManager.getActivitiesWithinHours(hours);
-      pp('$mm 💜💜💜💜 getCachedOrganizationActivity found in cache: 💜 ${activities.length} activities ; organizationId: $organizationId 💜');
-      activityController.sink.add(activities);
-      pp('$mm 💜💜💜💜 getCachedOrganizationActivity found: 💜 ${activities.length} activities ; organizationId: $organizationId 💜');
-      return activities;
 
+  Future<List<ActivityModel>> getCachedOrganizationActivity({
+    required String organizationId,
+    required int hours,
+  }) async {
+    var activities = await cacheManager.getActivitiesWithinHours(hours);
+    pp('$mm 💜💜💜💜 getCachedOrganizationActivity found in cache: 💜 ${activities.length} activities ; organizationId: $organizationId 💜');
+    activityController.sink.add(activities);
+    pp('$mm 💜💜💜💜 getCachedOrganizationActivity found: 💜 ${activities.length} activities ; organizationId: $organizationId 💜');
+    return activities;
   }
 
   Future<List<ProjectSummary>> getOrganizationDailySummaries(
@@ -434,8 +439,8 @@ class OrganizationBloc {
           await cacheManager.getProjectSummaries(projectId, startDate, endDate);
 
       if (summaries.isEmpty || forceRefresh) {
-        summaries =
-            await dataApiDog.getProjectDailySummary(projectId, startDate, endDate);
+        summaries = await dataApiDog.getProjectDailySummary(
+            projectId, startDate, endDate);
       }
       return summaries;
     } catch (e) {
@@ -466,7 +471,6 @@ DataBag filterBagContentsByDate(
     {required DataBag bag,
     required String startDate,
     required String endDate}) {
-
   final photos = <Photo>[];
   bag.photos?.forEach((p) {
     if (checkDate(date: p.created!, startDate: startDate, endDate: endDate)) {

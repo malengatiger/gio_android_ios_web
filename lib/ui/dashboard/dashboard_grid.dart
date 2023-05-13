@@ -132,7 +132,7 @@ class _DashboardGridState extends State<DashboardGrid> {
                       title: dashboardStrings!.photos,
                       number: widget.dataBag.photos!.length,
                       topPadding: widget.elementPadding,
-                      textStyle: myNumberStyleLargePrimaryColor(context),
+                      textStyle: myNumberStyleLargerPrimaryColor(context),
                       onTapped: () {
                         widget.onTypeTapped(typePhotos);
                       },
@@ -146,7 +146,7 @@ class _DashboardGridState extends State<DashboardGrid> {
                       title: dashboardStrings!.videos,
                       topPadding: widget.elementPadding,
                       number: widget.dataBag.videos!.length,
-                      textStyle: myNumberStyleLargePrimaryColor(context),
+                      textStyle: myNumberStyleLargerPrimaryColor(context),
                       onTapped: () {
                         widget.onTypeTapped(typeVideos);
                       },
@@ -160,7 +160,7 @@ class _DashboardGridState extends State<DashboardGrid> {
                       title: dashboardStrings!.audioClips,
                       topPadding: widget.elementPadding,
                       number: widget.dataBag.audios!.length,
-                      textStyle: myNumberStyleLargePrimaryColor(context),
+                      textStyle: myNumberStyleLargerPrimaryColor(context),
                       onTapped: () {
                         widget.onTypeTapped(typeAudios);
                       },
