@@ -10,14 +10,16 @@ import '../list/audio_card.dart';
 import '../video_cover.dart';
 
 class MediaGrid extends StatefulWidget {
-  const MediaGrid(
-      {Key? key,
-      required this.onVideoTapped,
-      required this.onAudioTapped,
-      required this.onPhotoTapped,
-      required this.crossAxisCount, required this.durationText, required this.mediaGridItems,})
-      : super(key: key);
-
+  const MediaGrid({
+    Key? key,
+    required this.onVideoTapped,
+    required this.onAudioTapped,
+    required this.onPhotoTapped,
+    required this.crossAxisCount,
+    required this.durationText,
+    required this.mediaGridItems,
+    required this.scrollToTop,
+  }) : super(key: key);
 
   final Function(Video) onVideoTapped;
   final Function(Audio) onAudioTapped;
@@ -25,6 +27,7 @@ class MediaGrid extends StatefulWidget {
   final int crossAxisCount;
   final String durationText;
   final List<MediaGridItem> mediaGridItems;
+  final bool scrollToTop;
 
   @override
   State<MediaGrid> createState() => _MediaGridState();
@@ -38,7 +41,13 @@ class _MediaGridState extends State<MediaGrid> {
     super.initState();
     pp('$mm 🔆 🔆 🔆 🔆 🔆 initState:  media items ... '
         ' ${widget.mediaGridItems.length}  🔆 🔆 🔆 🔆 🔆');
+    _controlScroll();
+  }
 
+  void _controlScroll() {
+    if (widget.scrollToTop) {
+      scrollController.jumpTo(0.0);
+    }
   }
 
   void onItemTapped(MediaGridItem item) {
@@ -54,6 +63,8 @@ class _MediaGridState extends State<MediaGrid> {
     }
   }
 
+  final scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     pp('$mm build ........ '
@@ -65,11 +76,14 @@ class _MediaGridState extends State<MediaGrid> {
             crossAxisCount: widget.crossAxisCount,
             mainAxisSpacing: 0),
         itemCount: widget.mediaGridItems.length,
+        controller: scrollController,
         itemBuilder: (context, index) {
           var item = widget.mediaGridItems.elementAt(index);
           late Widget mWidget;
           if (item.photo != null) {
-            mWidget = PhotoCover(photo: item.photo!,);
+            mWidget = PhotoCover(
+              photo: item.photo!,
+            );
           }
           if (item.video != null) {
             mWidget = VideoCover(video: item.video!);
@@ -77,7 +91,8 @@ class _MediaGridState extends State<MediaGrid> {
           if (item.audio != null) {
             mWidget = AudioCard(
               borderRadius: 0.0,
-              audio: item.audio!, durationText: widget.durationText,
+              audio: item.audio!,
+              durationText: widget.durationText,
             );
           }
           return GestureDetector(
@@ -106,27 +121,33 @@ class MediaGridItem {
 }
 
 class RoundedPhoto extends StatelessWidget {
-  const RoundedPhoto({Key? key, required this.photo, required this.url}) : super(key: key);
+  const RoundedPhoto({Key? key, required this.photo, required this.url})
+      : super(key: key);
   final Photo photo;
   final String url;
   @override
   Widget build(BuildContext context) {
-
-    return ClipRRect(borderRadius: BorderRadius.circular(10.0),
-        child: Image.network(url),);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10.0),
+      child: Image.network(url),
+    );
     ;
   }
 }
+
 class RoundedVideo extends StatelessWidget {
-  const RoundedVideo({Key? key, required this.video,}) : super(key: key);
+  const RoundedVideo({
+    Key? key,
+    required this.video,
+  }) : super(key: key);
   final Video video;
 
   @override
   Widget build(BuildContext context) {
-
-    return ClipRRect(borderRadius: BorderRadius.circular(10.0),
-      child: Image.network(video.thumbnailUrl!),);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10.0),
+      child: Image.network(video.thumbnailUrl!),
+    );
     ;
   }
 }
-

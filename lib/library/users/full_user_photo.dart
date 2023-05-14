@@ -30,7 +30,7 @@ class FullUserPhotoState extends State<FullUserPhoto>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.user.name}', style: myTextStyleMedium(context),),
+        title: Text('${widget.user.name}', style: myTextStyleMediumLargePrimaryColor(context),),
         leading: IconButton(onPressed: (){
           Navigator.of(context).pop();
         }, icon: const Icon(Icons.arrow_back_ios),),

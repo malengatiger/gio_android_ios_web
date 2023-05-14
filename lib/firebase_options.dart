@@ -44,13 +44,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDcVWgFzQtnblu5VTt-CdYXMjKJI8ZJNkg',
-    appId: '1:79998394043:web:6c3d21194762729ed6139e',
+    apiKey: 'AIzaSyAdOBFxPS1TacnK5OZTU6VxOQ20Bq8Cyrg',
+    appId: '1:79998394043:web:fb39eebd017f84aed6139e',
     messagingSenderId: '79998394043',
     projectId: 'thermal-effort-366015',
     authDomain: 'thermal-effort-366015.firebaseapp.com',
     storageBucket: 'thermal-effort-366015.appspot.com',
-    measurementId: 'G-VVYZLNP34Y',
+    measurementId: 'G-5LKQLQBL4K',
   );
 
   static const FirebaseOptions android = FirebaseOptions(

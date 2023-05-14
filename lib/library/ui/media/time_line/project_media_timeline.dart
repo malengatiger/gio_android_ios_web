@@ -20,6 +20,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 import '../../../../l10n/translation_handler.dart';
 import '../../../../ui/audio/audio_recorder.dart';
 import '../../../../ui/dashboard/photo_frame.dart';
+import '../../../../utilities/transitions.dart';
 import '../../../api/data_api_og.dart';
 import '../../../bloc/project_bloc.dart';
 import '../../../cache_manager.dart';
@@ -240,26 +241,57 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
 
   onPhotoTapped(Photo p1) {
     pp('$mm onPhotoTapped .... id: ${p1.photoId}');
-    if (mounted) {
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.topLeft,
-              duration: const Duration(milliseconds: 1000),
-              child: PhotoFrame(
-                photo: p1,
-                onMapRequested: (photo) {},
-                onRatingRequested: (photo) {},
-                elevation: 8.0,
-                cacheManager: widget.cacheManager,
-                dataApiDog: widget.dataApiDog,
-                onPhotoCardClose: () {},
-                translatedDate: '',
-                locale: settings.locale!,
-                prefsOGx: widget.prefsOGx,
-              )));
-    }
+    // Navigator.push(context, MaterialPageRoute(builder: (context) {
+    //   return PhotoFrame(
+    //     photo: p1,
+    //     onMapRequested: (photo) {},
+    //     onRatingRequested: (photo) {},
+    //     elevation: 8.0,
+    //     cacheManager: widget.cacheManager,
+    //     dataApiDog: widget.dataApiDog,
+    //     onPhotoCardClose: () {},
+    //     translatedDate: '',
+    //     locale: settings.locale!,
+    //     prefsOGx: widget.prefsOGx,
+    //   );
+    // }));
+
+    final ww = PhotoFrame(
+      photo: p1,
+      onMapRequested: (photo) {},
+      onRatingRequested: (photo) {},
+      elevation: 8.0,
+      cacheManager: widget.cacheManager,
+      dataApiDog: widget.dataApiDog,
+      onPhotoCardClose: () {},
+      translatedDate: '',
+      locale: settings.locale!,
+      prefsOGx: widget.prefsOGx,
+    );
+
+    navigateWithScale(ww, context);
+
+    // if (mounted) {
+    //   Navigator.push(
+    //       context,
+    //       PageTransition(
+    //           type: PageTransitionType.leftToRight,
+    //           // alignment: Alignment.topLeft,
+    //           fullscreenDialog: true,
+    //           duration: const Duration(milliseconds: 1000),
+    //           child: PhotoFrame(
+    //             photo: p1,
+    //             onMapRequested: (photo) {},
+    //             onRatingRequested: (photo) {},
+    //             elevation: 8.0,
+    //             cacheManager: widget.cacheManager,
+    //             dataApiDog: widget.dataApiDog,
+    //             onPhotoCardClose: () {},
+    //             translatedDate: '',
+    //             locale: settings.locale!,
+    //             prefsOGx: widget.prefsOGx,
+    //           )));
+    // }
   }
 
   void _onTakePicture() {
@@ -330,6 +362,22 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     items.sort((a, b) => b.intCreated.compareTo(a.intCreated));
   }
 
+  bool sortedAscending = false;
+  bool scrollToTop = false;
+
+  void _sortItems() {
+    if (sortedAscending) {
+      items.sort((a, b) => b.intCreated.compareTo(a.intCreated));
+      sortedAscending = false;
+    } else {
+      items.sort((a, b) => a.intCreated.compareTo(b.intCreated));
+      sortedAscending = true;
+    }
+    setState(() {
+      scrollToTop = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     pp('$mm build ........  zero is death!! '
@@ -391,7 +439,10 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                   ],
                 )),
             actions: [
-              PopupMenuButton(itemBuilder: (ctx) {
+              PopupMenuButton(
+                  elevation: 12,
+                  shape: getRoundedBorder(radius: 8),
+                  itemBuilder: (ctx) {
                 return [
                   PopupMenuItem(
                       value: 1,
@@ -411,6 +462,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                         Icons.mic,
                         color: Theme.of(context).primaryColor,
                       )),
+
                   PopupMenuItem(
                       value: 0,
                       child: Icon(
@@ -420,7 +472,13 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                   PopupMenuItem(
                       value: 4,
                       child: Icon(
-                        Icons.home,
+                        Icons.search,
+                        color: Theme.of(context).primaryColor,
+                      )),
+                  PopupMenuItem(
+                      value: 5,
+                      child: Icon(
+                        Icons.sort,
                         color: Theme.of(context).primaryColor,
                       )),
                 ];
@@ -448,6 +506,9 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                       showProjectChooser = true;
                     });
                     break;
+                  case 5:
+                    _sortItems();
+                    break;
                 }
               }),
             ],
@@ -472,6 +533,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                             durationText: durationText == null
                                 ? 'Duration'
                                 : durationText!,
+                            scrollToTop: scrollToTop,
                             onVideoTapped: onVideoTapped,
                             onAudioTapped: onAudioTapped,
                             onPhotoTapped: onPhotoTapped,
@@ -484,6 +546,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                               durationText: durationText == null
                                   ? 'Duration'
                                   : durationText!,
+                              scrollToTop: scrollToTop,
                               onVideoTapped: onVideoTapped,
                               onAudioTapped: onAudioTapped,
                               onPhotoTapped: onPhotoTapped,
@@ -494,6 +557,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                               durationText: durationText == null
                                   ? 'Duration'
                                   : durationText!,
+                              scrollToTop: scrollToTop,
                               onVideoTapped: onVideoTapped,
                               onAudioTapped: onAudioTapped,
                               onPhotoTapped: onPhotoTapped,

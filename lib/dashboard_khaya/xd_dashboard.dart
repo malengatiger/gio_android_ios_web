@@ -28,6 +28,7 @@ import 'package:geo_monitor/library/ui/maps/project_map_mobile.dart';
 import 'package:geo_monitor/library/ui/media/photo_cover.dart';
 import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
 import 'package:geo_monitor/library/ui/project_list/gio_projects.dart';
+import 'package:geo_monitor/library/users/edit/user_detail.dart';
 import 'package:geo_monitor/library/users/edit/user_edit_main.dart';
 import 'package:geo_monitor/library/users/list/geo_user_list.dart';
 import 'package:geo_monitor/main.dart';
@@ -620,23 +621,15 @@ class DashboardKhayaState extends State<DashboardKhaya> {
 
   onUserTapped(User p1) {
     pp('🌀🌀🌀🌀 onUserTapped; ${p1.toJson()}');
-    if (deviceType == 'phone') {
-      if (mounted) {
+
         Navigator.push(
             context,
             PageTransition(
                 type: PageTransitionType.fade,
                 alignment: Alignment.topLeft,
                 duration: const Duration(milliseconds: 1000),
-                child: UserEditMain(user,
-                    prefsOGx: widget.prefsOGx,
-                    cacheManager: widget.cacheManager,
-                    projectBloc: widget.projectBloc,
-                    organizationBloc: widget.organizationBloc,
-                    dataApiDog: widget.dataApiDog,
-                    fcmBloc: widget.fcmBloc)));
-      }
-    }
+                child: UserDetail(user: p1)));
+
   }
 
   onLocationResponse(LocationResponse p1) {
@@ -1666,19 +1659,29 @@ class TopCardListState extends State<TopCardList> {
   void _navigateToMap() {
     pp(' 🌀🌀🌀🌀 .................. _navigateToMap to users ....');
     if (mounted) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const OrganizationMap()));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => OrganizationMap(
+                    organizationBloc: widget.organizationBloc,
+                    prefsOGx: widget.prefsOGx,
+                  )));
     }
   }
 
   void _navigateToTimeline() {
     pp(' 🌀🌀🌀🌀 .................. _navigateToMap to users ....');
     if (mounted) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ProjectMediaTimeline(projectBloc: widget.projectBloc,
-              prefsOGx: widget.prefsOGx, organizationBloc: widget.organizationBloc,
-              cacheManager: widget.cacheManager, dataApiDog: widget.dataApiDog,
-              fcmBloc: widget.fcmBloc)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProjectMediaTimeline(
+                  projectBloc: widget.projectBloc,
+                  prefsOGx: widget.prefsOGx,
+                  organizationBloc: widget.organizationBloc,
+                  cacheManager: widget.cacheManager,
+                  dataApiDog: widget.dataApiDog,
+                  fcmBloc: widget.fcmBloc)));
     }
   }
 
@@ -1693,17 +1696,17 @@ class TopCardListState extends State<TopCardList> {
           projectBloc: widget.projectBloc,
           dataApiDog: widget.dataApiDog,
           project: null,
-          onPhotoTapped: (p){},
-          onVideoTapped: (p){},
-          onAudioTapped: (p){},
-          onUserTapped: (p){},
-          onProjectTapped: (p){},
-          onProjectPositionTapped: (p){},
-          onPolygonTapped: (p){},
-          onGeofenceEventTapped: (p){},
-          onOrgMessage: (p){},
-          onLocationResponse: (p){},
-          onLocationRequest: (p){},
+          onPhotoTapped: (p) {},
+          onVideoTapped: (p) {},
+          onAudioTapped: (p) {},
+          onUserTapped: (p) {},
+          onProjectTapped: (p) {},
+          onProjectPositionTapped: (p) {},
+          onPolygonTapped: (p) {},
+          onGeofenceEventTapped: (p) {},
+          onOrgMessage: (p) {},
+          onLocationResponse: (p) {},
+          onLocationRequest: (p) {},
           prefsOGx: widget.prefsOGx,
           cacheManager: widget.cacheManager,
         );

@@ -308,7 +308,7 @@ class PhotoFrameState extends State<PhotoFrame> {
             PhotoHeader(
               title: widget.photo.projectName!,
               date: widget.photo.created!,
-              locale: widget.locale, userUrl: widget.photo.userUrl!,),
+              locale: widget.locale, userUrl: widget.photo.userUrl,),
             const SizedBox(height: 12,),
           ],
         )),
@@ -445,18 +445,19 @@ class PhotoFrameState extends State<PhotoFrame> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      createdBy == null ? 'Created By' : createdBy!,
-                      style: myTextStyleTiny(context),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
+                    // Text(
+                    //   createdBy == null ? 'Created By' : createdBy!,
+                    //   style: myTextStyleTiny(context),
+                    // ),
+                    // const SizedBox(
+                    //   width: 20,
+                    // ),
                     GestureDetector(
                       onTap: _showCreator,
                       child: UserProfileCard(
                           userName: widget.photo.userName!,
-                          width: 300,
+                          // width: 300,
+                          avatarRadius: 14,
                           userThumbUrl: photoUserThumbnailUrl,
                           textStyle: myTextStyleSmallBlackBold(context),
                           namePictureHorizontal: true),
@@ -535,7 +536,8 @@ class PhotoHeader extends StatelessWidget {
     required this.locale, required this.userUrl,
   }) : super(key: key);
   final String title;
-  final String date, locale, userUrl;
+  final String date, locale;
+  final String? userUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -565,9 +567,11 @@ class PhotoHeader extends StatelessWidget {
                       style: myTextStyleSmall(context),
                     ),
                     const SizedBox(width: 16,),
-                    CircleAvatar(
+                    userUrl == null? const CircleAvatar(
+                      radius: 12,
+                    ): CircleAvatar(
                       radius: 16,
-                      backgroundImage: NetworkImage(userUrl),
+                      backgroundImage: NetworkImage(userUrl!),
                     ),
                   ],
                 )

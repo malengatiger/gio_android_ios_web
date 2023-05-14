@@ -16,10 +16,12 @@ import '../../functions.dart';
 
 class OrganizationMap extends StatefulWidget {
   const OrganizationMap({
-    super.key,
+    super.key, required this.organizationBloc, required this.prefsOGx,
   });
 
-  // final Organization organization;
+  final OrganizationBloc organizationBloc;
+  final PrefsOGx prefsOGx;
+
   @override
   OrganizationMapState createState() => OrganizationMapState();
 }
@@ -51,20 +53,23 @@ class OrganizationMapState extends State<OrganizationMap>
     pp('$mm initState ...................');
     _controller = AnimationController(vsync: this);
     super.initState();
-    _getOrganization();
+    _setTexts();
   }
+  Future _setTexts() async {
+    var sett = await widget.prefsOGx.getSettings();
+    organizationProjects =
+    await translator.translate('organizationProjects', sett.locale!);
+    projectLocatedHere =
+    await translator.translate('projectLocatedHere', sett.locale!);
+    setState(() {
 
-  void _getOrganization() async {
+    });
+  }
+  void _getOrganizationLocations() async {
     setState(() {
       loading = true;
     });
-    var sett = await prefsOGx.getSettings();
-      organizationProjects =
-      await translator.translate('organizationProjects', sett.locale!);
-      projectLocatedHere =
-      await translator.translate('projectLocatedHere', sett.locale!);
-
-    user = await prefsOGx.getUser();
+    user = await widget.prefsOGx.getUser();
     organization = await organizationBloc.getOrganizationById(
         organizationId: user!.organizationId!);
 
@@ -73,18 +78,17 @@ class OrganizationMapState extends State<OrganizationMap>
   }
 
   void _refreshProjectPositions({required bool forceRefresh}) async {
-    setState(() {
-      loading = true;
-    });
+    pp('$mm _refreshProjectPositions .....  forceRefresh: $forceRefresh');
     var map = await getStartEndDates();
     final startDate = map['startDate'];
     final endDate = map['endDate'];
-    _projectPositions = await organizationBloc.getProjectPositions(
+
+    _projectPositions = await widget.organizationBloc.getProjectPositions(
         organizationId: organization!.organizationId!,
         forceRefresh: forceRefresh,
         startDate: startDate!,
         endDate: endDate!);
-    _projects = await organizationBloc.getOrganizationProjects(
+    _projects = await widget.organizationBloc.getOrganizationProjects(
         organizationId: organization!.organizationId!,
         forceRefresh: forceRefresh);
 
@@ -98,6 +102,7 @@ class OrganizationMapState extends State<OrganizationMap>
       }
     }
     _projectPositions = list;
+    _createMarkers();
     setState(() {
       loading = false;
     });
@@ -263,7 +268,7 @@ class OrganizationMapState extends State<OrganizationMap>
                     pp('$mm onMapCreated ... ready to rumble? ...');
                     _mapController.complete(controller);
                     googleMapController = controller;
-                    _createMarkers();
+                    _getOrganizationLocations();
                   },
                   markers: Set<Marker>.of(markers.values),
                 ),
