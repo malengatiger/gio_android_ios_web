@@ -30,7 +30,7 @@ class ProjectBloc {
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
   final IsolateDataHandler isolateHandler;
-  
+
   ProjectBloc(this.dataApiDog, this.cacheManager, this.isolateHandler) {
     pp('$mm ProjectBloc constructed');
   }
@@ -244,7 +244,6 @@ class ProjectBloc {
       required bool forceRefresh,
       required String startDate,
       required String endDate}) async {
-
     List<Audio> audios = await cacheManager.getProjectAudios(
         projectId: projectId, startDate: startDate, endDate: endDate);
 
@@ -264,12 +263,25 @@ class ProjectBloc {
       required bool forceRefresh,
       required String startDate,
       required String endDate}) async {
-    final sDate = DateTime.parse(startDate);
-    final eDate = DateTime.parse(endDate);
-    final numberOfDays = eDate.difference(sDate).inDays;
-    List<Video> videos = await cacheManager.getProjectVideos(projectId: projectId, startDate: startDate, endDate: endDate);
-    List<Audio> audios = await cacheManager.getProjectAudios(projectId: projectId, startDate: startDate, endDate: endDate);
-    List<Photo> photos = await cacheManager.getProjectPhotos(projectId: projectId, startDate: startDate, endDate: endDate);
+
+    DataBag dataBag =
+        await getCachedProjectData(projectId, startDate, endDate);
+
+    if (forceRefresh) {
+       isolateHandler.getProjectData(projectId);
+    }
+
+    return dataBag;
+  }
+
+  Future<DataBag> getCachedProjectData(
+      String projectId, String startDate, String endDate) async {
+    List<Video> videos = await cacheManager.getProjectVideos(
+        projectId: projectId, startDate: startDate, endDate: endDate);
+    List<Audio> audios = await cacheManager.getProjectAudios(
+        projectId: projectId, startDate: startDate, endDate: endDate);
+    List<Photo> photos = await cacheManager.getProjectPhotos(
+        projectId: projectId, startDate: startDate, endDate: endDate);
     List<ProjectPosition> positions =
         await cacheManager.getProjectPositions(projectId);
     List<ProjectPolygon> polygons =
@@ -277,7 +289,7 @@ class ProjectBloc {
     List<SettingsModel> settings =
         await cacheManager.getProjectSettings(projectId);
 
-    DataBag? dataBag = DataBag(
+    DataBag dataBag = DataBag(
         photos: photos,
         videos: videos,
         fieldMonitorSchedules: [],
@@ -289,12 +301,6 @@ class ProjectBloc {
         activityModels: [],
         projectPolygons: polygons,
         settings: settings);
-
-      if (forceRefresh) {
-        isolateHandler.getProjectData(projectId);
-      }
-
-
     return dataBag;
   }
 
@@ -302,6 +308,7 @@ class ProjectBloc {
     final m = await dataApiDog.updateProject(project);
     return m;
   }
+
   Future addProject(Project project) async {
     final m = await dataApiDog.addProject(project);
     return m;
@@ -314,7 +321,8 @@ class ProjectBloc {
       required String endDate}) async {
     pp('$mm refreshing project data ... photos, videos and schedules '
         '... forceRefresh: $forceRefresh');
-    var bag = await _loadBag(projectId: projectId, startDate: startDate, endDate: endDate);
+    var bag = await _loadBag(
+        projectId: projectId, startDate: startDate, endDate: endDate);
 
     if (forceRefresh) {
       bag = await dataApiDog.getProjectData(projectId, startDate, endDate);
@@ -323,13 +331,18 @@ class ProjectBloc {
     return bag;
   }
 
-  Future<DataBag> _loadBag({required String projectId,
-    required String startDate, required String endDate}) async {
+  Future<DataBag> _loadBag(
+      {required String projectId,
+      required String startDate,
+      required String endDate}) async {
     var positions = await cacheManager.getProjectPositions(projectId);
     var polygons = await cacheManager.getProjectPolygons(projectId: projectId);
-    var photos = await cacheManager.getProjectPhotos(projectId: projectId, startDate: startDate, endDate: endDate);
-    var videos = await cacheManager.getProjectVideos(projectId: projectId, startDate: startDate, endDate: endDate);
-    var audios = await cacheManager.getProjectAudios(projectId: projectId, startDate: startDate, endDate: endDate);
+    var photos = await cacheManager.getProjectPhotos(
+        projectId: projectId, startDate: startDate, endDate: endDate);
+    var videos = await cacheManager.getProjectVideos(
+        projectId: projectId, startDate: startDate, endDate: endDate);
+    var audios = await cacheManager.getProjectAudios(
+        projectId: projectId, startDate: startDate, endDate: endDate);
     var schedules = await cacheManager.getProjectMonitorSchedules(projectId);
 
     var bag = DataBag(
@@ -342,7 +355,8 @@ class ProjectBloc {
         date: DateTime.now().toUtc().toIso8601String(),
         users: [],
         projectPolygons: polygons,
-        settings: [], activityModels: []);
+        settings: [],
+        activityModels: []);
     pp('$mm project data bag loaded: ... photos: ${photos.length}, videos: ${videos.length} and audios: ${audios.length} ...');
     return bag;
   }

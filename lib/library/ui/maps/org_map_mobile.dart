@@ -14,17 +14,17 @@ import '../../data/project_position.dart';
 import '../../data/user.dart';
 import '../../functions.dart';
 
-class OrganizationMapMobile extends StatefulWidget {
-  const OrganizationMapMobile({
+class OrganizationMap extends StatefulWidget {
+  const OrganizationMap({
     super.key,
   });
 
   // final Organization organization;
   @override
-  OrganizationMapMobileState createState() => OrganizationMapMobileState();
+  OrganizationMapState createState() => OrganizationMapState();
 }
 
-class OrganizationMapMobileState extends State<OrganizationMapMobile>
+class OrganizationMapState extends State<OrganizationMap>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   final Completer<GoogleMapController> _mapController = Completer();
@@ -45,6 +45,7 @@ class OrganizationMapMobileState extends State<OrganizationMapMobile>
   bool loading = false;
   User? user;
   String? projectLocatedHere;
+
   @override
   void initState() {
     pp('$mm initState ...................');

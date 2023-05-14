@@ -461,7 +461,7 @@ class AudioPlayerWidget extends StatelessWidget {
                   ),
                   Text(
                     getHourMinuteSecond(duration!),
-                    style: myNumberStyleLarger(context),
+                    style: myNumberStyleLargerPrimaryColorLight(context),
                   ),
                 ],
               ),

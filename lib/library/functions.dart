@@ -321,11 +321,11 @@ TextStyle myNumberStyleLargerPrimaryColor(BuildContext context) {
       fontSize: 28);
 }
 
-TextStyle myNumberStyleLarger(BuildContext context) {
+TextStyle myNumberStyleLargerPrimaryColorLight(BuildContext context) {
   return GoogleFonts.secularOne(
       textStyle: Theme.of(context).textTheme.titleLarge,
       fontWeight: FontWeight.w900,
-      color: Theme.of(context).primaryColorLight,
+      color: Theme.of(context).primaryColorLight.withOpacity(0.5),
       fontSize: 28);
 }
 

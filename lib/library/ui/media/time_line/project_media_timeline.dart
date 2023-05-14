@@ -5,11 +5,13 @@ import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/fcm_bloc.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/data/audio.dart';
+import 'package:geo_monitor/library/data/data_bag.dart';
 import 'package:geo_monitor/library/data/photo.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/ui/camera/gio_video_player.dart';
 import 'package:geo_monitor/library/ui/camera/photo_handler.dart';
 import 'package:geo_monitor/library/ui/media/time_line/media_grid.dart';
+import 'package:geo_monitor/library/ui/project_list/project_chooser.dart';
 import 'package:geo_monitor/ui/audio/audio_player_og.dart';
 import 'package:geo_monitor/ui/audio/audio_recorder_og.dart';
 import 'package:page_transition/page_transition.dart';
@@ -34,7 +36,8 @@ class ProjectMediaTimeline extends StatefulWidget {
       required this.organizationBloc,
       this.project,
       required this.cacheManager,
-      required this.dataApiDog, required this.fcmBloc})
+      required this.dataApiDog,
+      required this.fcmBloc})
       : super(key: key);
 
   final ProjectBloc projectBloc;
@@ -66,6 +69,8 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
   late StreamSubscription<Photo> photoSub;
   late StreamSubscription<Video> videoSub;
   late StreamSubscription<Audio> audioSub;
+  late StreamSubscription<SettingsModel> settingsSub;
+  late StreamSubscription<DataBag> bagSub;
 
   static const mm = '🐸🐸🐸 ProjectMediaTimeline: 🐸🐸🐸🐸 ';
 
@@ -73,16 +78,13 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
-    pp('$mm ............ initState ..........');
+    pp('$mm ............................................ initState ..........');
     _listen();
     _checkProject();
   }
 
   Future _checkProject() async {
-    pp('$mm .......... check project available ...');
-    setState(() {
-      loading = true;
-    });
+    pp('$mm ..................................... check project available ...');
     settings = await widget.prefsOGx.getSettings();
     await _setTexts();
     final m = await getStartEndDates(numberOfDays: settings.numberOfDays!);
@@ -91,10 +93,13 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     if (widget.project != null) {
       projectSelected = widget.project;
       pp('$mm _checkProject: ...  🔆 🔆 🔆 projectSelected: ${projectSelected!.name}');
-      await _getProjectData(
+      _getProjectData(
           projectId: projectSelected!.projectId!, forceRefresh: false);
+    } else {
+      setState(() {
+        showProjectChooser = true;
+      });
     }
-    _getProjects(false);
   }
 
   Future _setTexts() async {
@@ -108,78 +113,80 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     durationText = await translator.translate('duration', locale);
     sendMemberMessage = await translator.translate('sendMemberMessage', locale);
 
-    setState(() {});
   }
 
   void _listen() async {
+    settingsSub = widget.fcmBloc.settingsStream.listen((event) {
+      pp('$mm settingsStream delivered : ${event.toJson()}');
+      _getProjectData(
+          projectId: projectSelected!.projectId!, forceRefresh: true);
+    });
     photoSub = widget.fcmBloc.photoStream.listen((photo) {
+      pp('$mm photoStream delivered  : ${photo.toJson()}');
       photos.insert(0, photo);
       if (mounted) {
-        setState(() {
-
-        });
+        setState(() {});
       }
     });
     videoSub = widget.fcmBloc.videoStream.listen((video) {
+      pp('$mm videoStream delivered : ${video.toJson()}');
       videos.insert(0, video);
       if (mounted) {
-        setState(() {
-
-        });
+        setState(() {});
       }
     });
     audioSub = widget.fcmBloc.audioStream.listen((audio) {
+      pp('$mm audioStream delivered : ${audio.toJson()}');
       audios.insert(0, audio);
       if (mounted) {
-        setState(() {
+        setState(() {});
+      }
+    });
 
+    bagSub = widget.projectBloc.dataBagStream.listen((bag) {
+      pp('$mm projectBloc.dataBagStream delivered : '
+          'photos: ${bag.photos!.length} videos: ${bag.videos!.length} audios: ${bag.audios!.length}');
+      dataBag = bag;
+      audios = bag.audios!;
+      photos = bag.photos!;
+      videos = bag.videos!;
+      _sort();
+      if (mounted) {
+        pp('$mm dataBagStream delivered , widget is mounted, setting state: '
+            'photos:${photos.length} videos: ${videos.length} audios: ${audios.length}');
+        setState(() {
+          loading = false;
         });
       }
     });
   }
 
-  Future _getProjects(bool forceRefresh) async {
-    pp('$mm _getProjects:  🔆 🔆 🔆forceRefresh: $forceRefresh');
-    try {
-      projects = await widget.organizationBloc.getOrganizationProjects(
-          organizationId: settings.organizationId!, forceRefresh: forceRefresh);
-    } catch (e) {
-      pp(e);
-      if (mounted) {
-        showSnackBar(
-            message: '$e',
-            context: context,
-            backgroundColor: Theme.of(context).primaryColorDark);
-      }
-    }
-  }
-
+  DataBag? dataBag;
   var audios = <Audio>[];
   var videos = <Video>[];
   var photos = <Photo>[];
 
   Future _getProjectData(
       {required String projectId, required bool forceRefresh}) async {
-    pp('$mm _getProjectData: ...........  🔆 🔆 🔆forceRefresh: $forceRefresh');
+    pp('$mm widget.projectBloc.getProjectData: .........................  🔆 🔆 🔆forceRefresh: $forceRefresh');
     setState(() {
       loading = true;
     });
     try {
       final m = await getStartEndDates(numberOfDays: settings.numberOfDays!);
-      final bag = await widget.projectBloc.getProjectData(
+      dataBag = await widget.projectBloc.getProjectData(
           projectId: projectId,
           forceRefresh: forceRefresh,
           startDate: m['startDate']!,
           endDate: m['endDate']!);
 
-      audios = bag.audios!;
-      photos = bag.photos!;
-      videos = bag.videos!;
-
-      pp('$mm _getProjectData: data from bag ... 🐸'
+      audios = dataBag!.audios!;
+      photos = dataBag!.photos!;
+      videos = dataBag!.videos!;
+      pp('$mm widget.projectBloc.getProjectData: data from cache ........... 🐸'
           'photos: ${photos.length} audios: ${audios.length} videos: ${videos.length}');
       _sort();
-
+      _consolidateItems();
     } catch (e) {
       pp(e);
       if (mounted) {
@@ -206,14 +213,129 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     photoSub.cancel();
     videoSub.cancel();
     audioSub.cancel();
+    settingsSub.cancel();
     super.dispose();
   }
+
+  bool playVideo = false;
+  Video? tappedVideo;
+  onVideoTapped(Video p1) {
+    pp('$mm onVideoTapped ... id: ${p1.videoId}');
+    tappedVideo = p1;
+    setState(() {
+      playVideo = true;
+    });
+  }
+
+  bool playAudio = false;
+  Audio? tappedAudio;
+  bool showProjectChooser = false;
+
+  onAudioTapped(Audio p1) {
+    pp('$mm onAudioTapped .... id: ${p1.audioId}');
+    tappedAudio = p1;
+    setState(() {
+      playAudio = true;
+    });
+  }
+
+  onPhotoTapped(Photo p1) {
+    pp('$mm onPhotoTapped .... id: ${p1.photoId}');
+    if (mounted) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: const Duration(milliseconds: 1000),
+              child: PhotoFrame(
+                photo: p1,
+                onMapRequested: (photo) {},
+                onRatingRequested: (photo) {},
+                elevation: 8.0,
+                cacheManager: widget.cacheManager,
+                dataApiDog: widget.dataApiDog,
+                onPhotoCardClose: () {},
+                translatedDate: '',
+                locale: settings.locale!,
+                prefsOGx: widget.prefsOGx,
+              )));
+    }
+  }
+
+  void _onTakePicture() {
+    pp('$mm _onTakePicture .............');
+    if (mounted) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: const Duration(milliseconds: 1000),
+              child: PhotoHandler(
+                project: projectSelected!,
+                projectBloc: widget.projectBloc,
+                prefsOGx: widget.prefsOGx,
+                organizationBloc: widget.organizationBloc,
+                cacheManager: widget.cacheManager,
+                dataApiDog: widget.dataApiDog,
+                fcmBloc: widget.fcmBloc,
+              )));
+    }
+  }
+
+  void _onMakeVideo() {
+    pp('$mm _onMakeVideo ............');
+  }
+
+  void _onMakeAudio() {
+    pp('$mm _onMakeAudio ..............');
+    if (mounted) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return AudioRecorder(onCloseRequested: () {}, project: widget.project!);
+      }));
+    }
+  }
+
+  var items = <MediaGridItem> [];
+
+  void _consolidateItems() {
+    pp('$mm ...... consolidating media items .... 🔆');
+
+    for (var value in photos) {
+      var intCreated =
+          DateTime.parse(value.created!).toLocal().millisecondsSinceEpoch;
+      var created = DateTime.parse(value.created!).toLocal().toIso8601String();
+      final item = MediaGridItem(
+          created: created, photo: value, intCreated: intCreated);
+      items.add(item);
+    }
+    for (var value in videos) {
+      var intCreated =
+          DateTime.parse(value.created!).toLocal().millisecondsSinceEpoch;
+      var created = DateTime.parse(value.created!).toLocal().toIso8601String();
+      final item = MediaGridItem(
+          created: created, video: value, intCreated: intCreated);
+      items.add(item);
+    }
+    for (var value in audios) {
+      var intCreated =
+          DateTime.parse(value.created!).toLocal().millisecondsSinceEpoch;
+      var created = DateTime.parse(value.created!).toLocal().toIso8601String();
+      final item = MediaGridItem(
+          created: created, audio: value, intCreated: intCreated);
+      items.add(item);
+    }
+
+    pp('$mm ...... consolidated media items to be sorted:  🔆${items.length} 🔆');
+    items.sort((a, b) => b.intCreated.compareTo(a.intCreated));
+  }
+
 
   @override
   Widget build(BuildContext context) {
     pp('$mm build ........  zero is death!! '
-        'photos: ${photos.length} audios: ${audios.length} videos: ${videos.length}');
-
+        ' media grid items: ${items.length}');
     var audioLeftPadding = 160.0;
     var audioRightPadding = 160.0;
     var audioBottomPadding = 64.0;
@@ -323,46 +445,43 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
           ),
           body: loading
               ? Center(
-                  child: LoadingCard(
-                    loadingData:
-                        loadingData == null ? 'Loading data ...' : loadingData!,
+                  child: Padding(
+                    padding: const EdgeInsets.all(48.0),
+                    child: LoadingCard(
+                      loadingData: loadingData == null
+                          ? 'Loading data ...'
+                          : loadingData!,
+                    ),
                   ),
                 )
               : Stack(
                   children: [
                     ScreenTypeLayout.builder(
-                      mobile: (context){
-                        return  MediaGrid(
-                            photos: photos,
-                            videos: videos,
-                            audios: audios,
-                            durationText:
-                            durationText == null ? 'Duration' : durationText!,
+                      mobile: (context) {
+                        return MediaGrid(
+                            mediaGridItems: items,
+                            durationText: durationText == null
+                                ? 'Duration'
+                                : durationText!,
                             onVideoTapped: onVideoTapped,
                             onAudioTapped: onAudioTapped,
                             onPhotoTapped: onPhotoTapped,
                             crossAxisCount: 2);
                       },
-                      tablet: (ctx){
-                        return OrientationLayoutBuilder(
-                            landscape: (ctx){
-                              return MediaGrid(
-                                  photos: photos,
-                                  videos: videos,
-                                  audios: audios,
-                                  durationText: durationText == null
-                                      ? 'Duration'
-                                      : durationText!,
-                                  onVideoTapped: onVideoTapped,
-                                  onAudioTapped: onAudioTapped,
-                                  onPhotoTapped: onPhotoTapped,
-                                  crossAxisCount: 6);
-                            },
-                            portrait: (ctx){
+                      tablet: (ctx) {
+                        return OrientationLayoutBuilder(landscape: (ctx) {
                           return MediaGrid(
-                              photos: photos,
-                              videos: videos,
-                              audios: audios,
+                              mediaGridItems: items,
+                              durationText: durationText == null
+                                  ? 'Duration'
+                                  : durationText!,
+                              onVideoTapped: onVideoTapped,
+                              onAudioTapped: onAudioTapped,
+                              onPhotoTapped: onPhotoTapped,
+                              crossAxisCount: 6);
+                        }, portrait: (ctx) {
+                          return MediaGrid(
+                              mediaGridItems: items,
                               durationText: durationText == null
                                   ? 'Duration'
                                   : durationText!,
@@ -372,10 +491,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                               crossAxisCount: 4);
                         });
                       },
-
                     ),
-
-
                     playAudio
                         ? Positioned(
                             left: audioLeftPadding,
@@ -406,85 +522,32 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                                 width: 500,
                                 dataApiDog: widget.dataApiDog))
                         : const SizedBox(),
+                    showProjectChooser
+                        ? Positioned(left: 8, right: 8, top: 16,
+                            child: Center(
+                            child: ProjectChooser(
+                                onSelected: (p) {
+                                  setState(() {
+                                    projectSelected = p;
+                                    showProjectChooser = false;
+                                  });
+                                  _getProjectData(
+                                      projectId: p.projectId!,
+                                      forceRefresh: false);
+                                },
+                                onClose: () {
+                                  setState(() {
+                                    showProjectChooser = false;
+                                  });
+                                },
+                                title: 'Chooser Title',
+                                height: 600,
+                                width: 400),
+                          ))
+                        : const SizedBox()
                   ],
                 )),
     );
-  }
-
-  bool playVideo = false;
-  Video? tappedVideo;
-  onVideoTapped(Video p1) {
-    pp('$mm onVideoTapped ... id: ${p1.videoId}');
-    tappedVideo = p1;
-    setState(() {
-      playVideo = true;
-    });
-  }
-
-  bool playAudio = false;
-  Audio? tappedAudio;
-  onAudioTapped(Audio p1) {
-    pp('$mm onAudioTapped .... id: ${p1.audioId}');
-    tappedAudio = p1;
-    setState(() {
-      playAudio = true;
-    });
-  }
-
-  onPhotoTapped(Photo p1) {
-    pp('$mm onPhotoTapped .... id: ${p1.photoId}');
-    if (mounted) {
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.topLeft,
-              duration: const Duration(milliseconds: 1000),
-              child: PhotoFrame(
-                photo: p1,
-                onMapRequested: (photo) {},
-                onRatingRequested: (photo) {},
-                elevation: 8.0,
-                cacheManager: widget.cacheManager,
-                dataApiDog: widget.dataApiDog,
-                onPhotoCardClose: () {},
-                translatedDate: '',
-                locale: settings.locale!,
-                prefsOGx: widget.prefsOGx,
-              )));
-    }
-  }
-
-  void _onTakePicture() {
-    pp('$mm _onTakePicture .............');
-    if (mounted) {
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.topLeft,
-              duration: const Duration(milliseconds: 1000),
-              child: PhotoHandler(
-                  project: projectSelected!,
-                  projectBloc: widget.projectBloc,
-                  prefsOGx: widget.prefsOGx,
-                  organizationBloc: widget.organizationBloc,
-                  cacheManager: widget.cacheManager,
-                  dataApiDog: widget.dataApiDog, fcmBloc: widget.fcmBloc,)));
-    }
-  }
-
-  void _onMakeVideo() {
-    pp('$mm _onMakeVideo ............');
-  }
-
-  void _onMakeAudio() {
-    pp('$mm _onMakeAudio ..............');
-    if (mounted) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return AudioRecorder(onCloseRequested: (){}, project: widget.project!);
-      }));
-    }
   }
 }
 

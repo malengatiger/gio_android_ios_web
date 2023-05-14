@@ -28,10 +28,11 @@ class IsolateDataHandler {
   final PrefsOGx prefsOGx;
   final AppAuth appAuth;
   final CacheManager cacheManager;
+
    // OrganizationBloc? organizationBloc;
-   ProjectBloc? projectBloc;
-   UserBloc? userBloc;
-   FCMBloc? fcmBloc;
+   // ProjectBloc? projectBloc;
+   // UserBloc? userBloc;
+   // FCMBloc? fcmBloc;
 
   late ReceivePort myReceivePort;
 
@@ -60,10 +61,10 @@ class IsolateDataHandler {
   }
 
   Future getProjectData(String projectId) async {
-    pp('$xx handleOrganization;  🦊collect parameters from SettingsModel ...');
+    pp('$xx getProjectData;  🦊...');
     myReceivePort = ReceivePort();
-    projectBloc = ProjectBloc(dataApiDog, cacheManager, this);
-    fcmBloc = FCMBloc(FirebaseMessaging.instance, cacheManager, locationRequestHandler);
+    // projectBloc = ProjectBloc(dataApiDog, cacheManager, this);
+    // fcmBloc = FCMBloc(FirebaseMessaging.instance, cacheManager, locationRequestHandler);
 
     final sett = await prefsOGx.getSettings();
     final token = await appAuth.getAuthToken();
@@ -143,13 +144,13 @@ class IsolateDataHandler {
     });
   }
 
-  void _sendOrganizationDataToStreams(DataBag bag) {
-    organizationBloc!.dataBagController.sink.add(bag);
+  void _sendOrganizationDataToStreams(DataBag bag) async {
+    organizationBloc.dataBagController.sink.add(bag);
     pp('$xx Organization Data sent to dataBagStream  ...');
   }
 
   void _sendProjectDataToStreams(DataBag bag) {
-    projectBloc?.dataBagController.sink.add(bag);
+    projectBloc.dataBagController.sink.add(bag);
     pp('$xx Project Data sent to dataBagStream  ...');
   }
 

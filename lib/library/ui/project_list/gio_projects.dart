@@ -398,7 +398,7 @@ class _GioProjectsState extends State<GioProjects>
               type: PageTransitionType.leftToRightWithFade,
               alignment: Alignment.topLeft,
               duration: const Duration(milliseconds: 1000),
-              child: const OrganizationMapMobile()));
+              child: const OrganizationMap()));
     }
   }
 

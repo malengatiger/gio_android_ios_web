@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:core';
+import 'dart:core';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -33,6 +35,7 @@ import 'package:geo_monitor/ui/activity/gio_activities.dart';
 import 'package:geo_monitor/ui/audio/audio_player_og.dart';
 import 'package:geo_monitor/ui/dashboard/photo_frame.dart';
 import 'package:geo_monitor/ui/intro/intro_main.dart';
+import 'package:geo_monitor/utilities/sharedprefs.dart';
 import 'package:geo_monitor/utils/audio_player.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -53,6 +56,7 @@ import '../library/data/project.dart';
 import '../library/data/settings_model.dart';
 import '../library/ui/loading_card.dart';
 import '../library/ui/maps/geofence_map_tablet.dart';
+import '../library/ui/maps/org_map_mobile.dart';
 import '../library/ui/maps/project_polygon_map_mobile.dart';
 import '../library/ui/settings/settings_main.dart';
 import 'member_list.dart';
@@ -859,6 +863,9 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                     eventsText: eventsText!,
                     dashboardText: dashboardText!,
                     recentEventsText: recentEventsText!,
+                    cacheManager: widget.cacheManager,
+                    prefsOGx: widget.prefsOGx,
+                    dataApiDog: widget.dataApiDog,
                     onEventTapped: (event) {
                       _onEventTapped(event);
                     },
@@ -926,6 +933,9 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                             navigateToActivities: () {
                               _navigateToActivities();
                             },
+                            cacheManager: widget.cacheManager,
+                            prefsOGx: widget.prefsOGx,
+                            dataApiDog: widget.dataApiDog,
                             organizationBloc: widget.organizationBloc,
                             locale: settings.locale!,
                             forceRefresh: forceRefresh,
@@ -998,6 +1008,9 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                             navigateToActivities: () {
                               _navigateToActivities();
                             },
+                            cacheManager: widget.cacheManager,
+                            prefsOGx: widget.prefsOGx,
+                            dataApiDog: widget.dataApiDog,
                             organizationBloc: widget.organizationBloc,
                             totalEvents: totalEvents,
                             totalProjects: totalProjects,
@@ -1117,6 +1130,9 @@ class RealDashboard extends StatelessWidget {
     required this.navigateToActivities,
     required this.organizationBloc,
     required this.fcmBloc,
+    required this.cacheManager,
+    required this.dataApiDog,
+    required this.prefsOGx,
   }) : super(key: key);
 
   final Function onEventsSubtitleTapped;
@@ -1152,6 +1168,9 @@ class RealDashboard extends StatelessWidget {
   final Function navigateToIntro, navigateToActivities;
   final OrganizationBloc organizationBloc;
   final FCMBloc fcmBloc;
+  final CacheManager cacheManager;
+  final DataApiDog dataApiDog;
+  final PrefsOGx prefsOGx;
 
   @override
   Widget build(BuildContext context) {
@@ -1193,39 +1212,41 @@ class RealDashboard extends StatelessWidget {
       PopupMenuButton(
         elevation: 8,
         itemBuilder: (context) {
-        return [
-          PopupMenuItem(
-              value: 1,
-              child: Icon(
-                Icons.refresh,
-                color: Theme.of(context).primaryColor,
-              )),
-          PopupMenuItem(
-              value: 2,
-              child: Icon(
-                Icons.settings,
-                color: Theme.of(context).primaryColor,
-              )),
-          PopupMenuItem(
-            value: 3,
-            child: CircleAvatar(
-                radius: 16.0,
-                backgroundImage: NetworkImage(user.thumbnailUrl!)),
-          )
-        ];
-      }, onSelected: (index){
-        switch (index) {
-          case 1:
-            onRefreshRequested();
-            break;
-          case 2:
-            onSettingsRequested();
-            break;
-          case 3:
-            onDeviceUserTapped();
-            break;
-        }
-      },)
+          return [
+            PopupMenuItem(
+                value: 1,
+                child: Icon(
+                  Icons.refresh,
+                  color: Theme.of(context).primaryColor,
+                )),
+            PopupMenuItem(
+                value: 2,
+                child: Icon(
+                  Icons.settings,
+                  color: Theme.of(context).primaryColor,
+                )),
+            PopupMenuItem(
+              value: 3,
+              child: CircleAvatar(
+                  radius: 16.0,
+                  backgroundImage: NetworkImage(user.thumbnailUrl!)),
+            )
+          ];
+        },
+        onSelected: (index) {
+          switch (index) {
+            case 1:
+              onRefreshRequested();
+              break;
+            case 2:
+              onSettingsRequested();
+              break;
+            case 3:
+              onDeviceUserTapped();
+              break;
+          }
+        },
+      )
     ];
 
     return SizedBox(
@@ -1253,6 +1274,10 @@ class RealDashboard extends StatelessWidget {
                       TopCardList(
                         organizationBloc: organizationBloc,
                         fcmBloc: fcmBloc,
+                        dataApiDog: dataApiDog,
+                        prefsOGx: prefsOGx,
+                        cacheManager: cacheManager,
+                        projectBloc: projectBloc,
                       ),
                       const SizedBox(height: 20),
                       SubTitleWidget(
@@ -1470,11 +1495,21 @@ class DashboardTopCard extends StatelessWidget {
 
 class TopCardList extends StatefulWidget {
   const TopCardList(
-      {Key? key, required this.organizationBloc, required this.fcmBloc})
+      {Key? key,
+      required this.organizationBloc,
+      required this.fcmBloc,
+      required this.prefsOGx,
+      required this.projectBloc,
+      required this.dataApiDog,
+      required this.cacheManager})
       : super(key: key);
 
   final OrganizationBloc organizationBloc;
   final FCMBloc fcmBloc;
+  final PrefsOGx prefsOGx;
+  final ProjectBloc projectBloc;
+  final DataApiDog dataApiDog;
+  final CacheManager cacheManager;
 
   @override
   State<TopCardList> createState() => TopCardListState();
@@ -1593,6 +1628,89 @@ class TopCardListState extends State<TopCardList> {
     super.dispose();
   }
 
+  void _navigateToProjects() {
+    pp(' 🌀🌀🌀🌀 .................. _navigateToProjects to Settings ....');
+    if (mounted) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GioProjects(
+              projectBloc: widget.projectBloc,
+              organizationBloc: widget.organizationBloc,
+              prefsOGx: widget.prefsOGx,
+              dataApiDog: widget.dataApiDog,
+              cacheManager: widget.cacheManager,
+              instruction: 0,
+              fcmBloc: widget.fcmBloc,
+            ),
+          ));
+    }
+  }
+
+  void _navigateToMembers() {
+    pp(' 🌀🌀🌀🌀 .................. _navigateToMembers to users ....');
+    if (mounted) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => GioUserList(
+                  fcmBloc: widget.fcmBloc,
+                  organizationBloc: widget.organizationBloc,
+                  projectBloc: widget.projectBloc,
+                  prefsOGx: widget.prefsOGx,
+                  cacheManager: widget.cacheManager,
+                  dataApiDog: widget.dataApiDog)));
+    }
+  }
+
+  void _navigateToMap() {
+    pp(' 🌀🌀🌀🌀 .................. _navigateToMap to users ....');
+    if (mounted) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const OrganizationMap()));
+    }
+  }
+
+  void _navigateToTimeline() {
+    pp(' 🌀🌀🌀🌀 .................. _navigateToMap to users ....');
+    if (mounted) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => ProjectMediaTimeline(projectBloc: widget.projectBloc,
+              prefsOGx: widget.prefsOGx, organizationBloc: widget.organizationBloc,
+              cacheManager: widget.cacheManager, dataApiDog: widget.dataApiDog,
+              fcmBloc: widget.fcmBloc)));
+    }
+  }
+
+  void _navigateToActivities() {
+    pp(' 🌀🌀🌀🌀 .................. _navigateToActivities  ....');
+
+    if (mounted) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return GioActivities(
+          fcmBloc: widget.fcmBloc,
+          organizationBloc: widget.organizationBloc,
+          projectBloc: widget.projectBloc,
+          dataApiDog: widget.dataApiDog,
+          project: null,
+          onPhotoTapped: (p){},
+          onVideoTapped: (p){},
+          onAudioTapped: (p){},
+          onUserTapped: (p){},
+          onProjectTapped: (p){},
+          onProjectPositionTapped: (p){},
+          onPolygonTapped: (p){},
+          onGeofenceEventTapped: (p){},
+          onOrgMessage: (p){},
+          onLocationResponse: (p){},
+          onLocationRequest: (p){},
+          prefsOGx: widget.prefsOGx,
+          cacheManager: widget.cacheManager,
+        );
+      }));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final type = getThisDeviceType();
@@ -1623,74 +1741,120 @@ class TopCardListState extends State<TopCardList> {
           shrinkWrap: true,
           children: [
             DashboardTopCard(
-                width: events > 999 ? 128 : 100,
+                width: events > 999 ? 128 : 108,
                 number: events,
                 title: eventsText,
-                onTapped: () {}),
+                onTapped: () {
+                  _onTapped(0);
+                }),
             SizedBox(
               width: padding1,
             ),
             DashboardTopCard(
-                width: projects > 999 ? 128 : 100,
+                width: projects > 999 ? 128 : 108,
                 number: projects,
                 title: projectsText,
-                onTapped: () {}),
+                onTapped: () {
+                  _onTapped(1);
+                }),
             SizedBox(
               width: padding1,
             ),
             DashboardTopCard(
-                width: members > 999 ? 128 : 100,
+                width: members > 999 ? 128 : 108,
                 number: members,
                 title: membersText,
-                onTapped: () {}),
+                onTapped: () {
+                  _onTapped(2);
+                }),
             SizedBox(
               width: padding2,
             ),
             DashboardTopCard(
-                width: photos > 999 ? 128 : 100,
-                textStyle: myNumberStyleLarger(context),
+                width: photos > 999 ? 128 : 108,
+                textStyle: myNumberStyleLargerPrimaryColorLight(context),
                 number: photos,
                 title: photosText,
-                onTapped: () {}),
+                onTapped: () {
+                  _onTapped(3);
+                }),
             SizedBox(
               width: padding1,
             ),
             DashboardTopCard(
-                textStyle: myNumberStyleLarger(context),
-                width: videos > 999 ? 128 : 100,
+                textStyle: myNumberStyleLargerPrimaryColorLight(context),
+                width: videos > 999 ? 128 : 108,
                 number: videos,
                 title: videosText,
-                onTapped: () {}),
+                onTapped: () {
+                  _onTapped(4);
+                }),
             SizedBox(
               width: padding1,
             ),
             DashboardTopCard(
-                width: audios > 999 ? 128 : 100,
-                textStyle: myNumberStyleLarger(context),
+                width: audios > 999 ? 128 : 108,
+                textStyle: myNumberStyleLargerPrimaryColorLight(context),
                 number: audios,
                 title: audiosText,
-                onTapped: () {}),
+                onTapped: () {
+                  _onTapped(5);
+                }),
             SizedBox(
               width: padding2,
             ),
             DashboardTopCard(
-                textStyle: myNumberStyleLarger(context),
-                width: locations > 999 ? 128 : 100,
+                textStyle: myNumberStyleLargerPrimaryColorLight(context),
+                width: locations > 999 ? 128 : 108,
                 number: locations,
                 title: locationsText,
-                onTapped: () {}),
+                onTapped: () {
+                  _onTapped(6);
+                }),
             SizedBox(
               width: padding1,
             ),
             DashboardTopCard(
-                textStyle: myNumberStyleLarger(context),
-                width: areas > 999 ? 128 : 100,
+                textStyle: myNumberStyleLargerPrimaryColorLight(context),
+                width: areas > 999 ? 128 : 108,
                 number: areas,
                 title: areasText,
-                onTapped: () {}),
+                onTapped: () {
+                  _onTapped(7);
+                }),
           ],
         ),
       ),
     );
+  }
+
+  void _onTapped(int id) {
+    pp('$mm top card tapped: id: $id ............');
+    switch (id) {
+      case 0:
+        _navigateToActivities();
+        break;
+      case 1:
+        _navigateToProjects();
+        break;
+      case 2:
+        _navigateToMembers();
+        break;
+      case 3:
+        _navigateToTimeline();
+        break;
+      case 4:
+        _navigateToTimeline();
+        break;
+      case 5:
+        _navigateToTimeline();
+        break;
+      case 6:
+        _navigateToMap();
+        break;
+      case 7:
+        _navigateToMap();
+        break;
+    }
   }
 }
