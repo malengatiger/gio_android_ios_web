@@ -112,7 +112,6 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     endText = await translator.translate('endDate', locale);
     durationText = await translator.translate('duration', locale);
     sendMemberMessage = await translator.translate('sendMemberMessage', locale);
-
   }
 
   void _listen() async {
@@ -297,40 +296,39 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     }
   }
 
-  var items = <MediaGridItem> [];
+  var items = <MediaGridItem>[];
 
   void _consolidateItems() {
     pp('$mm ...... consolidating media items .... 🔆');
-
+    items.clear();
     for (var value in photos) {
       var intCreated =
           DateTime.parse(value.created!).toLocal().millisecondsSinceEpoch;
       var created = DateTime.parse(value.created!).toLocal().toIso8601String();
-      final item = MediaGridItem(
-          created: created, photo: value, intCreated: intCreated);
+      final item =
+          MediaGridItem(created: created, photo: value, intCreated: intCreated);
       items.add(item);
     }
     for (var value in videos) {
       var intCreated =
           DateTime.parse(value.created!).toLocal().millisecondsSinceEpoch;
       var created = DateTime.parse(value.created!).toLocal().toIso8601String();
-      final item = MediaGridItem(
-          created: created, video: value, intCreated: intCreated);
+      final item =
+          MediaGridItem(created: created, video: value, intCreated: intCreated);
       items.add(item);
     }
     for (var value in audios) {
       var intCreated =
           DateTime.parse(value.created!).toLocal().millisecondsSinceEpoch;
       var created = DateTime.parse(value.created!).toLocal().toIso8601String();
-      final item = MediaGridItem(
-          created: created, audio: value, intCreated: intCreated);
+      final item =
+          MediaGridItem(created: created, audio: value, intCreated: intCreated);
       items.add(item);
     }
 
     pp('$mm ...... consolidated media items to be sorted:  🔆${items.length} 🔆');
     items.sort((a, b) => b.intCreated.compareTo(a.intCreated));
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -419,6 +417,12 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                         Icons.refresh,
                         color: Theme.of(context).primaryColor,
                       )),
+                  PopupMenuItem(
+                      value: 4,
+                      child: Icon(
+                        Icons.home,
+                        color: Theme.of(context).primaryColor,
+                      )),
                 ];
               }, onSelected: (index) {
                 pp('$mm ...................... action index: $index');
@@ -438,6 +442,11 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                     break;
                   case 3:
                     _onMakeAudio();
+                    break;
+                  case 4:
+                    setState(() {
+                      showProjectChooser = true;
+                    });
                     break;
                 }
               }),
@@ -523,27 +532,30 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                                 dataApiDog: widget.dataApiDog))
                         : const SizedBox(),
                     showProjectChooser
-                        ? Positioned(left: 8, right: 8, top: 16,
+                        ? Positioned(
+                            left: 8,
+                            right: 8,
+                            top: 16,
                             child: Center(
-                            child: ProjectChooser(
-                                onSelected: (p) {
-                                  setState(() {
-                                    projectSelected = p;
-                                    showProjectChooser = false;
-                                  });
-                                  _getProjectData(
-                                      projectId: p.projectId!,
-                                      forceRefresh: false);
-                                },
-                                onClose: () {
-                                  setState(() {
-                                    showProjectChooser = false;
-                                  });
-                                },
-                                title: 'Chooser Title',
-                                height: 600,
-                                width: 400),
-                          ))
+                              child: ProjectChooser(
+                                  onSelected: (p) {
+                                    setState(() {
+                                      projectSelected = p;
+                                      showProjectChooser = false;
+                                    });
+                                    _getProjectData(
+                                        projectId: p.projectId!,
+                                        forceRefresh: false);
+                                  },
+                                  onClose: () {
+                                    setState(() {
+                                      showProjectChooser = false;
+                                    });
+                                  },
+                                  title: 'Chooser Title',
+                                  height: 600,
+                                  width: 400),
+                            ))
                         : const SizedBox()
                   ],
                 )),
