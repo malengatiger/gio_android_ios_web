@@ -233,7 +233,7 @@ class _MobileListState extends State<MobileList> {
   void _setTexts() async {
     settings = await prefsOGx.getSettings();
     activityStrings = await ActivityStrings.getTranslated(settings!.locale!);
-    title = await translator.translate('activities', settings!.locale!);
+    title = await translator.translate('events', settings!.locale!);
   }
 
   void _navigateToTimeline() {
@@ -265,7 +265,7 @@ class _MobileListState extends State<MobileList> {
         child: Scaffold(
       appBar: AppBar(
         title: Text(
-          title == null ? 'Activities' : title!,
+          title == null ? 'Events' : title!,
           style: myTextStyleLarge(context),
         ),
 

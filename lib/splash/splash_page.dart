@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../l10n/translation_handler.dart';
 import '../library/functions.dart';
@@ -21,6 +22,8 @@ class _SplashWidgetState extends State<SplashWidget> {
 
   String? message;
   void _performSetup() async {
+    await GetStorage.init(cacheName);
+    prefsOGx = PrefsOGx();
     var sett = await prefsOGx.getSettings();
     message = await translator.translate('weHelpYou', sett.locale!);
     setState(() {});

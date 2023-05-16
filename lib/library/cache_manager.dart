@@ -46,7 +46,7 @@ import 'functions.dart';
 import 'generic_functions.dart';
 
 const stillWorking = 201, doneCaching = 200;
-const String hiveName = 'GeoHive5e';
+const String hiveName = 'GeoHive5f';
 
 late CacheManager cacheManager;
 
@@ -409,12 +409,13 @@ class CacheManager {
 
   Future addActivityModels({required List<ActivityModel> activities}) async {
     late String key;
+    await deleteActivityModels();
     for (var activity in activities) {
         key = '${activity.activityModelId}';
       _activityBox?.put(key, activity);
     }
 
-    pp('$mm ${_activityBox?.length} ActivityModels added to local cache}');
+    pp('$mm ActivityModels total: ${_activityBox?.length}');
   }
 
   Future deleteActivityModels() async {

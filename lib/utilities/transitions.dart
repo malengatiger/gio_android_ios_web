@@ -49,3 +49,5 @@ void navigateWithSlide(Widget widget, BuildContext context) {
     ),
   );
 }
+
+

@@ -403,8 +403,8 @@ class FCMBloc {
         await cacheManager.addSettings(settings: settings);
         await themeBloc.changeToTheme(settings.themeIndex!);
         settingsStreamController.sink.add(settings);
-        isolateHandler.getOrganizationData();
-        pp('$mm This is an organization-wide setting, hopefully the ui changes to new color ...');
+        await isolateHandler.getOrganizationData();
+        pp('$mm This is an organization-wide setting,  🍎 🍎 🍎 hopefully the ui changes to new color ...');
       }
     }
     if (data['geofenceEvent'] != null) {

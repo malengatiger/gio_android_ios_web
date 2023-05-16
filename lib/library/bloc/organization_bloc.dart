@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:geo_monitor/library/bloc/fcm_bloc.dart';
 import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/theme_bloc.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
@@ -180,7 +181,7 @@ class OrganizationBloc {
         ' ... forceRefresh: $forceRefresh');
 
     final start = DateTime.now();
-    DataBag bag = DataBag(
+    DataBag? bag = DataBag(
         photos: [],
         videos: [],
         fieldMonitorSchedules: [],
@@ -192,17 +193,16 @@ class OrganizationBloc {
         activityModels: [],
         projectPolygons: [],
         settings: []);
-    final sDate = DateTime.parse(startDate);
-    final eDate = DateTime.parse(endDate);
-    final numberOfDays = eDate.difference(sDate).inDays;
-    final projects = await getOrganizationProjects(
-        organizationId: organizationId, forceRefresh: false);
-    final users = await cacheManager.getUsers();
+
     pp('$mm g');
     if (forceRefresh) {
       pp('$mm get data from server .....................; '
           'forceRefresh: $forceRefresh; if true do the refresh ...');
-      await dataHandler.getOrganizationData();
+      bag = await dataHandler.getOrganizationData();
+      if (bag == null) {
+        return getEmptyDataBag();
+      }
+      printDataBag(bag);
       return bag;
     } else {
       bag = await cacheManager.getOrganizationData(
@@ -210,26 +210,30 @@ class OrganizationBloc {
       if (bag.isEmpty()) {
         pp('$mm bag is empty. No organization data anywhere yet? ... '
             'will force refresh, forceRefresh: $forceRefresh');
-        await dataHandler.getOrganizationData();
+        bag = await dataHandler.getOrganizationData();
+        if (bag == null) {
+          return getEmptyDataBag();
+        }
+        printDataBag(bag);
+        return bag;
       }
     }
     final end = DateTime.now();
-    pp('$mm getOrganizationData: 🍎 ${end.difference(start).inSeconds} seconds elapsed, will start filter ...');
+    pp('$mm getOrganizationData: 🍎 ${end.difference(start).inMilliseconds} milliseconds elapsed...');
 
-    final start2 = DateTime.now();
-    pp('\n\n$mm ... filter bag by the dates .... before filter');
-
-    var mBag = filterBagContentsByDate(
-        bag: bag, startDate: startDate, endDate: endDate);
-
-    mBag.projects = projects;
-    mBag.users = users;
-    dataBagController.sink.add(mBag);
-
-    final end2 = DateTime.now();
-    pp('\n$mm filtered bag .... ${end2.difference(start2)} seconds elapsed for filter');
-    printDataBag(mBag);
-    return mBag;
+    // final start2 = DateTime.now();
+    // pp('\n\n$mm ... filter bag by the dates .... before filter');
+    //
+    // var mBag = filterBagContentsByDate(
+    //     bag: bag!, startDate: startDate, endDate: endDate);
+    //
+    // mBag.projects = projects;
+    // mBag.users = users;
+    // dataBagController.sink.add(mBag);
+    //
+    // final end2 = DateTime.now();
+    // pp('\n$mm filtered bag .... ${end2.difference(start2)} seconds elapsed for filter');
+    return bag;
   }
 
   Future<List<User>> getUsers(
@@ -509,4 +513,20 @@ bool checkDate(
     return true;
   }
   return false;
+}
+
+DataBag getEmptyDataBag() {
+  DataBag? bag = DataBag(
+      photos: [],
+      videos: [],
+      fieldMonitorSchedules: [],
+      projectPositions: [],
+      projects: [],
+      audios: [],
+      date: 'date',
+      users: [],
+      activityModels: [],
+      projectPolygons: [],
+      settings: []);
+  return bag;
 }

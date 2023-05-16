@@ -1,16 +1,122 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/api/prefs_og.dart';
+import 'package:geo_monitor/library/bloc/fcm_bloc.dart';
+import 'package:geo_monitor/library/bloc/organization_bloc.dart';
+import 'package:geo_monitor/library/bloc/refresh_bloc.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
 import 'package:geo_monitor/library/data/activity_type_enum.dart';
 
+import '../library/data/data_bag.dart';
 import '../library/functions.dart';
 
-class RecentEventList extends StatelessWidget {
+class RecentEventList extends StatefulWidget {
   final Function(ActivityModel) onEventTapped;
-  final List<ActivityModel> activities;
   final String locale;
+  final OrganizationBloc organizationBloc;
+  final PrefsOGx prefsOGx;
+  final FCMBloc fcmBloc;
 
   const RecentEventList(
-      {super.key, required this.onEventTapped, required this.activities, required this.locale});
+      {super.key,
+      required this.onEventTapped,
+      required this.locale,
+      required this.organizationBloc,
+      required this.prefsOGx,
+      required this.fcmBloc});
+
+  @override
+  State<RecentEventList> createState() => _RecentEventListState();
+}
+
+class _RecentEventListState extends State<RecentEventList> {
+  late StreamSubscription<ActivityModel> actSub;
+  late StreamSubscription<DataBag> bagSub;
+  late StreamSubscription<bool> refreshSub;
+
+  var activities = <ActivityModel>[];
+  bool busy = false;
+  final mm = '🔵🔵🔵 RecentEventList 🔵🔵🔵🔵🔵🔵 : ';
+
+  @override
+  void initState() {
+    super.initState();
+    pp('$mm initState ..............');
+    _listen();
+    _getData();
+  }
+
+  void _listen() {
+    actSub = widget.fcmBloc.activityStream.listen((event) {
+      pp('$mm activityStream delivered an activity, insert received activity in list: 🔆${activities.length}');
+      activities.insert(0, event);
+      _sort();
+      if (mounted) {
+        pp('$mm activityStream delivered an activity: setting state with: 🔆 ${activities.length} activities');
+        setState(() {
+
+        });
+      }
+    });
+
+    // bagSub = widget.organizationBloc.dataBagStream.listen((bag) {
+    //   pp('$mm dataBagStream delivered a bag, set ui .');
+    //   activities = bag.activityModels!;
+    //   _sort();
+    //   if (mounted) {
+    //     setState(() {
+    //
+    //     });
+    //   }
+    // });
+    
+    refreshSub = refreshBloc.refreshStream.listen((event) { 
+      pp('$mm refreshStream delivered a refresh command: $event, ');
+      _getData();
+    });
+  }
+
+  Future _getData() async {
+    setState(() {
+      busy = true;
+    });
+    try {
+      pp('$mm ........ getting activity data .....');
+      final sett = await widget.prefsOGx.getSettings();
+      activities = await widget.organizationBloc.getOrganizationActivity(
+          organizationId: sett.organizationId!,
+          hours: sett.activityStreamHours!,
+          forceRefresh: true);
+
+      _sort();
+    } catch (e) {
+      showSnackBar(message: '$e', context: context);
+    }
+    if (mounted) {
+      setState(() {
+        busy = false;
+      });
+    }
+  }
+
+  void _sort() {
+    pp('$mm ........ sort activities by date  .....');
+    for (var act in activities) {
+      final date = DateTime.parse(act.date!);
+      act.intDate = date.toUtc().millisecondsSinceEpoch;
+    }
+
+    activities.sort((a,b) => b.intDate.compareTo(a.intDate));
+  }
+
+  @override
+  void dispose() {
+    actSub.cancel();
+    bagSub.cancel();
+    refreshSub.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +127,7 @@ class RecentEventList extends StatelessWidget {
     }
     return busy
         ? const Center(
-            child: SizedBox(
+            child: SizedBox(width: 14, height: 14,
               child: CircularProgressIndicator(
                 strokeWidth: 4,
                 backgroundColor: Colors.pink,
@@ -37,13 +143,13 @@ class RecentEventList extends StatelessWidget {
                   final act = activities.elementAt(index);
                   return GestureDetector(
                       onTap: () {
-                        onEventTapped(act);
+                        widget.onEventTapped(act);
                       },
                       child: EventView(
                         activity: act,
                         height: 84,
                         width: width,
-                        locale: locale,
+                        locale: widget.locale,
                       ));
                 }),
           );
@@ -100,11 +206,15 @@ class EventView extends StatelessWidget {
       userUrl = activity.userThumbnailUrl;
     }
     if (activity.projectPosition != null) {
-      icon = const Icon(Icons.location_on_sharp, color: Colors.green,);
+      icon = const Icon(
+        Icons.location_on_sharp,
+        color: Colors.green,
+      );
       userUrl = activity.userThumbnailUrl;
     }
     if (activity.projectPolygon != null) {
-      icon = const Icon(Icons.location_on_rounded,
+      icon = const Icon(
+        Icons.location_on_rounded,
         color: Colors.yellow,
       );
       userUrl = activity.userThumbnailUrl;
@@ -120,14 +230,16 @@ class EventView extends StatelessWidget {
     final date = getFmtDate(activity.date!, locale);
 
     return SizedBox(
-        width: width, height: 100,
+        width: width,
+        height: 100,
         child: Card(
           shape: getRoundedBorder(radius: 12),
           elevation: 8,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(
-              child: Row(mainAxisAlignment: MainAxisAlignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   icon,
                   const SizedBox(
@@ -140,11 +252,11 @@ class EventView extends StatelessWidget {
                         activity.projectName == null
                             ? const SizedBox()
                             : Flexible(
-                              child: Text(
+                                child: Text(
                                   activity.projectName!,
                                   style: myTextStyleSmallPrimaryColor(context),
                                 ),
-                            ),
+                              ),
                         const SizedBox(
                           height: 8,
                         ),
@@ -158,10 +270,12 @@ class EventView extends StatelessWidget {
                   const SizedBox(
                     width: 16,
                   ),
-                  userUrl == null? const SizedBox(): CircleAvatar(
-                    backgroundImage: NetworkImage(userUrl),
-                    radius: 14,
-                  )
+                  userUrl == null
+                      ? const SizedBox()
+                      : CircleAvatar(
+                          backgroundImage: NetworkImage(userUrl),
+                          radius: 14,
+                        )
                 ],
               ),
             ),
@@ -169,4 +283,3 @@ class EventView extends StatelessWidget {
         ));
   }
 }
-

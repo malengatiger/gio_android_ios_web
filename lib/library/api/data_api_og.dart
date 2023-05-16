@@ -218,7 +218,6 @@ class DataApiDog {
     }
 
     if (mList.isNotEmpty) {
-      await cacheManager.deleteActivityModels();
       mList.sort((a, b) => b.date!.compareTo(a.date!));
       await cacheManager.addActivityModels(activities: mList);
       organizationBloc.activityController.sink.add(mList);
@@ -1396,7 +1395,7 @@ class DataApiDog {
     var start = DateTime.now();
     var token = await appAuth.getAuthToken();
     if (token != null) {
-      pp('$xz _sendHttpGET: 😡😡😡 Firebase Auth Token: 💙️ Token is GOOD! 💙\n$token ');
+      pp('$xz _sendHttpGET: 😡😡😡 Firebase Auth Token: 💙️ Token is GOOD! 💙 ');
     } else {
       pp('$xz Firebase token missing ${E.redDot}${E.redDot}${E.redDot}${E.redDot}');
       final gex = GeoException(

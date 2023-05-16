@@ -41,41 +41,29 @@ final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  firebaseApp = await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform);
-  pp('$mx main: '
-      ' Firebase App has been initialized: ${firebaseApp.name}, checking for authed current user');
-  fbAuthedUser = fb.FirebaseAuth.instance.currentUser;
-
-  pp('$mx main: setting up GetStorage ...');
-  await GetStorage.init(cacheName);
-  prefsOGx = PrefsOGx();
-  var settings = await prefsOGx.getSettings();
-  locale = Locale(settings!.locale!);
-
-  /// check user auth status
-  if (fbAuthedUser == null) {
-    pp('$mx main: fbAuthedUser is NULL ${E.redDot}${E.redDot}${E.redDot} no user signed in.');
-  } else {
-    pp('$mx main: fbAuthedUser is OK! check whether user exists, '
-        'auth could be from old instance of app${E.leaf}${E.leaf}${E.leaf}');
-    var user = await prefsOGx.getUser();
-    if (user == null) {
-      pp('$mx main: 🔴🔴🔴 user is null; cleanup necessary! '
-          '🔴fbAuthedUser will be set to null');
-      await fb.FirebaseAuth.instance.signOut();
-      fbAuthedUser = null;
-    }
-    //cameras = await availableCameras();
-  }
-  await dotenv.load(fileName: ".env");
-  pp('$mx $heartBlue DotEnv has been loaded');
-
-  if (settings != null) {
-    translator.translate('settings', settings!.locale!);
-    pp('$mx $heartBlue translation service initialization started for locale👌 ${settings!.locale!}');
-  }
-  await initializer.initializeGeo();
+  // /// check user auth status
+  // if (fbAuthedUser == null) {
+  //   pp('$mx main: fbAuthedUser is NULL ${E.redDot}${E.redDot}${E.redDot} no user signed in.');
+  // } else {
+  //   pp('$mx main: fbAuthedUser is OK! check whether user exists, '
+  //       'auth could be from old instance of app${E.leaf}${E.leaf}${E.leaf}');
+  //   var user = await prefsOGx.getUser();
+  //   if (user == null) {
+  //     pp('$mx main: 🔴🔴🔴 user is null; cleanup necessary! '
+  //         '🔴fbAuthedUser will be set to null');
+  //     await fb.FirebaseAuth.instance.signOut();
+  //     fbAuthedUser = null;
+  //   }
+  //   //cameras = await availableCameras();
+  // }
+  // await dotenv.load(fileName: ".env");
+  // pp('$mx $heartBlue DotEnv has been loaded');
+  //
+  // if (settings != null) {
+  //   translator.translate('settings', settings!.locale!);
+  //   pp('$mx $heartBlue translation service initialization started for locale👌 ${settings!.locale!}');
+  // }
+  // await initializer.initializeGeo();
   // await SystemChrome.setPreferredOrientations([
   //   DeviceOrientation.portraitUp,
   //   DeviceOrientation.portraitDown,
@@ -108,6 +96,7 @@ class GeoApp extends ConsumerWidget {
             locale = snapshot.data!.locale;
             pp('${E.check}${E.check}${E.check} GeoApp: build: locale object received from stream: $locale');
           }
+
           return MaterialApp(
             locale: locale,
             scaffoldMessengerKey: rootScaffoldMessengerKey,
@@ -123,25 +112,7 @@ class GeoApp extends ConsumerWidget {
               animationDuration: const Duration(milliseconds: 3000),
               curve: Curves.easeInCirc,
               splashIconSize: 160.0,
-              nextScreen: fbAuthedUser == null
-                  ? IntroMain(
-                      prefsOGx: prefsOGx,
-                      dataApiDog: dataApiDog,
-                      cacheManager: cacheManager,
-                      isolateHandler: dataHandler,
-                      fcmBloc: fcmBloc,
-                      organizationBloc: organizationBloc,
-                      projectBloc: projectBloc,
-                    )
-                  : DashboardMain(
-                      dataHandler: dataHandler,
-                      dataApiDog: dataApiDog,
-                      fcmBloc: fcmBloc,
-                      projectBloc: projectBloc,
-                      prefsOGx: prefsOGx,
-                      organizationBloc: organizationBloc,
-                      cacheManager: cacheManager,
-                    ),
+              nextScreen: const LandingPage(),
               splashTransition: SplashTransition.fadeTransition,
               pageTransitionType: PageTransitionType.leftToRight,
               backgroundColor: Colors.pink.shade900,
@@ -209,10 +180,11 @@ class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
 
   @override
-  State<LandingPage> createState() => _LandingPageState();
+  State<LandingPage> createState() => LandingPageState();
 }
 
-class _LandingPageState extends State<LandingPage> {
+class LandingPageState extends State<LandingPage> {
+  final mx = '🔵🔵🔵🔵🔵🔵 LandingPage 🔵🔵';
   bool busy = false;
   @override
   void initState() {
@@ -221,38 +193,70 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void initialize() async {
+    pp('$mx initialize .............🍎🍎🍎');
+
+    final start = DateTime.now();
     setState(() {
       busy = true;
     });
+
+    firebaseApp = await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+    pp('$mx main: '
+        ' Firebase App has been initialized: ${firebaseApp.name}, checking for authed current user');
     fbAuthedUser = fb.FirebaseAuth.instance.currentUser;
-    //await initializer.initializeGeo();
+
+    await initializer.initializeGeo();
+    final end = DateTime.now();
+
+    pp('$mx initialization took: 🔆 ${end.difference(start).inMilliseconds} 🔆');
+
     setState(() {
       busy = false;
     });
   }
 
+  Widget getWidget() {
+    if (busy) {
+      pp('$mx getWidget returning empty sizeBox because initialization is still going on ...');
+      return const SizedBox();
+    }
+    if (fbAuthedUser == null) {
+      pp('$mx getWidget returning widget IntroMain ..');
+      return IntroMain(
+        prefsOGx: prefsOGx,
+        dataApiDog: dataApiDog,
+        cacheManager: cacheManager,
+        isolateHandler: dataHandler,
+        fcmBloc: fcmBloc,
+        organizationBloc: organizationBloc,
+        projectBloc: projectBloc,
+      );
+    } else {
+      pp('$mx getWidget returning widget DashboardMain ..');
+      return DashboardMain(
+        dataHandler: dataHandler,
+        dataApiDog: dataApiDog,
+        fcmBloc: fcmBloc,
+        projectBloc: projectBloc,
+        prefsOGx: prefsOGx,
+        organizationBloc: organizationBloc,
+        cacheManager: cacheManager,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    pp('$mx build method starting ....');
     return busy
-        ? const LoadingCard(loadingData: 'loadingActivities')
-        : fbAuthedUser == null
-            ? IntroMain(
-                prefsOGx: prefsOGx,
-                dataApiDog: dataApiDog,
-                cacheManager: cacheManager,
-                isolateHandler: dataHandler,
-                fcmBloc: fcmBloc,
-                organizationBloc: organizationBloc,
-                projectBloc: projectBloc,
-              )
-            : DashboardMain(
-                dataHandler: dataHandler,
-                dataApiDog: dataApiDog,
-                fcmBloc: fcmBloc,
-                projectBloc: projectBloc,
-                prefsOGx: prefsOGx,
-                organizationBloc: organizationBloc,
-                cacheManager: cacheManager,
-              );
+        ? Center(
+            child: SizedBox(
+              width: 200,
+              height: 200,
+              child: Image.asset('assets/gio.png', height: 100, width: 80,),
+            ),
+          )
+        : getWidget();
   }
 }

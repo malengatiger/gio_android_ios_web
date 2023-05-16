@@ -71,6 +71,7 @@ class ActivityModel extends HiveObject {
   String? translatedUserType;
   @HiveField(23)
   SettingsModel? settingsModel;
+  int intDate = 0;
 
   ActivityModel({
     required this.activityModelId,

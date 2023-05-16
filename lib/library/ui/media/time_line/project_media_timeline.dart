@@ -124,6 +124,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     photoSub = widget.fcmBloc.photoStream.listen((photo) {
       pp('$mm photoStream delivered  : ${photo.toJson()}');
       photos.insert(0, photo);
+      _consolidateItems();
       if (mounted) {
         setState(() {});
       }
@@ -131,6 +132,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     videoSub = widget.fcmBloc.videoStream.listen((video) {
       pp('$mm videoStream delivered : ${video.toJson()}');
       videos.insert(0, video);
+      _consolidateItems();
       if (mounted) {
         setState(() {});
       }
@@ -138,6 +140,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     audioSub = widget.fcmBloc.audioStream.listen((audio) {
       pp('$mm audioStream delivered : ${audio.toJson()}');
       audios.insert(0, audio);
+      _consolidateItems();
       if (mounted) {
         setState(() {});
       }
@@ -150,7 +153,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
       audios = bag.audios!;
       photos = bag.photos!;
       videos = bag.videos!;
-      _sort();
+      _consolidateItems();
       if (mounted) {
         pp('$mm dataBagStream delivered , widget is mounted, setting state: '
             'photos:${photos.length} videos: ${videos.length} audios: ${audios.length}');
@@ -234,27 +237,28 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
   onAudioTapped(Audio p1) {
     pp('$mm onAudioTapped .... id: ${p1.audioId}');
     tappedAudio = p1;
-    setState(() {
-      playAudio = true;
-    });
+    final type = getThisDeviceType();
+    if (type == 'phone') {
+      navigateWithFade(
+          GioVideoPlayer(
+              video: tappedVideo!,
+              onCloseRequested: () {
+                setState(() {
+                  playVideo = false;
+                });
+              },
+              width: 500,
+              dataApiDog: widget.dataApiDog),
+          context);
+    } else {
+      setState(() {
+        playAudio = true;
+      });
+    }
   }
 
   onPhotoTapped(Photo p1) {
     pp('$mm onPhotoTapped .... id: ${p1.photoId}');
-    // Navigator.push(context, MaterialPageRoute(builder: (context) {
-    //   return PhotoFrame(
-    //     photo: p1,
-    //     onMapRequested: (photo) {},
-    //     onRatingRequested: (photo) {},
-    //     elevation: 8.0,
-    //     cacheManager: widget.cacheManager,
-    //     dataApiDog: widget.dataApiDog,
-    //     onPhotoCardClose: () {},
-    //     translatedDate: '',
-    //     locale: settings.locale!,
-    //     prefsOGx: widget.prefsOGx,
-    //   );
-    // }));
 
     final ww = PhotoFrame(
       photo: p1,
@@ -443,74 +447,74 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                   elevation: 12,
                   shape: getRoundedBorder(radius: 8),
                   itemBuilder: (ctx) {
-                return [
-                  PopupMenuItem(
-                      value: 1,
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: Theme.of(context).primaryColor,
-                      )),
-                  PopupMenuItem(
-                      value: 2,
-                      child: Icon(
-                        Icons.video_camera_back,
-                        color: Theme.of(context).primaryColor,
-                      )),
-                  PopupMenuItem(
-                      value: 3,
-                      child: Icon(
-                        Icons.mic,
-                        color: Theme.of(context).primaryColor,
-                      )),
-
-                  PopupMenuItem(
-                      value: 0,
-                      child: Icon(
-                        Icons.refresh,
-                        color: Theme.of(context).primaryColor,
-                      )),
-                  PopupMenuItem(
-                      value: 4,
-                      child: Icon(
-                        Icons.search,
-                        color: Theme.of(context).primaryColor,
-                      )),
-                  PopupMenuItem(
-                      value: 5,
-                      child: Icon(
-                        Icons.sort,
-                        color: Theme.of(context).primaryColor,
-                      )),
-                ];
-              }, onSelected: (index) {
-                pp('$mm ...................... action index: $index');
-                switch (index) {
-                  case 0:
-                    if (projectSelected != null) {
-                      _getProjectData(
-                          projectId: projectSelected!.projectId!,
-                          forceRefresh: true);
+                    return [
+                      PopupMenuItem(
+                          value: 1,
+                          child: Icon(
+                            Icons.camera_alt,
+                            color: Theme.of(context).primaryColor,
+                          )),
+                      PopupMenuItem(
+                          value: 2,
+                          child: Icon(
+                            Icons.video_camera_back,
+                            color: Theme.of(context).primaryColor,
+                          )),
+                      PopupMenuItem(
+                          value: 3,
+                          child: Icon(
+                            Icons.mic,
+                            color: Theme.of(context).primaryColor,
+                          )),
+                      PopupMenuItem(
+                          value: 0,
+                          child: Icon(
+                            Icons.refresh,
+                            color: Theme.of(context).primaryColor,
+                          )),
+                      PopupMenuItem(
+                          value: 4,
+                          child: Icon(
+                            Icons.search,
+                            color: Theme.of(context).primaryColor,
+                          )),
+                      PopupMenuItem(
+                          value: 5,
+                          child: Icon(
+                            Icons.sort,
+                            color: Theme.of(context).primaryColor,
+                          )),
+                    ];
+                  },
+                  onSelected: (index) {
+                    pp('$mm ...................... action index: $index');
+                    switch (index) {
+                      case 0:
+                        if (projectSelected != null) {
+                          _getProjectData(
+                              projectId: projectSelected!.projectId!,
+                              forceRefresh: true);
+                        }
+                        break;
+                      case 1:
+                        _onTakePicture();
+                        break;
+                      case 2:
+                        _onMakeVideo();
+                        break;
+                      case 3:
+                        _onMakeAudio();
+                        break;
+                      case 4:
+                        setState(() {
+                          showProjectChooser = true;
+                        });
+                        break;
+                      case 5:
+                        _sortItems();
+                        break;
                     }
-                    break;
-                  case 1:
-                    _onTakePicture();
-                    break;
-                  case 2:
-                    _onMakeVideo();
-                    break;
-                  case 3:
-                    _onMakeAudio();
-                    break;
-                  case 4:
-                    setState(() {
-                      showProjectChooser = true;
-                    });
-                    break;
-                  case 5:
-                    _sortItems();
-                    break;
-                }
-              }),
+                  }),
             ],
           ),
           body: loading

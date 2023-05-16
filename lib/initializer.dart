@@ -7,6 +7,7 @@ import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/location_request_handler.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/errors/error_handler.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:location/location.dart';
@@ -31,10 +32,12 @@ class Initializer {
   final mx = '✅✅✅✅✅ Initializer: ✅';
 
   Future<void> initializeGeo() async {
-    pp('$mx initializeGeo: ... GET CACHED SETTINGS; set themeIndex .............. ');
+    pp('$mx initializeGeo: ... setting up resources and blocs etc .............. ');
 
     final start = DateTime.now();
-
+    pp('$mx initializeGeo: setting up GetStorage ...');
+    await GetStorage.init(cacheName);
+    prefsOGx = PrefsOGx();
     locationBloc = DeviceLocationBloc(Location());
     cacheManager = CacheManager();
     final client = http.Client();
@@ -59,22 +62,19 @@ class Initializer {
 
     fcmBloc = FCMBloc(FirebaseMessaging.instance, cacheManager, locationRequestHandler);
 
-    pp('$mx  '
-        'initializeGeo: Hive initialized Gio services. 💜💜 Ready to rumble! Ali Bomaye!!');
-
     FirebaseMessaging.instance.requestPermission();
 
-    Future.delayed(const Duration(milliseconds: 2000)).then((value) {
-      pp('$mx Heavy lifting after delay of 2 seconds');
+    Future.delayed(const Duration(milliseconds: 20)).then((value) {
+      pp('$mx Heavy lifting after delay of 20 milliseconds');
       heavyLifting();
     });
 
-    pp('$mx ${E.heartGreen}${E.heartGreen}}${E.heartGreen} '
-        'initializeGeo complete! ... 🍎');
-
+    pp('$mx initializeGeo complete! ... 🍎');
+    pp('\n\n$mx  '
+        'initializeGeo: Hive initialized Gio services. '
+        '💜💜 Ready to rumble! Ali Bomaye!!');
     final end = DateTime.now();
-    pp('\n\n$mx ${E.appleRed}${E.appleRed}}${E.appleGreen} '
-        ' initializeGeo: Time Elapsed: ${end.difference(start).inMilliseconds} milliseconds\n\n');
+    pp('$mx initializeGeo: Time Elapsed: ${end.difference(start).inMilliseconds} milliseconds\n\n');
   }
 
   Future<void> heavyLifting() async {
@@ -94,8 +94,9 @@ class Initializer {
     pp('$mx organizationDataRefresh starting ........................');
     pp('$mx start with delay of 5 seconds before data refresh ..............');
 
-    Future.delayed(const Duration(seconds: 5)).then((value) async {
-      pp('$mx start data refresh after delaying for 5 seconds');
+    Future.delayed(const Duration(milliseconds: 2)).then((value) async {
+      pp('$mx start data refresh with dataHandler.getOrganizationData '
+          'after delaying for 🔵 200 milliseconds');
 
       if (settings.organizationId != null) {
         dataHandler.getOrganizationData();

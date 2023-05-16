@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../api/prefs_og.dart';
@@ -14,13 +15,14 @@ final ThemeBloc themeBloc = ThemeBloc();
 
 class ThemeBloc {
   ThemeBloc() {
-    pp('✈️✈️ ... ThemeBloc initializing ....');
+    pp('$mm ... ThemeBloc initializing ....');
     _initialize();
   }
 
   final StreamController<LocaleAndTheme> themeStreamController =
       StreamController.broadcast();
 
+  final mm = '🍎🍎🍎ThemeBloc 🍎🍎🍎: ';
   Stream<LocaleAndTheme> get localeAndThemeStream =>
       themeStreamController.stream;
 
@@ -30,13 +32,14 @@ class ThemeBloc {
   SettingsModel? settings;
 
   _initialize() async {
+    await GetStorage.init(cacheName);
+    prefsOGx = PrefsOGx();
     settings = await prefsOGx.getSettings();
-
-    pp('$mm ThemeBloc: initialize:: adding index to stream ....theme index: ${settings!.themeIndex}');
+    pp('$mm initialize: acquired settings: ....theme index: ${settings!.themeIndex}');
     Locale newLocale = Locale(settings!.locale!);
     final m =
         LocaleAndTheme(themeIndex: settings!.themeIndex!, locale: newLocale);
-    pp('$mm ThemeBloc: initialize: locale = ${m.locale.toString()}');
+    pp('$mm initialize: locale = ${m.locale.toString()} ... put $m in the stream');
     themeStreamController.sink.add(m);
   }
 
@@ -91,7 +94,6 @@ class ThemeBloc {
     themeStreamController.close();
   }
 
-  static final mm = '${E.appleRed}${E.appleRed}${E.appleRed}';
 }
 
 class SchemeUtil {

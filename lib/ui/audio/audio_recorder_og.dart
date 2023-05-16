@@ -30,7 +30,6 @@ import '../../library/data/position.dart';
 import '../../library/data/user.dart';
 import '../../library/data/video.dart';
 import '../../library/generic_functions.dart';
-
 class AudioRecorderOG extends StatefulWidget {
   final void Function() onCloseRequested;
 

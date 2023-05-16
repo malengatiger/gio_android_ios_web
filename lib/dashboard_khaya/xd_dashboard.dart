@@ -10,6 +10,7 @@ import 'package:geo_monitor/dashboard_khaya/recent_event_list.dart';
 import 'package:geo_monitor/dashboard_khaya/xd_header.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
+import 'package:geo_monitor/library/bloc/refresh_bloc.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
 import 'package:geo_monitor/library/data/audio.dart';
 import 'package:geo_monitor/library/data/geofence_event.dart';
@@ -37,6 +38,7 @@ import 'package:geo_monitor/ui/audio/audio_player_og.dart';
 import 'package:geo_monitor/ui/dashboard/photo_frame.dart';
 import 'package:geo_monitor/ui/intro/intro_main.dart';
 import 'package:geo_monitor/utilities/sharedprefs.dart';
+import 'package:geo_monitor/utilities/transitions.dart';
 import 'package:geo_monitor/utils/audio_player.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -60,6 +62,7 @@ import '../library/ui/maps/geofence_map_tablet.dart';
 import '../library/ui/maps/org_map_mobile.dart';
 import '../library/ui/maps/project_polygon_map_mobile.dart';
 import '../library/ui/settings/settings_main.dart';
+import '../utilities/sharedprefs.dart';
 import 'member_list.dart';
 
 class DashboardKhaya extends StatefulWidget {
@@ -192,13 +195,14 @@ class DashboardKhayaState extends State<DashboardKhaya> {
       });
       activitySubscription =
           widget.fcmBloc.activityStream.listen((ActivityModel event) async {
-        pp('$mm: 🍎activitySubscription: 🍎 ActivityModel: '
-            ' ${event.toJson()} ');
+        pp('\n\n$mm: 🍎activitySubscription delivered 🍎 ActivityModel: '
+            ' ${event.toJson()} \n');
         events.insert(0, event);
         if (mounted) {
           setState(() {});
         }
       });
+
       projectSubscriptionFCM =
           widget.fcmBloc.projectStream.listen((Project project) async {
         _getData(false);
@@ -221,9 +225,10 @@ class DashboardKhayaState extends State<DashboardKhaya> {
         }
         _getData(false);
       });
-      photoSubscriptionFCM = widget.fcmBloc.photoStream.listen((user) async {
+
+      photoSubscriptionFCM = widget.fcmBloc.photoStream.listen((photo) async {
         pp('$mm: 🍎 🍎 photoSubscriptionFCM photo arrived... 🍎 🍎');
-        _getData(false);
+        _getCachedData();
       });
 
       videoSubscriptionFCM =
@@ -231,16 +236,19 @@ class DashboardKhayaState extends State<DashboardKhaya> {
         pp('$mm: 🍎 🍎 videoSubscriptionFCM video arrived... 🍎 🍎');
         _getData(false);
       });
+
       audioSubscriptionFCM =
           widget.fcmBloc.audioStream.listen((Audio message) async {
         pp('$mm: 🍎 🍎 audioSubscriptionFCM audio arrived... 🍎 🍎');
-        _getData(false);
+        _getCachedData();
       });
+
       projectPositionSubscriptionFCM = widget.fcmBloc.projectPositionStream
           .listen((ProjectPosition message) async {
         pp('$mm: 🍎 🍎 projectPositionSubscriptionFCM position arrived... 🍎 🍎');
         _getData(false);
       });
+
       projectPolygonSubscriptionFCM = widget.fcmBloc.projectPolygonStream
           .listen((ProjectPolygon message) async {
         pp('$mm: 🍎 🍎 projectPolygonSubscriptionFCM polygon arrived... 🍎 🍎');
@@ -284,12 +292,13 @@ class DashboardKhayaState extends State<DashboardKhaya> {
       pp('$mm _getCachedData .... ');
       projects = await widget.cacheManager.getOrganizationProjects();
       users = await widget.cacheManager.getUsers();
-      events = await widget.cacheManager.getActivities();
+      events = await widget.cacheManager
+          .getActivitiesWithinHours(settingsModel.activityStreamHours!);
       pp('$mm _getCachedData .... projects: ${projects.length} users: ${users.length} events: ${events.length}');
       setState(() {
         busy = false;
       });
-      _getData(false);
+      // _getData(false);
     } catch (e) {
       if (mounted) {
         pp('$mm showSnack');
@@ -369,32 +378,24 @@ class DashboardKhayaState extends State<DashboardKhaya> {
 
   void _navigateToSettings() {
     pp(' 🌀🌀🌀🌀 .................. _navigateToSettings to Settings ....');
-    if (mounted) {
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.center,
-              duration: const Duration(seconds: 1),
-              child: SettingsMain(
-                dataHandler: widget.dataHandler,
-                dataApiDog: widget.dataApiDog,
-                prefsOGx: widget.prefsOGx,
-                cacheManager: widget.cacheManager,
-                project: null,
-                fcmBloc: widget.fcmBloc,
-                organizationBloc: widget.organizationBloc,
-                projectBloc: widget.projectBloc,
-              )));
-    }
+    navigateWithScale(
+        SettingsMain(
+          dataHandler: widget.dataHandler,
+          dataApiDog: widget.dataApiDog,
+          prefsOGx: widget.prefsOGx,
+          cacheManager: widget.cacheManager,
+          project: null,
+          fcmBloc: widget.fcmBloc,
+          organizationBloc: widget.organizationBloc,
+          projectBloc: widget.projectBloc,
+        ),
+        context);
   }
 
   void _navigateToActivities() {
     pp(' 🌀🌀🌀🌀 .................. _navigateToActivities  ....');
-
-    if (mounted) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return GioActivities(
+    navigateWithScale(
+        GioActivities(
           fcmBloc: widget.fcmBloc,
           organizationBloc: widget.organizationBloc,
           projectBloc: widget.projectBloc,
@@ -413,84 +414,51 @@ class DashboardKhayaState extends State<DashboardKhaya> {
           onLocationRequest: onLocationRequest,
           prefsOGx: widget.prefsOGx,
           cacheManager: widget.cacheManager,
-        );
-      }));
-    }
+        ),
+        context);
   }
 
   void navigateToIntro() {
-    // if (mounted) {
-    //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-    //     return IntroMain(
-    //         prefsOGx: widget.prefsOGx,
-    //         dataApiDog: widget.dataApiDog,
-    //         cacheManager: widget.cacheManager,
-    //         isolateHandler: widget.dataHandler,
-    //         fcmBloc: widget.fcmBloc,
-    //         organizationBloc: widget.organizationBloc,
-    //         projectBloc: widget.projectBloc);
-    //   }));
-    // }
-    Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => IntroMain(
-              prefsOGx: widget.prefsOGx,
-              dataApiDog: widget.dataApiDog,
-              cacheManager: widget.cacheManager,
-              isolateHandler: widget.dataHandler,
-              fcmBloc: widget.fcmBloc,
-              organizationBloc: widget.organizationBloc,
-              projectBloc: widget.projectBloc),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 1.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInCirc;
-
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: child,
-            );
-          },
-        ));
+    navigateWithScale(
+        IntroMain(
+            prefsOGx: widget.prefsOGx,
+            dataApiDog: widget.dataApiDog,
+            cacheManager: widget.cacheManager,
+            isolateHandler: widget.dataHandler,
+            fcmBloc: widget.fcmBloc,
+            organizationBloc: widget.organizationBloc,
+            projectBloc: widget.projectBloc),
+        context);
   }
 
   void _navigateToProjects() {
     pp(' 🌀🌀🌀🌀 .................. _navigateToSettings to Settings ....');
-    if (mounted) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => GioProjects(
-              projectBloc: widget.projectBloc,
-              organizationBloc: widget.organizationBloc,
-              prefsOGx: widget.prefsOGx,
-              dataApiDog: widget.dataApiDog,
-              cacheManager: widget.cacheManager,
-              instruction: 0,
-              fcmBloc: widget.fcmBloc,
-            ),
-          ));
-    }
+
+    navigateWithScale(
+        GioProjects(
+          projectBloc: widget.projectBloc,
+          organizationBloc: widget.organizationBloc,
+          prefsOGx: widget.prefsOGx,
+          dataApiDog: widget.dataApiDog,
+          cacheManager: widget.cacheManager,
+          instruction: 0,
+          fcmBloc: widget.fcmBloc,
+        ),
+        context);
   }
 
   void _navigateToMembers() {
     pp(' 🌀🌀🌀🌀 .................. _navigateToSettings to users ....');
-    if (mounted) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => GioUserList(
-                  fcmBloc: widget.fcmBloc,
-                  organizationBloc: widget.organizationBloc,
-                  projectBloc: widget.projectBloc,
-                  prefsOGx: widget.prefsOGx,
-                  cacheManager: widget.cacheManager,
-                  dataApiDog: widget.dataApiDog)));
-    }
+
+    navigateWithScale(
+        GioUserList(
+            fcmBloc: widget.fcmBloc,
+            organizationBloc: widget.organizationBloc,
+            projectBloc: widget.projectBloc,
+            prefsOGx: widget.prefsOGx,
+            cacheManager: widget.cacheManager,
+            dataApiDog: widget.dataApiDog),
+        context);
   }
 
   void _onSearchTapped() {
@@ -499,28 +467,24 @@ class DashboardKhayaState extends State<DashboardKhaya> {
 
   void _onDeviceUserTapped() {
     pp('✅✅✅ _onDeviceUserTapped ...');
-    if (mounted) {
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.center,
-              duration: const Duration(seconds: 1),
-              child: UserEditMain(
-                user,
-                fcmBloc: widget.fcmBloc,
-                organizationBloc: widget.organizationBloc,
-                projectBloc: widget.projectBloc,
-                dataApiDog: widget.dataApiDog,
-                prefsOGx: widget.prefsOGx,
-                cacheManager: widget.cacheManager,
-              )));
-    }
+
+    navigateWithScale(
+        UserEditMain(
+          user,
+          fcmBloc: widget.fcmBloc,
+          organizationBloc: widget.organizationBloc,
+          projectBloc: widget.projectBloc,
+          dataApiDog: widget.dataApiDog,
+          prefsOGx: widget.prefsOGx,
+          cacheManager: widget.cacheManager,
+        ),
+        context);
   }
 
   bool forceRefresh = false;
   void _onRefreshRequested() {
-    pp(' ✅✅✅ _onRefreshRequested ...');
+    pp(' ✅✅✅ .... _onRefreshRequested ...');
+    refreshBloc.broadcastRefresh();
     _getData(true);
   }
 
@@ -595,23 +559,16 @@ class DashboardKhayaState extends State<DashboardKhaya> {
 
   onSettingsChanged(SettingsModel p1) {
     pp('🌀🌀🌀🌀 onSettingsChanged; ${p1.toJson()}');
-    if (deviceType == 'phone') {}
-    if (mounted) {
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.fade,
-              alignment: Alignment.topLeft,
-              duration: const Duration(milliseconds: 1000),
-              child: SettingsMain(
-                  dataHandler: widget.dataHandler,
-                  dataApiDog: widget.dataApiDog,
-                  prefsOGx: widget.prefsOGx,
-                  organizationBloc: widget.organizationBloc,
-                  cacheManager: widget.cacheManager,
-                  projectBloc: widget.projectBloc,
-                  fcmBloc: widget.fcmBloc)));
-    }
+    navigateWithScale(
+        SettingsMain(
+            dataHandler: widget.dataHandler,
+            dataApiDog: widget.dataApiDog,
+            prefsOGx: widget.prefsOGx,
+            organizationBloc: widget.organizationBloc,
+            cacheManager: widget.cacheManager,
+            projectBloc: widget.projectBloc,
+            fcmBloc: widget.fcmBloc),
+        context);
   }
 
   onLocationRequest(LocationRequest p1) {
@@ -622,14 +579,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
   onUserTapped(User p1) {
     pp('🌀🌀🌀🌀 onUserTapped; ${p1.toJson()}');
 
-        Navigator.push(
-            context,
-            PageTransition(
-                type: PageTransitionType.fade,
-                alignment: Alignment.topLeft,
-                duration: const Duration(milliseconds: 1000),
-                child: UserDetail(user: p1)));
-
+    navigateWithScale(UserDetail(user: p1), context);
   }
 
   onLocationResponse(LocationResponse p1) {
@@ -710,17 +660,12 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     final proj =
         await widget.cacheManager.getProjectById(projectId: p1.projectId!);
 
-    if (deviceType == 'phone') {}
     if (mounted) {
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.topLeft,
-              duration: const Duration(milliseconds: 1000),
-              child: ProjectMapMobile(
-                project: proj!,
-              )));
+      navigateWithScale(
+          ProjectMapMobile(
+            project: proj!,
+          ),
+          context);
     }
   }
 
@@ -728,36 +673,36 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     pp('🌀🌀🌀🌀 onProjectPolygonTapped; ${p1.toJson()}');
     final proj =
         await widget.cacheManager.getProjectById(projectId: p1.projectId!);
-    if (deviceType == 'phone') {}
     if (mounted) {
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.topLeft,
-              duration: const Duration(milliseconds: 1000),
-              child: ProjectPolygonMapMobile(
-                project: proj!,
-              )));
+      navigateWithScale(
+          ProjectPolygonMapMobile(
+            project: proj!,
+          ),
+          context);
     }
   }
 
-  onPolygonTapped(ProjectPolygon p1) {
+  onPolygonTapped(ProjectPolygon p1) async {
     pp('🌀🌀🌀🌀 onPolygonTapped; ${p1.toJson()}');
-    if (deviceType == 'phone') {}
+    final proj =
+        await widget.cacheManager.getProjectById(projectId: p1.projectId!);
+    if (mounted) {
+      navigateWithScale(
+          ProjectPolygonMapMobile(
+            project: proj!,
+          ),
+          context);
+    }
   }
 
   onGeofenceEventTapped(GeofenceEvent p1) {
     pp('🌀🌀🌀🌀 onGeofenceEventTapped; ${p1.toJson()}');
-    Navigator.push(
-        context,
-        PageTransition(
-            type: PageTransitionType.scale,
-            alignment: Alignment.center,
-            duration: const Duration(seconds: 1),
-            child: GeofenceMap(
-              geofenceEvent: p1,
-            )));
+
+    navigateWithScale(
+        GeofenceMap(
+          geofenceEvent: p1,
+        ),
+        context);
   }
 
   onOrgMessage(OrgMessage p1) {
@@ -769,21 +714,17 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     pp('🌀🌀🌀🌀 _onProjectTapped; navigate to timeLine: project: ${project.toJson()}');
     if (deviceType == 'phone') {}
     if (mounted) {
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.scale,
-              alignment: Alignment.center,
-              duration: const Duration(seconds: 1),
-              child: ProjectMediaTimeline(
-                projectBloc: widget.projectBloc,
-                prefsOGx: widget.prefsOGx,
-                project: project,
-                fcmBloc: widget.fcmBloc,
-                organizationBloc: widget.organizationBloc,
-                cacheManager: widget.cacheManager,
-                dataApiDog: widget.dataApiDog,
-              )));
+      navigateWithScale(
+          ProjectMediaTimeline(
+            projectBloc: widget.projectBloc,
+            prefsOGx: widget.prefsOGx,
+            project: project,
+            fcmBloc: widget.fcmBloc,
+            organizationBloc: widget.organizationBloc,
+            cacheManager: widget.cacheManager,
+            dataApiDog: widget.dataApiDog,
+          ),
+          context);
     }
   }
 
@@ -817,12 +758,6 @@ class DashboardKhayaState extends State<DashboardKhaya> {
   bool playAudio = false;
   bool playVideo = false;
 
-  onStop() {}
-
-  onPlay() {}
-
-  onPause() {}
-
   @override
   Widget build(BuildContext context) {
     var sigmaX = 12.0;
@@ -841,7 +776,6 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                 : RealDashboard(
                     projects: projects,
                     users: users,
-                    events: events,
                     locale: settings.locale!,
                     totalEvents: totalEvents,
                     totalProjects: totalProjects,
@@ -921,7 +855,6 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                             centerTopCards: true,
                             projects: projects,
                             users: users,
-                            events: events,
                             fcmBloc: widget.fcmBloc,
                             navigateToActivities: () {
                               _navigateToActivities();
@@ -996,7 +929,6 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                             forceRefresh: forceRefresh,
                             projects: projects,
                             users: users,
-                            events: events,
                             fcmBloc: widget.fcmBloc,
                             navigateToActivities: () {
                               _navigateToActivities();
@@ -1113,7 +1045,6 @@ class RealDashboard extends StatelessWidget {
     required this.membersText,
     required this.forceRefresh,
     required this.projects,
-    required this.events,
     required this.users,
     this.topCardSpacing,
     required this.centerTopCards,
@@ -1154,7 +1085,6 @@ class RealDashboard extends StatelessWidget {
   final bool forceRefresh;
 
   final List<Project> projects;
-  final List<ActivityModel> events;
   final List<User> users;
   final double? topCardSpacing;
   final bool centerTopCards;
@@ -1282,10 +1212,13 @@ class RealDashboard extends StatelessWidget {
                           color: Colors.blue),
                       const SizedBox(height: 12),
                       RecentEventList(
+                        organizationBloc: organizationBloc,
+                        fcmBloc: fcmBloc,
+                        prefsOGx: prefsOGx,
                         onEventTapped: (act) {
                           onEventTapped(act);
                         },
-                        activities: events,
+                        // activities: events,
                         locale: locale,
                       ),
                       const SizedBox(
@@ -1511,8 +1444,9 @@ class TopCardList extends StatefulWidget {
 class TopCardListState extends State<TopCardList> {
   late StreamSubscription<DataBag> bagSub;
   late StreamSubscription<SettingsModel> settingsSub;
+  late StreamSubscription<ActivityModel> actSub;
 
-  DataBag? dataBag;
+  // DataBag? dataBag;
   var eventsText = 'Events',
       projectsText = 'Projects',
       membersText = 'Members',
@@ -1540,40 +1474,47 @@ class TopCardListState extends State<TopCardList> {
     _listen();
   }
 
+  int cnt = 0;
   void _getCachedData() async {
-    var p = await cacheManager.getOrganizationProjects();
-    projects = p.length;
-    var u = await cacheManager.getUsers();
-    members = u.length;
-    var v = await cacheManager.getOrganizationVideos();
-    videos = v.length;
-    var a = await cacheManager.getOrganizationAudios();
-    audios = a.length;
-    var ph = await cacheManager.getOrganizationPhotos();
-    photos = ph.length;
-    var ac = await cacheManager.getActivities();
-    events = ac.length;
-    var pos = await cacheManager.getOrganizationProjectPositions();
-    locations = pos.length;
-    var px = await cacheManager.getOrganizationProjectPolygons();
-    areas = px.length;
-    dataBag = DataBag(
-        photos: [],
-        videos: [],
-        fieldMonitorSchedules: [],
-        projectPositions: [],
-        projects: [],
-        audios: [],
-        date: 'date',
-        users: [],
-        activityModels: [],
-        projectPolygons: [],
-        settings: []);
+    final sett = await widget.prefsOGx.getSettings();
+    // final p = await widget.cacheManager.getOrganizationProjects();
+    // projects = p.length;
+    // final u = await widget.cacheManager.getUsers();
+    // members = u.length;
+    // final v = await widget.cacheManager.getOrganizationVideos();
+    // videos = v.length;
+    // final a = await widget.cacheManager.getOrganizationAudios();
+    // audios = a.length;
+    // final ph = await widget.cacheManager.getOrganizationPhotos();
+    // photos = ph.length;
+    // final ac =
+    //     await widget.cacheManager.getActivitiesWithinHours(sett.activityStreamHours!);
+    // events = ac.length;
+    // final pos = await widget.cacheManager.getOrganizationProjectPositions();
+    // locations = pos.length;
+    // final px = await widget.cacheManager.getOrganizationProjectPolygons();
+    // areas = px.length;
+    // if (photos == 0 && videos == 0 && audios == 0) {
+    //   final map = await getStartEndDates(numberOfDays: sett.numberOfDays!);
+    //   await widget.organizationBloc.getOrganizationData(
+    //       organizationId: sett.organizationId!,
+    //       forceRefresh: true,
+    //       startDate: map['startDate']!,
+    //       endDate: map['endDate']!);
+    //   if (cnt == 0) {
+    //     cnt++;
+    //     _getCachedData();
+    //   }
+    // }
 
-    setState(() {});
+    await dataHandler.getOrganizationData();
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
-  void _setTexts() async {
+  Future _setTexts() async {
     final sett = await prefsOGx.getSettings();
     photosText = await translator.translate('photos', sett.locale!);
     videosText = await translator.translate('videos', sett.locale!);
@@ -1592,26 +1533,91 @@ class TopCardListState extends State<TopCardList> {
   void _listen() {
     bagSub = widget.organizationBloc.dataBagStream.listen((bag) {
       pp('🛎🛎🛎🛎TopCardList: Stream delivered a bag, set ui ... ');
-      dataBag = bag;
-      _setTotals();
+      _setTotals(bag);
       if (mounted) {
         setState(() {});
       }
     });
-    settingsSub = widget.fcmBloc.settingsStream.listen((event) {
-      _setTexts();
+
+    settingsSub = widget.fcmBloc.settingsStream.listen((event) async {
+      await _setTexts();
+      _getCachedData();
+    });
+
+    actSub = widget.fcmBloc.activityStream.listen((act) {
+      setState(() {
+        events++;
+      });
+      switch (act.activityType) {
+        case ActivityType.projectAdded:
+          setState(() {
+            projects++;
+          });
+          break;
+        case ActivityType.photoAdded:
+          setState(() {
+            photos++;
+          });
+          break;
+        case ActivityType.videoAdded:
+          setState(() {
+            videos++;
+          });
+          break;
+        case ActivityType.audioAdded:
+          setState(() {
+            audios++;
+          });
+          break;
+        case ActivityType.messageAdded:
+          // TODO: Handle this case.
+          break;
+        case ActivityType.userAddedOrModified:
+          // TODO: Handle this case.
+          break;
+        case ActivityType.positionAdded:
+          setState(() {
+            locations++;
+          });
+          break;
+        case ActivityType.polygonAdded:
+          setState(() {
+            areas++;
+          });
+          break;
+        case ActivityType.settingsChanged:
+          _getCachedData();
+          break;
+        case ActivityType.geofenceEventAdded:
+          // TODO: Handle this case.
+          break;
+        case ActivityType.conditionAdded:
+          // TODO: Handle this case.
+          break;
+        case ActivityType.locationRequest:
+          // TODO: Handle this case.
+          break;
+        case ActivityType.locationResponse:
+          // TODO: Handle this case.
+          break;
+        case ActivityType.kill:
+          // TODO: Handle this case.
+          break;
+        default:
+          break;
+      }
     });
   }
 
-  void _setTotals() {
-    events = dataBag!.activityModels!.length;
-    projects = dataBag!.projects!.length;
-    members = dataBag!.users!.length;
-    photos = dataBag!.photos!.length;
-    videos = dataBag!.videos!.length;
-    audios = dataBag!.audios!.length;
-    locations = dataBag!.projectPositions!.length;
-    areas = dataBag!.projectPolygons!.length;
+  void _setTotals(DataBag dataBag) {
+    events = dataBag.activityModels!.length;
+    projects = dataBag.projects!.length;
+    members = dataBag.users!.length;
+    photos = dataBag.photos!.length;
+    videos = dataBag.videos!.length;
+    audios = dataBag.audios!.length;
+    locations = dataBag.projectPositions!.length;
+    areas = dataBag.projectPolygons!.length;
   }
 
   @override
@@ -1622,66 +1628,61 @@ class TopCardListState extends State<TopCardList> {
   }
 
   void _navigateToProjects() {
-    pp(' 🌀🌀🌀🌀 .................. _navigateToProjects to Settings ....');
+    pp(' 🌀🌀🌀🌀 .................. _navigateToProjects  ....');
     if (mounted) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => GioProjects(
-              projectBloc: widget.projectBloc,
-              organizationBloc: widget.organizationBloc,
-              prefsOGx: widget.prefsOGx,
-              dataApiDog: widget.dataApiDog,
-              cacheManager: widget.cacheManager,
-              instruction: 0,
-              fcmBloc: widget.fcmBloc,
-            ),
-          ));
+      navigateWithScale(
+          GioProjects(
+            projectBloc: widget.projectBloc,
+            organizationBloc: widget.organizationBloc,
+            prefsOGx: widget.prefsOGx,
+            dataApiDog: widget.dataApiDog,
+            cacheManager: widget.cacheManager,
+            instruction: 0,
+            fcmBloc: widget.fcmBloc,
+          ),
+          context);
     }
   }
 
   void _navigateToMembers() {
-    pp(' 🌀🌀🌀🌀 .................. _navigateToMembers to users ....');
+    pp(' 🌀🌀🌀🌀 .................. _navigateToMembers  ....');
     if (mounted) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => GioUserList(
-                  fcmBloc: widget.fcmBloc,
-                  organizationBloc: widget.organizationBloc,
-                  projectBloc: widget.projectBloc,
-                  prefsOGx: widget.prefsOGx,
-                  cacheManager: widget.cacheManager,
-                  dataApiDog: widget.dataApiDog)));
+      navigateWithScale(
+          GioUserList(
+              fcmBloc: widget.fcmBloc,
+              organizationBloc: widget.organizationBloc,
+              projectBloc: widget.projectBloc,
+              prefsOGx: widget.prefsOGx,
+              cacheManager: widget.cacheManager,
+              dataApiDog: widget.dataApiDog),
+          context);
     }
   }
 
   void _navigateToMap() {
-    pp(' 🌀🌀🌀🌀 .................. _navigateToMap to users ....');
+    pp(' 🌀🌀🌀🌀 .................. _navigateToMap ....');
     if (mounted) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => OrganizationMap(
-                    organizationBloc: widget.organizationBloc,
-                    prefsOGx: widget.prefsOGx,
-                  )));
+      navigateWithScale(
+          OrganizationMap(
+            organizationBloc: widget.organizationBloc,
+            prefsOGx: widget.prefsOGx,
+          ),
+          context);
     }
   }
 
   void _navigateToTimeline() {
-    pp(' 🌀🌀🌀🌀 .................. _navigateToMap to users ....');
+    pp(' 🌀🌀🌀🌀 .................. _navigateToMap  ....');
     if (mounted) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProjectMediaTimeline(
-                  projectBloc: widget.projectBloc,
-                  prefsOGx: widget.prefsOGx,
-                  organizationBloc: widget.organizationBloc,
-                  cacheManager: widget.cacheManager,
-                  dataApiDog: widget.dataApiDog,
-                  fcmBloc: widget.fcmBloc)));
+      navigateWithScale(
+          ProjectMediaTimeline(
+              projectBloc: widget.projectBloc,
+              prefsOGx: widget.prefsOGx,
+              organizationBloc: widget.organizationBloc,
+              cacheManager: widget.cacheManager,
+              dataApiDog: widget.dataApiDog,
+              fcmBloc: widget.fcmBloc),
+          context);
     }
   }
 
@@ -1689,28 +1690,28 @@ class TopCardListState extends State<TopCardList> {
     pp(' 🌀🌀🌀🌀 .................. _navigateToActivities  ....');
 
     if (mounted) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return GioActivities(
-          fcmBloc: widget.fcmBloc,
-          organizationBloc: widget.organizationBloc,
-          projectBloc: widget.projectBloc,
-          dataApiDog: widget.dataApiDog,
-          project: null,
-          onPhotoTapped: (p) {},
-          onVideoTapped: (p) {},
-          onAudioTapped: (p) {},
-          onUserTapped: (p) {},
-          onProjectTapped: (p) {},
-          onProjectPositionTapped: (p) {},
-          onPolygonTapped: (p) {},
-          onGeofenceEventTapped: (p) {},
-          onOrgMessage: (p) {},
-          onLocationResponse: (p) {},
-          onLocationRequest: (p) {},
-          prefsOGx: widget.prefsOGx,
-          cacheManager: widget.cacheManager,
-        );
-      }));
+      navigateWithScale(
+          GioActivities(
+            fcmBloc: widget.fcmBloc,
+            organizationBloc: widget.organizationBloc,
+            projectBloc: widget.projectBloc,
+            dataApiDog: widget.dataApiDog,
+            project: null,
+            onPhotoTapped: (p) {},
+            onVideoTapped: (p) {},
+            onAudioTapped: (p) {},
+            onUserTapped: (p) {},
+            onProjectTapped: (p) {},
+            onProjectPositionTapped: (p) {},
+            onPolygonTapped: (p) {},
+            onGeofenceEventTapped: (p) {},
+            onOrgMessage: (p) {},
+            onLocationResponse: (p) {},
+            onLocationRequest: (p) {},
+            prefsOGx: widget.prefsOGx,
+            cacheManager: widget.cacheManager,
+          ),
+          context);
     }
   }
 
@@ -1723,18 +1724,18 @@ class TopCardListState extends State<TopCardList> {
       padding1 = 8;
       padding2 = 24;
     }
-    if (dataBag == null) {
-      return const Center(
-        child: SizedBox(
-          width: 12,
-          height: 12,
-          child: CircularProgressIndicator(
-            strokeWidth: 4,
-            backgroundColor: Colors.pink,
-          ),
-        ),
-      );
-    }
+    // if (dataBag == null) {
+    //   return const Center(
+    //     child: SizedBox(
+    //       width: 12,
+    //       height: 12,
+    //       child: CircularProgressIndicator(
+    //         strokeWidth: 4,
+    //         backgroundColor: Colors.pink,
+    //       ),
+    //     ),
+    //   );
+    // }
     return SizedBox(
       height: 140,
       child: Padding(
