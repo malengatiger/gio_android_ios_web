@@ -7,6 +7,7 @@ import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/bloc/refresh_bloc.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
 import 'package:geo_monitor/library/data/activity_type_enum.dart';
+import 'package:geo_monitor/library/data/settings_model.dart';
 
 import '../library/data/data_bag.dart';
 import '../library/functions.dart';
@@ -34,6 +35,7 @@ class _RecentEventListState extends State<RecentEventList> {
   late StreamSubscription<ActivityModel> actSub;
   late StreamSubscription<DataBag> bagSub;
   late StreamSubscription<bool> refreshSub;
+  late StreamSubscription<SettingsModel> settingsSub;
 
   var activities = <ActivityModel>[];
   bool busy = false;
@@ -48,6 +50,10 @@ class _RecentEventListState extends State<RecentEventList> {
   }
 
   void _listen() {
+    settingsSub = widget.fcmBloc.settingsStream.listen((event) {
+      pp('$mm settingsStream delivered a setting ');
+      _getData();
+    });
     actSub = widget.fcmBloc.activityStream.listen((event) {
       pp('$mm activityStream delivered an activity, insert received activity in list: 🔆${activities.length}');
       activities.insert(0, event);
@@ -115,6 +121,7 @@ class _RecentEventListState extends State<RecentEventList> {
     actSub.cancel();
     bagSub.cancel();
     refreshSub.cancel();
+    settingsSub.cancel();
     super.dispose();
   }
 

@@ -194,7 +194,6 @@ class OrganizationBloc {
         projectPolygons: [],
         settings: []);
 
-    pp('$mm g');
     if (forceRefresh) {
       pp('$mm get data from server .....................; '
           'forceRefresh: $forceRefresh; if true do the refresh ...');
@@ -202,6 +201,7 @@ class OrganizationBloc {
       if (bag == null) {
         return getEmptyDataBag();
       }
+      pp('$mm print data from backend server ');
       printDataBag(bag);
       return bag;
     } else {
@@ -216,23 +216,14 @@ class OrganizationBloc {
         }
         printDataBag(bag);
         return bag;
+      } else {
+        pp('$mm print data from Hive cache ');
+        printDataBag(bag);
       }
     }
     final end = DateTime.now();
     pp('$mm getOrganizationData: 🍎 ${end.difference(start).inMilliseconds} milliseconds elapsed...');
 
-    // final start2 = DateTime.now();
-    // pp('\n\n$mm ... filter bag by the dates .... before filter');
-    //
-    // var mBag = filterBagContentsByDate(
-    //     bag: bag!, startDate: startDate, endDate: endDate);
-    //
-    // mBag.projects = projects;
-    // mBag.users = users;
-    // dataBagController.sink.add(mBag);
-    //
-    // final end2 = DateTime.now();
-    // pp('\n$mm filtered bag .... ${end2.difference(start2)} seconds elapsed for filter');
     return bag;
   }
 

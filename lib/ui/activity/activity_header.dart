@@ -22,9 +22,7 @@ class ActivityHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ori = MediaQuery.of(context).orientation;
-    var width = 128.0;
     if (ori.name == 'landscape') {
-      width = 200;
     }
     return SizedBox(
       child: Row(
@@ -45,7 +43,7 @@ class ActivityHeader extends StatelessWidget {
                 ),
                 Text(
                   '$hours',
-                  style: myTextStyleSmallBoldPrimaryColor(context),
+                  style: myTextStyleMediumBoldPrimaryColor(context),
                 ),
                 const SizedBox(
                   width: 4,
@@ -58,26 +56,8 @@ class ActivityHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            width: 4,
+            width: 2,
           ),
-          // GestureDetector(
-          //   onTap: () {
-          //     onSortRequested();
-          //   },
-          //   child: bd.Badge(
-          //     badgeContent: Text(
-          //       '$number',
-          //       style: myTextStyleTiny(context),
-          //     ),
-          //     badgeAnimation: const bd.BadgeAnimation.slide(
-          //         colorChangeAnimationDuration: Duration(milliseconds: 500)),
-          //     badgeStyle: bd.BadgeStyle(
-          //         elevation: 8,
-          //         borderRadius: BorderRadius.circular(2),
-          //         badgeColor: getRandomColor(),
-          //         padding: const EdgeInsets.all(12.0)),
-          //   ),
-          // ),
         ],
       ),
     );

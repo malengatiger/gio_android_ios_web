@@ -82,7 +82,6 @@ class Initializer {
     pp('$mx heavyLifting: fcm initialization starting .................');
     await Hive.initFlutter(hiveName);
     await cacheManager.initialize();
-
     await fcmBloc.initialize();
     if (settings.organizationId != null) {
       pp('$mx heavyLifting: manageMediaUploads starting ...............');
@@ -94,9 +93,14 @@ class Initializer {
     pp('$mx organizationDataRefresh starting ........................');
     pp('$mx start with delay of 5 seconds before data refresh ..............');
 
-    Future.delayed(const Duration(milliseconds: 2)).then((value) async {
+    final list = await dataApiDog.getCountries();
+    for (var country in list) {
+      pp('$mx country: ${country.name}');
+    }
+
+    Future.delayed(const Duration(milliseconds: 100)).then((value) async {
       pp('$mx start data refresh with dataHandler.getOrganizationData '
-          'after delaying for 🔵 200 milliseconds');
+          'after delaying for 🔵 60 seconds');
 
       if (settings.organizationId != null) {
         dataHandler.getOrganizationData();

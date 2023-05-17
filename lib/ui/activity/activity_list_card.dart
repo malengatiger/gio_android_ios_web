@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:geo_monitor/ui/activity/activity_header.dart';
 
+import '../../dashboard_khaya/recent_event_list.dart';
 import '../../l10n/translation_handler.dart';
 import '../../library/api/prefs_og.dart';
 import '../../library/bloc/fcm_bloc.dart';
@@ -219,7 +220,6 @@ class _ActivityListCardState extends State<ActivityListCard> {
 
   @override
   Widget build(BuildContext context) {
-    // pp('$mm build: ......... 🍎🍎 activities: ${models.length}');
     if (loadingSettings) {
       return const SizedBox();
     }
@@ -228,7 +228,7 @@ class _ActivityListCardState extends State<ActivityListCard> {
         Column(
           children: [
             SizedBox(
-              height: widget.topPadding == null ? 100 : widget.topPadding!,
+              height: widget.topPadding == null ? 72 : widget.topPadding!,
             ),
             Expanded(
               child: ListView.builder(
@@ -236,23 +236,17 @@ class _ActivityListCardState extends State<ActivityListCard> {
                   itemCount: models.length,
                   itemBuilder: (_, index) {
                     var act = models.elementAt(index);
-                    var type = '';
                     if (act.translatedUserType != null) {
-                      type = act.translatedUserType!;
                     }
                     return GestureDetector(
                       onTap: () {
                         widget.onTapped(act);
                       },
-                      child: ActivityStreamCard(
-                        translatedUserType: type,
-                        activityStrings: activityStrings!,
-                        activityModel: act,
-                        frontPadding: 24,
-                        thinMode: true,
+                      child: EventView(
+                        activity: act,
+                        height: 84,
                         width: 300,
-                        avatarRadius: 16,
-                        namePictureHorizontal: true, users: users,
+                        locale: settings!.locale!,
                       ),
                     );
                   }),
@@ -264,7 +258,7 @@ class _ActivityListCardState extends State<ActivityListCard> {
           elevation: 8,
           shape: getRoundedBorder(radius: 16),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36.0, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
             child: settings == null
                 ? const SizedBox()
                 : ActivityHeader(

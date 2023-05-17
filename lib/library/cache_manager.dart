@@ -1003,8 +1003,9 @@ class CacheManager {
     final schedules = await getOrganizationMonitorSchedules();
     final positions = await getOrganizationProjectPositions();
     final polygons = await getOrganizationProjectPolygons();
-    final sett = await prefsOGx.getSettings();
-    final acts = await getActivitiesWithinHours(sett.activityStreamHours!);
+    //
+    // final sett = await prefsOGx.getSettings();
+    final acts = await getActivities();
 
     final end1 = DateTime.now();
 

@@ -35,11 +35,13 @@ class IsolateDataHandler {
   Future<DataBag?> getOrganizationData() async {
     pp('$xx handleOrganization;  🦊collect parameters from SettingsModel ...');
     final sett = await prefsOGx.getSettings();
+    pp('$xx getOrganizationData, settings.activityStreamHours: ${sett.activityStreamHours}');
     final token = await appAuth.getAuthToken();
     final map = await getStartEndDates(numberOfDays: sett.numberOfDays!);
     final dir = await getApplicationDocumentsDirectory();
 
     myReceivePort = ReceivePort();
+
     var gioParams = GioParams(
         organizationId: sett.organizationId!,
         directoryPath: dir.path,
@@ -49,10 +51,11 @@ class IsolateDataHandler {
         endDate: map['endDate']!,
         url: getUrl(),
         projectId: null,
+        activityStreamHours: sett.activityStreamHours!,
         userId: null);
 
     final bag = await _spawnIsolate(gioParams);
-    if(bag != null) {
+    if (bag != null) {
       await _cacheTheData(bag);
       _sendOrganizationDataToStreams(bag);
     }
@@ -77,13 +80,14 @@ class IsolateDataHandler {
         startDate: map['startDate']!,
         endDate: map['endDate']!,
         url: getUrl(),
+        activityStreamHours: sett.activityStreamHours!,
         projectId: projectId,
         userId: null);
 
     final bag = await _spawnIsolate(gioParams);
     if (bag != null) {
       await _cacheTheData(bag);
-      _sendProjectDataToStreams(bag!);
+      _sendProjectDataToStreams(bag);
     }
     return bag;
   }
@@ -106,6 +110,7 @@ class IsolateDataHandler {
         startDate: map['startDate']!,
         endDate: map['endDate']!,
         url: getUrl(),
+        activityStreamHours: sett.activityStreamHours!,
         projectId: null,
         userId: userId);
 
@@ -118,7 +123,9 @@ class IsolateDataHandler {
   }
 
   Future<DataBag?> _spawnIsolate(GioParams gioParams) async {
-    pp('$xx starting Isolate with gioParams ...');
+    pp('$xx starting Isolate with gioParams ... .................');
+    pp('$xx starting Isolate with gioParams ... activityStreamHours: ${gioParams.activityStreamHours}');
+
     final bag = await Isolate.run(() => _heavyTaskInsideIsolate(gioParams));
     return bag;
   }
@@ -185,6 +192,7 @@ class GioParams {
   late String startDate;
   late String endDate;
   late String url;
+  late int activityStreamHours;
 
   GioParams(
       {required this.organizationId,
@@ -195,12 +203,14 @@ class GioParams {
       required this.endDate,
       required this.url,
       required this.projectId,
-      required this.userId});
+      required this.userId,
+      required this.activityStreamHours});
 }
 
 ///running inside isolate
 Future<DataBag?> _heavyTaskInsideIsolate(GioParams gioParams) async {
-  const xx = '🐤🐤🐤🐤 _heavyTaskInsideIsolate: 🐤🐤🐤🐤 ';
+  final xx = '🐤🐤🐤🐤 _heavyTaskInsideIsolate: 🐤🐤🐤🐤 '
+      'activityStreamHours: ${gioParams.activityStreamHours}';
 
   pp('$xx starting ................');
   // gioParams.sendPort.send(
@@ -214,6 +224,7 @@ Future<DataBag?> _heavyTaskInsideIsolate(GioParams gioParams) async {
         startDate: gioParams.startDate,
         endDate: gioParams.endDate,
         url: gioParams.url,
+        activityStreamHours: gioParams.activityStreamHours,
         directoryPath: gioParams.directoryPath);
   }
   if (gioParams.projectId != null) {
@@ -223,6 +234,7 @@ Future<DataBag?> _heavyTaskInsideIsolate(GioParams gioParams) async {
         startDate: gioParams.startDate,
         endDate: gioParams.endDate,
         url: gioParams.url,
+        activityStreamHours: gioParams.activityStreamHours,
         directoryPath: gioParams.directoryPath);
   }
   if (gioParams.userId != null) {
@@ -232,6 +244,7 @@ Future<DataBag?> _heavyTaskInsideIsolate(GioParams gioParams) async {
         startDate: gioParams.startDate,
         endDate: gioParams.endDate,
         url: gioParams.url,
+        activityStreamHours: gioParams.activityStreamHours,
         directoryPath: gioParams.directoryPath);
   }
 

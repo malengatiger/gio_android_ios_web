@@ -1,6 +1,4 @@
 
-N
-lib/library/auth/app_auth.dart,2/7/27b9d1ff643c291d720302ce7d07ba0aad90d666
 S
 #ios/Runner/Runner-Bridging-Header.h,8/2/8220ac45b80647648436b79bfc43dab44e30fdde
 E
@@ -588,8 +586,6 @@ U
 %lib/library/ui/media/video_cover.dart,2/3/2390cf4835cefc9d897ce66bc4bafe2494972838
 Y
 )lib/library/ui/media/list/audio_card.dart,7/e/7ee7d2dd1ebc71f5ca41f2f3dd66e85838da1a13
-T
-$lib/ui/activity/activity_header.dart,7/f/7fdb37c03b3eab22eab615998d590b1c09172298
 Y
 )lib/library/ui/camera/video_controls.dart,c/8/c8fe98c155c82a1db847409dcee531bcb4e88f8c
 R
@@ -615,8 +611,6 @@ X
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
 l
 <lib/library/ui/project_location/project_location_tablet.dart,2/a/2aabf6423006060d75068abcc8a88dd632ca7be5
-K
-lib/utils/audio_player.dart,4/b/4b1280e6624a8978a833f829394e7a88367962b9
 ^
 .lib/ui/dashboard/project_dashboard_mobile.dart,f/7/f7017790b3267d1df879d3ba44005188e45d6993
 Z
@@ -711,8 +705,6 @@ T
 $lib/library/users/avatar_editor.dart,0/d/0d24328766e39a266f008e43768dab9c02754e4f
 Y
 )lib/library/users/user_batch_control.dart,f/4/f4e652a0413bda10541d9e202d9cf45fcbc95699
-W
-'lib/ui/activity/activity_list_card.dart,7/d/7de0b7b8f242b987d8be563db3950c93807ef3b1
 Q
 !lib/ui/activity/geo_activity.dart,b/3/b32b83fb2ff7163bd72b9e937fed8946a47d5641
 U
@@ -745,8 +737,6 @@ D
 android/build.gradle,1/3/13f012f60e18f38225ce59137db2e07d5d70b29c
 _
 /lib/library/ui/weather/daily_forecast_page.dart,e/f/efbb5706434f2522f6ac35eb804fde2d26c1318b
-Q
-!.idea/libraries/Dart_Packages.xml,f/c/fc67c2d2441e33af1dbd1e910281523d1ce74b4a
 @
 ios/Podfile.lock,6/f/6fc5efc9eba1a38c53e9a557a6ebda2b662185e1
 <
@@ -763,10 +753,6 @@ R
 "lib/dashboard_khaya/xd_header.dart,8/7/87a9a5d59981965cf667669cf2c2e300d2103a05
 R
 "lib/library/bloc/project_bloc.dart,a/e/ae4935cde6cd5f0a2c6c0ef188ddb17d5b9071d5
-J
-lib/library/functions.dart,2/2/225122cfb53e949a8f9edb84cbe772d4b4d73b07
-Q
-!lib/ui/audio/audio_player_og.dart,f/c/fc6fdcfb2a8b8f0a3b984687799612411721b2f7
 \
 ,lib/library/users/edit/user_edit_mobile.dart,d/b/dba24c507264c5e25fb13c3d3d700af214250b9d
 U
@@ -801,3 +787,17 @@ P
 cmds.txt,9/6/96aabe83f58456692f5d448a6988674171d63b89
 L
 lib/ui/intro/web_viewer.dart,5/c/5cfa1c72ff754ae6a27016370695affba9016129
+S
+#lib/ui/audio/audio_recorder_og.dart,5/3/53049215c8f450747f084e7fb5ce0acf018af248
+P
+ lib/library/api/data_api_og.dart,9/0/902144369ded84e9ef11c4532e9077ba40d707fb
+N
+lib/utilities/transitions.dart,1/b/1bf70afacd7c6a9d119bb014a15207e4d1834419
+N
+lib/library/bloc/fcm_bloc.dart,a/e/ae73d6a3cb5b2c49c9d1485ebf9ab308c81e196f
+T
+$ios/Runner.xcodeproj/project.pbxproj,1/c/1cac92320f17044ec005b6a831fa994f54fba1bc
+N
+lib/library/bloc/zip_bloc.dart,7/b/7b267bf2f28c379ad8802fab282b883448e2dbe6
+T
+$lib/library/data/activity_model.dart,b/a/ba042069e67c49a1b8bd16dde12c5ffb048775c1

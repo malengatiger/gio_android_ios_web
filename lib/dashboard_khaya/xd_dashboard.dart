@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geo_monitor/dashboard_khaya/project_list.dart';
 import 'package:geo_monitor/dashboard_khaya/recent_event_list.dart';
 import 'package:geo_monitor/dashboard_khaya/xd_header.dart';
@@ -166,6 +167,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
             duration: const Duration(seconds: 5),
             backgroundColor: Theme.of(context).primaryColor,
             padding: 20,
+            toastGravity: ToastGravity.TOP,
             textStyle: myTextStyleMedium(context),
             message: arrivedAt,
             context: context);
@@ -298,7 +300,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
       setState(() {
         busy = false;
       });
-      // _getData(false);
+      _getData(false);
     } catch (e) {
       if (mounted) {
         pp('$mm showSnack');
@@ -483,7 +485,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
 
   bool forceRefresh = false;
   void _onRefreshRequested() {
-    pp(' ✅✅✅ .... _onRefreshRequested ...');
+    pp(' ✅✅✅ .... _onRefreshRequested ... calling broadcastRefresh with true');
     refreshBloc.broadcastRefresh();
     _getData(true);
   }
@@ -1442,10 +1444,13 @@ class TopCardList extends StatefulWidget {
 }
 
 class TopCardListState extends State<TopCardList> {
+  final mm = '🛎🛎🛎🛎TopCardList: 🐸';
   late StreamSubscription<DataBag> bagSub;
   late StreamSubscription<SettingsModel> settingsSub;
   late StreamSubscription<ActivityModel> actSub;
+  late StreamSubscription<bool> refreshSub;
 
+  bool busy = false;
   // DataBag? dataBag;
   var eventsText = 'Events',
       projectsText = 'Projects',
@@ -1470,47 +1475,37 @@ class TopCardListState extends State<TopCardList> {
   void initState() {
     super.initState();
     _setTexts();
-    _getCachedData();
+    _getData(false);
     _listen();
   }
 
   int cnt = 0;
-  void _getCachedData() async {
-    final sett = await widget.prefsOGx.getSettings();
-    // final p = await widget.cacheManager.getOrganizationProjects();
-    // projects = p.length;
-    // final u = await widget.cacheManager.getUsers();
-    // members = u.length;
-    // final v = await widget.cacheManager.getOrganizationVideos();
-    // videos = v.length;
-    // final a = await widget.cacheManager.getOrganizationAudios();
-    // audios = a.length;
-    // final ph = await widget.cacheManager.getOrganizationPhotos();
-    // photos = ph.length;
-    // final ac =
-    //     await widget.cacheManager.getActivitiesWithinHours(sett.activityStreamHours!);
-    // events = ac.length;
-    // final pos = await widget.cacheManager.getOrganizationProjectPositions();
-    // locations = pos.length;
-    // final px = await widget.cacheManager.getOrganizationProjectPolygons();
-    // areas = px.length;
-    // if (photos == 0 && videos == 0 && audios == 0) {
-    //   final map = await getStartEndDates(numberOfDays: sett.numberOfDays!);
-    //   await widget.organizationBloc.getOrganizationData(
-    //       organizationId: sett.organizationId!,
-    //       forceRefresh: true,
-    //       startDate: map['startDate']!,
-    //       endDate: map['endDate']!);
-    //   if (cnt == 0) {
-    //     cnt++;
-    //     _getCachedData();
-    //   }
-    // }
+  void _getData(bool forceRefresh) async {
+    pp('$mm _getData ... forceRefresh: $forceRefresh');
+    try {
+      setState(() {
+        busy = true;
+      });
 
-    await dataHandler.getOrganizationData();
+      final sett = await widget.prefsOGx.getSettings();
+      final m = await getStartEndDates(numberOfDays: sett.numberOfDays!);
+
+      final bag = await widget.organizationBloc.getOrganizationData(
+          organizationId: sett.organizationId!,
+          forceRefresh: forceRefresh,
+          startDate: m['startDate']!,
+          endDate: m['endDate']!);
+
+      _setTotals(bag);
+    } catch (e) {
+      pp(e);
+    }
 
     if (mounted) {
-      setState(() {});
+      pp('$mm _getData ; setting state ..');
+      setState(() {
+        busy = false;
+      });
     }
   }
 
@@ -1531,8 +1526,13 @@ class TopCardListState extends State<TopCardList> {
   }
 
   void _listen() {
+    refreshSub = refreshBloc.refreshStream.listen((event) {
+      pp('$mm refreshStream delivered a command, call getData with forceRefresh = true ... ');
+      _getData(true);
+    });
+
     bagSub = widget.organizationBloc.dataBagStream.listen((bag) {
-      pp('🛎🛎🛎🛎TopCardList: Stream delivered a bag, set ui ... ');
+      pp('$mm Stream delivered a bag, set ui ... ');
       _setTotals(bag);
       if (mounted) {
         setState(() {});
@@ -1541,7 +1541,7 @@ class TopCardListState extends State<TopCardList> {
 
     settingsSub = widget.fcmBloc.settingsStream.listen((event) async {
       await _setTexts();
-      _getCachedData();
+      _getData(true);
     });
 
     actSub = widget.fcmBloc.activityStream.listen((act) {
@@ -1586,7 +1586,7 @@ class TopCardListState extends State<TopCardList> {
           });
           break;
         case ActivityType.settingsChanged:
-          _getCachedData();
+          //_getData(true);
           break;
         case ActivityType.geofenceEventAdded:
           // TODO: Handle this case.
@@ -1618,6 +1618,7 @@ class TopCardListState extends State<TopCardList> {
     audios = dataBag.audios!.length;
     locations = dataBag.projectPositions!.length;
     areas = dataBag.projectPolygons!.length;
+    pp('$mm dataBag totals extracted .... ');
   }
 
   @override
@@ -1740,94 +1741,105 @@ class TopCardListState extends State<TopCardList> {
       height: 140,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: [
-            DashboardTopCard(
-                width: events > 999 ? 128 : 108,
-                number: events,
-                title: eventsText,
-                onTapped: () {
-                  _onTapped(0);
-                }),
-            SizedBox(
-              width: padding1,
-            ),
-            DashboardTopCard(
-                width: projects > 999 ? 128 : 108,
-                number: projects,
-                title: projectsText,
-                onTapped: () {
-                  _onTapped(1);
-                }),
-            SizedBox(
-              width: padding1,
-            ),
-            DashboardTopCard(
-                width: members > 999 ? 128 : 108,
-                number: members,
-                title: membersText,
-                onTapped: () {
-                  _onTapped(2);
-                }),
-            SizedBox(
-              width: padding2,
-            ),
-            DashboardTopCard(
-                width: photos > 999 ? 128 : 108,
-                textStyle: myNumberStyleLargerPrimaryColorLight(context),
-                number: photos,
-                title: photosText,
-                onTapped: () {
-                  _onTapped(3);
-                }),
-            SizedBox(
-              width: padding1,
-            ),
-            DashboardTopCard(
-                textStyle: myNumberStyleLargerPrimaryColorLight(context),
-                width: videos > 999 ? 128 : 108,
-                number: videos,
-                title: videosText,
-                onTapped: () {
-                  _onTapped(4);
-                }),
-            SizedBox(
-              width: padding1,
-            ),
-            DashboardTopCard(
-                width: audios > 999 ? 128 : 108,
-                textStyle: myNumberStyleLargerPrimaryColorLight(context),
-                number: audios,
-                title: audiosText,
-                onTapped: () {
-                  _onTapped(5);
-                }),
-            SizedBox(
-              width: padding2,
-            ),
-            DashboardTopCard(
-                textStyle: myNumberStyleLargerPrimaryColorLight(context),
-                width: locations > 999 ? 128 : 108,
-                number: locations,
-                title: locationsText,
-                onTapped: () {
-                  _onTapped(6);
-                }),
-            SizedBox(
-              width: padding1,
-            ),
-            DashboardTopCard(
-                textStyle: myNumberStyleLargerPrimaryColorLight(context),
-                width: areas > 999 ? 128 : 108,
-                number: areas,
-                title: areasText,
-                onTapped: () {
-                  _onTapped(7);
-                }),
-          ],
-        ),
+        child: busy
+            ? const Center(
+                child: SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 4,
+                    backgroundColor: Colors.greenAccent,
+                  ),
+                ),
+              )
+            : ListView(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                children: [
+                  DashboardTopCard(
+                      width: events > 999 ? 128 : 108,
+                      number: events,
+                      title: eventsText,
+                      onTapped: () {
+                        _onTapped(0);
+                      }),
+                  SizedBox(
+                    width: padding1,
+                  ),
+                  DashboardTopCard(
+                      width: projects > 999 ? 128 : 108,
+                      number: projects,
+                      title: projectsText,
+                      onTapped: () {
+                        _onTapped(1);
+                      }),
+                  SizedBox(
+                    width: padding1,
+                  ),
+                  DashboardTopCard(
+                      width: members > 999 ? 128 : 108,
+                      number: members,
+                      title: membersText,
+                      onTapped: () {
+                        _onTapped(2);
+                      }),
+                  SizedBox(
+                    width: padding2,
+                  ),
+                  DashboardTopCard(
+                      width: photos > 999 ? 128 : 108,
+                      textStyle: myNumberStyleLargerPrimaryColorLight(context),
+                      number: photos,
+                      title: photosText,
+                      onTapped: () {
+                        _onTapped(3);
+                      }),
+                  SizedBox(
+                    width: padding1,
+                  ),
+                  DashboardTopCard(
+                      textStyle: myNumberStyleLargerPrimaryColorLight(context),
+                      width: videos > 999 ? 128 : 108,
+                      number: videos,
+                      title: videosText,
+                      onTapped: () {
+                        _onTapped(4);
+                      }),
+                  SizedBox(
+                    width: padding1,
+                  ),
+                  DashboardTopCard(
+                      width: audios > 999 ? 128 : 108,
+                      textStyle: myNumberStyleLargerPrimaryColorLight(context),
+                      number: audios,
+                      title: audiosText,
+                      onTapped: () {
+                        _onTapped(5);
+                      }),
+                  SizedBox(
+                    width: padding2,
+                  ),
+                  DashboardTopCard(
+                      textStyle: myNumberStyleLargerPrimaryColorDark(context),
+                      width: locations > 999 ? 128 : 108,
+                      number: locations,
+                      title: locationsText,
+                      onTapped: () {
+                        _onTapped(6);
+                      }),
+                  SizedBox(
+                    width: padding1,
+                  ),
+                  DashboardTopCard(
+                      textStyle: myNumberStyleLargerPrimaryColorDark(context),
+                      width: areas > 999 ? 128 : 108,
+                      number: areas,
+                      title: areasText,
+                      onTapped: () {
+                        _onTapped(7);
+                      }),
+                ],
+              ),
       ),
     );
   }

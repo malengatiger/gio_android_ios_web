@@ -284,40 +284,42 @@ class AudioRecorderState extends State<AudioRecorder>
             title: Text(title == null ? 'Audio Recording' : title!),
             bottom: PreferredSize(preferredSize: const Size.fromHeight(100), child: Column(
               children: [
-                Text(
-                  widget.project.name!,
-                  style: myTextStyleMediumLargePrimaryColor(context),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Align(
+                    child: Text(
+                      widget.project.name!,
+                      style: myTextStyleTitlePrimaryColor(context),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 48,)
               ],
             )),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: durationText == null
-                ? const SizedBox()
-                : AudioRecorderCard(
-                    user: user!,
-                    recordState: _recordState,
-                    start: _start,
-                    stop: _stop,
-                    pause: _pause,
-                    resume: _resume,
-                    showWaveForm: showWaveForm,
-                    projectName: widget.project.name!,
-                    durationText: durationText!,
-                    elapsedTimeText: elapsedTime!,
-                    fileUploadSizeText: fileUploadSize!,
-                    seconds: _seconds,
-                    fileSize: fileSize,
-                    readyForUpload: _readyForUpload,
-                    uploadFile: _uploadFile,
-                    padding: 12,
-                    iconSize: 48,
-                    uploadAudioClipText: uploadAudioClipText!,
-                    close: widget.onCloseRequested,
-                  ),
-          ),
+          body: durationText == null
+              ? const SizedBox()
+              : AudioRecorderCard(
+                  user: user!,
+                  recordState: _recordState,
+                  start: _start,
+                  stop: _stop,
+                  pause: _pause,
+                  resume: _resume,
+                  showWaveForm: showWaveForm,
+                  projectName: widget.project.name!,
+                  durationText: durationText!,
+                  elapsedTimeText: elapsedTime!,
+                  fileUploadSizeText: fileUploadSize!,
+                  seconds: _seconds,
+                  fileSize: fileSize,
+                  readyForUpload: _readyForUpload,
+                  uploadFile: _uploadFile,
+                  padding: 12,
+                  iconSize: 48,
+                  uploadAudioClipText: uploadAudioClipText!,
+                  close: widget.onCloseRequested,
+                ),
         ),
       ),
       tablet: durationText == null
@@ -539,7 +541,7 @@ class AudioRecorderCard extends StatelessWidget {
                             height: timerCardHeight == null ? 120 : timerCardHeight!,
                             child: showWaveForm
                                 ? TimerCard(
-                                    fontSize: 28,
+                                    fontSize: 24,
                                     seconds: seconds,
                                     elapsedTime: elapsedTimeText,
                                   )

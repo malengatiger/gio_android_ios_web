@@ -264,6 +264,12 @@ TextStyle myTextStyleMediumLargePrimaryColor(BuildContext context) {
       fontWeight: FontWeight.w900, color: Theme.of(context).primaryColor,
       fontSize: 24);
 }
+TextStyle myTextStyleTitlePrimaryColor(BuildContext context) {
+  return GoogleFonts.roboto(
+      textStyle: Theme.of(context).textTheme.headlineLarge,
+      fontWeight: FontWeight.w900, color: Theme.of(context).primaryColor,
+      fontSize: 20);
+}
 TextStyle myTextStyleHeader(BuildContext context) {
   return GoogleFonts.roboto(
       textStyle: Theme.of(context).textTheme.headlineLarge,
@@ -325,7 +331,14 @@ TextStyle myNumberStyleLargerPrimaryColorLight(BuildContext context) {
   return GoogleFonts.secularOne(
       textStyle: Theme.of(context).textTheme.titleLarge,
       fontWeight: FontWeight.w900,
-      color: Theme.of(context).primaryColorLight.withOpacity(0.5),
+      color: Theme.of(context).primaryColorLight,
+      fontSize: 28);
+}
+TextStyle myNumberStyleLargerPrimaryColorDark(BuildContext context) {
+  return GoogleFonts.secularOne(
+      textStyle: Theme.of(context).textTheme.titleLarge,
+      fontWeight: FontWeight.w900,
+      color: Theme.of(context).primaryColorDark,
       fontSize: 28);
 }
 

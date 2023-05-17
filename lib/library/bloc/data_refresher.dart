@@ -59,8 +59,9 @@ class DataRefresher {
       required String? userId}) async {
     pp('\n\n\n$xx manageRefresh: will run inside Isolates: starting ... 🔵🔵🔵😡😡\n\n');
     var start = DateTime.now();
+    final sett = await prefsOGx.getSettings();
+
     if (numberOfDays == null) {
-      var sett = await prefsOGx.getSettings();
       this.numberOfDays = sett.numberOfDays!;
     } else {
       this.numberOfDays = numberOfDays;
@@ -70,7 +71,12 @@ class DataRefresher {
     await _setUp();
     DataBag? bag;
     try {
-      bag = await _performWork(organizationId, bag, projectId, userId);
+      bag = await _performWork(
+          organizationId: organizationId,
+          bag: bag,
+          projectId: projectId,
+          userId: userId,
+          activityStreamHours: sett.activityStreamHours!);
       _finish(bag, start);
     } catch (e) {
       pp('$xx Something went horribly wrong, will RETRY ...: $e');
@@ -81,7 +87,8 @@ class DataRefresher {
           numberOfDays: numberOfDays,
           organizationId: organizationId,
           projectId: projectId,
-          userId: userId);
+          userId: userId,
+          activityStreamHours: sett.activityStreamHours!);
       _finish(bag, start);
     }
 
@@ -122,7 +129,8 @@ class DataRefresher {
           date: DateTime.now().toIso8601String(),
           users: [],
           projectPolygons: [],
-          settings: [], activityModels: []);
+          settings: [],
+          activityModels: []);
     }
     return null;
   }
@@ -131,27 +139,43 @@ class DataRefresher {
       {required int? numberOfDays,
       required String? organizationId,
       required String? projectId,
-      required String? userId}) async {
+      required String? userId,
+      required int activityStreamHours}) async {
     pp('$xx retrying the call after an error, will kick off after 5 seconds  ...');
     await Future.delayed(const Duration(seconds: 5));
     DataBag? bag;
-    bag = await _performWork(organizationId, bag, projectId, userId);
+    bag = await _performWork(
+        organizationId: organizationId,
+        bag: bag,
+        projectId: projectId,
+        userId: userId,
+        activityStreamHours: activityStreamHours);
     return bag;
   }
 
-  Future<DataBag?> _performWork(String? organizationId, DataBag? bag,
-      String? projectId, String? userId) async {
+  Future<DataBag?> _performWork(
+      {String? organizationId,
+      DataBag? bag,
+      String? projectId,
+      String? userId,
+      required int activityStreamHours}) async {
     if (organizationId != null) {
       bag = await _startOrganizationDataRefresh(
-          organizationId: organizationId, directoryPath: directory.path);
+          organizationId: organizationId,
+          directoryPath: directory.path,
+          activityStreamHours: activityStreamHours);
     }
     if (projectId != null) {
       bag = await _startProjectRefresh(
-          projectId: projectId, directoryPath: directory.path);
+          projectId: projectId,
+          directoryPath: directory.path,
+          activityStreamHours: activityStreamHours);
     }
     if (userId != null) {
       bag = await _startUserDataRefresh(
-          userId: userId, directoryPath: directory.path);
+          userId: userId,
+          directoryPath: directory.path,
+          activityStreamHours: activityStreamHours);
     }
     return bag;
   }
@@ -229,7 +253,9 @@ class DataRefresher {
   }
 
   Future<DataBag> _startOrganizationDataRefresh(
-      {required String organizationId, required String directoryPath}) async {
+      {required String organizationId,
+      required String directoryPath,
+      required int activityStreamHours}) async {
     pp('$xx .......  startOrganizationRefresh in an isolate ...');
     late DataBag bag;
     try {
@@ -239,6 +265,7 @@ class DataRefresher {
               directoryPath: directoryPath,
               organizationId: organizationId,
               startDate: startDate,
+              activityStreamHours: activityStreamHours,
               endDate: endDate,
               url: url)).catchError((onError) {
         pp('$xx ${E.redDot}${E.redDot}${E.redDot}${E.redDot} $onError - return null for dataBag ${E.redDot}${E.redDot}');
@@ -252,7 +279,8 @@ class DataRefresher {
             date: 'date',
             users: [],
             projectPolygons: [],
-            settings: [], activityModels: []);
+            settings: [],
+            activityModels: []);
       });
     } on StateError catch (e, s) {
       pp('$xx ${E.redDot}${E.redDot} Isolate StateError, e: $e'); // In a bad state!
@@ -272,7 +300,9 @@ class DataRefresher {
   }
 
   Future<DataBag?> _startProjectRefresh(
-      {required String projectId, required String directoryPath}) async {
+      {required String projectId,
+      required String directoryPath,
+      required int activityStreamHours}) async {
     pp('$xx .......  startProjectRefresh in an isolate ...');
     await _setUp();
     DataBag? bag;
@@ -282,6 +312,7 @@ class DataRefresher {
         directoryPath: directoryPath,
         projectId: projectId,
         startDate: startDate,
+        activityStreamHours: activityStreamHours,
         endDate: endDate,
         url: url));
     pp('$xx startProjectRefresh: isolate function completed, dataBag delivered; '
@@ -295,7 +326,9 @@ class DataRefresher {
   }
 
   Future<DataBag?> _startUserDataRefresh(
-      {required String userId, required String directoryPath}) async {
+      {required String userId,
+      required String directoryPath,
+      required int activityStreamHours}) async {
     pp('$xx .......  startUserRefresh in an isolate ...');
     await _setUp();
     DataBag? bag;
@@ -305,6 +338,7 @@ class DataRefresher {
         directoryPath: directoryPath,
         userId: userId,
         startDate: startDate,
+        activityStreamHours: activityStreamHours,
         endDate: endDate,
         url: url));
     pp('$xx startUserRefresh: isolate function completed, dataBag delivered; '
@@ -399,18 +433,21 @@ Future<DataBag> refreshOrganizationDataInIsolate(
     required String startDate,
     required String endDate,
     required String url,
-    required String directoryPath}) async {
-  pp('$xz ............ refreshOrganizationDataInIsolate starting .... calling getOrganizationDataZippedFile');
+    required String directoryPath,
+    required int activityStreamHours}) async {
+  pp('$xz ............ refreshOrganizationDataInIsolate starting .... '
+      'calling getOrganizationDataZippedFile, activityStreamHours: $activityStreamHours');
   DataBag? bag;
 
   try {
-  bag = await getOrganizationDataZippedFile(
-      url: url,
-      directoryPath: directoryPath,
-      organizationId: organizationId,
-      startDate: startDate,
-      endDate: endDate,
-      token: token);
+    bag = await getOrganizationDataZippedFile(
+        url: url,
+        directoryPath: directoryPath,
+        organizationId: organizationId,
+        startDate: startDate,
+        endDate: endDate,
+        activityStreamHours: activityStreamHours,
+        token: token);
   } catch (e) {
     pp('$mm We have an issue here. $e');
   }
@@ -432,7 +469,8 @@ Future<DataBag?> refreshProjectDataInIsolate(
     required String startDate,
     required String endDate,
     required String url,
-    required String directoryPath}) async {
+    required String directoryPath,
+    required int activityStreamHours}) async {
   pp('$xz refreshProjectDataInIsolate starting ....');
   DataBag? bag;
 
@@ -442,6 +480,7 @@ Future<DataBag?> refreshProjectDataInIsolate(
       projectId: projectId,
       startDate: startDate,
       endDate: endDate,
+      activityStreamHours: activityStreamHours,
       token: token);
 
   return bag;
@@ -453,7 +492,8 @@ Future<DataBag?> refreshUserDataInIsolate(
     required String startDate,
     required String endDate,
     required String url,
-    required String directoryPath}) async {
+    required String directoryPath,
+    required int activityStreamHours}) async {
   pp('$xz refreshUserDataInIsolate starting ....');
   DataBag? bag;
 
@@ -462,6 +502,7 @@ Future<DataBag?> refreshUserDataInIsolate(
       directoryPath: directoryPath,
       userId: userId,
       startDate: startDate,
+      activityStreamHours: activityStreamHours,
       endDate: endDate,
       token: token);
 
@@ -474,11 +515,12 @@ Future<DataBag?> getOrganizationDataZippedFile(
     required String endDate,
     required String token,
     required String url,
-    required String directoryPath}) async {
+    required String directoryPath,
+    required int activityStreamHours}) async {
   pp('$xz getOrganizationDataZippedFile  🔆🔆🔆 organizationId : 💙  $organizationId  💙');
   var start = DateTime.now();
   var mUrl =
-      '${url}getOrganizationDataZippedFile?organizationId=$organizationId&startDate=$startDate&endDate=$endDate';
+      '${url}getOrganizationDataZippedFile?organizationId=$organizationId&startDate=$startDate&endDate=$endDate&activityStreamHours=$activityStreamHours';
 
   var bag =
       await _getDataBag(mUrl: mUrl, token: token, directoryPath: directoryPath);
@@ -490,19 +532,19 @@ Future<DataBag?> getOrganizationDataZippedFile(
   return bag;
 }
 
-Future<DataBag?> getProjectDataZippedFile({
-  required String projectId,
-  required String startDate,
-  required String endDate,
-  required String token,
-  required String url,
-  required String directoryPath,
-}) async {
+Future<DataBag?> getProjectDataZippedFile(
+    {required String projectId,
+    required String startDate,
+    required String endDate,
+    required String token,
+    required String url,
+    required String directoryPath,
+    required int activityStreamHours}) async {
   pp('$xz getProjectDataZippedFile  🔆🔆🔆 projectId : 💙  $projectId  💙');
   final start = DateTime.now();
   ;
   var mUrl =
-      '${url}getProjectDataZippedFile?projectId=$projectId&startDate=$startDate&endDate=$endDate';
+      '${url}getProjectDataZippedFile?projectId=$projectId&startDate=$startDate&endDate=$endDate&activityStreamHours=$activityStreamHours';
 
   var bag =
       await _getDataBag(mUrl: mUrl, token: token, directoryPath: directoryPath);
@@ -518,11 +560,12 @@ Future<DataBag?> getUserDataZippedFile(
     required String endDate,
     required String token,
     required String url,
-    required String directoryPath}) async {
+    required String directoryPath,
+    required int activityStreamHours}) async {
   pp('$xz getUserDataZippedFile  🔆🔆🔆 orgId : 💙  $userId  💙');
   final start = DateTime.now();
   var mUrl =
-      '${url}getUserDataZippedFile?userId=$userId&startDate=$startDate&endDate=$endDate';
+      '${url}getUserDataZippedFile?userId=$userId&startDate=$startDate&endDate=$endDate&activityStreamHours=$activityStreamHours';
 
   var bag =
       await _getDataBag(mUrl: mUrl, token: token, directoryPath: directoryPath);
@@ -718,6 +761,7 @@ Future<DataBag?> _getDataBag(
     required String directoryPath}) async {
   pp('$xz _getDataBag: 🔆🔆🔆 get zipped data ...');
 
+  start = DateTime.now();
   DataBag? dataBag;
 
   http.Response response = await _sendRequestToBackend(mUrl, token);
@@ -749,9 +793,9 @@ Future<DataBag?> _getDataBag(
         var mJson = json.decode(m);
         dataBag = DataBag.fromJson(mJson);
         _printDataBag(dataBag);
-        var end = DateTime.now().millisecondsSinceEpoch;
-        var ms = (end - start) / 1000;
-        pp('$xz getOrganizationDataZippedFile 🍎🍎🍎🍎 work is done!, elapsed seconds: $ms\n\n');
+        var end = DateTime.now();
+        var ms = end.difference(start).inSeconds;
+        pp('$xz getOrganizationDataZippedFile 🍎🍎🍎🍎 work is done!, elapsed seconds: 🍎$ms 🍎\n\n');
       } else {
         pp('$xz ERROR: could not find file');
       }
@@ -767,13 +811,12 @@ Future<DataBag?> _getDataBag(
   return dataBag;
 }
 
-int start = 0;
+late DateTime start;
 const timeOutInSeconds = 120;
 
 Future<http.Response> _sendRequestToBackend(String mUrl, String token) async {
   pp('$xz _sendRequestToBackend call:  🔆 🔆 🔆 calling : 💙  $mUrl  💙');
   var start = DateTime.now();
-
 
   Map<String, String> headers = {
     'Content-type': 'application/json',
