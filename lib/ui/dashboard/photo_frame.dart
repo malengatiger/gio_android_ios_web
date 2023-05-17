@@ -2,6 +2,9 @@ import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
+import 'package:geo_monitor/library/bloc/fcm_bloc.dart';
+import 'package:geo_monitor/library/bloc/organization_bloc.dart';
+import 'package:geo_monitor/library/bloc/project_bloc.dart';
 import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/ui/maps/photo_map.dart';
@@ -9,12 +12,14 @@ import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.da
 import 'package:geo_monitor/library/ui/message/monitor_message.dart';
 import 'package:geo_monitor/library/ui/ratings/rating_adder.dart';
 import 'package:geo_monitor/ui/activity/user_profile_card.dart';
+import 'package:geo_monitor/utilities/transitions.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../l10n/translation_handler.dart';
 import '../../library/api/data_api_og.dart';
 import '../../library/data/photo.dart';
+import '../../library/data/project.dart';
 import '../../library/data/user.dart';
 import '../../library/emojis.dart';
 import '../../library/functions.dart';
@@ -82,41 +87,44 @@ class PhotoCard extends StatelessWidget {
             const SizedBox(
               height: 4,
             ),
-            Card(
-              shape: getRoundedBorder(radius: 16),
-              elevation: 4,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Text(
-                      '${photo.projectName}',
-                      style: myTextStyleMediumPrimaryColor(context),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        UserProfileCard(
-                            userName: photo.userName!,
-                            userThumbUrl: photo.userUrl,
-                            elevation: 3,
-                            padding: 0.0,
-                            avatarRadius: 16,
-                            textStyle: myTextStyleSmall(context),
-                            namePictureHorizontal: true),
-                        const SizedBox(
-                          width: 4,
-                        ),
-                        Text(
-                          translatedDate,
-                          style: myTextStyleTinyBold(context),
-                        ),
-                      ],
-                    ),
-                  ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Card(
+                shape: getRoundedBorder(radius: 16),
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        '${photo.projectName}',
+                        style: myTextStyleMediumLargePrimaryColor(context),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          UserProfileCard(
+                              userName: photo.userName!,
+                              userThumbUrl: photo.userUrl,
+                              elevation: 3,
+                              padding: 0.0,
+                              avatarRadius: 16,
+                              textStyle: myTextStyleSmall(context),
+                              namePictureHorizontal: true),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            translatedDate,
+                            style: myTextStyleTinyBold(context),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -165,22 +173,17 @@ class Headline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 120,
+      height: 80,
       child: Column(
         children: [
           const SizedBox(
-            height: 12,
+            height: 8,
           ),
           user.organizationName == null
               ? const SizedBox()
               : Text(
                   '${user.organizationName}',
-                  style: GoogleFonts.lato(
-                      textStyle: Theme.of(context).textTheme.bodyLarge,
-                      fontWeight: FontWeight.w900,
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 20),
-                ),
+                  style: myTextStyleMediumLargePrimaryColor(context)),
           const SizedBox(
             height: 24,
           ),
@@ -228,7 +231,10 @@ class PhotoFrame extends StatefulWidget {
       required this.locale,
       required this.cacheManager,
       required this.dataApiDog,
-      required this.prefsOGx})
+      required this.prefsOGx,
+      required this.fcmBloc,
+      required this.projectBloc,
+      required this.organizationBloc})
       : super(key: key);
 
   final Photo photo;
@@ -241,6 +247,9 @@ class PhotoFrame extends StatefulWidget {
   final CacheManager cacheManager;
   final DataApiDog dataApiDog;
   final PrefsOGx prefsOGx;
+  final FCMBloc fcmBloc;
+  final ProjectBloc projectBloc;
+  final OrganizationBloc organizationBloc;
 
   @override
   State<PhotoFrame> createState() => PhotoFrameState();
@@ -254,7 +263,7 @@ class PhotoFrameState extends State<PhotoFrame> {
       ratePhoto,
       createdBy,
       sendMemberMessage,
-      close,
+      close, title,
       actionsOnPhoto;
   late SettingsModel settings;
   @override
@@ -275,15 +284,35 @@ class PhotoFrameState extends State<PhotoFrame> {
     close = await translator.translate('close', locale);
     actionsOnPhoto = await translator.translate('actionsOnPhoto', locale);
     sendMemberMessage = await translator.translate('sendMemberMessage', locale);
-  }
+    title = await translator.translate('photos', locale);
 
+  }
+  late Project project;
   void _getUser() async {
     final photoUser = await cacheManager.getUserById(widget.photo.userId!);
     if (photoUser != null) {
       photoUserThumbnailUrl = photoUser.thumbnailUrl!;
       photoUserUrl = photoUser.imageUrl!;
     }
+    var p = await widget.cacheManager.getProjectById(projectId: widget.photo.projectId!);
+    if (p != null) {
+      project = p;
+    }
     setState(() {});
+  }
+
+  void _navigateToTimeline() async {
+
+    navigateWithScale(
+        ProjectMediaTimeline(
+            project: project,
+            projectBloc: widget.projectBloc,
+            prefsOGx: widget.prefsOGx,
+            organizationBloc: widget.organizationBloc,
+            cacheManager: widget.cacheManager,
+            dataApiDog: widget.dataApiDog,
+            fcmBloc: widget.fcmBloc),
+        context);
   }
 
   @override
@@ -302,16 +331,32 @@ class PhotoFrameState extends State<PhotoFrame> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: const Text(''),
-        bottom: PreferredSize( preferredSize: const Size.fromHeight(64), child: Column(
-          children: [
-            PhotoHeader(
-              title: widget.photo.projectName!,
-              date: widget.photo.created!,
-              locale: widget.locale, userUrl: widget.photo.userUrl,),
-            const SizedBox(height: 12,),
-          ],
-        )),
+        title: Text(title == null?'Photo': title!, style: myTextStyleMediumLarge(context),),
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(80),
+            child: Column(
+              children: [
+                PhotoHeader(
+                  title: widget.photo.projectName!,
+                  date: widget.photo.created!,
+                  locale: widget.locale,
+                  userUrl: widget.photo.userUrl,
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+              ],
+            )),
+        actions: [
+          IconButton(
+              onPressed: () {
+                _navigateToTimeline();
+              },
+              icon: Icon(
+                Icons.view_list_sharp,
+                color: Theme.of(context).primaryColor,
+              ))
+        ],
       ),
       body: Stack(
         children: [
@@ -533,7 +578,8 @@ class PhotoHeader extends StatelessWidget {
     Key? key,
     required this.title,
     required this.date,
-    required this.locale, required this.userUrl,
+    required this.locale,
+    required this.userUrl,
   }) : super(key: key);
   final String title;
   final String date, locale;
@@ -560,19 +606,24 @@ class PhotoHeader extends StatelessWidget {
                 const SizedBox(
                   height: 8,
                 ),
-                Row(mainAxisAlignment: MainAxisAlignment.center,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       mStart,
                       style: myTextStyleSmall(context),
                     ),
-                    const SizedBox(width: 16,),
-                    userUrl == null? const CircleAvatar(
-                      radius: 12,
-                    ): CircleAvatar(
-                      radius: 16,
-                      backgroundImage: NetworkImage(userUrl!),
+                    const SizedBox(
+                      width: 16,
                     ),
+                    userUrl == null
+                        ? const CircleAvatar(
+                            radius: 12,
+                          )
+                        : CircleAvatar(
+                            radius: 16,
+                            backgroundImage: NetworkImage(userUrl!),
+                          ),
                   ],
                 )
               ],

@@ -514,8 +514,6 @@ m
 =android/app/src/main/res/mipmap-anydpi-v26/app_icon_round.xml,9/3/939d2adcd6d53c6721c97fcc3baeb989ffb304a5
 h
 8android/app/src/main/res/drawable-anydpi-v24/ic_icon.xml,9/2/9288a7aa475acbc78eafdd04fa0ad93497d1d363
-A
-public/index.html,f/4/f43ecdf8d666ee908aacce037b4cd72159e4741b
 >
 web/index.html,4/9/49767019a2fee22a613912508aa2789b74108680
 g
@@ -598,8 +596,6 @@ P
 -lib/ui/intro/intro_page_viewer_landscape.dart,c/1/c190973070223956c46810492a1ac5e97ac4f31d
 L
 lib/ui/intro/intro_main.dart,7/5/752d33aad102a896b4943c1147a4ad0fc9cd379d
-N
-lib/utilities/environment.dart,0/1/01be1bfa7c8072bdc6d19ff253956276ea1ae146
 \
 ,lib/ui/dashboard/project_dashboard_main.dart,2/4/248ee10b11d8c9d6cb207df23bf909e9ae293183
 X
@@ -767,8 +763,6 @@ M
 ios/firebase_app_id_file.json,a/0/a0799973e0bf1bad4e739e1320488659cd5da822
 ^
 .lib/library/ui/media/time_line/media_grid.dart,8/6/8650f68703a5e6a03e0e9808f2de8da9cdfdd458
-Q
-!lib/ui/dashboard/photo_frame.dart,8/3/83eadfcaf77e4cd539a10e1fe8463dff86c9428d
 V
 &lib/library/users/full_user_photo.dart,1/4/14c00d6a225bce14ec6e99a247288fbf14a5dce9
 W

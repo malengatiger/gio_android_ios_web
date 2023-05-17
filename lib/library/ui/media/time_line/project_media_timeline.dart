@@ -271,6 +271,9 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
       translatedDate: '',
       locale: settings.locale!,
       prefsOGx: widget.prefsOGx,
+      fcmBloc: widget.fcmBloc,
+      projectBloc: widget.projectBloc,
+      organizationBloc: widget.organizationBloc,
     );
 
     navigateWithScale(ww, context);

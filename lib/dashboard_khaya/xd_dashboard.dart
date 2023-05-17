@@ -25,6 +25,7 @@ import 'package:geo_monitor/library/data/user.dart';
 import 'package:geo_monitor/library/data/video.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/library/generic_functions.dart';
+import 'package:geo_monitor/library/ui/camera/gio_video_player.dart';
 import 'package:geo_monitor/library/ui/maps/photo_map.dart';
 import 'package:geo_monitor/library/ui/maps/project_map_mobile.dart';
 import 'package:geo_monitor/library/ui/media/photo_cover.dart';
@@ -590,8 +591,11 @@ class DashboardKhayaState extends State<DashboardKhaya> {
   }
 
   onPhotoTapped(Photo p1) {
-    pp('🌀🌀🌀🌀 onPhotoTapped; ${p1.toJson()}');
-
+    pp('🌀🌀🌀🌀 onPhotoTapped, deviceType: $deviceType ; ${p1.toJson()}');
+    deviceType = getThisDeviceType();
+    setState(() {
+      photo = p1;
+    });
     if (deviceType == 'phone') {
       if (mounted) {
         Navigator.push(
@@ -611,9 +615,18 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                   translatedDate: '',
                   locale: settingsModel.locale!,
                   prefsOGx: widget.prefsOGx,
+                  fcmBloc: widget.fcmBloc,
+                  projectBloc: widget.projectBloc,
+                  organizationBloc: widget.organizationBloc,
                 )));
       }
-    } else {}
+    } else {
+      setState(() {
+        showPhoto = true;
+        showAudio = false;
+        playVideo = false;
+      });
+    }
   }
 
   onVideoTapped(Video p1) {
@@ -625,6 +638,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     } else {
       setState(() {
         playAudio = false;
+        showPhoto = false;
         playVideo = true;
       });
     }
@@ -639,6 +653,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     setState(() {
       audio = p1;
     });
+    deviceType = getThisDeviceType();
     if (deviceType == 'phone') {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (ctx) => AudioPlayerOG(
@@ -651,7 +666,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
               dataApiDog: widget.dataApiDog)));
     } else {
       setState(() {
-        playAudio = true;
+        showAudio = true;
+        showPhoto = false;
         playVideo = false;
       });
     }
@@ -759,6 +775,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
 
   bool playAudio = false;
   bool playVideo = false;
+  bool showAudio = false;
+  bool showPhoto = false;
 
   @override
   Widget build(BuildContext context) {
@@ -1012,6 +1030,59 @@ class DashboardKhayaState extends State<DashboardKhaya> {
         ),
         busy
             ? Positioned(child: LoadingCard(loadingData: loadingDataText!))
+            : const SizedBox(),
+        showAudio
+            ? Positioned(
+                left: 160, right: 160, top: 120,
+                child: SizedBox(
+                width: 440,
+                child: AudioPlayerOG(
+                    audio: audio!,
+                    onCloseRequested: () {
+                      setState(() {
+                        showAudio = false;
+                      });
+                    },
+                    dataApiDog: dataApiDog),
+              ))
+            : const SizedBox(),
+        showPhoto
+            ? Positioned(
+                left: 100,
+                right: 100,
+                top: 48,
+                child: SizedBox(
+                  width: 600,
+                  child: PhotoCard(
+                    photo: photo!,
+                    onMapRequested: (photo) {},
+                    onRatingRequested: (photo) {},
+                    elevation: 8.0,
+                    onPhotoCardClose: () {
+                      setState(() {
+                        showPhoto = false;
+                      });
+                    },
+                    translatedDate: '',
+                  ),
+                ))
+            : const SizedBox(),
+        playVideo
+            ? Positioned(
+            left: 100,
+            right: 100,
+            top: 48,
+            child: SizedBox(
+              width: 600,
+              child: GioVideoPlayer(
+                video: video!, onCloseRequested: () {
+                  setState(() {
+                    playVideo = false;
+                  });
+              }, width: 600, dataApiDog: widget.dataApiDog,
+
+              ),
+            ))
             : const SizedBox(),
       ],
     ));
