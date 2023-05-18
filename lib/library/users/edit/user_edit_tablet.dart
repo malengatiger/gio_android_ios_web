@@ -12,7 +12,9 @@ import 'package:responsive_builder/responsive_builder.dart';
 import '../../../l10n/translation_handler.dart';
 import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
+import '../../bloc/cloud_storage_bloc.dart';
 import '../../bloc/fcm_bloc.dart';
+import '../../bloc/geo_uploader.dart';
 import '../../bloc/organization_bloc.dart';
 import '../../bloc/project_bloc.dart';
 import '../../cache_manager.dart';
@@ -32,11 +34,21 @@ class UserEditTablet extends StatefulWidget {
   final OrganizationBloc organizationBloc;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
-  const UserEditTablet({super.key, this.user,
-    required this.prefsOGx, required this.cacheManager,
-    required this.projectBloc, this.project,
-    required this.organizationBloc, required this.dataApiDog, required this.fcmBloc});
+  const UserEditTablet(
+      {super.key,
+      this.user,
+      required this.prefsOGx,
+      required this.cacheManager,
+      required this.projectBloc,
+      this.project,
+      required this.organizationBloc,
+      required this.dataApiDog,
+      required this.fcmBloc,
+      required this.geoUploader,
+      required this.cloudStorageBloc});
 
   @override
   UserEditTabletState createState() => UserEditTabletState();
@@ -44,7 +56,6 @@ class UserEditTablet extends StatefulWidget {
 
 class UserEditTabletState extends State<UserEditTablet>
     with SingleTickerProviderStateMixin {
-
   ar.User? admin;
   final _key = GlobalKey<ScaffoldState>();
   var isBusy = false;
@@ -87,8 +98,7 @@ class UserEditTabletState extends State<UserEditTablet>
   Widget build(BuildContext context) {
     final ori = MediaQuery.of(context).orientation;
     if (ori.name == 'portrait') {
-    } else {
-    }
+    } else {}
     final width = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
@@ -107,35 +117,37 @@ class UserEditTabletState extends State<UserEditTablet>
                   padding: const EdgeInsets.all(24.0),
                   child: Row(
                     children: [
-                      SizedBox(width: (width / 2) - 24,
-                        child: widget.user == null? UserForm(
-                          width: width / 2,
-                          internalPadding: 24,
-                          user: widget.user,
-                        ): bd.Badge(
-                          position:
-                              bd.BadgePosition.topStart(top: -48, start: -24),
-                          badgeStyle: const bd.BadgeStyle(
-                              badgeColor: Colors.transparent,
-                              shape: bd.BadgeShape.square,
-                              elevation: 16),
-                          badgeContent: widget.user == null
-                              ? const SizedBox()
-                              : UserProfileCard(
-                                  userName: widget.user!.name!,
-                                  userThumbUrl: widget.user!.thumbnailUrl,
-                                  namePictureHorizontal: true,
-                                  avatarRadius: 20,
-                                  elevation: 8,
-                                  textStyle: myTextStyleMedium(
-                                      context),
+                      SizedBox(
+                        width: (width / 2) - 24,
+                        child: widget.user == null
+                            ? UserForm(
+                                width: width / 2,
+                                internalPadding: 24,
+                                user: widget.user,
+                              )
+                            : bd.Badge(
+                                position: bd.BadgePosition.topStart(
+                                    top: -48, start: -24),
+                                badgeStyle: const bd.BadgeStyle(
+                                    badgeColor: Colors.transparent,
+                                    shape: bd.BadgeShape.square,
+                                    elevation: 16),
+                                badgeContent: widget.user == null
+                                    ? const SizedBox()
+                                    : UserProfileCard(
+                                        userName: widget.user!.name!,
+                                        userThumbUrl: widget.user!.thumbnailUrl,
+                                        namePictureHorizontal: true,
+                                        avatarRadius: 20,
+                                        elevation: 8,
+                                        textStyle: myTextStyleMedium(context),
+                                      ),
+                                child: UserForm(
+                                  width: width / 2,
+                                  internalPadding: 24,
+                                  user: widget.user,
                                 ),
-                          child: UserForm(
-                            width: width / 2,
-                            internalPadding: 24,
-                            user: widget.user,
-                          ),
-                        ),
+                              ),
                       ),
                       const SizedBox(
                         width: 16,
@@ -143,7 +155,8 @@ class UserEditTabletState extends State<UserEditTablet>
                       GeoActivity(
                           width: (width / 2) - 40,
                           thinMode: true,
-                          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+                          prefsOGx: widget.prefsOGx,
+                          cacheManager: widget.cacheManager,
                           showPhoto: showPhoto,
                           showVideo: showVideo,
                           showAudio: showAudio,
@@ -151,6 +164,8 @@ class UserEditTabletState extends State<UserEditTablet>
                           fcmBloc: widget.fcmBloc,
                           organizationBloc: widget.organizationBloc,
                           projectBloc: widget.projectBloc,
+                          geoUploader: widget.geoUploader,
+                          cloudStorageBloc: widget.cloudStorageBloc,
                           project: widget.project,
                           dataApiDog: widget.dataApiDog,
                           showLocationRequest: (req) {},
@@ -177,7 +192,7 @@ class UserEditTabletState extends State<UserEditTablet>
                     children: [
                       bd.Badge(
                         position:
-                        bd.BadgePosition.topStart(top: -28, start: -20),
+                            bd.BadgePosition.topStart(top: -28, start: -20),
                         badgeStyle: const bd.BadgeStyle(
                             badgeColor: Colors.transparent,
                             shape: bd.BadgeShape.square,
@@ -185,25 +200,26 @@ class UserEditTabletState extends State<UserEditTablet>
                         badgeContent: widget.user == null
                             ? const SizedBox()
                             : UserProfileCard(
-                          userName: widget.user!.name!,
-                          userThumbUrl: widget.user!.thumbnailUrl,
-                          namePictureHorizontal: true,
-                          elevation: 8,
-                          textStyle: myTextStyleMedium(
-                              context),
-                        ),
+                                userName: widget.user!.name!,
+                                userThumbUrl: widget.user!.thumbnailUrl,
+                                namePictureHorizontal: true,
+                                elevation: 8,
+                                textStyle: myTextStyleMedium(context),
+                              ),
                         child: UserForm(
                           width: width / 2,
                           internalPadding: 36,
                           user: widget.user,
                         ),
                       ),
-                      const SizedBox(width: 24,),
-
+                      const SizedBox(
+                        width: 24,
+                      ),
                       GeoActivity(
                           width: (width / 2) - 100,
                           thinMode: true,
-                          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+                          prefsOGx: widget.prefsOGx,
+                          cacheManager: widget.cacheManager,
                           showPhoto: showPhoto,
                           showVideo: showVideo,
                           showAudio: showAudio,
@@ -213,6 +229,8 @@ class UserEditTabletState extends State<UserEditTablet>
                           projectBloc: widget.projectBloc,
                           project: widget.project,
                           dataApiDog: widget.dataApiDog,
+                          geoUploader: widget.geoUploader,
+                          cloudStorageBloc: widget.cloudStorageBloc,
                           showLocationRequest: (req) {},
                           showLocationResponse: (resp) {
                             _navigateToLocationResponseMap(resp);

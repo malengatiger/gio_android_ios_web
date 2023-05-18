@@ -18,6 +18,8 @@ import 'package:page_transition/page_transition.dart';
 
 import '../../l10n/translation_handler.dart';
 import '../../library/api/data_api_og.dart';
+import '../../library/bloc/cloud_storage_bloc.dart';
+import '../../library/bloc/geo_uploader.dart';
 import '../../library/data/photo.dart';
 import '../../library/data/project.dart';
 import '../../library/data/user.dart';
@@ -234,7 +236,7 @@ class PhotoFrame extends StatefulWidget {
       required this.prefsOGx,
       required this.fcmBloc,
       required this.projectBloc,
-      required this.organizationBloc})
+      required this.organizationBloc, required this.geoUploader, required this.cloudStorageBloc})
       : super(key: key);
 
   final Photo photo;
@@ -250,6 +252,8 @@ class PhotoFrame extends StatefulWidget {
   final FCMBloc fcmBloc;
   final ProjectBloc projectBloc;
   final OrganizationBloc organizationBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   State<PhotoFrame> createState() => PhotoFrameState();
@@ -311,6 +315,8 @@ class PhotoFrameState extends State<PhotoFrame> {
             organizationBloc: widget.organizationBloc,
             cacheManager: widget.cacheManager,
             dataApiDog: widget.dataApiDog,
+            geoUploader: widget.geoUploader,
+            cloudStorageBloc: widget.cloudStorageBloc,
             fcmBloc: widget.fcmBloc),
         context);
   }

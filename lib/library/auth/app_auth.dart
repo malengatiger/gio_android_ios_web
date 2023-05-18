@@ -17,7 +17,7 @@ class AppAuth {
       token = await firebaseAuth!.currentUser!.getIdToken();
     }
     if (token != null) {
-      pp('$locks getAuthToken has a 🌸🌸 GOOD!! 🌸🌸 Firebase id token 🍎\n$token');
+      pp('$locks getAuthToken has a 🌸🌸 GOOD!! 🌸🌸 Firebase id token 🍎');
     } else {
       pp('$locks getAuthToken has fallen down. ${E.redDot}${E.redDot}${E.redDot}  Firebase id token not found 🍎');
 

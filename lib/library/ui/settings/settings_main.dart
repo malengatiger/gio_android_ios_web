@@ -4,7 +4,9 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
+import '../../bloc/cloud_storage_bloc.dart';
 import '../../bloc/fcm_bloc.dart';
+import '../../bloc/geo_uploader.dart';
 import '../../bloc/isolate_handler.dart';
 import '../../bloc/organization_bloc.dart';
 import '../../bloc/project_bloc.dart';
@@ -22,7 +24,9 @@ class SettingsMain extends StatelessWidget {
       required this.cacheManager,
       required this.projectBloc,
       this.project,
-      required this.fcmBloc})
+      required this.fcmBloc,
+      required this.geoUploader,
+      required this.cloudStorageBloc})
       : super(key: key);
   final IsolateDataHandler dataHandler;
   final DataApiDog dataApiDog;
@@ -32,6 +36,8 @@ class SettingsMain extends StatelessWidget {
   final ProjectBloc projectBloc;
   final Project? project;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +57,8 @@ class SettingsMain extends StatelessWidget {
             dataHandler: dataHandler,
             dataApiDog: dataApiDog,
             organizationBloc: organizationBloc,
+            cloudStorageBloc: cloudStorageBloc,
+            geoUploader: geoUploader,
             prefsOGx: prefsOGx,
             cacheManager: cacheManager,
           );
@@ -63,6 +71,8 @@ class SettingsMain extends StatelessWidget {
             dataHandler: dataHandler,
             dataApiDog: dataApiDog,
             organizationBloc: organizationBloc,
+            cloudStorageBloc: cloudStorageBloc,
+            geoUploader: geoUploader,
             prefsOGx: prefsOGx,
             cacheManager: cacheManager,
           );

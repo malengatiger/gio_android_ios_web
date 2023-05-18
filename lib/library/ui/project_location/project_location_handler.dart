@@ -9,7 +9,9 @@ import '../../../device_location/device_location_bloc.dart';
 import '../../../l10n/translation_handler.dart';
 import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
+import '../../bloc/cloud_storage_bloc.dart';
 import '../../bloc/fcm_bloc.dart';
+import '../../bloc/geo_uploader.dart';
 import '../../bloc/organization_bloc.dart';
 import '../../bloc/project_bloc.dart';
 import '../../cache_manager.dart';
@@ -34,8 +36,19 @@ class ProjectLocationHandler extends StatefulWidget {
   final OrganizationBloc organizationBloc;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
-  const ProjectLocationHandler(this.project, {super.key, required this.prefsOGx, required this.cacheManager, required this.projectBloc, required this.organizationBloc, required this.dataApiDog, required this.fcmBloc});
+  const ProjectLocationHandler(this.project,
+      {super.key,
+      required this.prefsOGx,
+      required this.cacheManager,
+      required this.projectBloc,
+      required this.organizationBloc,
+      required this.dataApiDog,
+      required this.fcmBloc,
+      required this.geoUploader,
+      required this.cloudStorageBloc});
 
   @override
   ProjectLocationHandlerState createState() => ProjectLocationHandlerState();
@@ -208,8 +221,10 @@ class ProjectLocationHandlerState extends State<ProjectLocationHandler>
       }
       var org = await prefsOGx.getUser();
       final sett = await cacheManager.getSettings();
-      final projectLocationAdded = await translator.translate('projectLocationAdded', sett!.locale!);
-      final messageFromGeo = await translator.translate('messageFromGeo', sett!.locale!);
+      final projectLocationAdded =
+          await translator.translate('projectLocationAdded', sett!.locale!);
+      final messageFromGeo =
+          await translator.translate('messageFromGeo', sett!.locale!);
 
       var projectPosition = ProjectPosition(
           userId: user!.userId,
@@ -458,13 +473,16 @@ class ProjectLocationHandlerState extends State<ProjectLocationHandler>
                         padding: const EdgeInsets.symmetric(horizontal: 28.0),
                         child: GeoActivity(
                             width: (width / 2) - 80,
-                            prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+                            prefsOGx: widget.prefsOGx,
+                            cacheManager: widget.cacheManager,
                             thinMode: false,
                             fcmBloc: widget.fcmBloc,
                             organizationBloc: widget.organizationBloc,
                             projectBloc: widget.projectBloc,
                             project: widget.project,
                             dataApiDog: widget.dataApiDog,
+                            geoUploader: widget.geoUploader,
+                            cloudStorageBloc: widget.cloudStorageBloc,
                             showPhoto: (p) {},
                             showVideo: (p) {},
                             showAudio: (p) {},
@@ -508,7 +526,10 @@ class ProjectLocationHandlerState extends State<ProjectLocationHandler>
                           projectBloc: widget.projectBloc,
                           project: widget.project,
                           dataApiDog: widget.dataApiDog,
-                          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+                          geoUploader: widget.geoUploader,
+                          cloudStorageBloc: widget.cloudStorageBloc,
+                          prefsOGx: widget.prefsOGx,
+                          cacheManager: widget.cacheManager,
                           showPhoto: (p) {},
                           showVideo: (p) {},
                           showAudio: (p) {},

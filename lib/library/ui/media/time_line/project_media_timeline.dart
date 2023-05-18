@@ -10,18 +10,21 @@ import 'package:geo_monitor/library/data/photo.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/ui/camera/gio_video_player.dart';
 import 'package:geo_monitor/library/ui/camera/photo_handler.dart';
+import 'package:geo_monitor/library/ui/camera/video_recorder.dart';
 import 'package:geo_monitor/library/ui/media/time_line/media_grid.dart';
 import 'package:geo_monitor/library/ui/project_list/project_chooser.dart';
 import 'package:geo_monitor/ui/audio/audio_player_og.dart';
-import 'package:geo_monitor/ui/audio/audio_recorder_og.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+import '../../../../dashboard_khaya/xd_dashboard.dart';
 import '../../../../l10n/translation_handler.dart';
 import '../../../../ui/audio/audio_recorder.dart';
 import '../../../../ui/dashboard/photo_frame.dart';
 import '../../../../utilities/transitions.dart';
 import '../../../api/data_api_og.dart';
+import '../../../bloc/cloud_storage_bloc.dart';
+import '../../../bloc/geo_uploader.dart';
 import '../../../bloc/project_bloc.dart';
 import '../../../cache_manager.dart';
 import '../../../data/project.dart';
@@ -38,7 +41,9 @@ class ProjectMediaTimeline extends StatefulWidget {
       this.project,
       required this.cacheManager,
       required this.dataApiDog,
-      required this.fcmBloc})
+      required this.fcmBloc,
+      required this.geoUploader,
+      required this.cloudStorageBloc})
       : super(key: key);
 
   final ProjectBloc projectBloc;
@@ -48,6 +53,8 @@ class ProjectMediaTimeline extends StatefulWidget {
   final CacheManager cacheManager;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   ProjectMediaTimelineState createState() => ProjectMediaTimelineState();
@@ -60,7 +67,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
   var projects = <Project>[];
   late SettingsModel settings;
   Project? projectSelected;
-  late String startDate, endDate;
+  late String startDate, endDate, videoTitle;
   String? timeLine,
       loadingData,
       startText,
@@ -113,6 +120,8 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     endText = await translator.translate('endDate', locale);
     durationText = await translator.translate('duration', locale);
     sendMemberMessage = await translator.translate('sendMemberMessage', locale);
+    videoTitle = await translator.translate('videos', settings.locale!);
+
   }
 
   void _listen() async {
@@ -225,11 +234,27 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
   onVideoTapped(Video p1) {
     pp('$mm onVideoTapped ... id: ${p1.videoId}');
     tappedVideo = p1;
-    setState(() {
-      playVideo = true;
-    });
+    final deviceType = getThisDeviceType();
+    setState(() {});
+    if (deviceType == 'phone') {
+      navigateWithSlide(
+          PhoneVideoPlayer(
+            video: p1,
+            title: videoTitle,
+            onCloseRequested: () {},
+            dataApiDog: widget.dataApiDog,
+          ),
+          context);
+    } else {
+      setState(() {
+        playVideo = true;
+        playAudio = false;
+        showPhoto = false;
+      });
+    }
   }
 
+  bool showPhoto = false;
   bool playAudio = false;
   Audio? tappedAudio;
   bool showProjectChooser = false;
@@ -239,7 +264,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     tappedAudio = p1;
     final type = getThisDeviceType();
     if (type == 'phone') {
-      navigateWithFade(
+      navigateWithSlide(
           GioVideoPlayer(
               video: tappedVideo!,
               onCloseRequested: () {
@@ -253,13 +278,16 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     } else {
       setState(() {
         playAudio = true;
+        playAudio = false;
+        showPhoto = false;
       });
     }
   }
 
+  Photo? tappedPhoto;
   onPhotoTapped(Photo p1) {
     pp('$mm onPhotoTapped .... id: ${p1.photoId}');
-
+    tappedPhoto = p1;
     final ww = PhotoFrame(
       photo: p1,
       onMapRequested: (photo) {},
@@ -272,33 +300,21 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
       locale: settings.locale!,
       prefsOGx: widget.prefsOGx,
       fcmBloc: widget.fcmBloc,
+      geoUploader: widget.geoUploader,
+      cloudStorageBloc: widget.cloudStorageBloc,
       projectBloc: widget.projectBloc,
       organizationBloc: widget.organizationBloc,
     );
-
-    navigateWithScale(ww, context);
-
-    // if (mounted) {
-    //   Navigator.push(
-    //       context,
-    //       PageTransition(
-    //           type: PageTransitionType.leftToRight,
-    //           // alignment: Alignment.topLeft,
-    //           fullscreenDialog: true,
-    //           duration: const Duration(milliseconds: 1000),
-    //           child: PhotoFrame(
-    //             photo: p1,
-    //             onMapRequested: (photo) {},
-    //             onRatingRequested: (photo) {},
-    //             elevation: 8.0,
-    //             cacheManager: widget.cacheManager,
-    //             dataApiDog: widget.dataApiDog,
-    //             onPhotoCardClose: () {},
-    //             translatedDate: '',
-    //             locale: settings.locale!,
-    //             prefsOGx: widget.prefsOGx,
-    //           )));
-    // }
+    final deviceType = getThisDeviceType();
+    if (deviceType == 'phone') {
+      navigateWithScale(ww, context);
+    } else {
+      setState(() {
+        playVideo = false;
+        playAudio = false;
+        showPhoto = true;
+      });
+    }
   }
 
   void _onTakePicture() {
@@ -318,19 +334,39 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                 cacheManager: widget.cacheManager,
                 dataApiDog: widget.dataApiDog,
                 fcmBloc: widget.fcmBloc,
+                geoUploader: widget.geoUploader,
+                cloudStorageBloc: widget.cloudStorageBloc,
               )));
     }
   }
 
   void _onMakeVideo() {
     pp('$mm _onMakeVideo ............');
+    if (mounted) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.scale,
+              alignment: Alignment.topLeft,
+              duration: const Duration(milliseconds: 1000),
+              child: VideoRecorder(
+                project: projectSelected!,
+                cacheManager: widget.cacheManager,
+                onClose: () {},
+                geoUploader: widget.geoUploader,
+                prefsOGx: widget.prefsOGx,
+                cloudStorageBloc: widget.cloudStorageBloc,
+              )));
+    }
   }
 
   void _onMakeAudio() {
     pp('$mm _onMakeAudio ..............');
     if (mounted) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return AudioRecorder(onCloseRequested: () {}, project: widget.project!);
+        return AudioRecorder(
+            cloudStorageBloc: widget.cloudStorageBloc,
+            onCloseRequested: () {}, project: widget.project!);
       }));
     }
   }
@@ -627,7 +663,28 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                                   height: 600,
                                   width: 400),
                             ))
-                        : const SizedBox()
+                        : const SizedBox(),
+                    showPhoto
+                        ? Positioned(
+                            left: 100,
+                            right: 100,
+                            top: 48,
+                            child: SizedBox(
+                              width: 600,
+                              child: PhotoCard(
+                                photo: tappedPhoto!,
+                                onMapRequested: (photo) {},
+                                onRatingRequested: (photo) {},
+                                elevation: 8.0,
+                                onPhotoCardClose: () {
+                                  setState(() {
+                                    showPhoto = false;
+                                  });
+                                },
+                                translatedDate: '',
+                              ),
+                            ))
+                        : const SizedBox(),
                   ],
                 )),
     );

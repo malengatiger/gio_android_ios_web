@@ -34,22 +34,29 @@ class VideoRecorder extends StatefulWidget {
       {Key? key,
       required this.project,
       this.projectPosition,
-      required this.onClose})
+      required this.onClose,
+      required this.cacheManager,
+      required this.geoUploader,
+      required this.prefsOGx,
+      required this.cloudStorageBloc})
       : super(key: key);
 
   final Project project;
   final ProjectPosition? projectPosition;
   final Function onClose;
+  final CacheManager cacheManager;
+  final GeoUploader geoUploader;
+  final PrefsOGx prefsOGx;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   VideoRecorderState createState() => VideoRecorderState();
 }
 
 class VideoRecorderState extends State<VideoRecorder>
-    with SingleTickerProviderStateMixin, WidgetsBindingObserver
-    implements StorageBlocListener {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver{
   late AnimationController _controller;
-  static const mm = '🍏🍏🍏🍏🍏🍏 VideoHandlerTwo: ';
+  static const mm = '🍏🍏🍏🍏🍏🍏 VideoRecorder: ';
 
   final resolutionPresets = ResolutionPreset.values;
   ResolutionPreset currentResolutionPreset = ResolutionPreset.high;
@@ -72,7 +79,8 @@ class VideoRecorderState extends State<VideoRecorder>
       videoToBeUploaded,
       getCameraReady,
       recordingComplete,
-      durationText, fileSavedWillUpload,
+      durationText,
+      fileSavedWillUpload,
       recordingLimitReached,
       waitingToRecordVideo;
   SettingsModel? settingsModel;
@@ -93,40 +101,45 @@ class VideoRecorderState extends State<VideoRecorder>
   }
 
   Future _setTexts() async {
-    settingsModel = await prefsOGx.getSettings();
+    settingsModel = await widget.prefsOGx.getSettings();
     if (settingsModel != null) {
       var m = settingsModel?.maxAudioLengthInMinutes;
       limitInSeconds = m! * 60;
-      recordingComplete =
-          await translator.translate('recordingComplete', settingsModel!.locale!);
-      elapsedTime = await translator.translate('elapsedTime', settingsModel!.locale!);
+      recordingComplete = await translator.translate(
+          'recordingComplete', settingsModel!.locale!);
+      elapsedTime =
+          await translator.translate('elapsedTime', settingsModel!.locale!);
 
-      fileUploadSize = await translator.translate('fileSize', settingsModel!.locale!);
+      fileUploadSize =
+          await translator.translate('fileSize', settingsModel!.locale!);
       uploadAudioClipText =
           await translator.translate('uploadAudioClip', settingsModel!.locale!);
-      elapsedTime = await translator.translate('elapsedTime', settingsModel!.locale!);
-      locationNotAvailable =
-          await translator.translate('locationNotAvailable', settingsModel!.locale!);
+      elapsedTime =
+          await translator.translate('elapsedTime', settingsModel!.locale!);
+      locationNotAvailable = await translator.translate(
+          'locationNotAvailable', settingsModel!.locale!);
 
-      waitingToRecordVideo =
-          await translator.translate('waitingToRecordVideo', settingsModel!.locale!);
-      recordingLimitReached =
-          await translator.translate('recordingLimitReached', settingsModel!.locale!);
-      videoToBeUploaded =
-          await translator.translate('videoToBeUploaded', settingsModel!.locale!);
+      waitingToRecordVideo = await translator.translate(
+          'waitingToRecordVideo', settingsModel!.locale!);
+      recordingLimitReached = await translator.translate(
+          'recordingLimitReached', settingsModel!.locale!);
+      videoToBeUploaded = await translator.translate(
+          'videoToBeUploaded', settingsModel!.locale!);
       maxSeconds = settingsModel!.maxVideoLengthInSeconds!;
       title = await translator.translate('recordVideo', settingsModel!.locale!);
-      durationText = await translator.translate('duration', settingsModel!.locale!);
-      fileSizeText = await translator.translate('fileSize', settingsModel!.locale!);
-      fileSavedWillUpload = await translator.translate('fileSavedWillUpload', settingsModel!.locale!);
-
+      durationText =
+          await translator.translate('duration', settingsModel!.locale!);
+      fileSizeText =
+          await translator.translate('fileSize', settingsModel!.locale!);
+      fileSavedWillUpload = await translator.translate(
+          'fileSavedWillUpload', settingsModel!.locale!);
     }
 
     setState(() {});
   }
 
   void _getUser() async {
-    user = await prefsOGx.getUser();
+    user = await widget.prefsOGx.getUser();
   }
 
   void _listen() async {
@@ -326,18 +339,18 @@ class VideoRecorderState extends State<VideoRecorder>
     pp('$mm _processFile 🔵🔵🔵 video file to upload: ${mFile.path}'
         ' size: ${await mFile.length()} bytes 🔵');
 
-    var thumbnailFile0 = await getVideoThumbnail(mImageFile);
+    final thumbnailFile0 = await getVideoThumbnail(mImageFile);
     await thumbnailFile0.copy(tFile.path);
 
     pp('$mm.......... _danceWithTheVideo ... Take Me To Church!!');
-    var loc = await locationBloc.getLocation();
+    final loc = await locationBloc.getLocation();
     Position? position;
     if (loc != null) {
       position =
           Position(type: 'Point', coordinates: [loc.longitude, loc.latitude]);
     }
 
-    var videoForUpload = VideoForUpload(
+    final videoForUpload = VideoForUpload(
         userName: user!.name,
         userThumbnailUrl: user!.thumbnailUrl,
         userId: user!.userId,
@@ -354,13 +367,9 @@ class VideoRecorderState extends State<VideoRecorder>
         fileBytes: null,
         thumbnailBytes: null);
 
-    await cacheManager.addVideoForUpload(video: videoForUpload);
-    if (finalDuration.inSeconds < 21) {
-      geoUploader.manageMediaUploads();
-    } else {
-      cloudStorageBloc.uploadVideo(
-          listener: this, videoForUpload: videoForUpload);
-    }
+    await widget.cacheManager.addVideoForUpload(video: videoForUpload);
+    widget.cloudStorageBloc.uploadEverything();
+
     if (mounted) {
       showToast(
           duration: const Duration(seconds: 3),
@@ -412,263 +421,122 @@ class VideoRecorderState extends State<VideoRecorder>
       pad = 100.0;
       bottomPad = 12.0;
     }
-    return ScreenTypeLayout(
-      mobile: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(title == null ? 'Record Video' : title!),
-          ),
-          body: Stack(
-            children: [
-              _isCameraInitialized
-                  ? _showChoice
-                      ? Positioned(
-                          top: 120,
-                          left: 20,
-                          right: 20,
-                          child: SizedBox(
-                            height: 360,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const SizedBox(
-                                  height: 40,
-                                ),
-                                Text(
-                                  recordingComplete == null
-                                      ? 'Recording complete'
-                                      : recordingComplete!,
-                                  style: myTextStyleLarge(context),
-                                ),
-                                const SizedBox(
-                                  height: 40,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(fileSizeText == null
-                                        ? 'File Size'
-                                        : fileSizeText!),
-                                    const SizedBox(
-                                      width: 12,
-                                    ),
-                                    Text(
-                                      fileSize,
-                                      style: myNumberStyleLargerPrimaryColor(
-                                          context),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 16,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(durationText == null
-                                        ? 'Duration'
-                                        : durationText!),
-                                    const SizedBox(
-                                      width: 12,
-                                    ),
-                                    Text(
-                                      getHourMinuteSecond(finalDuration),
-                                      style: myNumberStyleLargerPrimaryColor(
-                                          context),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 16,
-                                ),
-                                VideoRecorderControls(
-                                    onUpload: onUpload,
-                                    onPlay: onPlay,
-                                    onCancel: onCancel),
-                              ],
-                            ),
-                          ))
-                      : AspectRatio(
-                          aspectRatio: 1 / _cameraController.value.aspectRatio,
-                          child: _cameraController.buildPreview(),
-                        )
-                  : Center(
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(
-                            waitingToRecordVideo == null
-                                ? 'Getting camera ready'
-                                : waitingToRecordVideo!,
-                            style: myTextStyleMediumBold(context),
-                          ),
-                        ),
-                      ),
-                    ),
-              Positioned(
-                  right: 48,
-                  top: 8,
-                  child: Card(
-                    shape: getRoundedBorder(radius: 16),
-                    color: Colors.black12,
-                    elevation: 8,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(
-                        getHourMinuteSecond(duration),
-                        style: myTextStyleMediumPrimaryColor(context),
-                      ),
-                    ),
-                  )),
-              Positioned(
-                  bottom: -20,
-                  right: pad,
-                  left: pad,
-                  child: VideoControls(
-                    onRecord: onRecord,
-                    onPlay: onPlay,
-                    onPause: onPause,
-                    onStop: onStop,
-                    isPlaying: isPlaying,
-                    isPaused: isPaused,
-                    isStopped: isStopped,
-                    isRecording: isRecording,
-                    onClose: () {
-                      widget.onClose();
-                    },
-                  )),
-            ],
-          ),
-        ),
-      ),
-      tablet: Card(
-        elevation: 8,
-        shape: getRoundedBorder(radius: 16),
-        child: SizedBox(
-          width: 600,
-          height: 600,
-          child: Stack(
-            children: [
-              _isCameraInitialized
-                  ? _showChoice
-                      ? Positioned(
-                          top: 100,
-                          left: 20,
-                          right: 20,
-                          child: SizedBox(
-                            height: 360,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const SizedBox(
-                                  height: 40,
-                                ),
-                                Text(
-                                  recordingComplete == null
-                                      ? 'Recording complete'
-                                      : recordingComplete!,
-                                  style: myTextStyleLarge(context),
-                                ),
-                                const SizedBox(
-                                  height: 40,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(fileSize),
-                                    const SizedBox(
-                                      width: 12,
-                                    ),
-                                    Text(
-                                      fileSize,
-                                      style: myNumberStyleLargerPrimaryColor(
-                                          context),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 16,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(durationText == null
-                                        ? 'Duration'
-                                        : durationText!),
-                                    const SizedBox(
-                                      width: 12,
-                                    ),
-                                    Text(
-                                      getHourMinuteSecond(finalDuration),
-                                      style: myNumberStyleLargerPrimaryColor(
-                                          context),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 32,
-                                ),
-                                VideoRecorderControls(
-                                    onUpload: onUpload,
-                                    onPlay: onPlay,
-                                    onCancel: onCancel),
-                              ],
-                            ),
-                          ))
-                      : SizedBox(
-                          width: _cameraController.value.previewSize?.width,
-                          height: _cameraController.value.previewSize?.height,
-                          child: AspectRatio(
-                            aspectRatio: _cameraController.value.aspectRatio,
-                            child: _cameraController.buildPreview(),
-                          ),
-                        )
-                  : Center(
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(
-                            waitingToRecordVideo == null
-                                ? 'Getting camera ready'
-                                : waitingToRecordVideo!,
-                            style: myTextStyleMediumBold(context),
-                          ),
-                        ),
-                      ),
-                    ),
-              Positioned(
-                  right: 8,
-                  top: 8,
-                  child: Card(
-                    shape: getRoundedBorder(radius: 16),
-                    color: Colors.black12,
-                    elevation: 8,
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+    return ScreenTypeLayout.builder(
+      mobile: (ctx){
+        return SafeArea(
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                title == null ? 'Record Video' : title!,
+                style: myTextStyleMediumLarge(context),
+              ),
+            ),
+            body: Stack(
+              children: [
+                _isCameraInitialized
+                    ? _showChoice
+                    ? Positioned(
+                    top: 120,
+                    left: 20,
+                    right: 20,
+                    child: SizedBox(
+                      height: 360,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          const SizedBox(
+                            height: 40,
+                          ),
                           Text(
-                            getHourMinuteSecond(duration),
-                            style: myNumberStyleMedium(context),
+                            recordingComplete == null
+                                ? 'Recording complete'
+                                : recordingComplete!,
+                            style: myTextStyleLarge(context),
                           ),
                           const SizedBox(
-                            width: 20,
+                            height: 40,
                           ),
-                          IconButton(
-                              onPressed: () {
-                                widget.onClose();
-                              },
-                              icon: const Icon(Icons.close)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(fileSizeText == null
+                                  ? 'File Size'
+                                  : fileSizeText!),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Text(
+                                fileSize,
+                                style: myNumberStyleLargerPrimaryColor(
+                                    context),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(durationText == null
+                                  ? 'Duration'
+                                  : durationText!),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Text(
+                                getHourMinuteSecond(finalDuration),
+                                style: myNumberStyleLargerPrimaryColor(
+                                    context),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          VideoRecorderControls(
+                              onUpload: onUpload,
+                              onPlay: onPlay,
+                              onCancel: onCancel),
                         ],
                       ),
+                    ))
+                    : AspectRatio(
+                  aspectRatio: 1 / _cameraController.value.aspectRatio,
+                  child: _cameraController.buildPreview(),
+                )
+                    : Center(
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(
+                        waitingToRecordVideo == null
+                            ? 'Getting camera ready'
+                            : waitingToRecordVideo!,
+                        style: myTextStyleMediumBold(context),
+                      ),
                     ),
-                  )),
-              Positioned(
-                  bottom: bottomPad,
-                  right: pad,
-                  left: pad,
-                  child: SizedBox(
+                  ),
+                ),
+                Positioned(
+                    right: 48,
+                    top: 8,
+                    child: Card(
+                      shape: getRoundedBorder(radius: 16),
+                      color: Colors.black12,
+                      elevation: 8,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text(
+                          getHourMinuteSecond(duration),
+                          style: myTextStyleMediumPrimaryColor(context),
+                        ),
+                      ),
+                    )),
+                Positioned(
+                    bottom: -20,
+                    right: pad,
+                    left: pad,
                     child: VideoControls(
                       onRecord: onRecord,
                       onPlay: onPlay,
@@ -679,14 +547,162 @@ class VideoRecorderState extends State<VideoRecorder>
                       isStopped: isStopped,
                       isRecording: isRecording,
                       onClose: () {
-                        Navigator.of(context).pop();
+                        widget.onClose();
                       },
-                    ),
-                  )),
-            ],
+                    )),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
+      tablet: (ctx) {
+        return Card(
+          elevation: 8,
+          shape: getRoundedBorder(radius: 16),
+          child: SizedBox(
+            width: 600,
+            height: 600,
+            child: Stack(
+              children: [
+                _isCameraInitialized
+                    ? _showChoice
+                    ? Positioned(
+                    top: 100,
+                    left: 20,
+                    right: 20,
+                    child: SizedBox(
+                      height: 360,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          Text(
+                            recordingComplete == null
+                                ? 'Recording complete'
+                                : recordingComplete!,
+                            style: myTextStyleLarge(context),
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(fileSize),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Text(
+                                fileSize,
+                                style: myNumberStyleLargerPrimaryColor(
+                                    context),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(durationText == null
+                                  ? 'Duration'
+                                  : durationText!),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Text(
+                                getHourMinuteSecond(finalDuration),
+                                style: myNumberStyleLargerPrimaryColor(
+                                    context),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 32,
+                          ),
+                          VideoRecorderControls(
+                              onUpload: onUpload,
+                              onPlay: onPlay,
+                              onCancel: onCancel),
+                        ],
+                      ),
+                    ))
+                    : SizedBox(
+                  width: _cameraController.value.previewSize?.width,
+                  height: _cameraController.value.previewSize?.height,
+                  child: AspectRatio(
+                    aspectRatio: _cameraController.value.aspectRatio,
+                    child: _cameraController.buildPreview(),
+                  ),
+                )
+                    : Center(
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(
+                        waitingToRecordVideo == null
+                            ? 'Getting camera ready'
+                            : waitingToRecordVideo!,
+                        style: myTextStyleMediumBold(context),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Card(
+                      shape: getRoundedBorder(radius: 16),
+                      color: Colors.black12,
+                      elevation: 8,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              getHourMinuteSecond(duration),
+                              style: myNumberStyleMedium(context),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  widget.onClose();
+                                },
+                                icon: const Icon(Icons.close)),
+                          ],
+                        ),
+                      ),
+                    )),
+                Positioned(
+                    bottom: bottomPad,
+                    right: pad,
+                    left: pad,
+                    child: SizedBox(
+                      child: VideoControls(
+                        onRecord: onRecord,
+                        onPlay: onPlay,
+                        onPause: onPause,
+                        onStop: onStop,
+                        isPlaying: isPlaying,
+                        isPaused: isPaused,
+                        isStopped: isStopped,
+                        isRecording: isRecording,
+                        onClose: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    )),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -704,9 +720,7 @@ class VideoRecorderState extends State<VideoRecorder>
   onAudioReady(Audio audio) {
     pp('$mm audio is ready ');
     this.audio = audio;
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -724,6 +738,7 @@ class VideoRecorderState extends State<VideoRecorder>
     pp('$mm onFileUploadComplete, bytesTransferred: $bytesTransferred');
     pp('$mm url: $url');
   }
+
   Video? video;
   @override
   onVideoReady(Video video) {

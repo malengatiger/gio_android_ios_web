@@ -8,7 +8,9 @@ import 'package:responsive_builder/responsive_builder.dart';
 import '../../../ui/activity/geo_activity.dart';
 import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
+import '../../bloc/cloud_storage_bloc.dart';
 import '../../bloc/fcm_bloc.dart';
+import '../../bloc/geo_uploader.dart';
 import '../../bloc/organization_bloc.dart';
 import '../../bloc/project_bloc.dart';
 import '../../cache_manager.dart';
@@ -26,7 +28,8 @@ class ProjectEditorTablet extends StatefulWidget {
   final OrganizationBloc organizationBloc;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
-
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
   const ProjectEditorTablet(
       {this.project,
       super.key,
@@ -35,7 +38,9 @@ class ProjectEditorTablet extends StatefulWidget {
       required this.projectBloc,
       required this.organizationBloc,
       required this.dataApiDog,
-      required this.fcmBloc});
+      required this.fcmBloc,
+      required this.geoUploader,
+      required this.cloudStorageBloc});
 
   @override
   ProjectEditorTabletState createState() => ProjectEditorTabletState();
@@ -109,6 +114,8 @@ class ProjectEditorTabletState extends State<ProjectEditorTablet>
                 projectBloc: widget.projectBloc,
                 dataApiDog: widget.dataApiDog,
                 prefsOGx: widget.prefsOGx,
+                geoUploader: widget.geoUploader,
+                cloudStorageBloc: widget.cloudStorageBloc,
                 cacheManager: widget.cacheManager,
                 mProject)));
     if (mounted) {
@@ -204,6 +211,8 @@ class ProjectEditorTabletState extends State<ProjectEditorTablet>
                   fcmBloc: widget.fcmBloc,
                   organizationBloc: widget.organizationBloc,
                   projectBloc: widget.projectBloc,
+                  geoUploader: widget.geoUploader,
+                  cloudStorageBloc: widget.cloudStorageBloc,
                   project: widget.project!,
                   showPhoto: (photo) {},
                   showVideo: (video) {},
@@ -253,6 +262,8 @@ class ProjectEditorTabletState extends State<ProjectEditorTablet>
                     prefsOGx: widget.prefsOGx,
                     cacheManager: widget.cacheManager,
                     dataApiDog: widget.dataApiDog,
+                    geoUploader: widget.geoUploader,
+                    cloudStorageBloc: widget.cloudStorageBloc,
                     showPhoto: (photo) {},
                     showVideo: (video) {},
                     showAudio: (audio) {},

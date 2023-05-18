@@ -5,7 +5,9 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/cloud_storage_bloc.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/geo_uploader.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
 import '../../library/cache_manager.dart';
@@ -19,7 +21,7 @@ class ProjectDashboardMain extends StatelessWidget {
       required this.prefsOGx,
       required this.organizationBloc,
       required this.dataApiDog,
-      required this.cacheManager, required this.fcmBloc})
+      required this.cacheManager, required this.fcmBloc, required this.geoUploader, required this.cloudStorageBloc})
       : super(key: key);
   final Project project;
   final ProjectBloc projectBloc;
@@ -28,6 +30,8 @@ class ProjectDashboardMain extends StatelessWidget {
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
 
   @override
@@ -40,6 +44,8 @@ class ProjectDashboardMain extends StatelessWidget {
           prefsOGx: prefsOGx,
           dataApiDog: dataApiDog,
           fcmBloc: fcmBloc,
+          cloudStorageBloc: cloudStorageBloc,
+          geoUploader: geoUploader,
           cacheManager: cacheManager,
         ),
         tablet: ProjectDashboardTablet(
@@ -49,6 +55,8 @@ class ProjectDashboardMain extends StatelessWidget {
           fcmBloc: fcmBloc,
           dataApiDog: dataApiDog,
           cacheManager: cacheManager,
+          cloudStorageBloc: cloudStorageBloc,
+          geoUploader: geoUploader,
           prefsOGx: prefsOGx,
         ));
   }

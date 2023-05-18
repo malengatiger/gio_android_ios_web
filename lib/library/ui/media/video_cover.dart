@@ -31,10 +31,17 @@ class VideoCover extends StatelessWidget {
                   radius: 16,
                   backgroundImage: NetworkImage(video.userUrl!),
                 )),
+        const Positioned(
+          right: 4,
+          top: 4,
+          child: Icon(
+            Icons.video_call,
+            color: Colors.white,
+          ),
+        ),
       ],
     );
   }
-
 }
 
 Widget errorWidget(BuildContext context, String url, error) {
@@ -49,16 +56,19 @@ Widget errorWidget(BuildContext context, String url, error) {
           child: Opacity(
             opacity: 0.5,
             child: Center(
-                child: SizedBox(height: 48,
-                  child: Column(
-                    children: [
-                      Image.asset('assets/gio.png', height: 24, width: 24),
-                      Text('Video not available', style: myTextStyleTiny(context),),
-                    ],
+                child: SizedBox(
+              height: 48,
+              child: Column(
+                children: [
+                  Image.asset('assets/gio.png', height: 24, width: 24),
+                  Text(
+                    'Video not available',
+                    style: myTextStyleTiny(context),
                   ),
-                )),
+                ],
+              ),
+            )),
           ),
         ),
       ));
 }
-

@@ -17,8 +17,10 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../l10n/translation_handler.dart';
 import '../../../ui/audio/audio_player_og.dart';
 import '../../../ui/dashboard/photo_frame.dart';
+import '../../bloc/cloud_storage_bloc.dart';
 import '../../bloc/fcm_bloc.dart';
 import '../../bloc/geo_exception.dart';
+import '../../bloc/geo_uploader.dart';
 import '../../bloc/location_request_handler.dart';
 import '../../bloc/project_bloc.dart';
 import '../../cache_manager.dart';
@@ -40,7 +42,7 @@ import '../user_batch_control.dart';
 class GioUserList extends StatefulWidget {
   const GioUserList({
     Key? key,
-    required this.dataApiDog, required this.prefsOGx, required this.cacheManager, required this.projectBloc, required this.organizationBloc, required this.fcmBloc,
+    required this.dataApiDog, required this.prefsOGx, required this.cacheManager, required this.projectBloc, required this.organizationBloc, required this.fcmBloc, required this.geoUploader, required this.cloudStorageBloc,
   }) : super(key: key);
 
   final DataApiDog dataApiDog;
@@ -49,6 +51,8 @@ class GioUserList extends StatefulWidget {
   final ProjectBloc projectBloc;
   final OrganizationBloc organizationBloc;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
 
   @override
@@ -232,7 +236,9 @@ class _GioUserListState extends State<GioUserList> {
               fcmBloc: widget.fcmBloc,
               organizationBloc: widget.organizationBloc,
               projectBloc: widget.projectBloc,
-              dataApiDog: widget.dataApiDog,
+              dataApiDog: widget.dataApiDog,geoUploader: widget.geoUploader,
+              cloudStorageBloc: widget.cloudStorageBloc,
+
               prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
               user: user, )));
   }
@@ -322,6 +328,8 @@ class _GioUserListState extends State<GioUserList> {
                 projectBloc: widget.projectBloc,
                 project: null,
                 dataApiDog: widget.dataApiDog,
+                geoUploader: widget.geoUploader,
+                cloudStorageBloc: widget.cloudStorageBloc,
                 prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                 user: user)));
   }
@@ -376,6 +384,8 @@ class _GioUserListState extends State<GioUserList> {
               organizationBloc: widget.organizationBloc,
               projectBloc: widget.projectBloc,
               dataApiDog: widget.dataApiDog,
+              geoUploader: widget.geoUploader,
+              cloudStorageBloc: widget.cloudStorageBloc,
               prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
               user: user, )));
   }
@@ -595,6 +605,8 @@ class _GioUserListState extends State<GioUserList> {
                           projectBloc: widget.projectBloc,
                           project: null,
                           dataApiDog: widget.dataApiDog,
+                          geoUploader: widget.geoUploader,
+                          cloudStorageBloc: widget.cloudStorageBloc,
                           showUser: (user) {},
                           showLocationRequest: (req) {},
                           showLocationResponse: (resp) {
@@ -666,6 +678,8 @@ class _GioUserListState extends State<GioUserList> {
                           fcmBloc: widget.fcmBloc,
                           organizationBloc: widget.organizationBloc,
                           projectBloc: widget.projectBloc,
+                          geoUploader: widget.geoUploader,
+                          cloudStorageBloc: widget.cloudStorageBloc,
                           project: null,
                           dataApiDog: widget.dataApiDog,
                           showUser: (user) {},

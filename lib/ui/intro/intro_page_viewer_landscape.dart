@@ -10,11 +10,15 @@ import 'package:page_transition/page_transition.dart';
 import '../../l10n/translation_handler.dart';
 import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/cloud_storage_bloc.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/geo_uploader.dart';
 import '../../library/bloc/isolate_handler.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
+import '../../library/bloc/theme_bloc.dart';
 import '../../library/cache_manager.dart';
+import '../../library/data/settings_model.dart';
 import '../../library/data/user.dart' as ur;
 import '../../library/emojis.dart';
 import '../../library/functions.dart';
@@ -30,7 +34,7 @@ class IntroPageViewerLandscape extends StatefulWidget {
       required this.cacheManager,
       required this.fcmBloc,
       required this.organizationBloc,
-      required this.projectBloc, required this.dataHandler})
+      required this.projectBloc, required this.dataHandler, required this.geoUploader, required this.cloudStorageBloc})
       : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
@@ -39,6 +43,8 @@ class IntroPageViewerLandscape extends StatefulWidget {
   final OrganizationBloc organizationBloc;
   final ProjectBloc projectBloc;
   final IsolateDataHandler dataHandler;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
 
   @override
@@ -68,6 +74,7 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
 
   final mm =
       '${E.pear}${E.pear}${E.pear}${E.pear} IntroPageViewerLandscape: ${E.pear} ';
+  late SettingsModel settingsModel;
 
   @override
   void initState() {
@@ -78,11 +85,11 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
   }
 
   Future _setTexts() async {
-    var sett = await prefsOGx.getSettings();
+    settingsModel = await widget.prefsOGx.getSettings();
     late String locale;
-    locale = sett.locale!;
+    locale = settingsModel.locale!;
 
-    hint = await translator.translate('selectLanguage', sett!.locale!);
+    hint = await translator.translate('selectLanguage', locale);
     organizations = await translator.translate('organizations', locale);
     managementPeople = await translator.translate('managementPeople', locale);
     fieldWorkers = await translator.translate('fieldWorkers', locale);
@@ -142,6 +149,8 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
                   dataHandler: widget.dataHandler,
                   organizationBloc: widget.organizationBloc,
                   projectBloc: widget.projectBloc,
+                  cloudStorageBloc: cloudStorageBloc,
+                  geoUploader: geoUploader,
                   prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                 )));
       } else {
@@ -216,10 +225,15 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
 
   onSelected(Locale p1, String p2) async {
     pp('$mm locale selected: $p1 - $p2');
-    final s = getBaseSettings();
-    s.organizationId = user!.organizationId;
-    await prefsOGx.saveSettings(s);
+    settingsModel.organizationId = user!.organizationId;
+    await widget.prefsOGx.saveSettings(settingsModel);
     await _setTexts();
+    Locale newLocale = Locale(p1.languageCode);
+    final m =
+    LocaleAndTheme(themeIndex: settingsModel.themeIndex!, locale: newLocale);
+    themeBloc.themeStreamController.sink.add(m);
+    widget.fcmBloc.settingsStreamController.sink.add(settingsModel!);
+
     ;
   }
 

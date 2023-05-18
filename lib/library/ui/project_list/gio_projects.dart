@@ -17,8 +17,10 @@ import '../../../l10n/translation_handler.dart';
 import '../../../ui/audio/audio_recorder.dart';
 import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
+import '../../bloc/cloud_storage_bloc.dart';
 import '../../bloc/fcm_bloc.dart';
 import '../../bloc/geo_exception.dart';
+import '../../bloc/geo_uploader.dart';
 import '../../bloc/organization_bloc.dart';
 import '../../bloc/project_bloc.dart';
 import '../../data/position.dart';
@@ -52,7 +54,7 @@ class GioProjects extends StatefulWidget {
       required this.organizationBloc,
       required this.cacheManager,
       required this.dataApiDog,
-      required this.fcmBloc})
+      required this.fcmBloc, required this.geoUploader, required this.cloudStorageBloc})
       : super(key: key);
   final Project? project;
   final int instruction;
@@ -62,6 +64,8 @@ class GioProjects extends StatefulWidget {
   final CacheManager cacheManager;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   State<GioProjects> createState() => _GioProjectsState();
@@ -323,6 +327,8 @@ class _GioProjectsState extends State<GioProjects>
                 fcmBloc: widget.fcmBloc,
                 organizationBloc: widget.organizationBloc,
                 projectBloc: widget.projectBloc,
+                geoUploader: widget.geoUploader,
+                cloudStorageBloc: widget.cloudStorageBloc,
                 dataApiDog: widget.dataApiDog,
               )));
     }
@@ -341,7 +347,7 @@ class _GioProjectsState extends State<GioProjects>
   }
 
   void _navigateToProjectMedia(Project p) {
-    pp('$mm _navigateToProjectMedia with project: 🔆🔆🔆${p.toJson()}🔆🔆🔆');
+    // pp('$mm _navigateToProjectMedia with project: 🔆🔆🔆${p.toJson()}🔆🔆🔆');
     Navigator.push(
         context,
         PageTransition(
@@ -355,7 +361,7 @@ class _GioProjectsState extends State<GioProjects>
               prefsOGx: widget.prefsOGx,
               cacheManager: widget.cacheManager,
               dataApiDog: widget.dataApiDog,
-              fcmBloc: widget.fcmBloc,
+              fcmBloc: widget.fcmBloc, geoUploader: widget.geoUploader, cloudStorageBloc: widget.cloudStorageBloc,
             )));
   }
 
@@ -379,6 +385,7 @@ class _GioProjectsState extends State<GioProjects>
         alignment: Alignment.topLeft,
         duration: const Duration(milliseconds: 1500),
         child: AudioRecorder(
+          cloudStorageBloc: widget.cloudStorageBloc,
             onCloseRequested: () {
               pp('On stop requested');
               Navigator.of(context).pop();
@@ -454,6 +461,8 @@ class _GioProjectsState extends State<GioProjects>
                 prefsOGx: widget.prefsOGx,
                 fcmBloc: fcmBloc,
                 dataApiDog: widget.dataApiDog,
+                geoUploader: widget.geoUploader,
+                cloudStorageBloc: widget.cloudStorageBloc,
                 cacheManager: widget.cacheManager,
               )));
     }
@@ -871,6 +880,8 @@ class _GioProjectsState extends State<GioProjects>
                     organizationBloc: widget.organizationBloc,
                     projectBloc: widget.projectBloc,
                     fcmBloc: widget.fcmBloc,
+                    geoUploader: widget.geoUploader,
+                    cloudStorageBloc: widget.cloudStorageBloc,
                     project: null,
                     showPhoto: (p) {},
                     showVideo: (p) {},
@@ -937,6 +948,8 @@ class _GioProjectsState extends State<GioProjects>
                     projectBloc: widget.projectBloc,
                     project: widget.project,
                     dataApiDog: widget.dataApiDog,
+                    geoUploader: widget.geoUploader,
+                    cloudStorageBloc: widget.cloudStorageBloc,
                     showPhoto: (p) {},
                     showVideo: (p) {},
                     showAudio: (p) {},

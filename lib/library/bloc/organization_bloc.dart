@@ -177,8 +177,8 @@ class OrganizationBloc {
       required bool forceRefresh,
       required String startDate,
       required String endDate}) async {
-    pp('$mm getOrganizationData ... photos, videos and schedules'
-        ' ... forceRefresh: $forceRefresh');
+    // pp('$mm getOrganizationData ... photos, videos and schedules'
+    //     ' ... forceRefresh: $forceRefresh');
 
     final start = DateTime.now();
     DataBag? bag = DataBag(

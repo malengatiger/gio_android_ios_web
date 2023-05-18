@@ -3,7 +3,6 @@ import 'dart:core';
 import 'dart:core';
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geo_monitor/dashboard_khaya/project_list.dart';
@@ -26,31 +25,29 @@ import 'package:geo_monitor/library/data/video.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/library/generic_functions.dart';
 import 'package:geo_monitor/library/ui/camera/gio_video_player.dart';
-import 'package:geo_monitor/library/ui/maps/photo_map.dart';
 import 'package:geo_monitor/library/ui/maps/project_map_mobile.dart';
-import 'package:geo_monitor/library/ui/media/photo_cover.dart';
 import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
 import 'package:geo_monitor/library/ui/project_list/gio_projects.dart';
 import 'package:geo_monitor/library/users/edit/user_detail.dart';
 import 'package:geo_monitor/library/users/edit/user_edit_main.dart';
 import 'package:geo_monitor/library/users/list/geo_user_list.dart';
-import 'package:geo_monitor/main.dart';
 import 'package:geo_monitor/ui/activity/gio_activities.dart';
 import 'package:geo_monitor/ui/audio/audio_player_og.dart';
 import 'package:geo_monitor/ui/dashboard/photo_frame.dart';
 import 'package:geo_monitor/ui/intro/intro_main.dart';
-import 'package:geo_monitor/utilities/sharedprefs.dart';
 import 'package:geo_monitor/utilities/transitions.dart';
-import 'package:geo_monitor/utils/audio_player.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:universal_platform/universal_platform.dart';
+import 'package:badges/badges.dart' as bd;
 
 import '../l10n/translation_handler.dart';
 import '../library/api/data_api_og.dart';
+import '../library/bloc/cloud_storage_bloc.dart';
 import '../library/bloc/fcm_bloc.dart';
+import '../library/bloc/geo_uploader.dart';
 import '../library/bloc/isolate_handler.dart';
 import '../library/bloc/project_bloc.dart';
 import '../library/bloc/theme_bloc.dart';
@@ -64,7 +61,6 @@ import '../library/ui/maps/geofence_map_tablet.dart';
 import '../library/ui/maps/org_map_mobile.dart';
 import '../library/ui/maps/project_polygon_map_mobile.dart';
 import '../library/ui/settings/settings_main.dart';
-import '../utilities/sharedprefs.dart';
 import 'member_list.dart';
 
 class DashboardKhaya extends StatefulWidget {
@@ -76,7 +72,9 @@ class DashboardKhaya extends StatefulWidget {
       required this.projectBloc,
       required this.prefsOGx,
       required this.cacheManager,
-      required this.dataHandler})
+      required this.dataHandler,
+      required this.geoUploader,
+      required this.cloudStorageBloc})
       : super(key: key);
 
   final DataApiDog dataApiDog;
@@ -86,6 +84,8 @@ class DashboardKhaya extends StatefulWidget {
   final PrefsOGx prefsOGx;
   final CacheManager cacheManager;
   final IsolateDataHandler dataHandler;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   State<DashboardKhaya> createState() => DashboardKhayaState();
@@ -182,103 +182,109 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     final m =
         LocaleAndTheme(themeIndex: settings.themeIndex!, locale: newLocale);
     themeBloc.themeStreamController.sink.add(m);
-    _getData(false);
+    _getData();
   }
 
   void _listenForFCM() async {
     var android = UniversalPlatform.isAndroid;
     var ios = UniversalPlatform.isIOS;
-    if (android || ios) {
-      pp('$mm 🍎 🍎 _listen to FCM message streams ... 🍎 🍎');
-      geofenceSubscriptionFCM =
-          widget.fcmBloc.geofenceStream.listen((GeofenceEvent event) async {
-        pp('$mm: 🍎geofenceSubscriptionFCM: 🍎 GeofenceEvent: '
-            'user ${event.user!.name} arrived: ${event.projectName} ');
-        _handleGeofenceEvent(event);
-      });
-      activitySubscription =
-          widget.fcmBloc.activityStream.listen((ActivityModel event) async {
-        pp('\n\n$mm: 🍎activitySubscription delivered 🍎 ActivityModel: '
-            ' ${event.toJson()} \n');
-        events.insert(0, event);
-        if (mounted) {
-          setState(() {});
-        }
-      });
+    // if (android || ios) {
+    pp('$mm 🍎 🍎 _listen to FCM message streams ... 🍎 🍎');
+    geofenceSubscriptionFCM =
+        widget.fcmBloc.geofenceStream.listen((GeofenceEvent event) async {
+      pp('$mm: 🍎geofenceSubscriptionFCM: 🍎 GeofenceEvent: '
+          'user ${event.user!.name} arrived: ${event.projectName} ');
+      _handleGeofenceEvent(event);
+    });
 
-      projectSubscriptionFCM =
-          widget.fcmBloc.projectStream.listen((Project project) async {
-        _getData(false);
-        if (mounted) {
-          pp('$mm: 🍎 🍎 project arrived: ${project.name} ... 🍎 🍎');
-          setState(() {});
-        }
-      });
+    activitySubscription =
+        widget.fcmBloc.activityStream.listen((ActivityModel event) async {
+      pp('\n\n$mm: 🍎activitySubscription delivered 🍎 ActivityModel: '
+          ' ${event.date} \n');
+      events.insert(0, event);
+      totalEvents++;
+      if (mounted) {
+        setState(() {});
+      }
+    });
 
-      settingsSubscriptionFCM =
-          widget.fcmBloc.settingsStream.listen((settings) async {
-        pp('$mm: 🍎🍎 settingsSubscriptionFCM: settings arrived with themeIndex: ${settings.themeIndex}... 🍎🍎');
-        _handleNewSettings(settings);
-      });
+    projectSubscriptionFCM =
+        widget.fcmBloc.projectStream.listen((Project project) async {
+          _getCachedData();
+      if (mounted) {
+        pp('$mm: 🍎 🍎 project arrived: ${project.name} ... 🍎 🍎');
+        setState(() {});
+      }
+    });
 
-      userSubscriptionFCM = widget.fcmBloc.userStream.listen((u) async {
-        pp('$mm: 🍎 🍎 user arrived... 🍎 🍎');
-        if (u.userId == user!.userId!) {
-          user = u;
-        }
-        _getData(false);
-      });
+    settingsSubscriptionFCM =
+        widget.fcmBloc.settingsStream.listen((settings) async {
+      pp('$mm: 🍎🍎 settingsSubscriptionFCM: settings arrived with themeIndex: ${settings.themeIndex}... 🍎🍎');
+      _handleNewSettings(settings);
+    });
 
-      photoSubscriptionFCM = widget.fcmBloc.photoStream.listen((photo) async {
-        pp('$mm: 🍎 🍎 photoSubscriptionFCM photo arrived... 🍎 🍎');
-        _getCachedData();
-      });
+    userSubscriptionFCM = widget.fcmBloc.userStream.listen((u) async {
+      pp('$mm: 🍎 🍎 user arrived... 🍎 🍎');
+      if (u.userId == user!.userId!) {
+        user = u;
+      }
+      _getCachedData();
+    });
 
-      videoSubscriptionFCM =
-          widget.fcmBloc.videoStream.listen((Video message) async {
-        pp('$mm: 🍎 🍎 videoSubscriptionFCM video arrived... 🍎 🍎');
-        _getData(false);
-      });
+    photoSubscriptionFCM = widget.fcmBloc.photoStream.listen((photo) async {
+      pp('$mm: 🍎 🍎 photoSubscriptionFCM photo arrived... 🍎 🍎');
+      _getCachedData();
+    });
 
-      audioSubscriptionFCM =
-          widget.fcmBloc.audioStream.listen((Audio message) async {
-        pp('$mm: 🍎 🍎 audioSubscriptionFCM audio arrived... 🍎 🍎');
-        _getCachedData();
-      });
+    videoSubscriptionFCM =
+        widget.fcmBloc.videoStream.listen((Video message) async {
+      pp('$mm: 🍎 🍎 videoSubscriptionFCM video arrived... 🍎 🍎');
+      _getCachedData();
+    });
 
-      projectPositionSubscriptionFCM = widget.fcmBloc.projectPositionStream
-          .listen((ProjectPosition message) async {
-        pp('$mm: 🍎 🍎 projectPositionSubscriptionFCM position arrived... 🍎 🍎');
-        _getData(false);
-      });
+    audioSubscriptionFCM =
+        widget.fcmBloc.audioStream.listen((Audio message) async {
+      pp('$mm: 🍎 🍎 audioSubscriptionFCM audio arrived... 🍎 🍎');
+      _getCachedData();
+    });
 
-      projectPolygonSubscriptionFCM = widget.fcmBloc.projectPolygonStream
-          .listen((ProjectPolygon message) async {
-        pp('$mm: 🍎 🍎 projectPolygonSubscriptionFCM polygon arrived... 🍎 🍎');
-        _getData(false);
-        if (mounted) {}
-      });
+    projectPositionSubscriptionFCM = widget.fcmBloc.projectPositionStream
+        .listen((ProjectPosition message) async {
+      pp('$mm: 🍎 🍎 projectPositionSubscriptionFCM position arrived... 🍎 🍎');
+      _getCachedData();
+    });
 
-      dataBagSubscription =
-          widget.organizationBloc.dataBagStream.listen((DataBag bag) async {
-        pp('$mm: 🍎 🍎 dataBagStream bag arrived... 🍎 🍎');
-        if (bag.projects != null) {
-          projects = bag.projects!;
-        }
-        if (bag.projects != null) {
-          users = bag.users!;
-        }
-        if (mounted) {
-          setState(() {});
-        }
-      });
-    } else {
-      pp('App is running on the Web 👿👿👿firebase messaging is OFF 👿👿👿');
-    }
+    projectPolygonSubscriptionFCM = widget.fcmBloc.projectPolygonStream
+        .listen((ProjectPolygon message) async {
+      pp('$mm: 🍎 🍎 projectPolygonSubscriptionFCM polygon arrived... 🍎 🍎');
+      _getCachedData();
+      if (mounted) {}
+    });
+
+    dataBagSubscription =
+        widget.organizationBloc.dataBagStream.listen((DataBag bag) async {
+      pp('$mm: 🍎 🍎 dataBagStream bag arrived... 🍎 🍎');
+      if (bag.projects != null) {
+        projects = bag.projects!;
+        totalProjects = projects.length;
+      }
+      if (bag.users != null) {
+        users = bag.users!;
+        totalUsers = users.length;
+      }
+      if (bag.activityModels != null) {
+        events = bag.activityModels!;
+        totalEvents = events.length;
+      }
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   var images = <Image>[];
   late SettingsModel settingsModel;
+
   void _getUser() async {
     user = await widget.prefsOGx.getUser();
     settingsModel = await widget.prefsOGx.getSettings();
@@ -293,15 +299,34 @@ class DashboardKhayaState extends State<DashboardKhaya> {
         busy = true;
       });
       pp('$mm _getCachedData .... ');
-      projects = await widget.cacheManager.getOrganizationProjects();
-      users = await widget.cacheManager.getUsers();
-      events = await widget.cacheManager
-          .getActivitiesWithinHours(settingsModel.activityStreamHours!);
-      pp('$mm _getCachedData .... projects: ${projects.length} users: ${users.length} events: ${events.length}');
+      final m = await getStartEndDates(numberOfDays: settingsModel.numberOfDays);
+      users = await widget.organizationBloc.getUsers(organizationId: settingsModel.organizationId!,
+          forceRefresh: false);
+      projects = await widget.organizationBloc.getOrganizationProjects(
+          organizationId: settingsModel.organizationId!,
+          forceRefresh: false);
+
+      events = await widget.organizationBloc.getOrganizationActivity(
+          organizationId: settingsModel.organizationId!,
+          hours: settingsModel.activityStreamHours!,
+          forceRefresh: false);
+
       setState(() {
         busy = false;
       });
-      _getData(false);
+      // events = await organizationBloc.getCachedOrganizationActivity(
+      //     organizationId: settingsModel.organizationId!, hours: settingsModel.activityStreamHours!);
+
+
+      pp('$mm _getCachedData .... projects: ${projects.length} users: ${users.length} events: ${events.length}');
+      totalEvents = events.length;
+      totalUsers = users.length;
+      totalProjects = projects.length;
+
+      setState(() {
+        busy = false;
+      });
+      // _getData(false);
     } catch (e) {
       if (mounted) {
         pp('$mm showSnack');
@@ -318,7 +343,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     });
   }
 
-  void _getData(bool forceRefresh) async {
+  void _getData() async {
     try {
       pp('$mm _getData ...................................... forceRefresh: $forceRefresh  ');
       setState(() {
@@ -328,19 +353,17 @@ class DashboardKhayaState extends State<DashboardKhaya> {
           await getStartEndDates(numberOfDays: settingsModel.numberOfDays!);
       final bag = await widget.organizationBloc.getOrganizationData(
           organizationId: user!.organizationId!,
-          forceRefresh: forceRefresh,
+          forceRefresh: true,
           startDate: m['startDate']!,
           endDate: m['endDate']!);
       projects = bag.projects!;
-      pp('$mm .....................................projects found : ${projects.length}');
-      users = await widget.organizationBloc.getUsers(
-          organizationId: user!.organizationId!, forceRefresh: forceRefresh);
-      pp('$mm .....................................users found : ${projects.length}');
+      events = await organizationBloc.getCachedOrganizationActivity(
+          organizationId: settingsModel.organizationId!, hours: settingsModel.activityStreamHours!);
+      users = bag.users!;
 
-      events = await widget.organizationBloc.getOrganizationActivity(
-          organizationId: user!.organizationId!,
-          forceRefresh: true,
-          hours: settingsModel.activityStreamHours!);
+      totalEvents = events.length;
+      totalUsers = users.length;
+      totalProjects = projects.length;
     } catch (e) {
       if (mounted) {
         pp('$mm showSnack with error : $e');
@@ -357,7 +380,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     });
   }
 
-  String? serverProblem;
+  String? serverProblem, videoTitle;
   late String deviceType;
   late SettingsModel settings;
   void _setTexts() async {
@@ -368,6 +391,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     eventsText = await translator.translate('events', settings.locale!);
     projectsText = await translator.translate('projects', settings.locale!);
     membersText = await translator.translate('members', settings.locale!);
+    videoTitle = await translator.translate('videos', settings.locale!);
+
     recentEventsText =
         await translator.translate('recentEvents', settings.locale!);
     serverProblem =
@@ -389,6 +414,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
           cacheManager: widget.cacheManager,
           project: null,
           fcmBloc: widget.fcmBloc,
+          geoUploader: widget.geoUploader,
+          cloudStorageBloc: widget.cloudStorageBloc,
           organizationBloc: widget.organizationBloc,
           projectBloc: widget.projectBloc,
         ),
@@ -403,6 +430,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
           organizationBloc: widget.organizationBloc,
           projectBloc: widget.projectBloc,
           dataApiDog: widget.dataApiDog,
+          geoUploader: widget.geoUploader,
+          cloudStorageBloc: widget.cloudStorageBloc,
           project: null,
           onPhotoTapped: onPhotoTapped,
           onVideoTapped: onVideoTapped,
@@ -430,6 +459,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
             isolateHandler: widget.dataHandler,
             fcmBloc: widget.fcmBloc,
             organizationBloc: widget.organizationBloc,
+            geoUploader: widget.geoUploader,
+            cloudStorageBloc: widget.cloudStorageBloc,
             projectBloc: widget.projectBloc),
         context);
   }
@@ -446,6 +477,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
           cacheManager: widget.cacheManager,
           instruction: 0,
           fcmBloc: widget.fcmBloc,
+          cloudStorageBloc: widget.cloudStorageBloc,
+          geoUploader: widget.geoUploader,
         ),
         context);
   }
@@ -460,6 +493,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
             projectBloc: widget.projectBloc,
             prefsOGx: widget.prefsOGx,
             cacheManager: widget.cacheManager,
+            geoUploader: widget.geoUploader,
+            cloudStorageBloc: widget.cloudStorageBloc,
             dataApiDog: widget.dataApiDog),
         context);
   }
@@ -479,6 +514,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
           projectBloc: widget.projectBloc,
           dataApiDog: widget.dataApiDog,
           prefsOGx: widget.prefsOGx,
+          geoUploader: widget.geoUploader,
+          cloudStorageBloc: widget.cloudStorageBloc,
           cacheManager: widget.cacheManager,
         ),
         context);
@@ -488,7 +525,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
   void _onRefreshRequested() {
     pp(' ✅✅✅ .... _onRefreshRequested ... calling broadcastRefresh with true');
     refreshBloc.broadcastRefresh();
-    _getData(true);
+    _getData();
   }
 
   void _onSettingsRequested() {
@@ -570,6 +607,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
             organizationBloc: widget.organizationBloc,
             cacheManager: widget.cacheManager,
             projectBloc: widget.projectBloc,
+            geoUploader: widget.geoUploader,
+            cloudStorageBloc: widget.cloudStorageBloc,
             fcmBloc: widget.fcmBloc),
         context);
   }
@@ -611,6 +650,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                   elevation: 8.0,
                   cacheManager: widget.cacheManager,
                   dataApiDog: widget.dataApiDog,
+                  geoUploader: widget.geoUploader,
+                  cloudStorageBloc: widget.cloudStorageBloc,
                   onPhotoCardClose: () {},
                   translatedDate: '',
                   locale: settingsModel.locale!,
@@ -631,10 +672,18 @@ class DashboardKhayaState extends State<DashboardKhaya> {
 
   onVideoTapped(Video p1) {
     pp('🌀🌀🌀🌀 onVideoTapped; ${p1.toJson()}');
+    deviceType = getThisDeviceType();
     setState(() {
       video = p1;
     });
     if (deviceType == 'phone') {
+      navigateWithSlide(
+          PhoneVideoPlayer(
+            video: p1,
+            onCloseRequested: () {},
+            dataApiDog: widget.dataApiDog, title: videoTitle!,
+          ),
+          context);
     } else {
       setState(() {
         playAudio = false;
@@ -741,6 +790,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
             organizationBloc: widget.organizationBloc,
             cacheManager: widget.cacheManager,
             dataApiDog: widget.dataApiDog,
+            geoUploader: widget.geoUploader,
+            cloudStorageBloc: widget.cloudStorageBloc,
           ),
           context);
     }
@@ -813,6 +864,9 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                     cacheManager: widget.cacheManager,
                     prefsOGx: widget.prefsOGx,
                     dataApiDog: widget.dataApiDog,
+                    geoUploader: widget.geoUploader,
+                    cloudStorageBloc: widget.cloudStorageBloc,
+                    projectBloc: widget.projectBloc,
                     onEventTapped: (event) {
                       _onEventTapped(event);
                     },
@@ -883,6 +937,9 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                             prefsOGx: widget.prefsOGx,
                             dataApiDog: widget.dataApiDog,
                             organizationBloc: widget.organizationBloc,
+                            geoUploader: widget.geoUploader,
+                            cloudStorageBloc: widget.cloudStorageBloc,
+                            projectBloc: widget.projectBloc,
                             locale: settings.locale!,
                             forceRefresh: forceRefresh,
                             totalEvents: totalEvents,
@@ -957,6 +1014,9 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                             prefsOGx: widget.prefsOGx,
                             dataApiDog: widget.dataApiDog,
                             organizationBloc: widget.organizationBloc,
+                            geoUploader: widget.geoUploader,
+                            cloudStorageBloc: widget.cloudStorageBloc,
+                            projectBloc: widget.projectBloc,
                             totalEvents: totalEvents,
                             totalProjects: totalProjects,
                             totalUsers: totalUsers,
@@ -1033,18 +1093,20 @@ class DashboardKhayaState extends State<DashboardKhaya> {
             : const SizedBox(),
         showAudio
             ? Positioned(
-                left: 160, right: 160, top: 120,
+                left: 160,
+                right: 160,
+                top: 120,
                 child: SizedBox(
-                width: 440,
-                child: AudioPlayerOG(
-                    audio: audio!,
-                    onCloseRequested: () {
-                      setState(() {
-                        showAudio = false;
-                      });
-                    },
-                    dataApiDog: dataApiDog),
-              ))
+                  width: 440,
+                  child: AudioPlayerOG(
+                      audio: audio!,
+                      onCloseRequested: () {
+                        setState(() {
+                          showAudio = false;
+                        });
+                      },
+                      dataApiDog: dataApiDog),
+                ))
             : const SizedBox(),
         showPhoto
             ? Positioned(
@@ -1069,20 +1131,22 @@ class DashboardKhayaState extends State<DashboardKhaya> {
             : const SizedBox(),
         playVideo
             ? Positioned(
-            left: 100,
-            right: 100,
-            top: 48,
-            child: SizedBox(
-              width: 600,
-              child: GioVideoPlayer(
-                video: video!, onCloseRequested: () {
-                  setState(() {
-                    playVideo = false;
-                  });
-              }, width: 600, dataApiDog: widget.dataApiDog,
-
-              ),
-            ))
+                left: 100,
+                right: 100,
+                top: 48,
+                child: SizedBox(
+                  width: 600,
+                  child: GioVideoPlayer(
+                    video: video!,
+                    onCloseRequested: () {
+                      setState(() {
+                        playVideo = false;
+                      });
+                    },
+                    width: 600,
+                    dataApiDog: widget.dataApiDog,
+                  ),
+                ))
             : const SizedBox(),
       ],
     ));
@@ -1130,6 +1194,9 @@ class RealDashboard extends StatelessWidget {
     required this.cacheManager,
     required this.dataApiDog,
     required this.prefsOGx,
+    required this.geoUploader,
+    required this.cloudStorageBloc,
+    required this.projectBloc,
   }) : super(key: key);
 
   final Function onEventsSubtitleTapped;
@@ -1167,6 +1234,9 @@ class RealDashboard extends StatelessWidget {
   final CacheManager cacheManager;
   final DataApiDog dataApiDog;
   final PrefsOGx prefsOGx;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
+  final ProjectBloc projectBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -1274,6 +1344,8 @@ class RealDashboard extends StatelessWidget {
                         prefsOGx: prefsOGx,
                         cacheManager: cacheManager,
                         projectBloc: projectBloc,
+                        geoUploader: geoUploader,
+                        cloudStorageBloc: cloudStorageBloc,
                       ),
                       const SizedBox(height: 20),
                       SubTitleWidget(
@@ -1291,7 +1363,6 @@ class RealDashboard extends StatelessWidget {
                         onEventTapped: (act) {
                           onEventTapped(act);
                         },
-                        // activities: events,
                         locale: locale,
                       ),
                       const SizedBox(
@@ -1352,7 +1423,7 @@ class RealDashboard extends StatelessWidget {
                     ),
                   ),
                 ),
-                title: XdHeader(
+                title: GioHeader(
                   navigateToIntro: () {
                     navigateToIntro();
                   },
@@ -1406,6 +1477,13 @@ class SubTitleWidget extends StatelessWidget {
                   color: color,
                   size: 20,
                 )),
+          ),
+          const SizedBox(
+            width: 36,
+          ),
+          Text(
+            '$number',
+            style: myTextStyleMediumLargeWithOpacity(context, 0.25),
           )
         ],
       ),
@@ -1500,7 +1578,9 @@ class TopCardList extends StatefulWidget {
       required this.prefsOGx,
       required this.projectBloc,
       required this.dataApiDog,
-      required this.cacheManager})
+      required this.cacheManager,
+      required this.geoUploader,
+      required this.cloudStorageBloc})
       : super(key: key);
 
   final OrganizationBloc organizationBloc;
@@ -1509,6 +1589,8 @@ class TopCardList extends StatefulWidget {
   final ProjectBloc projectBloc;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   State<TopCardList> createState() => TopCardListState();
@@ -1711,6 +1793,8 @@ class TopCardListState extends State<TopCardList> {
             cacheManager: widget.cacheManager,
             instruction: 0,
             fcmBloc: widget.fcmBloc,
+            geoUploader: widget.geoUploader,
+            cloudStorageBloc: widget.cloudStorageBloc,
           ),
           context);
     }
@@ -1726,6 +1810,8 @@ class TopCardListState extends State<TopCardList> {
               projectBloc: widget.projectBloc,
               prefsOGx: widget.prefsOGx,
               cacheManager: widget.cacheManager,
+              geoUploader: widget.geoUploader,
+              cloudStorageBloc: widget.cloudStorageBloc,
               dataApiDog: widget.dataApiDog),
           context);
     }
@@ -1753,6 +1839,8 @@ class TopCardListState extends State<TopCardList> {
               organizationBloc: widget.organizationBloc,
               cacheManager: widget.cacheManager,
               dataApiDog: widget.dataApiDog,
+              geoUploader: widget.geoUploader,
+              cloudStorageBloc: widget.cloudStorageBloc,
               fcmBloc: widget.fcmBloc),
           context);
     }
@@ -1768,6 +1856,8 @@ class TopCardListState extends State<TopCardList> {
             organizationBloc: widget.organizationBloc,
             projectBloc: widget.projectBloc,
             dataApiDog: widget.dataApiDog,
+            geoUploader: widget.geoUploader,
+            cloudStorageBloc: widget.cloudStorageBloc,
             project: null,
             onPhotoTapped: (p) {},
             onVideoTapped: (p) {},
@@ -1943,5 +2033,40 @@ class TopCardListState extends State<TopCardList> {
         _navigateToMap();
         break;
     }
+  }
+}
+
+class PhoneVideoPlayer extends StatelessWidget {
+  const PhoneVideoPlayer(
+      {Key? key,
+      required this.video,
+      required this.onCloseRequested,
+      required this.dataApiDog,
+      this.width, required this.title})
+      : super(key: key);
+
+  final Video video;
+  final Function onCloseRequested;
+  final DataApiDog dataApiDog;
+  final double? width;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(title, style: myTextStyleMediumLarge(context),),
+        ),
+        body: GioVideoPlayer(
+          video: video,
+          onCloseRequested: () {
+            onCloseRequested();
+          },
+          width: width == null ? 600 : width!,
+          dataApiDog: dataApiDog,
+        ),
+      ),
+    );
   }
 }

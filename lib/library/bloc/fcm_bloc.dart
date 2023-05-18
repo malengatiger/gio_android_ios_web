@@ -117,7 +117,7 @@ class FCMBloc {
 
 
   Future initialize() async {
-    pp("$mm initialize ....... FIREBASE MESSAGING ...........................");
+    // pp("$mm initialize ....... FIREBASE MESSAGING ...........................");
     user = await prefsOGx.getUser();
     var android = UniversalPlatform.isAndroid;
     var ios = UniversalPlatform.isIOS;

@@ -30,10 +30,10 @@ class MediaGrid extends StatefulWidget {
   final bool scrollToTop;
 
   @override
-  State<MediaGrid> createState() => _MediaGridState();
+  State<MediaGrid> createState() => MediaGridState();
 }
 
-class _MediaGridState extends State<MediaGrid> {
+class MediaGridState extends State<MediaGrid> {
   static const mm = '🛎MediaGrid: 🛎🛎🛎🛎: ';
 
   @override

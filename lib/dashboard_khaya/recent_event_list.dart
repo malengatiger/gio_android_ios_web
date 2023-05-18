@@ -46,13 +46,13 @@ class _RecentEventListState extends State<RecentEventList> {
     super.initState();
     pp('$mm initState ..............');
     _listen();
-    _getData();
+    _getData(false);
   }
 
   void _listen() {
     settingsSub = widget.fcmBloc.settingsStream.listen((event) {
       pp('$mm settingsStream delivered a setting ');
-      _getData();
+      _getData(true);
     });
     actSub = widget.fcmBloc.activityStream.listen((event) {
       pp('$mm activityStream delivered an activity, insert received activity in list: 🔆${activities.length}');
@@ -79,11 +79,11 @@ class _RecentEventListState extends State<RecentEventList> {
     
     refreshSub = refreshBloc.refreshStream.listen((event) { 
       pp('$mm refreshStream delivered a refresh command: $event, ');
-      _getData();
+      _getData(true);
     });
   }
 
-  Future _getData() async {
+  Future _getData(bool forceRefresh) async {
     setState(() {
       busy = true;
     });
@@ -93,7 +93,7 @@ class _RecentEventListState extends State<RecentEventList> {
       activities = await widget.organizationBloc.getOrganizationActivity(
           organizationId: sett.organizationId!,
           hours: sett.activityStreamHours!,
-          forceRefresh: true);
+          forceRefresh: forceRefresh);
 
       _sort();
     } catch (e) {

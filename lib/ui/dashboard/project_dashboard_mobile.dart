@@ -15,8 +15,10 @@ import 'package:universal_platform/universal_platform.dart';
 
 import '../../l10n/translation_handler.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/cloud_storage_bloc.dart';
 import '../../library/bloc/connection_check.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/geo_uploader.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
 import '../../library/bloc/theme_bloc.dart';
@@ -40,7 +42,7 @@ class ProjectDashboardMobile extends StatefulWidget {
     required this.prefsOGx,
     required this.organizationBloc,
     required this.dataApiDog,
-    required this.cacheManager, required this.fcmBloc,
+    required this.cacheManager, required this.fcmBloc, required this.geoUploader, required this.cloudStorageBloc,
   }) : super(key: key);
   final Project project;
   final User? user;
@@ -50,6 +52,8 @@ class ProjectDashboardMobile extends StatefulWidget {
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   ProjectDashboardMobileState createState() => ProjectDashboardMobileState();
@@ -236,6 +240,8 @@ class ProjectDashboardMobileState extends State<ProjectDashboardMobile>
               organizationBloc: widget.organizationBloc,
               prefsOGx: widget.prefsOGx,
               cacheManager: widget.cacheManager,
+              geoUploader: widget.geoUploader,
+              cloudStorageBloc: widget.cloudStorageBloc,
               dataApiDog: widget.dataApiDog, fcmBloc: widget.fcmBloc,
             )));
   }
@@ -254,6 +260,8 @@ class ProjectDashboardMobileState extends State<ProjectDashboardMobile>
             projectBloc: widget.projectBloc,
             project: widget.project,
             dataApiDog: widget.dataApiDog,
+            geoUploader: widget.geoUploader,
+            cloudStorageBloc: widget.cloudStorageBloc,
             width: 400, thinMode: false, showPhoto: (p){},
             showVideo: (v){}, showAudio: (a){}, forceRefresh: true,
             showLocationResponse: (r){}, showLocationRequest: (r){},

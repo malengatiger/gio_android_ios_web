@@ -94,41 +94,10 @@ class CacheManager {
 
   Future initialize() async {
     if (!_isInitialized) {
-      pp('\n\n$mm Setting Hive files to existing suffix');
+      pp('\n\n$mm Hive not initialized.  start ... ');
       await _doTheInitializationWork();
       return;
     }
-  }
-
-  Future clearAllBoxes() async {
-    pp('$mm clearing all Hive boxes ....');
-    await _assignmentBox?.clear();
-    await _registrationBox?.clear();
-    await _scheduleBox?.clear();
-    await _projectPolygonBox?.clear();
-    await _projectBox?.clear();
-    await _positionBox?.clear();
-    await _userBox?.clear();
-    await _geofenceEventBox?.clear();
-    await _orgBox?.clear();
-    await _photoBox?.clear();
-    await _reportBox?.clear();
-    await _cityBox?.clear();
-    await _settingsBox?.clear();
-    await _conditionBox?.clear();
-    await _audioBox?.clear();
-    await _activityBox?.clear();
-    await _ratingBox?.clear();
-    await _videoBox?.clear();
-    await _locationResponseBox?.clear();
-    await _uploadAudioBox?.clear();
-    await _uploadVideoBox?.clear();
-    await _uploadPhotoBox?.clear();
-    await _locationResponseBox?.clear();
-    await _settingsBox?.clear();
-    await _activityBox?.clear();
-
-    pp('$mm all Hive boxes cleared 💚💚');
   }
 
   static final xx = '${E.peach}${E.peach}${E.peach}${E.peach} CacheManager: ';
@@ -148,9 +117,9 @@ class CacheManager {
   }
 
   Future<void> _openBoxes() async {
+    pp('$xx ... start opening Hive boxes ...');
     _appErrorBox = await Hive.openBox<AppError>('appErrors');
     _summaryBox = await Hive.openBox<ProjectSummary>('summaries');
-
     _activityBox = await Hive.openBox<ActivityModel>('activities');
 
     _orgBox = await Hive.openBox<Organization>('organizations');
@@ -161,7 +130,6 @@ class CacheManager {
     _dailyForecastBox = await Hive.openBox<DailyForecast>('dailyForecasts');
     _hourlyForecastBox =
         await Hive.openBox<HourlyForecast>('hourlyForecasts');
-
     _cityBox = await Hive.openBox<City>('cities');
     _photoBox = await Hive.openBox<Photo>('photos');
     _videoBox = await Hive.openBox<Video>('videos');
@@ -178,7 +146,6 @@ class CacheManager {
     _orgMessageBox = await Hive.openBox<OrgMessage>('messages');
     _reportBox = await Hive.openBox<MonitorReport>('reports');
     _geofenceEventBox = await Hive.openBox<GeofenceEvent>('geofenceEvents');
-
     _userBox = await Hive.openBox<User>('users');
     _projectPolygonBox =
         await Hive.openBox<ProjectPolygon>('projectPolygons');
@@ -190,153 +157,157 @@ class CacheManager {
     _ratingBox = await Hive.openBox<Rating>('ratings');
     _locationResponseBox =
         await Hive.openBox<LocationResponse>('locationResponses');
+
+    pp('$xx DONE! opening Hive boxes! 🥬🥬');
+
   }
 
   void _registerAdapters() {
     p('\n$xx ... Registering Hive object adapters ...');
     if (!Hive.isAdapterRegistered(66)) {
       Hive.registerAdapter(AppErrorAdapter());
-      p('$xx Hive AppErrorAdapter registered');
+      // p('$xx Hive AppErrorAdapter registered');
     }
     if (!Hive.isAdapterRegistered(65)) {
       Hive.registerAdapter(ProjectSummaryAdapter());
-      p('$xx Hive ProjectSummaryAdapter registered');
+      // p('$xx Hive ProjectSummaryAdapter registered');
     }
     if (!Hive.isAdapterRegistered(61)) {
       Hive.registerAdapter(ActivityTypeAdapter());
-      p('$xx Hive ActivityTypeAdapter registered');
+      // p('$xx Hive ActivityTypeAdapter registered');
     }
     if (!Hive.isAdapterRegistered(60)) {
       Hive.registerAdapter(ActivityModelAdapter());
-      p('$xx Hive ActivityModelAdapter registered');
+      // p('$xx Hive ActivityModelAdapter registered');
     }
     if (!Hive.isAdapterRegistered(50)) {
       Hive.registerAdapter(DailyForecastAdapter());
-      p('$xx Hive DailyForecastAdapter registered');
+      // p('$xx Hive DailyForecastAdapter registered');
     }
     if (!Hive.isAdapterRegistered(51)) {
       Hive.registerAdapter(DailyUnitsAdapter());
-      p('$xx Hive DailyUnitsAdapter registered');
+      // p('$xx Hive DailyUnitsAdapter registered');
     }
     if (!Hive.isAdapterRegistered(52)) {
       Hive.registerAdapter(HourlyForecastAdapter());
-      p('$xx Hive HourlyForecastAdapter registered');
+      // p('$xx Hive HourlyForecastAdapter registered');
     }
     if (!Hive.isAdapterRegistered(53)) {
       Hive.registerAdapter(HourlyUnitsAdapter());
-      p('$xx Hive HourlyUnitsAdapter registered');
+      // p('$xx Hive HourlyUnitsAdapter registered');
     }
     if (!Hive.isAdapterRegistered(38)) {
       Hive.registerAdapter(ProjectAssignmentAdapter());
-      p('$xx Hive ProjectAssignmentAdapter registered');
+      // p('$xx Hive ProjectAssignmentAdapter registered');
     }
     if (!Hive.isAdapterRegistered(35)) {
       Hive.registerAdapter(AudioForUploadAdapter());
-      p('$xx Hive AudioForUploadAdapter registered');
+      // p('$xx Hive AudioForUploadAdapter registered');
     }
     if (!Hive.isAdapterRegistered(34)) {
       Hive.registerAdapter(VideoForUploadAdapter());
-      p('$xx Hive VideoForUploadAdapter registered');
+      // p('$xx Hive VideoForUploadAdapter registered');
     }
     if (!Hive.isAdapterRegistered(33)) {
       Hive.registerAdapter(PhotoForUploadAdapter());
-      p('$xx Hive PhotoForUploadAdapter registered');
+      // p('$xx Hive PhotoForUploadAdapter registered');
     }
     if (!Hive.isAdapterRegistered(30)) {
       Hive.registerAdapter(SettingsModelAdapter());
-      p('$xx Hive SettingsModelAdapter registered');
+      // p('$xx Hive SettingsModelAdapter registered');
     }
     if (!Hive.isAdapterRegistered(8)) {
       Hive.registerAdapter(OrganizationAdapter());
-      p('$xx Hive OrganizationAdapter registered');
+      // p('$xx Hive OrganizationAdapter registered');
     }
     if (!Hive.isAdapterRegistered(5)) {
       Hive.registerAdapter(ProjectAdapter());
-      p('$xx Hive ProjectAdapter registered');
+      // p('$xx Hive ProjectAdapter registered');
     }
     if (!Hive.isAdapterRegistered(6)) {
       Hive.registerAdapter(ProjectPositionAdapter());
-      p('$xx Hive ProjectPositionAdapter registered');
+      // p('$xx Hive ProjectPositionAdapter registered');
     }
     if (!Hive.isAdapterRegistered(7)) {
       Hive.registerAdapter(CityAdapter());
-      p('$xx Hive CityAdapter registered');
+      // p('$xx Hive CityAdapter registered');
     }
     if (!Hive.isAdapterRegistered(4)) {
       Hive.registerAdapter(PhotoAdapter());
-      p('$xx Hive PhotoAdapter registered');
+      // p('$xx Hive PhotoAdapter registered');
     }
     if (!Hive.isAdapterRegistered(10)) {
       Hive.registerAdapter(VideoAdapter());
-      p('$xx Hive VideoAdapter registered');
+      // p('$xx Hive VideoAdapter registered');
     }
     if (!Hive.isAdapterRegistered(13)) {
       Hive.registerAdapter(CommunityAdapter());
-      p('$xx Hive CommunityAdapter registered');
+      // p('$xx Hive CommunityAdapter registered');
     }
     if (!Hive.isAdapterRegistered(2)) {
       Hive.registerAdapter(FieldMonitorScheduleAdapter());
-      p('$xx Hive FieldMonitorScheduleAdapter registered');
+      // p('$xx Hive FieldMonitorScheduleAdapter registered');
     }
     if (!Hive.isAdapterRegistered(14)) {
       Hive.registerAdapter(OrgMessageAdapter());
-      p('$xx Hive OrgMessageAdapter registered');
+      // p('$xx Hive OrgMessageAdapter registered');
     }
 
     if (!Hive.isAdapterRegistered(9)) {
       Hive.registerAdapter(MonitorReportAdapter());
-      p('$xx Hive MonitorReportAdapter registered');
+      // p('$xx Hive MonitorReportAdapter registered');
     }
     if (!Hive.isAdapterRegistered(3)) {
       Hive.registerAdapter(GeofenceEventAdapter());
-      p('$xx Hive GeofenceEventAdapter registered');
+      // p('$xx Hive GeofenceEventAdapter registered');
     }
     if (!Hive.isAdapterRegistered(16)) {
       Hive.registerAdapter(PositionAdapter());
-      p('$xx Hive PositionAdapter registered');
+      // p('$xx Hive PositionAdapter registered');
     }
     if (!Hive.isAdapterRegistered(17)) {
       Hive.registerAdapter(PlaceMarkAdapter());
-      p('$xx Hive PlaceMarkAdapter registered');
+      // p('$xx Hive PlaceMarkAdapter registered');
     }
 
     if (!Hive.isAdapterRegistered(11)) {
       Hive.registerAdapter(UserAdapter());
-      p('$xx Hive UserAdapter registered');
+      // p('$xx Hive UserAdapter registered');
     }
     if (!Hive.isAdapterRegistered(19)) {
       Hive.registerAdapter(ProjectPolygonAdapter());
-      p('$xx Hive ProjectPolygonAdapter registered');
+      // p('$xx Hive ProjectPolygonAdapter registered');
     }
     if (!Hive.isAdapterRegistered(20)) {
       Hive.registerAdapter(FailedBagAdapter());
-      p('$xx Hive FailedBagAdapter registered');
+      // p('$xx Hive FailedBagAdapter registered');
     }
     if (!Hive.isAdapterRegistered(21)) {
       Hive.registerAdapter(OrganizationRegistrationBagAdapter());
-      p('$xx Hive OrganizationRegistrationBagAdapter registered');
+      // p('$xx Hive OrganizationRegistrationBagAdapter registered');
     }
 
     if (!Hive.isAdapterRegistered(1)) {
       Hive.registerAdapter(CountryAdapter());
-      p('$xx Hive CountryAdapter registered');
+      // p('$xx Hive CountryAdapter registered');
     }
     if (!Hive.isAdapterRegistered(23)) {
       Hive.registerAdapter(AudioAdapter());
-      p('$xx Hive AudioAdapter registered');
+      // p('$xx Hive AudioAdapter registered');
     }
     if (!Hive.isAdapterRegistered(24)) {
       Hive.registerAdapter(FailedAudioAdapter());
-      p('$xx Hive FailedAudioAdapter registered');
+      // p('$xx Hive FailedAudioAdapter registered');
     }
     if (!Hive.isAdapterRegistered(26)) {
       Hive.registerAdapter(RatingAdapter());
-      p('$xx Hive RatingAdapter registered');
+      // p('$xx Hive RatingAdapter registered');
     }
     if (!Hive.isAdapterRegistered(27)) {
       Hive.registerAdapter(LocationResponseAdapter());
-      p('$xx Hive LocationResponseAdapter registered');
+      // p('$xx Hive LocationResponseAdapter registered');
     }
+    pp('$mm Done registering Hive adapters');
   }
 
   final mm =
@@ -404,7 +375,7 @@ class CacheManager {
     }
     _activityBox?.put(key, activity);
 
-    pp('$mm ActivityModel added to local cache}');
+    // pp('$mm ActivityModel added to local cache}');
   }
 
   Future addActivityModels({required List<ActivityModel> activities}) async {
@@ -415,7 +386,7 @@ class CacheManager {
       _activityBox?.put(key, activity);
     }
 
-    pp('$mm ActivityModels total: ${_activityBox?.length}');
+    // pp('$mm ActivityModels total: ${_activityBox?.length}');
   }
 
   Future deleteActivityModels() async {
@@ -445,7 +416,7 @@ class CacheManager {
         }
       }
     }
-    pp('$mm ${list.length} org activities list found in cache 🔵');
+    // pp('$mm ${list.length} org activities list found in cache 🔵');
     return list;
   }
 
@@ -468,7 +439,7 @@ class CacheManager {
         }
       }
     }
-    pp('$mm ${list.length} user activities list found in cache 🔵');
+    // pp('$mm ${list.length} user activities list found in cache 🔵');
     return list;
   }
 
@@ -661,23 +632,23 @@ class CacheManager {
     for (var s in schedules) {
       await addFieldMonitorSchedule(schedule: s);
     }
-    pp('$mm FieldMonitorSchedules added to local cache: 🔵 🔵  ${schedules.length} ');
+    // pp('$mm FieldMonitorSchedules added to local cache: 🔵 🔵  ${schedules.length} ');
 
     return 0;
   }
 
   Future addOrgMessage({required OrgMessage message}) async {
-    pp('$mm .... addOrgMessage .....');
+    // pp('$mm .... addOrgMessage .....');
     var key = '${message.created}_${message.organizationId}';
     _orgMessageBox?.put(key, message);
-    pp('$mm OrgMessage added to local cache: ${message.projectName}');
+    // pp('$mm OrgMessage added to local cache: ${message.projectName}');
   }
 
   Future addPhotos({required List<Photo> photos}) async {
     for (var v in photos) {
       await addPhoto(photo: v);
     }
-    pp('$mm Photos added to local cache: 🔵 🔵  ${photos.length} ');
+    // pp('$mm Photos added to local cache: 🔵 🔵  ${photos.length} ');
 
     return photos.length;
   }
@@ -686,7 +657,7 @@ class CacheManager {
     for (var v in positions) {
       await addProjectPosition(projectPosition: v);
     }
-    pp('$mm ProjectPositions added to local cache: 🔵 🔵  ${positions.length} ');
+    // pp('$mm ProjectPositions added to local cache: 🔵 🔵  ${positions.length} ');
 
     return positions.length;
   }
@@ -695,7 +666,7 @@ class CacheManager {
     for (var polygon in polygons) {
       await addProjectPolygon(projectPolygon: polygon);
     }
-    pp('$mm ProjectPolygons added to local cache: 🔵 🔵  ${polygons.length} ');
+    // pp('$mm ProjectPolygons added to local cache: 🔵 🔵  ${polygons.length} ');
 
     return polygons.length;
   }
@@ -704,17 +675,17 @@ class CacheManager {
     for (var v in projects) {
       await addProject(project: v);
     }
-    pp('$mm Projects added to local cache: 🔵 🔵  ${projects.length} ');
+    // pp('$mm Projects added to local cache: 🔵 🔵  ${projects.length} ');
 
     return projects.length;
   }
 
   Future addUsers({required List<User> users}) async {
-    pp('$mm adding ${users.length} users to local cache ...');
+    // pp('$mm adding ${users.length} users to local cache ...');
     for (var v in users) {
       await addUser(user: v);
     }
-    pp('$mm Users added to local cache: 🔵 🔵  ${users.length} ');
+    // pp('$mm Users added to local cache: 🔵 🔵  ${users.length} ');
 
     return users.length;
   }
@@ -723,7 +694,7 @@ class CacheManager {
     for (var v in videos) {
       await addVideo(video: v);
     }
-    pp('$mm Videos added to local cache: 🔵 🔵  ${videos.length} ');
+    // pp('$mm Videos added to local cache: 🔵 🔵  ${videos.length} ');
 
     return videos.length;
   }
@@ -732,7 +703,7 @@ class CacheManager {
     for (var v in audios) {
       await addAudio(audio: v);
     }
-    pp('$mm Audios added to local cache: 🔵 🔵  ${audios.length} ');
+    // pp('$mm Audios added to local cache: 🔵 🔵  ${audios.length} ');
 
     return audios.length;
   }
@@ -990,7 +961,7 @@ class CacheManager {
   }
 
   Future<DataBag> getOrganizationData({required String organizationId}) async {
-    pp('$mm ............. getOrganizationData starting ...');
+    // pp('$mm ............. getOrganizationData starting ...');
     final start = DateTime.now();
 
     final projects = await getOrganizationProjects();
@@ -1009,7 +980,7 @@ class CacheManager {
 
     final end1 = DateTime.now();
 
-    pp('$mm getOrganizationData: 🍎 ${end1.difference(start).inSeconds} seconds elapsed');
+    // pp('$mm getOrganizationData: 🍎 ${end1.difference(start).inSeconds} seconds elapsed');
 
 
     final bag = DataBag(
@@ -1027,13 +998,13 @@ class CacheManager {
 
     final end = DateTime.now();
 
-    pp('$mm getOrganizationData: 🍎projects: ${projects.length} '
-        '🍎users: ${users.length} 🍎photos: ${photos.length} '
-        '🍎videos: ${videos.length} 🍎schedules: ${schedules.length} '
-        '🍎positions: ${positions.length} '
-        '🍎polygons: ${polygons.length} 🍎audios: ${audios.length}');
+    pp('\n\n$mm getOrganizationData: 🍎projects: ${projects.length} \n'
+        '🍎users: ${users.length} 🍎photos: ${photos.length} \n'
+        '🍎videos: ${videos.length} 🍎schedules: ${schedules.length} \n'
+        '🍎positions: ${positions.length} \n'
+        '🍎polygons: ${polygons.length} 🍎audios: ${audios.length}\n');
 
-    pp('$mm getOrganizationData: 🍎 ${end.difference(start).inSeconds} seconds elapsed');
+    pp('$mm getOrganizationData: 🍎 ${end.difference(start).inMilliseconds} milliseconds elapsed\n\n');
 
     return bag;
   }
@@ -1249,7 +1220,7 @@ class CacheManager {
 
   Future<List<Video>> getOrganizationVideos() async {
     List<Video> mList = [];
-    var videos = _videoBox?.values.cast();
+    var videos = _videoBox?.values;
     if (videos != null) {
       for (var video in videos) {
        mList.add(video);
@@ -1261,7 +1232,7 @@ class CacheManager {
 
   Future<List<Audio>> getOrganizationAudios() async {
     List<Audio> mList = [];
-    var audios = _audioBox?.values.cast();
+    var audios = _audioBox?.values;
     if (audios != null) {
       for (var element in audios) {
         mList.add(element);
@@ -1425,21 +1396,12 @@ class CacheManager {
 
 
   Future<List<Project>> getOrganizationProjects() async {
-    //return Hive.box('history').values.cast();
-    var m = _projectBox?.values.cast();
+    var m = _projectBox?.values;
     var mList = <Project>[];
     m?.forEach((element) {
       mList.add(element);
     });
-    // if (keys != null) {
-    //   for (var value in keys) {
-    //     var m = _projectBox?.get(value);
-    //     if (m != null) {
-    //       mList.add(m);
-    //     }
-    //   }
-    // }
-    pp('$mm getOrganizationProjects: ${mList.length} projects found in cache');
+
     return mList;
   }
 
@@ -1466,7 +1428,7 @@ class CacheManager {
     var key =
         '${monitorReport.organizationId}_${monitorReport.projectId}_${monitorReport.monitorReportId}';
     _reportBox?.put(key, monitorReport);
-    pp('$mm MonitorReport added to local cache: 🌿 ${monitorReport.projectId}');
+    // pp('$mm MonitorReport added to local cache: 🌿 ${monitorReport.projectId}');
   }
 
   Future addMonitorReports(
@@ -1488,23 +1450,19 @@ class CacheManager {
     var key =
         '${geofenceEvent.user!.userId!}_${geofenceEvent.projectPositionId}';
     _geofenceEventBox?.put(key, geofenceEvent);
-    pp('$mm GeofenceEvent added to local cache: ............................ ${geofenceEvent.projectName}');
+    // pp('$mm GeofenceEvent added to local cache: ............................ ${geofenceEvent.projectName}');
   }
 
   Future addCommunity({required Community community}) async {
     var key = '${community.countryId}_${community.communityId}';
     _communityBox?.put(key, community);
-    try {
-      pp('$mm Community added to local cache: .............................${community.name}');
-    } catch (e, s) {
-      print(s);
-    }
+
   }
 
   Future addOrganization({required Organization organization}) async {
     var key = '${organization.countryId}_${organization.organizationId}';
     _orgBox?.put(key, organization);
-    pp('$mm Organization added to local cache: ${organization.name}');
+    // pp('$mm Organization added to local cache: ${organization.name}');
   }
 
   Future<List<Community>> getCommunities() async {
@@ -1516,12 +1474,12 @@ class CacheManager {
         mList.add(comm!);
       }
     }
-    pp('$mm .... getCommunities ..... found:  🌼 ${mList.length} 🌼');
+    // pp('$mm .... getCommunities ..... found:  🌼 ${mList.length} 🌼');
     return mList;
   }
 
   Future<List<Country>> getCountries() async {
-    pp('$mm .... getCountries from hive ..... ');
+    // pp('$mm .... getCountries from hive ..... ');
 
     var keys = _countryBox?.keys;
     var mList = <Country>[];
@@ -1546,7 +1504,7 @@ class CacheManager {
         mList.add(comm!);
       }
     }
-    pp('$mm .... getOrganizations ..... found:  🌼 ${mList..length}  🌼');
+    // pp('$mm .... getOrganizations ..... found:  🌼 ${mList..length}  🌼');
     return mList;
   }
 
@@ -1561,7 +1519,7 @@ class CacheManager {
 
   Future<Organization?> getOrganizationById(
       {required String organizationId}) async {
-    pp('$mm .... getOrganizationById ..... ');
+    // pp('$mm .... getOrganizationById ..... ');
     var keys = _orgBox?.keys;
     Organization? org;
     if (keys != null) {
@@ -1586,7 +1544,7 @@ class CacheManager {
       }
     }
 
-    pp('$mm getOrganizationProjectPositions: ${mList.length} ProjectPositions found in cache');
+    // pp('$mm getOrganizationProjectPositions: ${mList.length} ProjectPositions found in cache');
     return mList;
   }
 
@@ -1607,13 +1565,13 @@ class CacheManager {
       }
     }
 
-    pp('$mm getOrganizationProjectPolygons: ${mList.length} ProjectPolygons (all) found in cache');
+    // pp('$mm getOrganizationProjectPolygons: ${mList.length} ProjectPolygons (all) found in cache');
     return mList;
   }
 
   Future<List<ProjectPosition>> getProjectPositions(String projectId) async {
     var keys = _positionBox?.keys;
-    pp('$mm getProjectPositions keys: ${keys?.length} projectId: $projectId');
+    // pp('$mm getProjectPositions keys: ${keys?.length} projectId: $projectId');
 
     var mList = <ProjectPosition>[];
     if (keys != null) {
@@ -1624,7 +1582,7 @@ class CacheManager {
         }
       }
     }
-    pp('$mm getProjectPositions found: ${mList.length} ');
+    // pp('$mm getProjectPositions found: ${mList.length} ');
     return mList;
   }
 
@@ -1638,7 +1596,7 @@ class CacheManager {
         }
       }
     }
-    pp('$mm .... getProjectPosition ..... 🌺 found:  🌼 ${position == null ? 'Not Found' : position.projectPositionId}  🌼');
+    // pp('$mm .... getProjectPosition ..... 🌺 found:  🌼 ${position == null ? 'Not Found' : position.projectPositionId}  🌼');
     return position;
   }
 
@@ -1653,7 +1611,7 @@ class CacheManager {
         }
       }
     }
-    pp('$mm User videos found: ${mList.length}');
+    // pp('$mm User videos found: ${mList.length}');
     return mList;
   }
 
@@ -1668,7 +1626,7 @@ class CacheManager {
         }
       }
     }
-    pp('$mm User videos found: ${mList.length}');
+    // pp('$mm User videos found: ${mList.length}');
     return mList;
   }
 }

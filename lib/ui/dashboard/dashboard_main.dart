@@ -8,7 +8,9 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../l10n/translation_handler.dart';
 import '../../library/api/data_api_og.dart';
+import '../../library/bloc/cloud_storage_bloc.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/geo_uploader.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
 import '../../library/cache_manager.dart';
@@ -23,7 +25,7 @@ class DashboardMain extends StatefulWidget {
     required this.fcmBloc,
     required this.organizationBloc,
     required this.projectBloc,
-    required this.prefsOGx, required this.cacheManager, required this.dataHandler,
+    required this.prefsOGx, required this.cacheManager, required this.dataHandler, required this.geoUploader, required this.cloudStorageBloc,
   }) : super(key: key);
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
@@ -32,6 +34,8 @@ class DashboardMain extends StatefulWidget {
   final PrefsOGx prefsOGx;
   final CacheManager cacheManager;
   final IsolateDataHandler dataHandler;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
 
   @override
@@ -179,6 +183,8 @@ class DashboardMainState extends State<DashboardMain>
                   fcmBloc: widget.fcmBloc,
                   organizationBloc: widget.organizationBloc,
                   projectBloc: widget.projectBloc,
+                  geoUploader: widget.geoUploader,
+                  cloudStorageBloc: widget.cloudStorageBloc,
                   prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                 ),
                 tablet: OrientationLayoutBuilder(
@@ -189,6 +195,8 @@ class DashboardMainState extends State<DashboardMain>
                       fcmBloc: widget.fcmBloc,
                       projectBloc: widget.projectBloc,
                       prefsOGx: widget.prefsOGx,
+                      geoUploader: widget.geoUploader,
+                      cloudStorageBloc: widget.cloudStorageBloc,
                       organizationBloc: widget.organizationBloc, cacheManager: widget.cacheManager,
                     );
                   },
@@ -199,6 +207,8 @@ class DashboardMainState extends State<DashboardMain>
                       fcmBloc: widget.fcmBloc,
                       organizationBloc: widget.organizationBloc,
                       projectBloc: widget.projectBloc,
+                      geoUploader: widget.geoUploader,
+                      cloudStorageBloc: widget.cloudStorageBloc,
                       prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
                     );
                   },

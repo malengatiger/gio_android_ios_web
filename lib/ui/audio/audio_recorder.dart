@@ -21,6 +21,7 @@ import 'package:uuid/uuid.dart';
 import '../../device_location/device_location_bloc.dart';
 import '../../l10n/translation_handler.dart';
 import '../../library/bloc/audio_for_upload.dart';
+import '../../library/bloc/cloud_storage_bloc.dart';
 import '../../library/bloc/fcm_bloc.dart';
 import '../../library/bloc/geo_uploader.dart';
 import '../../library/cache_manager.dart';
@@ -34,15 +35,15 @@ class AudioRecorder extends StatefulWidget {
   final void Function() onCloseRequested;
 
   const AudioRecorder(
-      {Key? key, required this.onCloseRequested, required this.project})
+      {Key? key, required this.onCloseRequested, required this.project, required this.cloudStorageBloc})
       : super(key: key);
   final Project project;
+  final CloudStorageBloc cloudStorageBloc;
   @override
   State<AudioRecorder> createState() => AudioRecorderState();
 }
 
-class AudioRecorderState extends State<AudioRecorder>
-    implements StorageBlocListener {
+class AudioRecorderState extends State<AudioRecorder> {
   int _recordDuration = 0;
   Timer? _timer;
   final _audioRecorder = Record();
@@ -221,7 +222,7 @@ class AudioRecorderState extends State<AudioRecorder>
         backgroundColor: Theme.of(context).primaryColor);
     try {
       Position? position;
-      var loc = await locationBloc.getLocation();
+      final loc = await locationBloc.getLocation();
       if (loc != null) {
         position =
             Position(coordinates: [loc.longitude, loc.latitude], type: 'Point');
@@ -237,7 +238,7 @@ class AudioRecorderState extends State<AudioRecorder>
         return;
       }
 
-      var audioForUpload = AudioForUpload(
+      final audioForUpload = AudioForUpload(
           fileBytes: null,
           userName: user!.name,
           userThumbnailUrl: user!.thumbnailUrl,
@@ -251,13 +252,8 @@ class AudioRecorderState extends State<AudioRecorder>
           date: DateTime.now().toUtc().toIso8601String());
 
       await cacheManager.addAudioForUpload(audio: audioForUpload);
-      const secs = 4 * 60;
-      if (_recordDuration < secs) {
-        geoUploader.manageMediaUploads();
-      } else {
-        cloudStorageBloc.uploadAudio(
-            listener: this, audioForUpload: audioForUpload);
-      }
+      widget.cloudStorageBloc.uploadEverything();
+
     } catch (e) {
       pp("something amiss here: ${e.toString()}");
       if (mounted) {

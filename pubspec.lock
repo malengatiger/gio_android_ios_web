@@ -887,7 +887,7 @@ packages:
     source: hosted
     version: "0.3.0"
   flutter_isolate:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_isolate
       sha256: "994ddec596da4ca12ca52154fd59404077584643eb7e3f1008a55fda9fe0b76b"

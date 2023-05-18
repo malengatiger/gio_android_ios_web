@@ -14,6 +14,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../l10n/translation_handler.dart';
+import '../../library/bloc/cloud_storage_bloc.dart';
+import '../../library/bloc/geo_uploader.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/audio.dart';
 import '../../library/data/geofence_event.dart';
@@ -44,7 +46,15 @@ class GioActivities extends StatefulWidget {
       required this.onLocationResponse,
       required this.onLocationRequest,
       required this.project,
-      this.user, required this.prefsOGx, required this.cacheManager, required this.projectBloc, required this.organizationBloc, required this.dataApiDog, required this.fcmBloc})
+      this.user,
+      required this.prefsOGx,
+      required this.cacheManager,
+      required this.projectBloc,
+      required this.organizationBloc,
+      required this.dataApiDog,
+      required this.fcmBloc,
+      required this.geoUploader,
+      required this.cloudStorageBloc})
       : super(key: key);
 
   final Function(Photo) onPhotoTapped;
@@ -66,6 +76,8 @@ class GioActivities extends StatefulWidget {
   final OrganizationBloc organizationBloc;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   GioActivitiesState createState() => GioActivitiesState();
@@ -131,12 +143,16 @@ class GioActivitiesState extends State<GioActivities>
     return ScreenTypeLayout.builder(
       mobile: (context) {
         return MobileList(
-          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+          prefsOGx: widget.prefsOGx,
+          cacheManager: widget.cacheManager,
           fcmBloc: widget.fcmBloc,
           organizationBloc: widget.organizationBloc,
+          geoUploader: widget.geoUploader,
+          cloudStorageBloc: widget.cloudStorageBloc,
           projectBloc: widget.projectBloc,
           project: widget.project,
-          onTapped: _onTapped, dataApiDog: widget.dataApiDog,
+          onTapped: _onTapped,
+          dataApiDog: widget.dataApiDog,
         );
       },
       tablet: (ctx) {
@@ -146,7 +162,8 @@ class GioActivitiesState extends State<GioActivities>
           projectBloc: widget.projectBloc,
           project: widget.project,
           dataApiDog: widget.dataApiDog,
-          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+          prefsOGx: widget.prefsOGx,
+          cacheManager: widget.cacheManager,
           onTapped: _onTapped,
         );
       },
@@ -155,7 +172,17 @@ class GioActivitiesState extends State<GioActivities>
 }
 
 class TabletList extends StatefulWidget {
-  const TabletList({Key? key, required this.onTapped, required this.prefsOGx, required this.cacheManager, required this.projectBloc, required this.project, required this.organizationBloc, required this.dataApiDog, required this.fcmBloc}) : super(key: key);
+  const TabletList(
+      {Key? key,
+      required this.onTapped,
+      required this.prefsOGx,
+      required this.cacheManager,
+      required this.projectBloc,
+      required this.project,
+      required this.organizationBloc,
+      required this.dataApiDog,
+      required this.fcmBloc})
+      : super(key: key);
   final Function(ActivityModel) onTapped;
   final PrefsOGx prefsOGx;
   final CacheManager cacheManager;
@@ -193,11 +220,13 @@ class TabletListState extends State<TabletList> {
   Widget build(BuildContext context) {
     return OrientationLayoutBuilder(landscape: (context) {
       return ActivityListCard(
-          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+          prefsOGx: widget.prefsOGx,
+          cacheManager: widget.cacheManager,
           onTapped: onTapped);
     }, portrait: (context) {
       return ActivityListCard(
-          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+          prefsOGx: widget.prefsOGx,
+          cacheManager: widget.cacheManager,
           onTapped: onTapped);
     });
   }
@@ -205,7 +234,19 @@ class TabletListState extends State<TabletList> {
 
 //////////////////////////////////////
 class MobileList extends StatefulWidget {
-  const MobileList({Key? key, required this.onTapped, required this.prefsOGx, required this.cacheManager, required this.projectBloc, required this.project, required this.organizationBloc, required this.dataApiDog, required this.fcmBloc}) : super(key: key);
+  const MobileList(
+      {Key? key,
+      required this.onTapped,
+      required this.prefsOGx,
+      required this.cacheManager,
+      required this.projectBloc,
+      required this.project,
+      required this.organizationBloc,
+      required this.dataApiDog,
+      required this.fcmBloc,
+      required this.geoUploader,
+      required this.cloudStorageBloc})
+      : super(key: key);
   final Function(ActivityModel) onTapped;
   final PrefsOGx prefsOGx;
   final CacheManager cacheManager;
@@ -214,6 +255,8 @@ class MobileList extends StatefulWidget {
   final OrganizationBloc organizationBloc;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   State<MobileList> createState() => _MobileListState();
@@ -234,13 +277,11 @@ class _MobileListState extends State<MobileList> {
     settings = await prefsOGx.getSettings();
     activityStrings = await ActivityStrings.getTranslated(settings!.locale!);
     title = await translator.translate('events', settings!.locale!);
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   void _navigateToTimeline() {
-    pp('........ _navigateToProjectMedia with project: 🔆🔆🔆${widget.project?.toJson()}🔆🔆🔆');
+    // pp('........ _navigateToProjectMedia with project: 🔆🔆🔆${widget.project?.toJson()}🔆🔆🔆');
     Navigator.push(
         context,
         PageTransition(
@@ -255,6 +296,8 @@ class _MobileListState extends State<MobileList> {
               cacheManager: widget.cacheManager,
               dataApiDog: widget.dataApiDog,
               fcmBloc: widget.fcmBloc,
+              geoUploader: widget.geoUploader,
+              cloudStorageBloc: widget.cloudStorageBloc,
             )));
   }
 
@@ -271,12 +314,12 @@ class _MobileListState extends State<MobileList> {
           title == null ? 'Events' : title!,
           style: myTextStyleLarge(context),
         ),
-
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ActivityListCard(
-          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+          prefsOGx: widget.prefsOGx,
+          cacheManager: widget.cacheManager,
           onTapped: (act) {
             _onTapped(act);
           },

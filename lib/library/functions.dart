@@ -258,6 +258,12 @@ TextStyle myTextStyleMediumLarge(BuildContext context) {
       fontWeight: FontWeight.w900, color: const Color(0xFF424343),
       fontSize: 24);
 }
+TextStyle myTextStyleMediumLargeWithOpacity(BuildContext context, double opacity) {
+  return GoogleFonts.roboto(
+      textStyle: Theme.of(context).textTheme.bodyMedium,
+      fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor.withOpacity(opacity),
+      fontSize: 16);
+}
 TextStyle myTextStyleMediumLargePrimaryColor(BuildContext context) {
   return GoogleFonts.roboto(
       textStyle: Theme.of(context).textTheme.headlineLarge,
@@ -285,9 +291,10 @@ TextStyle myTextStyleLargePrimaryColor(BuildContext context) {
 }
 
 TextStyle myTextStyleLargerPrimaryColor(BuildContext context) {
-  return GoogleFonts.lato(
-      textStyle: Theme.of(context).textTheme.titleLarge,
+  return GoogleFonts.roboto(
+      textStyle: Theme.of(context).textTheme.headlineLarge,
       fontWeight: FontWeight.w900,
+      fontSize: 32,
       color: Theme.of(context).primaryColor);
 }
 

@@ -4,7 +4,9 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/cloud_storage_bloc.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/geo_uploader.dart';
 import '../../library/bloc/isolate_handler.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
@@ -19,6 +21,8 @@ class IntroMain extends StatefulWidget {
   final FCMBloc fcmBloc;
   final OrganizationBloc organizationBloc;
   final ProjectBloc projectBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
 
   const IntroMain({
@@ -26,7 +30,7 @@ class IntroMain extends StatefulWidget {
     required this.prefsOGx,
     required this.dataApiDog,
     required this.cacheManager,
-    required this.isolateHandler, required this.fcmBloc, required this.organizationBloc, required this.projectBloc,
+    required this.isolateHandler, required this.fcmBloc, required this.organizationBloc, required this.projectBloc, required this.geoUploader, required this.cloudStorageBloc,
 
   }) : super(key: key);
   @override
@@ -52,42 +56,53 @@ class IntroMainState extends State<IntroMain>
 
   @override
   Widget build(BuildContext context) {
-    return ScreenTypeLayout(
-      mobile: IntroPageViewerPortrait(
-        fcmBloc: widget.fcmBloc,
-        organizationBloc: widget.organizationBloc,
-        prefsOGx: widget.prefsOGx,
-        dataApiDog: widget.dataApiDog,
-        cacheManager: widget.cacheManager,
-        dataHandler: widget.isolateHandler,
-        projectBloc: widget.projectBloc,
-        isolateHandler: widget.isolateHandler,
-      ),
-      tablet: OrientationLayoutBuilder(
-        portrait: (context) {
-          return IntroPageViewerPortrait(
-            fcmBloc: widget.fcmBloc,
-            projectBloc: widget.projectBloc,
-            organizationBloc: widget.organizationBloc,
-            prefsOGx: widget.prefsOGx,
-            dataHandler: widget.isolateHandler,
-            dataApiDog: widget.dataApiDog,
-            cacheManager: widget.cacheManager,
-            isolateHandler: widget.isolateHandler,
-          );
-        },
-        landscape: (context) {
-          return IntroPageViewerLandscape(
-            prefsOGx: widget.prefsOGx,
-            projectBloc: widget.projectBloc,
-            dataApiDog: widget.dataApiDog,
-            cacheManager: widget.cacheManager,
-            dataHandler: widget.isolateHandler,
-            organizationBloc: widget.organizationBloc,
-            fcmBloc: widget.fcmBloc,
-          );
-        },
-      ),
+
+    return ScreenTypeLayout.builder(
+      mobile: (ctx) {
+        return IntroPageViewerPortrait(
+          fcmBloc: widget.fcmBloc,
+          organizationBloc: widget.organizationBloc,
+          prefsOGx: widget.prefsOGx,
+          dataApiDog: widget.dataApiDog,
+          cacheManager: widget.cacheManager,
+          dataHandler: widget.isolateHandler,
+          projectBloc: widget.projectBloc,
+          isolateHandler: widget.isolateHandler,
+          geoUploader: widget.geoUploader,
+          cloudStorageBloc: widget.cloudStorageBloc,
+        );
+      },
+      tablet: (ctx){
+        return OrientationLayoutBuilder(
+          portrait: (context) {
+            return IntroPageViewerPortrait(
+              fcmBloc: widget.fcmBloc,
+              projectBloc: widget.projectBloc,
+              organizationBloc: widget.organizationBloc,
+              prefsOGx: widget.prefsOGx,
+              dataHandler: widget.isolateHandler,
+              dataApiDog: widget.dataApiDog,
+              cacheManager: widget.cacheManager,
+              isolateHandler: widget.isolateHandler,
+              geoUploader: widget.geoUploader,
+              cloudStorageBloc: widget.cloudStorageBloc,
+            );
+          },
+          landscape: (context) {
+            return IntroPageViewerLandscape(
+              prefsOGx: widget.prefsOGx,
+              projectBloc: widget.projectBloc,
+              dataApiDog: widget.dataApiDog,
+              cacheManager: widget.cacheManager,
+              dataHandler: widget.isolateHandler,
+              organizationBloc: widget.organizationBloc,
+              geoUploader: widget.geoUploader,
+              cloudStorageBloc: widget.cloudStorageBloc,
+              fcmBloc: widget.fcmBloc,
+            );
+          },
+        );
+      },
     );
   }
 }

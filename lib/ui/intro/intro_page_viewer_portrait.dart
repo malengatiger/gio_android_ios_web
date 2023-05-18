@@ -13,10 +13,13 @@ import '../../dashboard_khaya/xd_dashboard.dart';
 import '../../l10n/translation_handler.dart';
 import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/cloud_storage_bloc.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/geo_uploader.dart';
 import '../../library/bloc/isolate_handler.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
+import '../../library/bloc/theme_bloc.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/user.dart' as ur;
 import '../../library/emojis.dart';
@@ -33,7 +36,7 @@ class IntroPageViewerPortrait extends StatefulWidget {
     required this.isolateHandler,
     required this.fcmBloc,
     required this.organizationBloc,
-    required this.projectBloc, required this.dataHandler,
+    required this.projectBloc, required this.dataHandler, required this.geoUploader, required this.cloudStorageBloc,
   }) : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
@@ -43,6 +46,8 @@ class IntroPageViewerPortrait extends StatefulWidget {
   final OrganizationBloc organizationBloc;
   final ProjectBloc projectBloc;
   final IsolateDataHandler dataHandler;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
 
   @override
@@ -125,6 +130,8 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
                 projectBloc: widget.projectBloc,
                 prefsOGx: widget.prefsOGx,
                 cacheManager: widget.cacheManager,
+                geoUploader: widget.geoUploader,
+                cloudStorageBloc: widget.cloudStorageBloc,
               )));
     } else {
       pp('User is null,  🔆 🔆 🔆 🔆 cannot navigate to Dashboard');
@@ -226,8 +233,14 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
   onLanguageSelected(Locale p1, String p2) async {
     pp('$mm locale selected: Locale: ${p1.languageCode} ${p1.countryCode} - p2: $p2, will save in new settings ... ');
     settingsModel!.locale = p1.languageCode;
-    await prefsOGx.saveSettings(settingsModel!);
+    await widget.prefsOGx.saveSettings(settingsModel!);
     await _setTexts(selectedLocale: p1.languageCode);
+    Locale newLocale = Locale(settingsModel!.locale!);
+    _setTexts();
+    final m =
+    LocaleAndTheme(themeIndex: settingsModel!.themeIndex!, locale: newLocale);
+    themeBloc.themeStreamController.sink.add(m);
+    widget.fcmBloc.settingsStreamController.sink.add(settingsModel!);
   }
 
   @override
@@ -295,7 +308,7 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
             onPageChanged: _onPageChanged,
             children: [
               IntroPage(
-                title: 'Geo',
+                title: 'Gio',
                 assetPath: 'assets/intro/pic2.jpg',
                 text:
                     introStrings == null ? lorem : introStrings!.infrastructure,

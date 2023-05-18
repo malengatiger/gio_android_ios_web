@@ -13,7 +13,9 @@ import 'package:universal_platform/universal_platform.dart';
 
 import '../../l10n/translation_handler.dart';
 import '../../library/api/data_api_og.dart';
+import '../../library/bloc/cloud_storage_bloc.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/geo_uploader.dart';
 import '../../library/bloc/project_bloc.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/audio.dart';
@@ -52,6 +54,8 @@ class GeoActivity extends StatefulWidget {
     required this.organizationBloc,
     required this.dataApiDog,
     required this.fcmBloc,
+    required this.geoUploader,
+    required this.cloudStorageBloc,
   }) : super(key: key);
   final double width;
   final bool thinMode;
@@ -76,6 +80,8 @@ class GeoActivity extends StatefulWidget {
   final OrganizationBloc organizationBloc;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   GeoActivityState createState() => GeoActivityState();
@@ -197,6 +203,8 @@ class GeoActivityState extends State<GeoActivity>
                     organizationBloc: widget.organizationBloc,
                     projectBloc: widget.projectBloc,
                     dataApiDog: widget.dataApiDog,
+                    geoUploader: widget.geoUploader,
+                    cloudStorageBloc: widget.cloudStorageBloc,
                     onPhotoTapped: (photo) {
                       widget.showPhoto(photo);
                     },
@@ -240,6 +248,8 @@ class GeoActivityState extends State<GeoActivity>
                               organizationBloc: widget.organizationBloc,
                               projectBloc: widget.projectBloc,
                               dataApiDog: widget.dataApiDog,
+                              geoUploader: widget.geoUploader,
+                              cloudStorageBloc: widget.cloudStorageBloc,
                               onPhotoTapped: (photo) {
                                 widget.showPhoto(photo);
                               },
@@ -283,6 +293,8 @@ class GeoActivityState extends State<GeoActivity>
                               organizationBloc: widget.organizationBloc,
                               projectBloc: widget.projectBloc,
                               dataApiDog: widget.dataApiDog,
+                              geoUploader: widget.geoUploader,
+                              cloudStorageBloc: widget.cloudStorageBloc,
                               onPhotoTapped: (photo) {
                                 widget.showPhoto(photo);
                               },

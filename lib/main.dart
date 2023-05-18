@@ -23,11 +23,12 @@ import 'package:universal_platform/universal_platform.dart';
 import 'firebase_options.dart';
 import 'library/api/data_api_og.dart';
 import 'library/api/prefs_og.dart';
+import 'library/bloc/cloud_storage_bloc.dart';
 import 'library/bloc/fcm_bloc.dart';
+import 'library/bloc/geo_uploader.dart';
 import 'library/bloc/theme_bloc.dart';
 import 'library/cache_manager.dart';
 import 'library/emojis.dart';
-import 'library/ui/loading_card.dart';
 
 int themeIndex = 0;
 var locale = const Locale('en');
@@ -41,34 +42,6 @@ final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // /// check user auth status
-  // if (fbAuthedUser == null) {
-  //   pp('$mx main: fbAuthedUser is NULL ${E.redDot}${E.redDot}${E.redDot} no user signed in.');
-  // } else {
-  //   pp('$mx main: fbAuthedUser is OK! check whether user exists, '
-  //       'auth could be from old instance of app${E.leaf}${E.leaf}${E.leaf}');
-  //   var user = await prefsOGx.getUser();
-  //   if (user == null) {
-  //     pp('$mx main: 🔴🔴🔴 user is null; cleanup necessary! '
-  //         '🔴fbAuthedUser will be set to null');
-  //     await fb.FirebaseAuth.instance.signOut();
-  //     fbAuthedUser = null;
-  //   }
-  //   //cameras = await availableCameras();
-  // }
-  // await dotenv.load(fileName: ".env");
-  // pp('$mx $heartBlue DotEnv has been loaded');
-  //
-  // if (settings != null) {
-  //   translator.translate('settings', settings!.locale!);
-  //   pp('$mx $heartBlue translation service initialization started for locale👌 ${settings!.locale!}');
-  // }
-  // await initializer.initializeGeo();
-  // await SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp,
-  //   DeviceOrientation.portraitDown,
-  // ]);
-
   runApp(const ProviderScope(child: GeoApp()));
 }
 
@@ -77,8 +50,6 @@ class GeoApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final data = ref.watch(dataProvider);
-    // pp('$mx 🌀🌀🌀🌀 RiverPod ref.watch: ${data.shoutOut()} ...');
 
     return GestureDetector(
       onTap: () {
@@ -186,15 +157,15 @@ class LandingPage extends StatefulWidget {
 class LandingPageState extends State<LandingPage> {
   final mx = '🔵🔵🔵🔵🔵🔵 LandingPage 🔵🔵';
   bool busy = false;
+
   @override
   void initState() {
     super.initState();
     initialize();
   }
 
-  void initialize() async {
-    pp('$mx initialize .............🍎🍎🍎');
-
+  Future initialize() async {
+    pp('$mx ...................... initialize .............🍎🍎🍎');
     final start = DateTime.now();
     setState(() {
       busy = true;
@@ -202,14 +173,13 @@ class LandingPageState extends State<LandingPage> {
 
     firebaseApp = await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
-    pp('$mx main: '
+    pp('$mx initialize: '
         ' Firebase App has been initialized: ${firebaseApp.name}, checking for authed current user');
     fbAuthedUser = fb.FirebaseAuth.instance.currentUser;
-
     await initializer.initializeGeo();
-    final end = DateTime.now();
 
-    pp('$mx initialization took: 🔆 ${end.difference(start).inMilliseconds} 🔆');
+    final end = DateTime.now();
+    pp('$mx ................. initialization took: 🔆 ${end.difference(start).inMilliseconds} inMilliseconds 🔆');
 
     setState(() {
       busy = false;
@@ -231,6 +201,8 @@ class LandingPageState extends State<LandingPage> {
         fcmBloc: fcmBloc,
         organizationBloc: organizationBloc,
         projectBloc: projectBloc,
+        geoUploader: geoUploader,
+        cloudStorageBloc: cloudStorageBloc,
       );
     } else {
       pp('$mx getWidget returning widget DashboardMain ..');
@@ -240,6 +212,8 @@ class LandingPageState extends State<LandingPage> {
         fcmBloc: fcmBloc,
         projectBloc: projectBloc,
         prefsOGx: prefsOGx,
+        cloudStorageBloc: cloudStorageBloc,
+        geoUploader: geoUploader,
         organizationBloc: organizationBloc,
         cacheManager: cacheManager,
       );
@@ -254,7 +228,11 @@ class LandingPageState extends State<LandingPage> {
             child: SizedBox(
               width: 200,
               height: 200,
-              child: Image.asset('assets/gio.png', height: 100, width: 80,),
+              child: Image.asset(
+                'assets/gio.png',
+                height: 100,
+                width: 80,
+              ),
             ),
           )
         : getWidget();

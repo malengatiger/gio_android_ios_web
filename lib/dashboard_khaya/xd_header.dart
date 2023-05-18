@@ -4,15 +4,15 @@ import 'package:page_transition/page_transition.dart';
 
 import '../ui/intro/intro_main.dart';
 
-class XdHeader extends StatefulWidget {
-  const XdHeader({Key? key, required this.navigateToIntro}) : super(key: key);
+class GioHeader extends StatefulWidget {
+  const GioHeader({Key? key, required this.navigateToIntro}) : super(key: key);
   final Function navigateToIntro;
 
   @override
-  XdHeaderState createState() => XdHeaderState();
+  GioHeaderState createState() => GioHeaderState();
 }
 
-class XdHeaderState extends State<XdHeader>
+class GioHeaderState extends State<GioHeader>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -45,7 +45,7 @@ class XdHeaderState extends State<XdHeader>
             children: [
               Image.asset('assets/gio.png', height: 40, width: 40,),
               SizedBox(width: width,),
-              Text('Gio', style: myTextStyleLarge(context),),
+              Text('Gio', style: myTextStyleLargerPrimaryColor(context),),
             ],
           )),
     );

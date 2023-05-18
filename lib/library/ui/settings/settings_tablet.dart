@@ -12,7 +12,9 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../../l10n/translation_handler.dart';
 import '../../api/data_api_og.dart';
+import '../../bloc/cloud_storage_bloc.dart';
 import '../../bloc/fcm_bloc.dart';
+import '../../bloc/geo_uploader.dart';
 import '../../bloc/isolate_handler.dart';
 import '../../bloc/organization_bloc.dart';
 import '../../bloc/project_bloc.dart';
@@ -29,7 +31,7 @@ class SettingsTablet extends StatefulWidget {
       required this.dataApiDog,
       required this.prefsOGx,
       required this.organizationBloc,
-      required this.dataHandler, required this.cacheManager, required this.projectBloc, required this.project, required this.fcmBloc})
+      required this.dataHandler, required this.cacheManager, required this.projectBloc, required this.project, required this.fcmBloc, required this.geoUploader, required this.cloudStorageBloc})
       : super(key: key);
   final DataApiDog dataApiDog;
   final PrefsOGx prefsOGx;
@@ -39,6 +41,8 @@ class SettingsTablet extends StatefulWidget {
   final ProjectBloc projectBloc;
   final Project? project;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
 
   @override
@@ -131,6 +135,8 @@ class SettingsTabletState extends State<SettingsTablet>
                   projectBloc: widget.projectBloc,
                   project: widget.project,
                   dataApiDog: widget.dataApiDog,
+                  cloudStorageBloc: cloudStorageBloc,
+                  geoUploader: geoUploader,
                   showUser: (user) {},
                   showLocationRequest: (req) {},
                   showLocationResponse: (resp) {
@@ -176,6 +182,8 @@ class SettingsTabletState extends State<SettingsTablet>
                 projectBloc: widget.projectBloc,
                 project: widget.project,
                 dataApiDog: widget.dataApiDog,
+                cloudStorageBloc: cloudStorageBloc,
+                geoUploader: geoUploader,
                 showUser: (user) {},
                 showLocationRequest: (req) {},
                 showLocationResponse: (resp) {

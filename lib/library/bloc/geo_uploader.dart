@@ -77,7 +77,7 @@ class GeoUploader {
   }
 
   Future uploadCachedPhotos() async {
-    pp('$xx ... checking for photo uploads ...');
+    pp('$xx ................... checking for photo uploads ...');
     final photos = await cacheManager.getPhotosForUpload();
     if (photos.isEmpty) {
       return;
@@ -160,6 +160,7 @@ class GeoUploader {
   }
 
   Future<Photo?> _startPhotoUpload(PhotoForUpload photoForUploading) async {
+    pp('$xx ... _startPhotoUpload ..... run isolate');
     user = await prefsOGx.getUser();
     try {
       String? url = getUrl();

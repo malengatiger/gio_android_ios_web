@@ -18,7 +18,9 @@ import 'package:universal_platform/universal_platform.dart';
 
 import '../../l10n/translation_handler.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/cloud_storage_bloc.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/geo_uploader.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
 import '../../library/bloc/theme_bloc.dart';
@@ -47,7 +49,7 @@ class UserDashboard extends StatefulWidget {
     Key? key,
     required this.user, required this.dataApiDog,
     required this.prefsOGx, required this.cacheManager,
-    required this.projectBloc,  required this.organizationBloc, required this.fcmBloc,
+    required this.projectBloc,  required this.organizationBloc, required this.fcmBloc, required this.geoUploader, required this.cloudStorageBloc,
   }) : super(key: key);
   final User user;
   final DataApiDog dataApiDog;
@@ -57,6 +59,8 @@ class UserDashboard extends StatefulWidget {
   // final Project? project;
   final OrganizationBloc organizationBloc;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   UserDashboardState createState() => UserDashboardState();
@@ -397,6 +401,8 @@ class UserDashboardState extends State<UserDashboard>
                   fcmBloc: widget.fcmBloc,
                   organizationBloc: widget.organizationBloc,
                   projectBloc: widget.projectBloc,
+                  geoUploader: widget.geoUploader,
+                  cloudStorageBloc: widget.cloudStorageBloc,
                   project: null,
                   dataApiDog: widget.dataApiDog,
                   prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
@@ -568,6 +574,8 @@ class UserDashboardState extends State<UserDashboard>
                                     fcmBloc: widget.fcmBloc,
                                     organizationBloc: widget.organizationBloc,
                                     projectBloc: widget.projectBloc,
+                                    geoUploader: widget.geoUploader,
+                                    cloudStorageBloc: widget.cloudStorageBloc,
                                     project: null,
                                     dataApiDog: widget.dataApiDog,
                                     showPhoto: _displayPhoto,
@@ -628,6 +636,8 @@ class UserDashboardState extends State<UserDashboard>
                                     fcmBloc: widget.fcmBloc,
                                     organizationBloc: widget.organizationBloc,
                                     projectBloc: widget.projectBloc,
+                                    geoUploader: widget.geoUploader,
+                                    cloudStorageBloc: widget.cloudStorageBloc,
                                     project: null,
                                     dataApiDog: widget.dataApiDog,
                                     showLocationRequest: (req) {},

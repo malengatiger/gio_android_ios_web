@@ -18,6 +18,7 @@ import '../../../device_location/device_location_bloc.dart';
 import '../../../l10n/translation_handler.dart';
 import '../../api/data_api_og.dart';
 import '../../api/prefs_og.dart';
+import '../../bloc/cloud_storage_bloc.dart';
 import '../../bloc/fcm_bloc.dart';
 import '../../bloc/organization_bloc.dart';
 import '../../bloc/photo_for_upload.dart';
@@ -43,7 +44,7 @@ class PhotoHandler extends StatefulWidget {
       required this.prefsOGx,
       required this.organizationBloc,
       required this.cacheManager,
-      required this.dataApiDog, required this.fcmBloc})
+      required this.dataApiDog, required this.fcmBloc, required this.geoUploader, required this.cloudStorageBloc})
       : super(key: key);
   final Project project;
   final ProjectPosition? projectPosition;
@@ -53,6 +54,8 @@ class PhotoHandler extends StatefulWidget {
   final CacheManager cacheManager;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
 
   @override
   PhotoHandlerState createState() => PhotoHandlerState();
@@ -111,13 +114,13 @@ class PhotoHandlerState extends State<PhotoHandler>
     });
     try {
       pp('$mm .......... getting project positions and polygons');
-      user = await prefsOGx.getUser();
-      polygons = await projectBloc.getProjectPolygons(
+      user = await widget.prefsOGx.getUser();
+      polygons = await widget.projectBloc.getProjectPolygons(
           projectId: widget.project.projectId!, forceRefresh: false);
       var map = await getStartEndDates();
       final startDate = map['startDate'];
       final endDate = map['endDate'];
-      positions = await projectBloc.getProjectPositions(
+      positions = await widget.projectBloc.getProjectPositions(
           projectId: widget.project.projectId!,
           forceRefresh: false,
           startDate: startDate!,
@@ -211,13 +214,13 @@ class PhotoHandlerState extends State<PhotoHandler>
     pp('$mm check file upload names: \n💚 ${mFile.path} length: ${await mFile.length()} '
         '\n💚thumb: ${tFile.path} length: ${await tFile.length()}');
 
-    var loc = await locationBloc.getLocation();
+    final loc = await locationBloc.getLocation();
     if (loc != null) {
-      var position =
+      final position =
           Position(type: 'Point', coordinates: [loc.longitude, loc.latitude]);
       // var bytes = await mFile.readAsBytes();
       // var tBytes = await tFile.readAsBytes();
-      var photoForUpload = PhotoForUpload(
+      final photoForUpload = PhotoForUpload(
           userThumbnailUrl: user!.thumbnailUrl,
           userName: user!.name,
           organizationId: user!.organizationId,
@@ -232,7 +235,7 @@ class PhotoHandlerState extends State<PhotoHandler>
           userId: user!.userId!);
 
       await cacheManager.addPhotoForUpload(photo: photoForUpload);
-      geoUploader.manageMediaUploads();
+      widget.cloudStorageBloc.uploadEverything();
     }
 
     var size = await mFile.length();
@@ -311,7 +314,8 @@ class PhotoHandlerState extends State<PhotoHandler>
               organizationBloc: widget.organizationBloc,
               prefsOGx: widget.prefsOGx,
               cacheManager: widget.cacheManager,
-              dataApiDog: widget.dataApiDog, fcmBloc: widget.fcmBloc,
+              cloudStorageBloc: widget.cloudStorageBloc,
+              dataApiDog: widget.dataApiDog, fcmBloc: widget.fcmBloc, geoUploader: widget.geoUploader,
             )));
   }
 

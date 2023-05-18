@@ -15,8 +15,10 @@ import 'package:universal_platform/universal_platform.dart';
 
 import '../../library/api/data_api_og.dart';
 import '../../library/api/prefs_og.dart';
+import '../../library/bloc/cloud_storage_bloc.dart';
 import '../../library/bloc/connection_check.dart';
 import '../../library/bloc/fcm_bloc.dart';
+import '../../library/bloc/geo_uploader.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
 import '../../library/bloc/theme_bloc.dart';
@@ -51,7 +53,7 @@ class ProjectDashboardTablet extends StatefulWidget {
       required this.organizationBloc,
       required this.dataApiDog,
       required this.cacheManager,
-      required this.fcmBloc})
+      required this.fcmBloc, required this.geoUploader, required this.cloudStorageBloc})
       : super(key: key);
 
   final Project project;
@@ -61,6 +63,9 @@ class ProjectDashboardTablet extends StatefulWidget {
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
   final FCMBloc fcmBloc;
+  final GeoUploader geoUploader;
+  final CloudStorageBloc cloudStorageBloc;
+
 
   @override
   ProjectDashboardTabletState createState() => ProjectDashboardTabletState();
@@ -267,6 +272,8 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
               prefsOGx: widget.prefsOGx,
               cacheManager: widget.cacheManager,
               dataApiDog: widget.dataApiDog,
+              geoUploader: widget.geoUploader,
+              cloudStorageBloc: widget.cloudStorageBloc,
               fcmBloc: widget.fcmBloc,
             )));
   }
@@ -426,6 +433,8 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                   organizationBloc: widget.organizationBloc,
                   projectBloc: widget.projectBloc,
                   dataApiDog: widget.dataApiDog,
+                  geoUploader: widget.geoUploader,
+                  cloudStorageBloc: widget.cloudStorageBloc,
                   showPhoto: (photo) {
                     _displayPhoto(photo);
                   },
@@ -487,6 +496,8 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                   organizationBloc: widget.organizationBloc,
                   projectBloc: widget.projectBloc,
                   dataApiDog: widget.dataApiDog,
+                  geoUploader: widget.geoUploader,
+                  cloudStorageBloc: widget.cloudStorageBloc,
                   thinMode: false,
                   showPhoto: (photo) {
                     _displayPhoto(photo);

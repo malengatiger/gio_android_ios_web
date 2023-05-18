@@ -69,7 +69,7 @@ class TheGreatGeofencer {
       return;
     }
 
-    pp('$xx buildGeofences .... build geofences for the organization 🌀 ${_user!.organizationName}  🌀');
+    // pp('$xx buildGeofences .... build geofences for the organization 🌀 ${_user!.organizationName}  🌀');
 
     await locationBloc.requestPermission();
     var startDate = DateTime.now()
@@ -134,8 +134,8 @@ class TheGreatGeofencer {
                     url: '/geo/v1/addGeofenceEvent'))
           });
 
-      pp('$xx ✅✅✅✅✅✅ geofences 🍐🍐🍐 STARTED OK 🍐🍐🍐 '
-          '🔆🔆🔆 will wait for geofence status changes ... 🔵🔵🔵🔵🔵 ');
+      // pp('$xx ✅✅✅✅✅✅ geofences 🍐🍐🍐 STARTED OK 🍐🍐🍐 '
+      //     '🔆🔆🔆 will wait for geofence status changes ... 🔵🔵🔵🔵🔵 ');
     } catch (e) {
       pp('\n\n$xx GeofenceService failed to start: 🔴 $e 🔴 }');
       errorHandler.handleError(
@@ -247,8 +247,8 @@ class TheGreatGeofencer {
       );
 
       _geofenceList.add(fence);
-      pp('$xx added Geofence : 👽👽👽 ${projectPosition.projectName} 👽👽 ${projectPosition.position!.coordinates}'
-          '  🍎 ');
+      // pp('$xx added Geofence : 👽👽👽 ${projectPosition.projectName} 👽👽 ${projectPosition.position!.coordinates}'
+      //     '  🍎 ');
     } else {
       pp('🔴🔴🔴🔴🔴🔴 project position is null, WTF??? ${projectPosition.projectName}');
     }

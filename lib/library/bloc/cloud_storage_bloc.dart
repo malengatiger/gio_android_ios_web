@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/bloc/photo_for_upload.dart';
@@ -31,16 +32,9 @@ class CloudStorageBloc {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   Random rand = Random(DateTime.now().millisecondsSinceEpoch);
   static const mm = '☕️☕️☕️☕️☕️☕️ CloudStorageBloc: 💚 ';
-  final StreamController<List<StorageMediaBag>> _mediaStreamController =
-      StreamController.broadcast();
-  Stream<List<StorageMediaBag>> get mediaStream =>
-      _mediaStreamController.stream;
+
   bool busy = false;
   User? _user;
-
-  close() {
-    _mediaStreamController.close();
-  }
 
   final photoStorageName = 'geoPhotos3';
   final videoStorageName = 'geoVideos3';
@@ -61,11 +55,25 @@ class CloudStorageBloc {
 
   Stream<String> get errorStream => _errorStreamController.stream;
 
-  late StorageBlocListener storageBlocListener;
   AudioPlayer audioPlayer = AudioPlayer();
 
+  Future uploadEverything() async {
+    await uploadPhotos();
+    await uploadAudios();
+    await uploadVideos();
+  }
+  Future<int> uploadAudios() async {
+    final list = await cacheManager.getAudioForUpload();
+    int cnt = 0;
+    for (var audio in list) {
+      await uploadAudio(audioForUpload: audio);
+      cnt++;
+    }
+    pp("$mm audios uploaded: $cnt");
+
+    return cnt;
+  }
   Future<int> uploadAudio({
-    required StorageBlocListener listener,
     required AudioForUpload audioForUpload,
   }) async {
     pp('\n\n\n$mm️ uploadAudio ☕️☕️☕️☕️☕️☕️☕️️ ....');
@@ -81,14 +89,13 @@ class CloudStorageBloc {
           .child(audioStorageName)
           .child(fileName);
       uploadTask = firebaseStorageRef.putFile(file);
-      _reportProgress(uploadTask, listener);
+      _reportProgress(uploadTask);
       var taskSnapshot = await uploadTask.whenComplete(() {});
       url = await taskSnapshot.ref.getDownloadURL();
       pp('$mm file url is available, meaning that upload is complete: \n$url');
       _printSnapshot(taskSnapshot);
     } catch (e) {
       pp('\n$mm 🔴🔴🔴 failed audio cached in hive after upload or database failure 🔴🔴🔴');
-      listener.onError('Audio upload failed: $e');
       return uploadError;
     }
     var user = await prefsOGx.getUser();
@@ -108,8 +115,7 @@ class CloudStorageBloc {
       final sett = await cacheManager.getSettings();
       final audioArrived =
           await translator.translate('audioArrived', sett.locale!);
-      final messageFromGeo =
-          await getFCMMessage('messageFromGeo');
+      final messageFromGeo = await getFCMMessage('messageFromGeo');
 
       Audio audio = Audio(
           url: url,
@@ -131,11 +137,9 @@ class CloudStorageBloc {
         var result = await dataApiDog.addAudio(audio);
         await cacheManager.removeUploadedAudio(audio: audioForUpload);
         await organizationBloc.addAudioToStream(result);
-        listener.onFileUploadComplete(url, uploadTask.snapshot.totalBytes,
-            uploadTask.snapshot.bytesTransferred);
       } catch (e) {
         pp(e);
-        listener.onError('Audio database write failed: $e');
+        // listener.onError('Audio database write failed: $e');
         pp('\n$mm 🔴🔴🔴 failed audio cached in hive after upload or database failure 🔴🔴🔴');
         return uploadError;
       }
@@ -144,8 +148,17 @@ class CloudStorageBloc {
     return uploadFinished;
   }
 
+  Future<int> uploadPhotos() async {
+    final list = await cacheManager.getPhotosForUpload();
+    int cnt = 0;
+    for (var photo in list) {
+      await uploadPhoto(photoForUpload: photo);
+      cnt++;
+    }
+    pp("$mm photos uploaded: $cnt");
+    return cnt;
+  }
   Future<int> uploadPhoto({
-    required StorageBlocListener listener,
     required PhotoForUpload photoForUpload,
   }) async {
     pp('\n\n\n$mm️ uploadPhoto ☕️☕️☕️☕️☕️☕️☕️️ ... ');
@@ -165,7 +178,7 @@ class CloudStorageBloc {
           .child(photoStorageName)
           .child(fileName);
       uploadTask = firebaseStorageRef.putFile(file);
-      _reportProgress(uploadTask, listener);
+      _reportProgress(uploadTask);
       taskSnapshot = await uploadTask.whenComplete(() {});
       url = await taskSnapshot.ref.getDownloadURL();
       pp('$mm file url is available, meaning that upload is complete: \n$url');
@@ -185,7 +198,7 @@ class CloudStorageBloc {
       pp('$mm thumbnail file url is available, meaning that upload is complete: \n$thumbUrl');
       _printSnapshot(thumbTaskSnapshot);
     } catch (e) {
-      listener.onError('File upload failed: $e');
+      // listener.onError('File upload failed: $e');
       return uploadError;
     }
 
@@ -210,8 +223,7 @@ class CloudStorageBloc {
       final sett = await cacheManager.getSettings();
       final photoArrived =
           await translator.translate('photoArrived', sett.locale!);
-      final messageFromGeo =
-      await getFCMMessage('messageFromGeo');
+      final messageFromGeo = await getFCMMessage('messageFromGeo');
 
       photo = Photo(
           url: url,
@@ -239,18 +251,27 @@ class CloudStorageBloc {
       await cacheManager.removeUploadedPhoto(photo: photoForUpload);
       pp('\n$mm upload process completed, tell the faithful listener!.');
 
-      listener.onFileUploadComplete(
-          url, taskSnapshot.totalBytes, taskSnapshot.bytesTransferred);
+      // listener.onFileUploadComplete(
+      //     url, taskSnapshot.totalBytes, taskSnapshot.bytesTransferred);
       return uploadFinished;
     } catch (e) {
       pp('\n\n$mm 👿👿👿👿 Photo write to database failed, We may have a database problem: 🔴🔴🔴 $e');
-      listener.onError('We have a database problem $e');
+      // listener.onError('We have a database problem $e');
       return uploadError;
     }
   }
 
+  Future<int> uploadVideos() async {
+    final list = await cacheManager.getVideosForUpload();
+    int cnt = 0;
+    for (var video in list) {
+      await uploadVideo(videoForUpload: video);
+      cnt++;
+    }
+    pp("$mm videos uploaded: $cnt");
+    return cnt;
+  }
   Future<int> uploadVideo({
-    required StorageBlocListener listener,
     required VideoForUpload videoForUpload,
   }) async {
     pp('\n\n\n$mm️ uploadVideo ☕️☕️☕️☕️☕️☕️☕️️ ');
@@ -269,7 +290,7 @@ class CloudStorageBloc {
           .child(videoStorageName)
           .child(fileName);
       uploadTask = firebaseStorageRef.putFile(file);
-      _reportProgress(uploadTask, listener);
+      _reportProgress(uploadTask);
       taskSnapshot = await uploadTask.whenComplete(() {});
       url = await taskSnapshot.ref.getDownloadURL();
       pp('$mm file url is available, meaning that upload is complete: \n$url');
@@ -328,12 +349,10 @@ class CloudStorageBloc {
       await dataApiDog.addVideo(video);
       await cacheManager.removeUploadedVideo(video: videoForUpload);
       pp('$mm video upload process completed, tell the faithful listener!.\n');
-      listener.onFileUploadComplete(
-          url, taskSnapshot.totalBytes, taskSnapshot.bytesTransferred);
+
       return uploadFinished;
     } catch (e) {
       pp('\n\n$mm 👿👿👿👿 Video write to database failed, We may have a database problem: 🔴🔴🔴 $e');
-      listener.onError('$e');
       return uploadError;
     }
   }
@@ -349,18 +368,18 @@ class CloudStorageBloc {
         ' date: ${DateTime.now().toIso8601String()}\n');
   }
 
-  void _reportProgress(UploadTask uploadTask, StorageBlocListener listener) {
+  void _reportProgress(UploadTask uploadTask) {
     uploadTask.snapshotEvents.listen((event) {
       var totalByteCount = event.totalBytes;
       var bytesTransferred = event.bytesTransferred;
       var bt = '${(bytesTransferred / 1024).toStringAsFixed(2)} KB';
       var tot = '${(totalByteCount / 1024).toStringAsFixed(2)} KB';
       pp('️$mm _reportProgress:  💚 progress ******* 🧩 $bt KB of $tot KB 🧩 transferred');
-      listener.onFileProgress(event.totalBytes, event.bytesTransferred);
+      // listener.onFileProgress(event.totalBytes, event.bytesTransferred);
     });
   }
 
-  void thumbnailProgress(UploadTask uploadTask, StorageBlocListener listener) {
+  void thumbnailProgress(UploadTask uploadTask) {
     uploadTask.snapshotEvents.listen((event) {
       var totalByteCount = event.totalBytes;
       var bytesTransferred = event.bytesTransferred;
@@ -404,27 +423,32 @@ class CloudStorageBloc {
       }
     } on SocketException {
       pp('$xz No Internet connection, really means that server cannot be reached 😑');
-      throw GeoException(message: 'No Internet connection',
+      throw GeoException(
+          message: 'No Internet connection',
           url: mUrl,
-          translationKey: 'networkProblem', errorType: GeoException.socketException);
-
+          translationKey: 'networkProblem',
+          errorType: GeoException.socketException);
     } on HttpException {
       pp("$xz HttpException occurred 😱");
-      throw GeoException(message: 'Server not around',
+      throw GeoException(
+          message: 'Server not around',
           url: mUrl,
-          translationKey: 'serverProblem', errorType: GeoException.httpException);
+          translationKey: 'serverProblem',
+          errorType: GeoException.httpException);
     } on FormatException {
       pp("$xz Bad response format 👎");
-      throw GeoException(message: 'Bad response format',
+      throw GeoException(
+          message: 'Bad response format',
           url: mUrl,
-          translationKey: 'serverProblem', errorType: GeoException.formatException);
-
+          translationKey: 'serverProblem',
+          errorType: GeoException.formatException);
     } on TimeoutException {
       pp("$xz GET Request has timed out in $timeOutInSeconds seconds 👎");
-      throw GeoException(message: 'Request timed out',
+      throw GeoException(
+          message: 'Request timed out',
           url: mUrl,
-          translationKey: 'networkProblem', errorType: GeoException.timeoutException);
-
+          translationKey: 'networkProblem',
+          errorType: GeoException.timeoutException);
     }
   }
 
@@ -467,29 +491,47 @@ class CloudStorageBloc {
   }
 }
 
-abstract class StorageBlocListener {
-  onFileProgress(int totalByteCount, int bytesTransferred);
-  onFileUploadComplete(String url, int totalByteCount, int bytesTransferred);
-  onVideoReady(Video video);
-  onAudioReady(Audio audio);
-  onError(String message);
-}
-
-class StorageMediaBag {
-  String url, thumbnailUrl, date;
-  bool isVideo;
-  File? file;
-  File? thumbnailFile;
-
-  StorageMediaBag(
-      {required this.url,
-      required this.file,
-      required this.thumbnailUrl,
-      required this.isVideo,
-      this.thumbnailFile,
-      required this.date});
-}
-
 const uploadBusy = 201;
 const uploadFinished = 200;
 const uploadError = 500;
+
+final CloudStorageIsolate cloudStorageIsolate = CloudStorageIsolate();
+
+///control cloudStorageBloc inside Isolate
+class CloudStorageIsolate {
+  static const xz = '🌿🌿🌿🌿🌿🌿🌿 CloudStorageIsolate: ';
+  Future startVideoUpload(VideoForUpload videoForUpload) async {
+    pp('$xz starting Isolate to run cloudStorageBloc ........');
+    return await flutterCompute(_uploadVideo, videoForUpload);
+  }
+
+  Future startAudioUpload(AudioForUpload audioForUpload) async {
+    pp('$xz starting Isolate to run cloudStorageBloc ........');
+    return await flutterCompute(_uploadAudio, audioForUpload);
+  }
+
+  Future startPhotoUpload(PhotoForUpload photoForUpload) async {
+    pp('$xz starting Isolate to run cloudStorageBloc ........');
+    return await FlutterIsolate.spawn(_uploadPhoto, photoForUpload.toJson());
+  }
+}
+
+///Cloud Storage Isolate functions
+@pragma('vm:entry-point')
+Future _uploadVideo(VideoForUpload videoForUpload) async {
+  pp('_heavyStuff _uploadVideo: 🌿🌿🌿 starting Isolate to run cloudStorageBloc ........');
+  cloudStorageBloc.uploadVideo(videoForUpload: videoForUpload);
+}
+
+@pragma('vm:entry-point')
+Future _uploadAudio(AudioForUpload audioForUpload) async {
+  pp('_heavyStuff _uploadAudio: 🌿🌿🌿 starting Isolate to run cloudStorageBloc ........');
+  cloudStorageBloc.uploadAudio(audioForUpload: audioForUpload);
+}
+
+@pragma('vm:entry-point')
+Future _uploadPhoto(Map photoForUploadMap) async {
+  pp('_heavyStuff _uploadPhoto: 🌿🌿🌿 starting Isolate to run cloudStorageBloc ........');
+  final photoForUpload = PhotoForUpload.fromJson(photoForUploadMap);
+  cloudStorageBloc.uploadPhoto(photoForUpload: photoForUpload);
+}
