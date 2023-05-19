@@ -15,13 +15,14 @@ class ProjectChooser extends StatefulWidget {
       required this.onClose,
       required this.title,
       required this.height,
-      required this.width})
+      required this.width, required this.prefsOGx})
       : super(key: key);
   final Function(Project) onSelected;
   final Function onClose;
   final String title;
   final double height;
   final double width;
+  final PrefsOGx prefsOGx;
 
   @override
   State<ProjectChooser> createState() => ProjectChooserState();
@@ -149,7 +150,8 @@ class ProjectChooserState extends State<ProjectChooser>
                                   itemBuilder: (_, index) {
                                     var project = projects.elementAt(index);
                                     return GestureDetector(
-                                      onTap: () {
+                                      onTap: () async {
+                                        await widget.prefsOGx.saveProject(project);
                                         widget.onSelected(project);
                                       },
                                       child: Card(

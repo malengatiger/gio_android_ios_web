@@ -820,7 +820,7 @@ class _GioProjectsState extends State<GioProjects>
                             longitude: poss.first.position!.coordinates[0],
                           );
                         }
-                      },
+                      }, prefsOGx: widget.prefsOGx,
                     ),
             )),
         tablet: OrientationLayoutBuilder(
@@ -857,6 +857,7 @@ class _GioProjectsState extends State<GioProjects>
                               navigateToProjectDashboard:
                                   _navigateToProjectDashboard,
                               user: user!,
+                        prefsOGx: widget.prefsOGx,
                               navigateToProjectDirections: (project) async {
                                 var poss = await cacheManager
                                     .getProjectPositions(project.projectId!);
@@ -918,6 +919,7 @@ class _GioProjectsState extends State<GioProjects>
                         projects: projectsToDisplay,
                         width: width / 2,
                         horizontalPadding: 12,
+                        prefsOGx: widget.prefsOGx,
                         navigateToDetail: _navigateToDetail,
                         navigateToProjectLocation: _navigateToProjectLocation,
                         navigateToProjectMedia: _navigateToProjectMedia,

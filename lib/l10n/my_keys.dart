@@ -11,6 +11,22 @@ class MyKeys {
   }
 
   static _buildMap() {
+
+    hashMap["saveProjectLocation"] = "saveProjectLocation";
+    hashMap["latitude"] = "latitude";
+    hashMap["longitude"] = "longitude";
+    hashMap["areaPoint"] = "areaPoint";
+    hashMap["ratingAddedThanks"] = "ratingAddedThanks";
+    hashMap["selectProject"] = "selectProject";
+    hashMap["videoAddedThanks"] = "videoAddedThanks";
+    hashMap["audioAddedThanks"] = "audioAddedThanks";
+    hashMap["photoAddedThanks"] = "photoAddedThanks";
+    hashMap["projectAddedThanks"] = "projectAddedThanks";
+    hashMap["memberAddedThanks"] = "memberAddedThanks";
+    hashMap["settingsAddedThanks"] = "settingsAddedThanks";
+    hashMap["ratingAddedThanks"] = "ratingAddedThanks";
+
+
     hashMap["searchProjects"] = "searchProjects";
     hashMap["search"] = "search";
     hashMap["searchMembers"] = "Search Members";

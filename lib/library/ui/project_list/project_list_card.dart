@@ -20,7 +20,7 @@ class ProjectListCard extends StatefulWidget {
       required this.navigateToProjectPolygonMap,
       required this.navigateToProjectDashboard,
       required this.user,
-      required this.horizontalPadding, required this.navigateToProjectDirections})
+      required this.horizontalPadding, required this.navigateToProjectDirections, required this.prefsOGx})
       : super(key: key);
 
   final List<Project> projects;
@@ -35,6 +35,7 @@ class ProjectListCard extends StatefulWidget {
   final Function(Project) navigateToProjectPolygonMap;
   final Function(Project) navigateToProjectDashboard;
   final Function(Project) navigateToProjectDirections;
+  final PrefsOGx prefsOGx;
 
   @override
   State<ProjectListCard> createState() => _ProjectListCardState();
@@ -79,8 +80,10 @@ class _ProjectListCardState extends State<ProjectListCard> {
             Icons.dashboard,
             color: Theme.of(context).primaryColor,
           ),
-          onPressed: () {
+          onPressed: () async {
+            await widget.prefsOGx.saveProject(project);
             widget.navigateToProjectDashboard(project);
+
           }),
     );
     menuItems.add(
@@ -96,7 +99,8 @@ class _ProjectListCardState extends State<ProjectListCard> {
             Icons.directions,
             color: Theme.of(context).primaryColor,
           ),
-          onPressed: () {
+          onPressed: () async {
+            await widget.prefsOGx.saveProject(project);
             widget.navigateToProjectDirections(project);
           }),
     );
@@ -113,7 +117,8 @@ class _ProjectListCardState extends State<ProjectListCard> {
             Icons.map,
             color: Theme.of(context).primaryColor,
           ),
-          onPressed: () {
+          onPressed: () async {
+            await widget.prefsOGx.saveProject(project);
             widget.navigateToProjectMap(project);
           }),
     );
@@ -129,9 +134,10 @@ class _ProjectListCardState extends State<ProjectListCard> {
             Icons.camera,
             color: Theme.of(context).primaryColor,
           ),
-          onPressed: () {
+          onPressed: () async {
             pp(' 🔆 🔆 🔆 🔆 🔆 🔆 🔆 🔆 🔆 🔆 🔆 🔆'
                 ' ... about to navigate to project media ...');
+            await widget.prefsOGx.saveProject(project);
             widget.navigateToProjectMedia(project);
           }),
     );
@@ -148,7 +154,8 @@ class _ProjectListCardState extends State<ProjectListCard> {
             Icons.location_pin,
             color: Theme.of(context).primaryColor,
           ),
-          onPressed: () {
+          onPressed: () async {
+            await widget.prefsOGx.saveProject(project);
             widget.navigateToProjectLocation(project);
           }));
       menuItems.add(
@@ -164,7 +171,8 @@ class _ProjectListCardState extends State<ProjectListCard> {
               Icons.map,
               color: Theme.of(context).primaryColor,
             ),
-            onPressed: () {
+            onPressed: () async {
+              await widget.prefsOGx.saveProject(project);
               widget.navigateToProjectPolygonMap(project);
             }),
       );
@@ -179,7 +187,8 @@ class _ProjectListCardState extends State<ProjectListCard> {
             Icons.create,
             color: Theme.of(context).primaryColor,
           ),
-          onPressed: () {
+          onPressed: () async {
+            await widget.prefsOGx.saveProject(project);
             widget.navigateToDetail(project);
           }));
     }

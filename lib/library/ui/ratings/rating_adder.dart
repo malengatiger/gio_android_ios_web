@@ -26,7 +26,8 @@ class RatingAdder extends StatefulWidget {
     this.photo,
     // required this.width,
     required this.onDone,
-    required this.elevation, required this.dataApiDog,
+    required this.elevation,
+    required this.dataApiDog,
   }) : super(key: key);
 
   final Audio? audio;
@@ -48,8 +49,11 @@ class RatingAdderState extends State<RatingAdder>
   bool busy = false;
   final mm = '🌀🌀🌀🌀Rating Adder, snake? : ';
   User? user;
-  String? addAudioRating,addVideoRating,
-      addPhotoRating, date;
+  String? addAudioRating,
+      addVideoRating,
+      addPhotoRating,
+      date,
+      ratingAddedThanks;
   @override
   void initState() {
     _animationController = AnimationController(vsync: this);
@@ -63,6 +67,9 @@ class RatingAdderState extends State<RatingAdder>
     addAudioRating = await translator.translate('addAudioRating', sett.locale!);
     addVideoRating = await translator.translate('addVideoRating', sett.locale!);
     addPhotoRating = await translator.translate('addPhotoRating', sett.locale!);
+    ratingAddedThanks =
+        await translator.translate('ratingAddedThanks', sett.locale!);
+
     if (widget.video != null) {
       date = getFmtDate(widget.video!.created!, sett.locale!);
     }
@@ -153,7 +160,9 @@ class RatingAdderState extends State<RatingAdder>
             duration: const Duration(seconds: 3),
             toastGravity: ToastGravity.TOP,
             backgroundColor: Theme.of(context).primaryColor,
-            message: "Rating added, thank you!",
+            message: ratingAddedThanks == null
+                ? "Rating added, thank you!"
+                : ratingAddedThanks!,
             context: context);
       }
     } catch (e) {
@@ -175,17 +184,17 @@ class RatingAdderState extends State<RatingAdder>
     var title = '';
     var projectName = '', userName = '';
     if (widget.photo != null) {
-      title = addPhotoRating == null?'Rate Photo':addPhotoRating!;
+      title = addPhotoRating == null ? 'Rate Photo' : addPhotoRating!;
       projectName = widget.photo!.projectName!;
       userName = widget.photo!.userName!;
     }
     if (widget.video != null) {
-      title = addVideoRating == null?'Rate Video':addVideoRating!;
+      title = addVideoRating == null ? 'Rate Video' : addVideoRating!;
       projectName = widget.video!.projectName!;
       userName = widget.video!.userName!;
     }
     if (widget.audio != null) {
-      title = addAudioRating == null? 'Rate Audio':addAudioRating!;
+      title = addAudioRating == null ? 'Rate Audio' : addAudioRating!;
       projectName = widget.audio!.projectName!;
       userName = widget.audio!.userName!;
     }
@@ -205,7 +214,7 @@ class RatingAdderState extends State<RatingAdder>
             height: 360,
             padding: 24,
             projectName: projectName,
-            date: date == null?'':date!,
+            date: date == null ? '' : date!,
             title: title,
             onRatingSelected: _sendRating,
             userName: userName,
@@ -217,7 +226,7 @@ class RatingAdderState extends State<RatingAdder>
             height: 460,
             padding: 24,
             projectName: projectName,
-            date: date == null?'':date!,
+            date: date == null ? '' : date!,
             title: title,
             onRatingSelected: _sendRating,
             userName: userName,

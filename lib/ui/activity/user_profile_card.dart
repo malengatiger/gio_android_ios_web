@@ -25,9 +25,9 @@ class UserProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width ?? 300, height: height ?? 60,
+      width: width ?? 300, height: height ?? 80,
       child: Card(
-        elevation: elevation ?? 8.0,
+        elevation: elevation ?? 4.0,
         shape: getRoundedBorder(radius: 16),
         child: Padding(
           padding: EdgeInsets.all(padding ?? 2),

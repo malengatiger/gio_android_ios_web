@@ -19,26 +19,31 @@ import '../../library/ui/loading_card.dart';
 import '../../library/ui/ratings/rating_adder.dart';
 import '../activity/user_profile_card.dart';
 
-class AudioPlayerOG extends StatefulWidget {
-  const AudioPlayerOG(
+class GioAudioPlayer extends StatefulWidget {
+  const GioAudioPlayer(
       {Key? key,
       required this.audio,
       this.width,
       this.height,
-      required this.onCloseRequested, required this.dataApiDog})
+      required this.onCloseRequested,
+      required this.dataApiDog,
+      required this.prefsOGx,
+      required this.cacheManager})
       : super(key: key);
 
   final Audio audio;
   final double? width, height;
   final Function() onCloseRequested;
   final DataApiDog dataApiDog;
+  final PrefsOGx prefsOGx;
+  final CacheManager cacheManager;
 
   @override
-  AudioPlayerOGState createState() => AudioPlayerOGState();
+  GioAudioPlayerState createState() => GioAudioPlayerState();
 }
 
-class AudioPlayerOGState extends State<AudioPlayerOG> {
-  static const mm = '🌎🌎🌎🌎🌎🌎 AudioPlayerOGS: 🍎';
+class GioAudioPlayerState extends State<GioAudioPlayer> {
+  static const mm = '🌎🌎🌎🌎🌎🌎 AudioPlayerOGS: 🍎 🍎 🍎';
   late AudioPlayer player;
   Duration? duration;
   User? user;
@@ -47,7 +52,7 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
       errorRecording,
       playAudioClip,
       loadingActivities;
-  SettingsModel? settingsModel;
+  late SettingsModel settingsModel;
   bool isPlaying = false;
   bool isPaused = false;
   bool isStopped = true;
@@ -55,6 +60,7 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
   bool isLoading = false;
   bool _showWave = false;
   bool _showControls = false;
+
   bool busy = false;
   //
   /// Set config for all platforms
@@ -64,13 +70,11 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
   AudioContext audioContext = const AudioContext();
   late StreamSubscription<SettingsModel> settingsSubscriptionFCM;
 
-
   @override
   void initState() {
     super.initState();
-    _init();
-    _listen();
     _setTexts();
+    _listen();
   }
 
   void _listen() async {
@@ -82,31 +86,37 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
     });
   }
 
-  void _setTexts() async {
+  Future _setTexts() async {
     pp('$mm _setTexts ....');
-    user = await cacheManager.getUserById(widget.audio.userId!);
-    settingsModel = await prefsOGx.getSettings();
-      loadingActivities =
-      await translator.translate('loadingActivities', settingsModel!.locale!);
-      createdAt = await translator.translate('createdAt', settingsModel!.locale!);
-      elapsedTimeText = await translator.translate('elapsedTime', settingsModel!.locale!);
-      playAudioClip =
-          await translator.translate('playAudioClip', settingsModel!.locale!);
-      errorRecording =
-          await translator.translate('errorRecording', settingsModel!.locale!);
+    setState(() {
+      busy = true;
+    });
+    user = await widget.cacheManager.getUserById(widget.audio.userId!);
+    settingsModel = await widget.prefsOGx.getSettings();
+    loadingActivities =
+        await translator.translate('loadingActivities', settingsModel!.locale!);
+    createdAt = await translator.translate('createdAt', settingsModel!.locale!);
+    elapsedTimeText =
+        await translator.translate('elapsedTime', settingsModel!.locale!);
+    playAudioClip =
+        await translator.translate('playAudioClip', settingsModel!.locale!);
+    errorRecording =
+        await translator.translate('errorRecording', settingsModel!.locale!);
 
     setState(() {
       _showControls = true;
     });
+
+    await _init();
   }
 
-  void _init() async {
+  late Duration audioDuration;
+  Future _init() async {
     pp('\n$mm ....... initialize AudioPlayer ....');
 
     try {
       await AudioPlayer.global.changeLogLevel(LogLevel.info);
-      AudioPlayer.global.setGlobalAudioContext(AudioContextConfig()
-          .build());
+      AudioPlayer.global.setGlobalAudioContext(AudioContextConfig().build());
       player = AudioPlayer();
       player.setAudioContext(const AudioContext(
         android: AudioContextAndroid(/*...*/),
@@ -125,11 +135,25 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
           _showWave = false;
           isLoading = false;
         });
-
       });
+
       player.onPlayerStateChanged.listen((PlayerState playerState) {
         pp('$mm onPlayerStateChanged, playerState: 🔵 $playerState');
+        switch (playerState) {
+          case PlayerState.completed:
+            break;
+          case PlayerState.stopped:
+            // TODO: Handle this case.
+            break;
+          case PlayerState.playing:
+            // TODO: Handle this case.
+            break;
+          case PlayerState.paused:
+            // TODO: Handle this case.
+            break;
+        }
       });
+
       player.onDurationChanged.listen((Duration dur) {
         // pp('$mm onDurationChanged: 🔵 $dur');
         if (mounted) {
@@ -138,6 +162,7 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
           });
         }
       });
+
       player.onPositionChanged.listen((Duration dur) {
         // pp('$mm onPositionChanged: 🔵 $dur');
         if (mounted) {
@@ -145,6 +170,11 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
             duration = dur;
           });
         }
+      });
+      pp('$mm AudioPlayer initialized, will start playing audio.');
+
+      setState(() {
+        busy = false;
       });
 
       _play();
@@ -202,13 +232,15 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
       if (mounted) {
         if (deviceType == 'phone') {
           Navigator.of(context).pop();
+        } else {
+          widget.onCloseRequested();
         }
       }
-
     } catch (e) {
       pp('$mm player ERROR: $e');
     }
   }
+
   void _close() {
     widget.onCloseRequested();
   }
@@ -247,7 +279,8 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
                       audio: widget.audio,
                       onDone: () {
                         Navigator.of(context).pop();
-                      }, dataApiDog: widget.dataApiDog,
+                      },
+                      dataApiDog: widget.dataApiDog,
                     )),
               ),
             ));
@@ -263,8 +296,7 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var ori = MediaQuery.of(context).orientation;
-    if (ori.name == 'landscape') {
-    }
+    if (ori.name == 'landscape') {}
     var deviceType = getThisDeviceType();
     if (widget.width != null) {
       width = widget.width!;
@@ -274,62 +306,85 @@ class AudioPlayerOGState extends State<AudioPlayerOG> {
       width = (width / 3);
     }
 
-    if  (loadingActivities == null) {
-      return  const LoadingCard(loadingData: 'loadingActivities!',);
+    if (busy) {
+      return const Center(
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(
+            strokeWidth: 6,
+            backgroundColor: Colors.pink,
+          ),
+        ),
+      );
     }
+    if (duration == null) {
+      return const Center(
+        child: SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 6,
+            backgroundColor: Colors.indigo,
+          ),
+        ),
+      );
 
+    }
     return deviceType == 'phone'
         ? SafeArea(
             child: Scaffold(
             appBar: AppBar(
-              title:
-                  Text(playAudioClip == null ? 'Play Audio' : playAudioClip!,
-                    style: myTextStyleMediumLarge(context),),
+              title: Text(
+                playAudioClip == null ? 'Play Audio' : playAudioClip!,
+                style: myTextStyleMediumLarge(context),
+              ),
+              bottom: const PreferredSize(preferredSize: Size.fromHeight(48), child: Column(
+                children: [
+
+                ],
+              )),
             ),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: duration == null
-                  ? const SizedBox()
-                  : AudioPlayerWidget(
-                              onRatingRequested: _onFavorite,
-                              onStopRequested: (){
-                                widget.onCloseRequested();
-                              },
-                              user: user!,
-                              padding: 36,
-                              projectName: widget.audio.projectName!,
-                              settingsModel: settingsModel!,
-                              duration: duration!,
-                              durationText: elapsedTimeText!,
-                              audio: widget.audio,
-                              isPlaying: isPlaying,
-                              isPaused: isPaused,
-                              isStopped: isStopped,
-                              showControls: _showControls,
-                              onPlay: _play,
-                              onPause: _pause,
-                              onStop: _stop),
+              child:  AudioPlayerWidget(
+                      onRatingRequested: _onFavorite,
+                      onStopRequested: () {
+                        widget.onCloseRequested();
+                      },
+                      user: user!,
+                      padding: 36,
+                      projectName: widget.audio.projectName!,
+                      settingsModel: settingsModel!,
+                      duration: duration!,
+                      durationText: elapsedTimeText!,
+                      audio: widget.audio,
+                      isPlaying: isPlaying,
+                      isPaused: isPaused,
+                      isStopped: isStopped,
+                      showControls: _showControls,
+                      onPlay: _play,
+                      onPause: _pause,
+                      onStop: _stop),
             ),
           ))
-        :  duration == null
-                ? LoadingCard(loadingData: loadingActivities!)
-                : AudioPlayerWidget(
-                    onRatingRequested: _onFavorite,
-                    onStopRequested: _stop,
-                    user: user!,
-                    padding: 48,
-                    projectName: widget.audio.projectName!,
-                    settingsModel: settingsModel!,
-                    duration: duration!,
-                    durationText: elapsedTimeText!,
-                    audio: widget.audio,
-                    isPlaying: isPlaying,
-                    isPaused: isPaused,
-                    isStopped: isStopped,
-                    showControls: _showControls,
-                    onPlay: _play,
-                    onPause: _pause,
-                    onStop: _stop);
+        : AudioPlayerWidget(
+            onRatingRequested: _onFavorite,
+            onStopRequested: _stop,
+            user: user!,
+            padding: 48,
+            projectName: widget.audio.projectName!,
+            settingsModel: settingsModel!,
+            duration: duration!,
+            durationText: elapsedTimeText!,
+            audio: widget.audio,
+            isPlaying: isPlaying,
+            isPaused: isPaused,
+            isStopped: isStopped,
+            showControls: _showControls,
+            onPlay: _play,
+            onPause: _pause,
+            onStop: _stop);
   }
 }
 
@@ -372,7 +427,8 @@ class AudioPlayerWidget extends StatelessWidget {
       required this.showControls,
       required this.onPlay,
       required this.onPause,
-      required this.onStop, required this.padding})
+      required this.onStop,
+      required this.padding})
       : super(key: key);
 
   final Function onRatingRequested, onStopRequested;
@@ -411,27 +467,31 @@ class AudioPlayerWidget extends StatelessWidget {
                   SizedBox(
                     width: deviceType == 'phone' ? 0 : 24,
                   ),
-                  deviceType == 'phone'? const SizedBox() : IconButton(
-                      onPressed: () {
-                        onStopRequested();
-                      },
-                      icon: const Icon(Icons.close)),
+                  deviceType == 'phone'
+                      ? const SizedBox()
+                      : IconButton(
+                          onPressed: () {
+                            onStopRequested();
+                          },
+                          icon: const Icon(Icons.close)),
                 ],
               ),
-               SizedBox(
+              SizedBox(
                 height: padding,
               ),
               Text(
                 projectName,
                 style: myTextStyleMediumLargePrimaryColor(context),
               ),
-               SizedBox(
+              SizedBox(
                 height: padding,
               ),
               UserProfileCard(
                   userName: user.name!,
-                  padding: 8,
-                  avatarRadius: 24,
+                  padding: 16,
+                  elevation: 6,
+                  height: 100,
+                  avatarRadius: 32,
                   namePictureHorizontal: true,
                   userThumbUrl: user.thumbnailUrl),
               const SizedBox(
@@ -465,14 +525,13 @@ class AudioPlayerWidget extends StatelessWidget {
                   ),
                 ],
               ),
-               SizedBox(
+              SizedBox(
                 height: padding,
               ),
               isPlaying ? SiriCard() : const SizedBox(),
               const SizedBox(
                 height: 8,
               ),
-
               showControls
                   ? AudioPlayerControls(
                       onPlay: onPlay,

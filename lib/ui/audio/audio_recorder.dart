@@ -10,7 +10,7 @@ import 'package:geo_monitor/library/data/project.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/ui/activity/user_profile_card.dart';
-import 'package:geo_monitor/ui/audio/audio_player_og.dart';
+import 'package:geo_monitor/ui/audio/gio_audio_player.dart';
 import 'package:geo_monitor/ui/audio/recording_controls.dart';
 import 'package:geo_monitor/ui/visualizer/audio_visualizer.dart';
 import 'package:path_provider/path_provider.dart';

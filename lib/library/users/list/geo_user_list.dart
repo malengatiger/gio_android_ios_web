@@ -15,7 +15,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../l10n/translation_handler.dart';
-import '../../../ui/audio/audio_player_og.dart';
+import '../../../ui/audio/gio_audio_player.dart';
 import '../../../ui/dashboard/photo_frame.dart';
 import '../../bloc/cloud_storage_bloc.dart';
 import '../../bloc/fcm_bloc.dart';
@@ -42,7 +42,14 @@ import '../user_batch_control.dart';
 class GioUserList extends StatefulWidget {
   const GioUserList({
     Key? key,
-    required this.dataApiDog, required this.prefsOGx, required this.cacheManager, required this.projectBloc, required this.organizationBloc, required this.fcmBloc, required this.geoUploader, required this.cloudStorageBloc,
+    required this.dataApiDog,
+    required this.prefsOGx,
+    required this.cacheManager,
+    required this.projectBloc,
+    required this.organizationBloc,
+    required this.fcmBloc,
+    required this.geoUploader,
+    required this.cloudStorageBloc,
   }) : super(key: key);
 
   final DataApiDog dataApiDog;
@@ -53,7 +60,6 @@ class GioUserList extends StatefulWidget {
   final FCMBloc fcmBloc;
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
-
 
   @override
   State<GioUserList> createState() => _GioUserListState();
@@ -236,11 +242,13 @@ class _GioUserListState extends State<GioUserList> {
               fcmBloc: widget.fcmBloc,
               organizationBloc: widget.organizationBloc,
               projectBloc: widget.projectBloc,
-              dataApiDog: widget.dataApiDog,geoUploader: widget.geoUploader,
+              dataApiDog: widget.dataApiDog,
+              geoUploader: widget.geoUploader,
               cloudStorageBloc: widget.cloudStorageBloc,
-
-              prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
-              user: user, )));
+              prefsOGx: widget.prefsOGx,
+              cacheManager: widget.cacheManager,
+              user: user,
+            )));
   }
 
   void navigateToUserBatchUpload(User? user) async {
@@ -330,7 +338,8 @@ class _GioUserListState extends State<GioUserList> {
                 dataApiDog: widget.dataApiDog,
                 geoUploader: widget.geoUploader,
                 cloudStorageBloc: widget.cloudStorageBloc,
-                prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+                prefsOGx: widget.prefsOGx,
+                cacheManager: widget.cacheManager,
                 user: user)));
   }
 
@@ -372,6 +381,7 @@ class _GioUserListState extends State<GioUserList> {
       busy = false;
     });
   }
+
   void navigateToUserDashboard(User user) {
     Navigator.push(
         context,
@@ -386,10 +396,11 @@ class _GioUserListState extends State<GioUserList> {
               dataApiDog: widget.dataApiDog,
               geoUploader: widget.geoUploader,
               cloudStorageBloc: widget.cloudStorageBloc,
-              prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
-              user: user, )));
+              prefsOGx: widget.prefsOGx,
+              cacheManager: widget.cacheManager,
+              user: user,
+            )));
   }
-
 
   void _sort() {
     if (sortedByName) {
@@ -414,41 +425,43 @@ class _GioUserListState extends State<GioUserList> {
   List<Widget> _getActions() {
     final type = getThisDeviceType();
     if (type == 'phone') {
-      return [PopupMenuButton(itemBuilder: (ctx) {
-        return [
-          PopupMenuItem(
-              value: 0,
-              child: Icon(
-                Icons.add,
-                color: Theme.of(context).primaryColor,
-              )),
-          PopupMenuItem(
-              value: 1,
-              child: Icon(
-                Icons.people,
-                color: Theme.of(context).primaryColor,
-              )),
-          PopupMenuItem(
-              value: 2,
-              child: Icon(
-                Icons.refresh,
-                color: Theme.of(context).primaryColor,
-              )),
-        ];
-      }, onSelected: (index) {
-        pp('$mm ...................... action index: $index');
-        switch (index) {
-          case 0:
-            navigateToUserEdit(null);
-            break;
-          case 1:
-            navigateToUserBatchUpload(null);
-            break;
-          case 2:
-            _getData(true);
-            break;
-        }
-      }),];
+      return [
+        PopupMenuButton(itemBuilder: (ctx) {
+          return [
+            PopupMenuItem(
+                value: 0,
+                child: Icon(
+                  Icons.add,
+                  color: Theme.of(context).primaryColor,
+                )),
+            PopupMenuItem(
+                value: 1,
+                child: Icon(
+                  Icons.people,
+                  color: Theme.of(context).primaryColor,
+                )),
+            PopupMenuItem(
+                value: 2,
+                child: Icon(
+                  Icons.refresh,
+                  color: Theme.of(context).primaryColor,
+                )),
+          ];
+        }, onSelected: (index) {
+          pp('$mm ...................... action index: $index');
+          switch (index) {
+            case 0:
+              navigateToUserEdit(null);
+              break;
+            case 1:
+              navigateToUserBatchUpload(null);
+              break;
+            case 2:
+              _getData(true);
+              break;
+          }
+        }),
+      ];
     } else {
       return [
         IconButton(
@@ -478,6 +491,7 @@ class _GioUserListState extends State<GioUserList> {
       ];
     }
   }
+
   @override
   Widget build(BuildContext context) {
     var amInPortrait = false;
@@ -498,58 +512,58 @@ class _GioUserListState extends State<GioUserList> {
             title == null ? 'Members' : title!,
             style: style,
           ),
-          actions:  _getActions(),
+          actions: _getActions(),
         ),
         body: Stack(
           children: [
             ScreenTypeLayout(
               mobile: Padding(
-        padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 24,
-          ),
-          user == null
-              ? const SizedBox()
-              : Expanded(
-            child: UserListCard(
-              subTitle: subTitle == null
-                  ? 'Admins & Monitors'
-                  : subTitle!,
-              amInLandscape: true,
-              users: users,
-              avatarRadius: 20,
-              deviceUser: user!,
-              navigateToLocationRequest: (mUser) {
-                _sendLocationRequest(mUser);
-              },
-              navigateToPhone: (mUser) {
-                navigateToPhone(mUser);
-              },
-              navigateToMessaging: (user) {
-                navigateToMessaging(user);
-              },
-              navigateToUserDashboard: (user) {
-                navigateToUserDashboard(user);
-              },
-              navigateToUserEdit: (user) {
-                navigateToUserEdit(user);
-              },
-              navigateToScheduler: (user) {
-                navigateToScheduler(user);
-              },
-              navigateToKillPage: (user) {
-                navigateToKillPage(user);
-              },
-              badgeTapped: () {
-                _sort();
-              },
-            ),
-          ),
-        ],
-      ),
-    ),
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    user == null
+                        ? const SizedBox()
+                        : Expanded(
+                            child: UserListCard(
+                              subTitle: subTitle == null
+                                  ? 'Admins & Monitors'
+                                  : subTitle!,
+                              amInLandscape: true,
+                              users: users,
+                              avatarRadius: 20,
+                              deviceUser: user!,
+                              navigateToLocationRequest: (mUser) {
+                                _sendLocationRequest(mUser);
+                              },
+                              navigateToPhone: (mUser) {
+                                navigateToPhone(mUser);
+                              },
+                              navigateToMessaging: (user) {
+                                navigateToMessaging(user);
+                              },
+                              navigateToUserDashboard: (user) {
+                                navigateToUserDashboard(user);
+                              },
+                              navigateToUserEdit: (user) {
+                                navigateToUserEdit(user);
+                              },
+                              navigateToScheduler: (user) {
+                                navigateToScheduler(user);
+                              },
+                              navigateToKillPage: (user) {
+                                navigateToKillPage(user);
+                              },
+                              badgeTapped: () {
+                                _sort();
+                              },
+                            ),
+                          ),
+                  ],
+                ),
+              ),
               tablet: OrientationLayoutBuilder(landscape: (ctx) {
                 return Padding(
                   padding: const EdgeInsets.only(
@@ -596,7 +610,8 @@ class _GioUserListState extends State<GioUserList> {
                       GeoActivity(
                           width: mWidth / 2,
                           thinMode: false,
-                          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+                          prefsOGx: widget.prefsOGx,
+                          cacheManager: widget.cacheManager,
                           showPhoto: showPhoto,
                           showVideo: showVideo,
                           showAudio: showAudio,
@@ -671,7 +686,8 @@ class _GioUserListState extends State<GioUserList> {
                       GeoActivity(
                           width: (mWidth / 2),
                           thinMode: true,
-                          prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+                          prefsOGx: widget.prefsOGx,
+                          cacheManager: widget.cacheManager,
                           showPhoto: showPhoto,
                           showVideo: showVideo,
                           showAudio: showAudio,
@@ -719,13 +735,17 @@ class _GioUserListState extends State<GioUserList> {
                 ? Positioned(
                     left: amInPortrait ? 200 : 300,
                     right: amInPortrait ? 200 : 300,
-                    child: AudioPlayerOG(
-                        audio: selectedAudio!,
-                        onCloseRequested: () {
-                          setState(() {
-                            _playAudio = false;
-                          });
-                        }, dataApiDog: widget.dataApiDog,),
+                    child: GioAudioPlayer(
+                      cacheManager: widget.cacheManager,
+                      prefsOGx: widget.prefsOGx,
+                      audio: selectedAudio!,
+                      onCloseRequested: () {
+                        setState(() {
+                          _playAudio = false;
+                        });
+                      },
+                      dataApiDog: widget.dataApiDog,
+                    ),
                   )
                 : const SizedBox(),
             _playVideo

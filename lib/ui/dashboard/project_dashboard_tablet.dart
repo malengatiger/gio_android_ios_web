@@ -5,7 +5,7 @@ import 'package:geo_monitor/library/data/activity_model.dart';
 import 'package:geo_monitor/library/ui/maps/project_map_mobile.dart';
 import 'package:geo_monitor/library/ui/maps/project_polygon_map_mobile.dart';
 import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
-import 'package:geo_monitor/ui/audio/audio_player_og.dart';
+import 'package:geo_monitor/ui/audio/gio_audio_player.dart';
 import 'package:geo_monitor/ui/dashboard/photo_frame.dart';
 import 'package:geo_monitor/ui/dashboard/project_dashboard_grid.dart';
 import 'package:geo_monitor/ui/dashboard/project_dashboard_mobile.dart';
@@ -596,7 +596,9 @@ class ProjectDashboardTabletState extends State<ProjectDashboardTablet>
                   left: 100,
                   right: 100,
                   top: 160,
-                  child: AudioPlayerOG(
+                  child: GioAudioPlayer(
+                    cacheManager: widget.cacheManager,
+                    prefsOGx: widget.prefsOGx,
                     audio: audio!,
                     onCloseRequested: () {
                       if (mounted) {

@@ -13,10 +13,10 @@ class LoadingCard extends StatelessWidget {
         shape: getRoundedBorder(radius: 16),
         elevation: 8,
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: SizedBox(height: 200, width:300, child: Column(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(height: 100, width:200, child: Column(
             children:  [
-              const SizedBox(height: 80,),
+              const SizedBox(height: 48,),
               const SizedBox(
                 width: 24,
                 height: 24,

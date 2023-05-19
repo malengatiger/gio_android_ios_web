@@ -13,7 +13,7 @@ import 'package:geo_monitor/library/ui/camera/photo_handler.dart';
 import 'package:geo_monitor/library/ui/camera/video_recorder.dart';
 import 'package:geo_monitor/library/ui/media/time_line/media_grid.dart';
 import 'package:geo_monitor/library/ui/project_list/project_chooser.dart';
-import 'package:geo_monitor/ui/audio/audio_player_og.dart';
+import 'package:geo_monitor/ui/audio/gio_audio_player.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -104,9 +104,15 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
       _getProjectData(
           projectId: projectSelected!.projectId!, forceRefresh: false);
     } else {
-      setState(() {
-        showProjectChooser = true;
-      });
+      projectSelected = await widget.prefsOGx.getProject();
+      if (projectSelected == null) {
+        setState(() {
+          showProjectChooser = true;
+        });
+      } else {
+        _getProjectData(
+            projectId: projectSelected!.projectId!, forceRefresh: false);
+      }
     }
   }
 
@@ -121,7 +127,6 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     durationText = await translator.translate('duration', locale);
     sendMemberMessage = await translator.translate('sendMemberMessage', locale);
     videoTitle = await translator.translate('videos', settings.locale!);
-
   }
 
   void _listen() async {
@@ -265,11 +270,13 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     final type = getThisDeviceType();
     if (type == 'phone') {
       navigateWithSlide(
-          GioVideoPlayer(
-              video: tappedVideo!,
+          GioAudioPlayer(
+              cacheManager: widget.cacheManager,
+              prefsOGx: widget.prefsOGx,
+              audio: tappedAudio!,
               onCloseRequested: () {
                 setState(() {
-                  playVideo = false;
+                  playAudio = false;
                 });
               },
               width: 500,
@@ -362,11 +369,19 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
 
   void _onMakeAudio() {
     pp('$mm _onMakeAudio ..............');
+    late Project mProj;
+    if (widget.project != null) {
+      mProj = widget.project!;
+    }
+    if (projectSelected != null) {
+      mProj = projectSelected!;
+    }
     if (mounted) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return AudioRecorder(
             cloudStorageBloc: widget.cloudStorageBloc,
-            onCloseRequested: () {}, project: widget.project!);
+            onCloseRequested: () {},
+            project: mProj);
       }));
     }
   }
@@ -613,7 +628,9 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                             left: audioLeftPadding,
                             right: audioRightPadding,
                             bottom: audioBottomPadding,
-                            child: AudioPlayerOG(
+                            child: GioAudioPlayer(
+                                cacheManager: widget.cacheManager,
+                                prefsOGx: widget.prefsOGx,
                                 audio: tappedAudio!,
                                 onCloseRequested: () {
                                   setState(() {
@@ -645,6 +662,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                             top: 16,
                             child: Center(
                               child: ProjectChooser(
+                                  prefsOGx: widget.prefsOGx,
                                   onSelected: (p) {
                                     setState(() {
                                       projectSelected = p;

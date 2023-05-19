@@ -58,9 +58,11 @@ class CloudStorageBloc {
   AudioPlayer audioPlayer = AudioPlayer();
 
   Future uploadEverything() async {
+    pp('$mm uploadEverything ... starting ...');
     await uploadPhotos();
     await uploadAudios();
     await uploadVideos();
+    pp('$mm uploadEverything ... ended! ');
   }
   Future<int> uploadAudios() async {
     final list = await cacheManager.getAudioForUpload();

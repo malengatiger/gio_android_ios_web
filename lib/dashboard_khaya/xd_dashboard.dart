@@ -32,7 +32,7 @@ import 'package:geo_monitor/library/users/edit/user_detail.dart';
 import 'package:geo_monitor/library/users/edit/user_edit_main.dart';
 import 'package:geo_monitor/library/users/list/geo_user_list.dart';
 import 'package:geo_monitor/ui/activity/gio_activities.dart';
-import 'package:geo_monitor/ui/audio/audio_player_og.dart';
+import 'package:geo_monitor/ui/audio/gio_audio_player.dart';
 import 'package:geo_monitor/ui/dashboard/photo_frame.dart';
 import 'package:geo_monitor/ui/intro/intro_main.dart';
 import 'package:geo_monitor/utilities/transitions.dart';
@@ -705,7 +705,9 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     deviceType = getThisDeviceType();
     if (deviceType == 'phone') {
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (ctx) => AudioPlayerOG(
+          builder: (ctx) => GioAudioPlayer(
+              cacheManager: widget.cacheManager,
+              prefsOGx: widget.prefsOGx,
               audio: audio!,
               onCloseRequested: () {
                 setState(() {
@@ -1078,7 +1080,9 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                 ),
                 playAudio
                     ? Positioned(
-                        child: AudioPlayerOG(
+                        child: GioAudioPlayer(
+                          cacheManager: widget.cacheManager,
+                          prefsOGx: widget.prefsOGx,
                         audio: audio!,
                         onCloseRequested: () {},
                         dataApiDog: widget.dataApiDog,
@@ -1098,7 +1102,9 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                 top: 120,
                 child: SizedBox(
                   width: 440,
-                  child: AudioPlayerOG(
+                  child: GioAudioPlayer(
+                      cacheManager: widget.cacheManager,
+                      prefsOGx: widget.prefsOGx,
                       audio: audio!,
                       onCloseRequested: () {
                         setState(() {
@@ -1830,7 +1836,7 @@ class TopCardListState extends State<TopCardList> {
   }
 
   void _navigateToTimeline() {
-    pp(' 🌀🌀🌀🌀 .................. _navigateToMap  ....');
+    pp(' 🌀🌀🌀🌀 .................. _navigateToTimeline  ....');
     if (mounted) {
       navigateWithScale(
           ProjectMediaTimeline(

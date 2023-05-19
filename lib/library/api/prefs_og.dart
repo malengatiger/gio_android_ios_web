@@ -4,6 +4,7 @@ import 'package:geo_monitor/library/data/questionnaire.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../data/country.dart';
+import '../data/project.dart';
 import '../data/settings_model.dart';
 import '../data/user.dart';
 import '../functions.dart';
@@ -145,6 +146,29 @@ class PrefsOGx {
       country = Country.fromJson(jsonDecode(mJson));
       pp("$mm getCountry 🧩🧩🧩🧩🧩 retrieved .. ${country.name}  🔴🔴");
       return country;
+    }
+  }
+
+  Future saveProject(Project project) async {
+    final s = jsonEncode(project.toJson());
+    pp("$mm saveProject to save: 🌽 $s\n");
+
+    await box.write('project', s);
+    pp("\n\n$mm saveProject SAVED: 🌽 ${project.name}\n");
+    return null;
+  }
+
+  Future<Project?> getProject() async {
+    Project? project;
+    var mJson = box.read('project');
+    if (mJson == null) {
+      pp('$mm project does not exist in Prefs, '
+          ' 🍎🍎🍎');
+      return null;
+    } else {
+      project = Project.fromJson(jsonDecode(mJson));
+      pp("$mm getProject 🧩🧩🧩🧩🧩 retrieved .. ${project.name}  🔴🔴");
+      return project;
     }
   }
 }

@@ -9,7 +9,7 @@ import 'package:geo_monitor/library/ui/camera/gio_video_player.dart';
 import 'package:geo_monitor/library/ui/maps/photo_map.dart';
 import 'package:geo_monitor/library/users/full_user_photo.dart';
 import 'package:geo_monitor/ui/activity/geo_activity.dart';
-import 'package:geo_monitor/ui/audio/audio_player_og.dart';
+import 'package:geo_monitor/ui/audio/gio_audio_player.dart';
 import 'package:geo_monitor/ui/dashboard/photo_frame.dart';
 import 'package:geo_monitor/ui/dashboard/project_dashboard_mobile.dart';
 import 'package:page_transition/page_transition.dart';
@@ -715,7 +715,9 @@ class UserDashboardState extends State<UserDashboard>
                         left: 100,
                         right: 100,
                         top: 160,
-                        child: AudioPlayerOG(
+                        child: GioAudioPlayer(
+                          cacheManager: widget.cacheManager,
+                          prefsOGx: widget.prefsOGx,
                           audio: audio!,
                           onCloseRequested: () {
                             if (mounted) {

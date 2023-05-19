@@ -526,38 +526,6 @@ O
 lib/library/bloc/user_bloc.dart,3/7/37ea2b81ac67f74222110ea461c86398e7b23a5f
 T
 $lib/library/ui/media/photo_grid.dart,b/7/b7aae7d3cb17033d5545e1bf53d051d37a1f7174
-b
-2lib/library/ui/project_list/project_list_card.dart,b/9/b9216320af48053debd39773b4bad857553c61a8
-C
-assets/l10n/es.json,0/c/0c2aeee561efc293de02d8529db50e7b1302940a
-C
-assets/l10n/ig.json,5/1/514543ad786343e1fd97dbb0c8463a8e4c489113
-C
-assets/l10n/zh.json,b/b/bbbd2362079a12e2e76383bfa212b9f2fa37ddfc
-C
-assets/l10n/xh.json,e/8/e871bef75879ad0435c5e1a98d7d42adcd5bb2b0
-C
-assets/l10n/af.json,d/5/d561064bc56d00f90fac4be2dd98ed7db721b097
-C
-assets/l10n/yo.json,e/6/e64ef3724d6c979b2843ce258997924035a178b7
-C
-assets/l10n/de.json,8/a/8adabfc11fe9b5afd66c0fda54313d697a3de534
-C
-assets/l10n/st.json,1/9/19cbced6cd2b02266f6cd706a9cdede23245ee37
-C
-assets/l10n/sw.json,a/6/a63599a388ef23697d38c57e0359bf3f9e26e513
-C
-assets/l10n/sn.json,8/2/8266210c51ac2d52788c3b938c18d4c75e9e21f6
-C
-assets/l10n/pt.json,f/5/f57be9274a6ec6729aaaa2120252ab59a8b0c284
-C
-assets/l10n/fr.json,3/f/3f3cc9d6e518ea5d7315bb268ce2d414d4930d1e
-C
-assets/l10n/en.json,4/7/47319f07263f966871a92d84f602f574518e627e
-C
-assets/l10n/zu.json,4/5/4596336cde542d8cb41696b323907b3743cd3e14
-C
-assets/l10n/ts.json,6/5/65a8c37e4896a4092c4c5167fb6fab7e66e282fa
 Q
 !lib/l10n/translation_handler.dart,6/8/68d04abc6150923db0a7f3d8e7767b64bd6103db
 K
@@ -568,8 +536,6 @@ Y
 )lib/library/ui/media/list/audio_card.dart,7/e/7ee7d2dd1ebc71f5ca41f2f3dd66e85838da1a13
 Y
 )lib/library/ui/camera/video_controls.dart,c/8/c8fe98c155c82a1db847409dcee531bcb4e88f8c
-P
- lib/library/ui/loading_card.dart,b/0/b09069a7af08a6673c369463c06eb9d5decac6a4
 \
 ,lib/library/ui/settings/settings_mobile.dart,3/c/3cc5c75ecd3d90ee79ab914473a215899b1b20c4
 :
@@ -589,8 +555,6 @@ R
 +lib/library/ui/message/monitor_message.dart,f/3/f39fabd719a6e333729305728c6b44f204edb2f4
 \
 ,lib/library/ui/maps/geofence_map_tablet.dart,a/c/acfb344cb62dcb8ca558ac8209a2cdd80b9814ac
-X
-(lib/library/ui/ratings/rating_adder.dart,4/8/484514a3e13fa8d1253961f2d8a045d982e122e2
 h
 8lib/ui/auth/auth_email_registration_tablet_portrait.dart,a/9/a9f49aaa3d2397f4389bcf23595dcf93b9bba79e
 P
@@ -613,8 +577,6 @@ d
 4lib/library/ui/project_edit/project_edit_mobile.dart,3/3/33107debc8482af4a9c6a03ee789a9b4cb54ac36
 b
 2lib/library/ui/project_edit/project_edit_card.dart,d/e/de0c8ae9804c5d3fe5ed741659bf4e25b65855ea
-`
-0lib/library/ui/project_list/project_chooser.dart,4/d/4d5c8b2e9f02c2e4a2c185fc3304262df5a642a3
 M
 lib/library/ui/countries.dart,9/2/92c8141ce056b7b8f476a0f0cbfea62a2e47a4e3
 p
@@ -649,8 +611,6 @@ U
 %lib/library/users/kill_user_page.dart,5/4/544fd5dba5eb2efd3b906f44e6999e8a97baf35d
 R
 "lib/ui/activity/activity_list.dart,a/5/a55a4aa3beb88e93bbb8668fabe5f1867792910f
-V
-&lib/ui/activity/user_profile_card.dart,8/e/8eda2379b02a7e703de54b937b3380df72af3818
 Y
 )lib/ui/activity/activity_list_tablet.dart,1/e/1e8f6cca17060bb47bba42f7d4c6f8d03957274e
 S
@@ -715,8 +675,6 @@ N
 lib/library/bloc/zip_bloc.dart,7/b/7b267bf2f28c379ad8802fab282b883448e2dbe6
 T
 $lib/library/data/activity_model.dart,b/a/ba042069e67c49a1b8bd16dde12c5ffb048775c1
-E
-lib/l10n/my_keys.dart,1/b/1bc97497c84bf2179a04983aaa15a5f75ea3a892
 P
  lib/library/bloc/theme_bloc.dart,f/f/ff18663b3277d1e841b5078468599558b90b3eca
 K
@@ -725,8 +683,6 @@ R
 "lib/library/bloc/refresh_bloc.dart,3/7/37a8becd3592ab3966f73ab1aaa371dc7176b0a4
 K
 lib/utils/audio_player.dart,4/b/4b1280e6624a8978a833f829394e7a88367962b9
-Q
-!lib/ui/audio/audio_player_og.dart,f/c/fc6fdcfb2a8b8f0a3b984687799612411721b2f7
 U
 %lib/library/bloc/isolate_handler.dart,b/d/bd63d70bf2f2c5a5b32c34d1c5ef600d16ba72b4
 W

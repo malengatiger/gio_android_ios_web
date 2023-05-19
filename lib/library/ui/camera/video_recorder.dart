@@ -439,66 +439,72 @@ class VideoRecorderState extends State<VideoRecorder>
                     top: 120,
                     left: 20,
                     right: 20,
-                    child: SizedBox(
-                      height: 360,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          Text(
-                            recordingComplete == null
-                                ? 'Recording complete'
-                                : recordingComplete!,
-                            style: myTextStyleLarge(context),
-                          ),
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                    child: Card(
+                      shape: getRoundedBorder(radius: 16),
+                      child: SizedBox(
+                        height: 400,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(fileSizeText == null
-                                  ? 'File Size'
-                                  : fileSizeText!),
                               const SizedBox(
-                                width: 12,
+                                height: 40,
                               ),
                               Text(
-                                fileSize,
-                                style: myNumberStyleLargerPrimaryColor(
-                                    context),
+                                recordingComplete == null
+                                    ? 'Recording complete'
+                                    : recordingComplete!,
+                                style: myTextStyleLarge(context),
                               ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(durationText == null
-                                  ? 'Duration'
-                                  : durationText!),
                               const SizedBox(
-                                width: 12,
+                                height: 40,
                               ),
-                              Text(
-                                getHourMinuteSecond(finalDuration),
-                                style: myNumberStyleLargerPrimaryColor(
-                                    context),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(fileSizeText == null
+                                      ? 'File Size'
+                                      : fileSizeText!),
+                                  const SizedBox(
+                                    width: 12,
+                                  ),
+                                  Text(
+                                    fileSize,
+                                    style: myNumberStyleLargerPrimaryColor(
+                                        context),
+                                  ),
+                                ],
                               ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(durationText == null
+                                      ? 'Duration'
+                                      : durationText!),
+                                  const SizedBox(
+                                    width: 12,
+                                  ),
+                                  Text(
+                                    getHourMinuteSecond(finalDuration),
+                                    style: myNumberStyleLargerPrimaryColor(
+                                        context),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 28,
+                              ),
+                              VideoRecorderControls(
+                                  onUpload: onUpload,
+                                  onPlay: onPlay,
+                                  onCancel: onCancel),
                             ],
                           ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          VideoRecorderControls(
-                              onUpload: onUpload,
-                              onPlay: onPlay,
-                              onCancel: onCancel),
-                        ],
+                        ),
                       ),
                     ))
                     : AspectRatio(
@@ -716,37 +722,7 @@ class VideoRecorderState extends State<VideoRecorder>
   }
 
   Audio? audio;
-  @override
-  onAudioReady(Audio audio) {
-    pp('$mm audio is ready ');
-    this.audio = audio;
-    setState(() {});
-  }
 
-  @override
-  onError(String message) {
-    pp('$mm message');
-  }
-
-  @override
-  onFileProgress(int totalByteCount, int bytesTransferred) {
-    pp('$mm bytesTransferred $bytesTransferred of $totalByteCount bytes');
-  }
-
-  @override
-  onFileUploadComplete(String url, int totalByteCount, int bytesTransferred) {
-    pp('$mm onFileUploadComplete, bytesTransferred: $bytesTransferred');
-    pp('$mm url: $url');
-  }
-
-  Video? video;
-  @override
-  onVideoReady(Video video) {
-    pp('$mm video is ready: ${video.toJson()} ');
-    setState(() {
-      this.video = video;
-    });
-  }
 }
 
 class VideoRecorderControls extends StatelessWidget {
