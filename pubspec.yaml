@@ -28,7 +28,7 @@ dependencies:
   location: ^4.4.0
   path: ^1.8.2
   cached_network_image: ^3.2.3
-  flutter_dotenv: ^5.0.2
+#  flutter_dotenv: ^5.0.2
   page_transition: ^2.0.9
   responsive_builder: ^0.7.0
   google_fonts: ^4.0.3
@@ -128,4 +128,4 @@ flutter:
     - assets/l10n/
     - assets/
     - assets/projects/
-    - .env
+#    - .env

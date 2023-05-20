@@ -239,8 +239,6 @@ Q
 !lib/library/data/condition.g.dart,1/e/1e60cee86a20d3b215ea3c373006916a51cd8841
 P
  lib/library/data/upload_bag.dart,e/b/eb723544231574465890cb40c15c39019ddf1940
-Z
-*lib/library/data/ozow_payment_request.dart,2/4/24640be4d4a8144e94725e860c89b27894430cd4
 L
 lib/library/data/city.g.dart,3/f/3f09c1082bfa3331bf02764f6356a0a264543ace
 L
@@ -655,8 +653,6 @@ R
 "lib/library/bloc/refresh_bloc.dart,3/7/37a8becd3592ab3966f73ab1aaa371dc7176b0a4
 K
 lib/utils/audio_player.dart,4/b/4b1280e6624a8978a833f829394e7a88367962b9
-N
-lib/utilities/environment.dart,0/1/01be1bfa7c8072bdc6d19ff253956276ea1ae146
 c
 3.github/workflows/firebase-hosting-pull-request.yml,8/9/896637346ca5b559afa1761a60cf7c7f455a2878
 \
@@ -705,8 +701,6 @@ b
 2lib/library/ui/project_edit/project_edit_main.dart,d/4/d4124a72b01c2890fcc01b319f2e24ccdcf3543c
 f
 6lib/library/ui/project_edit/project_editor_tablet.dart,b/c/bc3f4b352cfc517e8b264d55e151e81831c1f6e1
-J
-lib/library/functions.dart,2/2/225122cfb53e949a8f9edb84cbe772d4b4d73b07
 m
 =lib/library/ui/project_location/project_location_handler.dart,5/a/5abca079e824fd4674384674f0b09ef017bf1f67
 Q
