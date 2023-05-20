@@ -1,5 +1,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geo_monitor/device_location/device_location_bloc.dart';
 import 'package:geo_monitor/library/api/data_api_og.dart';
@@ -33,7 +34,7 @@ class Initializer {
 
   Future initializeGeo() async {
     pp('$mx initializeGeo: ... setting up resources and blocs etc .............. ');
-
+    await Firebase.initializeApp();
     pp('$mx initializeGeo: setting up GetStorage ...');
     await GetStorage.init(cacheName);
     prefsOGx = PrefsOGx();

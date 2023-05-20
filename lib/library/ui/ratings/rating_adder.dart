@@ -157,7 +157,7 @@ class RatingAdderState extends State<RatingAdder>
         showToast(
             textStyle: myTextStyleMedium(context),
             padding: 8,
-            duration: const Duration(seconds: 3),
+            duration: const Duration(seconds: 6),
             toastGravity: ToastGravity.TOP,
             backgroundColor: Theme.of(context).primaryColor,
             message: ratingAddedThanks == null

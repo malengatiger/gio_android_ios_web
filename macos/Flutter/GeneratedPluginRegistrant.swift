@@ -20,7 +20,6 @@ import flutter_local_notifications
 import just_audio
 import location
 import mic_stream
-import package_info_plus
 import path_provider_foundation
 import record_macos
 import shared_preferences_foundation
@@ -44,7 +43,6 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   JustAudioPlugin.register(with: registry.registrar(forPlugin: "JustAudioPlugin"))
   LocationPlugin.register(with: registry.registrar(forPlugin: "LocationPlugin"))
   MicStreamPlugin.register(with: registry.registrar(forPlugin: "MicStreamPlugin"))
-  FLTPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FLTPackageInfoPlusPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
   RecordMacosPlugin.register(with: registry.registrar(forPlugin: "RecordMacosPlugin"))
   SharedPreferencesPlugin.register(with: registry.registrar(forPlugin: "SharedPreferencesPlugin"))

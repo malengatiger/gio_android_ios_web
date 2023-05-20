@@ -1,0 +1,512 @@
+The request analysis.setContextRoots failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+Bad state: Failed to find the source for custom_lint. Make sure to run `pub get`.
+at:
+package:riverpod/src/framework/provider_base.dart 177:29            _ExternalProviderSubscription.read
+package:custom_lint/src/plugin.dart 26:10                           getPackageListForContextRoots
+package:custom_lint/src/v2/server_to_client_channel.dart 141:21     new _SocketCustomLintServerToClientChannel
+package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart 280:53  CustomLintServer._maybeSpawnCustomLintPlugin
+package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart 264:9   CustomLintServer._handleAnalysisSetContextRoots.<fn>
+package:custom_lint/src/async_operation.dart 14:14                  PendingOperation.run
+package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart 124:22  CustomLintServer._handleRequest
+===== asynchronous gap ===========================
+package:riverpod/src/framework/element.dart 741:20                  ProviderElementBase.watch
+package:custom_lint/src/plugin.dart 91:17                           allPluginLinkKeysProvider.<fn>.<fn>
+dart:_internal/iterable.dart 481:31                                 ExpandIterator.moveNext
+dart:_internal/iterable.dart 390:19                                 MappedIterator.moveNext
+dart:collection/set.dart 57:23                                      SetMixin.addAll
+dart:collection-patch/compact_hash.dart 977:11                      _CompactLinkedHashSet.addAll
+dart:collection/linked_hash_set.dart 192:27                         new LinkedHashSet.of
+dart:core/iterable.dart 486:21                                      Iterable.toSet
+package:custom_lint/src/plugin.dart 94:8                            allPluginLinkKeysProvider.<fn>
+package:riverpod/src/framework/container.dart 285:21                ProviderContainer.listen
+package:custom_lint/src/plugin.dart 20:31                           getPackageListForContextRoots
+package:custom_lint/src/v2/server_to_client_channel.dart 141:21     new _SocketCustomLintServerToClientChannel
+package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart 280:53  CustomLintServer._maybeSpawnCustomLintPlugin
+package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart 264:9   CustomLintServer._handleAnalysisSetContextRoots.<fn>
+package:custom_lint/src/async_operation.dart 14:14                  PendingOperation.run
+package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart 124:22  CustomLintServer._handleRequest
+===== asynchronous gap ===========================
+package:custom_lint/src/plugin.dart 135:23                          pluginMetasForContextRootProvider.<fn>._getPluginsForContext.<fn>
+dart:core/iterable.dart 680:38                                      Iterable.firstWhere
+package:custom_lint/src/plugin.dart 133:53                          pluginMetasForContextRootProvider.<fn>._getPluginsForContext
+dart:async-patch/async_patch.dart 710:21                            _SyncStarIterator.moveNext
+dart:core-patch/growable_array.dart 202:26                          new _GrowableList._ofOther
+dart:core-patch/growable_array.dart 152:26                          new _GrowableList.of
+dart:core-patch/array_patch.dart 51:28                              new List.of
+dart:core/iterable.dart 470:12                                      Iterable.toList
+package:custom_lint/src/plugin.dart 152:45                          pluginMetasForContextRootProvider.<fn>
+package:riverpod/src/framework/element.dart 715:32                  ProviderElementBase.watch
+package:custom_lint/src/plugin.dart 91:17                           allPluginLinkKeysProvider.<fn>.<fn>
+dart:_internal/iterable.dart 481:31                                 ExpandIterator.moveNext
+dart:_internal/iterable.dart 390:19                                 MappedIterator.moveNext
+dart:collection/set.dart 57:23                                      SetMixin.addAll
+dart:collection-patch/compact_hash.dart 977:11                      _CompactLinkedHashSet.addAll
+dart:collection/linked_hash_set.dart 192:27                         new LinkedHashSet.of
+dart:core/iterable.dart 486:21                                      Iterable.toSet
+package:custom_lint/src/plugin.dart 94:8                            allPluginLinkKeysProvider.<fn>
+package:riverpod/src/framework/container.dart 285:21                ProviderContainer.listen
+package:custom_lint/src/plugin.dart 20:31                           getPackageListForContextRoots
+package:custom_lint/src/v2/server_to_client_channel.dart 141:21     new _SocketCustomLintServerToClientChannel
+package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart 280:53  CustomLintServer._maybeSpawnCustomLintPlugin
+
+The Dart VM service is listening on http://127.0.0.1:59069/oC3JIOKh-a8=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:59069/oC3JIOKh-a8=/devtools?uri=ws://127.0.0.1:59069/oC3JIOKh-a8=/ws
+The Dart VM service is listening on http://127.0.0.1:59145/dik2tIIcLZ8=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:59145/dik2tIIcLZ8=/devtools?uri=ws://127.0.0.1:59145/dik2tIIcLZ8=/ws
+The Dart VM service is listening on http://127.0.0.1:59804/Mauxib7alQo=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:59804/Mauxib7alQo=/devtools?uri=ws://127.0.0.1:59804/Mauxib7alQo=/ws
+The Dart VM service is listening on http://127.0.0.1:60794/cvGU6rObqAc=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:60794/cvGU6rObqAc=/devtools?uri=ws://127.0.0.1:60794/cvGU6rObqAc=/ws
+The Dart VM service is listening on http://127.0.0.1:61276/tk03RAS2B4o=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:61276/tk03RAS2B4o=/devtools?uri=ws://127.0.0.1:61276/tk03RAS2B4o=/ws
+The Dart VM service is listening on http://127.0.0.1:62220/lZaETvWwfuQ=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:62220/lZaETvWwfuQ=/devtools?uri=ws://127.0.0.1:62220/lZaETvWwfuQ=/ws
+The Dart VM service is listening on http://127.0.0.1:62699/vo9lNFnjCuQ=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:62699/vo9lNFnjCuQ=/devtools?uri=ws://127.0.0.1:62699/vo9lNFnjCuQ=/ws
+The Dart VM service is listening on http://127.0.0.1:62734/4aQdEhIF714=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:62734/4aQdEhIF714=/devtools?uri=ws://127.0.0.1:62734/4aQdEhIF714=/ws
+The Dart VM service is listening on http://127.0.0.1:63031/Fhqm55UR_0g=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:63031/Fhqm55UR_0g=/devtools?uri=ws://127.0.0.1:63031/Fhqm55UR_0g=/ws
+The request edit.getAssists failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+A request throw the exception:Bad state: Unable to find the context to /Users/aubreymalabie/flutter/packages/flutter/lib/src/widgets/framework.dart
+#0      AnalysisContextCollectionImpl.contextFor (package:analyzer/src/dart/analysis/analysis_context_collection.dart:143:5)
+#1      _ClientAnalyzerPlugin.handleEditGetAssists (package:custom_lint_builder/src/client.dart:406:47)
+<asynchronous suspension>
+#2      ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:564:18)
+<asynchronous suspension>
+#3      ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:611:18)
+<asynchronous suspension>
+
+at:
+#0      SocketCustomLintServerToClientChannel.sendCustomLintRequest.<anonymous closure> (package:custom_lint/src/v2/server_to_client_channel.dart:267:11)
+#1      _$_CustomLintResponseAnalyzerPluginResponse.map (package:custom_lint/src/v2/protocol.freezed.dart:924:34)
+#2      SocketCustomLintServerToClientChannel.sendCustomLintRequest (package:custom_lint/src/v2/server_to_client_channel.dart:261:14)
+<asynchronous suspension>
+#3      SocketCustomLintServerToClientChannel.sendAnalyzerPluginRequest (package:custom_lint/src/v2/server_to_client_channel.dart:238:22)
+<asynchronous suspension>
+#4      CustomLintServer._handleRequest.<anonymous closure>.<anonymous closure> (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:177:17)
+<asynchronous suspension>
+#5      PendingOperation.run (package:custom_lint/src/async_operation.dart:22:14)
+<asynchronous suspension>
+#6      CustomLintServer._handleRequest (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:160:22)
+<asynchronous suspension>
+
+The Dart VM service is listening on http://127.0.0.1:56824/glvdtT0f2ho=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:56824/glvdtT0f2ho=/devtools?uri=ws://127.0.0.1:56824/glvdtT0f2ho=/ws
+The Dart VM service is listening on http://127.0.0.1:62928/Kf98CqjfLMc=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:62928/Kf98CqjfLMc=/devtools?uri=ws://127.0.0.1:62928/Kf98CqjfLMc=/ws
+The Dart VM service is listening on http://127.0.0.1:63448/OxYiv7BIkjY=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:63448/OxYiv7BIkjY=/devtools?uri=ws://127.0.0.1:63448/OxYiv7BIkjY=/ws
+The Dart VM service is listening on http://127.0.0.1:63627/rpPuicLfIfE=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:63627/rpPuicLfIfE=/devtools?uri=ws://127.0.0.1:63627/rpPuicLfIfE=/ws
+The Dart VM service is listening on http://127.0.0.1:64332/0_dzERREwIc=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:64332/0_dzERREwIc=/devtools?uri=ws://127.0.0.1:64332/0_dzERREwIc=/ws
+The request edit.getAssists failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+A request throw the exception:Bad state: Unable to find the context to /Users/aubreymalabie/.pub-cache/hosted/pub.dev/firebase_ui_auth-1.4.1/lib/src/widgets/user_avatar.dart
+#0      AnalysisContextCollectionImpl.contextFor (package:analyzer/src/dart/analysis/analysis_context_collection.dart:143:5)
+#1      _ClientAnalyzerPlugin.handleEditGetAssists (package:custom_lint_builder/src/client.dart:406:47)
+<asynchronous suspension>
+#2      ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:564:18)
+<asynchronous suspension>
+#3      ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:611:18)
+<asynchronous suspension>
+
+at:
+#0      SocketCustomLintServerToClientChannel.sendCustomLintRequest.<anonymous closure> (package:custom_lint/src/v2/server_to_client_channel.dart:267:11)
+#1      _$_CustomLintResponseAnalyzerPluginResponse.map (package:custom_lint/src/v2/protocol.freezed.dart:924:34)
+#2      SocketCustomLintServerToClientChannel.sendCustomLintRequest (package:custom_lint/src/v2/server_to_client_channel.dart:261:14)
+<asynchronous suspension>
+#3      SocketCustomLintServerToClientChannel.sendAnalyzerPluginRequest (package:custom_lint/src/v2/server_to_client_channel.dart:238:22)
+<asynchronous suspension>
+#4      CustomLintServer._handleRequest.<anonymous closure>.<anonymous closure> (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:177:17)
+<asynchronous suspension>
+#5      PendingOperation.run (package:custom_lint/src/async_operation.dart:22:14)
+<asynchronous suspension>
+#6      CustomLintServer._handleRequest (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:160:22)
+<asynchronous suspension>
+
+The request edit.getAssists failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+A request throw the exception:Bad state: Unable to find the context to /Users/aubreymalabie/.pub-cache/hosted/pub.dev/firebase_ui_auth-1.4.1/lib/src/widgets/user_avatar.dart
+#0      AnalysisContextCollectionImpl.contextFor (package:analyzer/src/dart/analysis/analysis_context_collection.dart:143:5)
+#1      _ClientAnalyzerPlugin.handleEditGetAssists (package:custom_lint_builder/src/client.dart:406:47)
+<asynchronous suspension>
+#2      ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:564:18)
+<asynchronous suspension>
+#3      ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:611:18)
+<asynchronous suspension>
+
+at:
+#0      SocketCustomLintServerToClientChannel.sendCustomLintRequest.<anonymous closure> (package:custom_lint/src/v2/server_to_client_channel.dart:267:11)
+#1      _$_CustomLintResponseAnalyzerPluginResponse.map (package:custom_lint/src/v2/protocol.freezed.dart:924:34)
+#2      SocketCustomLintServerToClientChannel.sendCustomLintRequest (package:custom_lint/src/v2/server_to_client_channel.dart:261:14)
+<asynchronous suspension>
+#3      SocketCustomLintServerToClientChannel.sendAnalyzerPluginRequest (package:custom_lint/src/v2/server_to_client_channel.dart:238:22)
+<asynchronous suspension>
+#4      CustomLintServer._handleRequest.<anonymous closure>.<anonymous closure> (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:177:17)
+<asynchronous suspension>
+#5      PendingOperation.run (package:custom_lint/src/async_operation.dart:22:14)
+<asynchronous suspension>
+#6      CustomLintServer._handleRequest (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:160:22)
+<asynchronous suspension>
+
+The request edit.getAssists failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+A request throw the exception:Bad state: Unable to find the context to /Users/aubreymalabie/.pub-cache/hosted/pub.dev/firebase_ui_auth-1.4.1/lib/src/widgets/user_avatar.dart
+#0      AnalysisContextCollectionImpl.contextFor (package:analyzer/src/dart/analysis/analysis_context_collection.dart:143:5)
+#1      _ClientAnalyzerPlugin.handleEditGetAssists (package:custom_lint_builder/src/client.dart:406:47)
+<asynchronous suspension>
+#2      ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:564:18)
+<asynchronous suspension>
+#3      ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:611:18)
+<asynchronous suspension>
+
+at:
+#0      SocketCustomLintServerToClientChannel.sendCustomLintRequest.<anonymous closure> (package:custom_lint/src/v2/server_to_client_channel.dart:267:11)
+#1      _$_CustomLintResponseAnalyzerPluginResponse.map (package:custom_lint/src/v2/protocol.freezed.dart:924:34)
+#2      SocketCustomLintServerToClientChannel.sendCustomLintRequest (package:custom_lint/src/v2/server_to_client_channel.dart:261:14)
+<asynchronous suspension>
+#3      SocketCustomLintServerToClientChannel.sendAnalyzerPluginRequest (package:custom_lint/src/v2/server_to_client_channel.dart:238:22)
+<asynchronous suspension>
+#4      CustomLintServer._handleRequest.<anonymous closure>.<anonymous closure> (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:177:17)
+<asynchronous suspension>
+#5      PendingOperation.run (package:custom_lint/src/async_operation.dart:22:14)
+<asynchronous suspension>
+#6      CustomLintServer._handleRequest (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:160:22)
+<asynchronous suspension>
+
+The request edit.getAssists failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+A request throw the exception:Bad state: Unable to find the context to /Users/aubreymalabie/.pub-cache/hosted/pub.dev/firebase_ui_auth-1.4.1/lib/src/widgets/user_avatar.dart
+#0      AnalysisContextCollectionImpl.contextFor (package:analyzer/src/dart/analysis/analysis_context_collection.dart:143:5)
+#1      _ClientAnalyzerPlugin.handleEditGetAssists (package:custom_lint_builder/src/client.dart:406:47)
+<asynchronous suspension>
+#2      ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:564:18)
+<asynchronous suspension>
+#3      ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:611:18)
+<asynchronous suspension>
+
+at:
+#0      SocketCustomLintServerToClientChannel.sendCustomLintRequest.<anonymous closure> (package:custom_lint/src/v2/server_to_client_channel.dart:267:11)
+#1      _$_CustomLintResponseAnalyzerPluginResponse.map (package:custom_lint/src/v2/protocol.freezed.dart:924:34)
+#2      SocketCustomLintServerToClientChannel.sendCustomLintRequest (package:custom_lint/src/v2/server_to_client_channel.dart:261:14)
+<asynchronous suspension>
+#3      SocketCustomLintServerToClientChannel.sendAnalyzerPluginRequest (package:custom_lint/src/v2/server_to_client_channel.dart:238:22)
+<asynchronous suspension>
+#4      CustomLintServer._handleRequest.<anonymous closure>.<anonymous closure> (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:177:17)
+<asynchronous suspension>
+#5      PendingOperation.run (package:custom_lint/src/async_operation.dart:22:14)
+<asynchronous suspension>
+#6      CustomLintServer._handleRequest (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:160:22)
+<asynchronous suspension>
+
+The request edit.getAssists failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+A request throw the exception:Bad state: Unable to find the context to /Users/aubreymalabie/.pub-cache/hosted/pub.dev/firebase_ui_auth-1.4.1/lib/src/screens/profile_screen.dart
+#0      AnalysisContextCollectionImpl.contextFor (package:analyzer/src/dart/analysis/analysis_context_collection.dart:143:5)
+#1      _ClientAnalyzerPlugin.handleEditGetAssists (package:custom_lint_builder/src/client.dart:406:47)
+<asynchronous suspension>
+#2      ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:564:18)
+<asynchronous suspension>
+#3      ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:611:18)
+<asynchronous suspension>
+
+at:
+#0      SocketCustomLintServerToClientChannel.sendCustomLintRequest.<anonymous closure> (package:custom_lint/src/v2/server_to_client_channel.dart:267:11)
+#1      _$_CustomLintResponseAnalyzerPluginResponse.map (package:custom_lint/src/v2/protocol.freezed.dart:924:34)
+#2      SocketCustomLintServerToClientChannel.sendCustomLintRequest (package:custom_lint/src/v2/server_to_client_channel.dart:261:14)
+<asynchronous suspension>
+#3      SocketCustomLintServerToClientChannel.sendAnalyzerPluginRequest (package:custom_lint/src/v2/server_to_client_channel.dart:238:22)
+<asynchronous suspension>
+#4      CustomLintServer._handleRequest.<anonymous closure>.<anonymous closure> (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:177:17)
+<asynchronous suspension>
+#5      PendingOperation.run (package:custom_lint/src/async_operation.dart:22:14)
+<asynchronous suspension>
+#6      CustomLintServer._handleRequest (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:160:22)
+<asynchronous suspension>
+
+The request edit.getAssists failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+A request throw the exception:Bad state: Unable to find the context to /Users/aubreymalabie/.pub-cache/hosted/pub.dev/firebase_ui_auth-1.4.1/lib/src/screens/profile_screen.dart
+#0      AnalysisContextCollectionImpl.contextFor (package:analyzer/src/dart/analysis/analysis_context_collection.dart:143:5)
+#1      _ClientAnalyzerPlugin.handleEditGetAssists (package:custom_lint_builder/src/client.dart:406:47)
+<asynchronous suspension>
+#2      ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:564:18)
+<asynchronous suspension>
+#3      ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:611:18)
+<asynchronous suspension>
+
+at:
+#0      SocketCustomLintServerToClientChannel.sendCustomLintRequest.<anonymous closure> (package:custom_lint/src/v2/server_to_client_channel.dart:267:11)
+#1      _$_CustomLintResponseAnalyzerPluginResponse.map (package:custom_lint/src/v2/protocol.freezed.dart:924:34)
+#2      SocketCustomLintServerToClientChannel.sendCustomLintRequest (package:custom_lint/src/v2/server_to_client_channel.dart:261:14)
+<asynchronous suspension>
+#3      SocketCustomLintServerToClientChannel.sendAnalyzerPluginRequest (package:custom_lint/src/v2/server_to_client_channel.dart:238:22)
+<asynchronous suspension>
+#4      CustomLintServer._handleRequest.<anonymous closure>.<anonymous closure> (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:177:17)
+<asynchronous suspension>
+#5      PendingOperation.run (package:custom_lint/src/async_operation.dart:22:14)
+<asynchronous suspension>
+#6      CustomLintServer._handleRequest (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:160:22)
+<asynchronous suspension>
+
+The request edit.getAssists failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+A request throw the exception:Bad state: Unable to find the context to /Users/aubreymalabie/.pub-cache/hosted/pub.dev/firebase_ui_auth-1.4.1/lib/src/screens/profile_screen.dart
+#0      AnalysisContextCollectionImpl.contextFor (package:analyzer/src/dart/analysis/analysis_context_collection.dart:143:5)
+#1      _ClientAnalyzerPlugin.handleEditGetAssists (package:custom_lint_builder/src/client.dart:406:47)
+<asynchronous suspension>
+#2      ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:564:18)
+<asynchronous suspension>
+#3      ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:611:18)
+<asynchronous suspension>
+
+at:
+#0      SocketCustomLintServerToClientChannel.sendCustomLintRequest.<anonymous closure> (package:custom_lint/src/v2/server_to_client_channel.dart:267:11)
+#1      _$_CustomLintResponseAnalyzerPluginResponse.map (package:custom_lint/src/v2/protocol.freezed.dart:924:34)
+#2      SocketCustomLintServerToClientChannel.sendCustomLintRequest (package:custom_lint/src/v2/server_to_client_channel.dart:261:14)
+<asynchronous suspension>
+#3      SocketCustomLintServerToClientChannel.sendAnalyzerPluginRequest (package:custom_lint/src/v2/server_to_client_channel.dart:238:22)
+<asynchronous suspension>
+#4      CustomLintServer._handleRequest.<anonymous closure>.<anonymous closure> (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:177:17)
+<asynchronous suspension>
+#5      PendingOperation.run (package:custom_lint/src/async_operation.dart:22:14)
+<asynchronous suspension>
+#6      CustomLintServer._handleRequest (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:160:22)
+<asynchronous suspension>
+
+The Dart VM service is listening on http://127.0.0.1:58505/azE5Xu3BtN8=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:58505/azE5Xu3BtN8=/devtools?uri=ws://127.0.0.1:58505/azE5Xu3BtN8=/ws
+The Dart VM service is listening on http://127.0.0.1:58661/ERIlw-gXB2Q=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:58661/ERIlw-gXB2Q=/devtools?uri=ws://127.0.0.1:58661/ERIlw-gXB2Q=/ws
+The Dart VM service is listening on http://127.0.0.1:64907/4slIHW65JSg=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:64907/4slIHW65JSg=/devtools?uri=ws://127.0.0.1:64907/4slIHW65JSg=/ws
+The Dart VM service is listening on http://127.0.0.1:64944/x3Kiq7sEwMs=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:64944/x3Kiq7sEwMs=/devtools?uri=ws://127.0.0.1:64944/x3Kiq7sEwMs=/ws
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 Plugin WrapWithConsumer threw while analyzing /Users/aubreymalabie/Work/gio_android_ios_web/lib/ui/activity/activity_header.dart:
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 InconsistentAnalysisException: Requested result might be inconsistent with previously returned results
+[WrapWithConsumer] 2023-05-20T19:29:55.870233
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #0      AnalysisSessionImpl._checkConsistency (package:analyzer/src/dart/analysis/session.dart:135:7)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #1      AnalysisSessionImpl.getResolvedUnit (package:analyzer/src/dart/analysis/session.dart:121:5)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #2      ChangeBuilderImpl._createDartFileEditBuilder (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:286:33)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #3      ChangeBuilderImpl.addDartFileEdit (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:134:23)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #4      _ChangeBuilderImpl.addDartFileEdit (package:custom_lint_core/src/change_reporter.dart:116:33)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #5      WrapWithConsumer.run.<anonymous closure> (package:riverpod_lint/src/assists/wrap_with_consumer.dart:35:21)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #6      _rootRunUnary (dart:async/zone.dart:1415:13)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #7      _CustomZone.runUnary (dart:async/zone.dart:1308:19)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #8      LinterVisitor._runSubscriptions (package:custom_lint_core/src/node_lint_visitor.g.dart:29:27)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #9      LinterVisitor.visitInstanceCreationExpression (package:custom_lint_core/src/node_lint_visitor.g.dart:609:5)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #10     InstanceCreationExpressionImpl.accept (package:analyzer/src/dart/ast/ast.dart:7662:15)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #11     NamedExpressionImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:9397:17)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #12     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #13     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #14     GeneralizingAstVisitor.visitCollectionElement (package:analyzer/dart/ast/visitor.dart:208:56)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #15     LinterVisitor.visitCollectionElement (package:custom_lint_core/src/node_lint_visitor.g.dart:184:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #16     GeneralizingAstVisitor.visitExpression (package:analyzer/dart/ast/visitor.dart:305:42)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #17     LinterVisitor.visitExpression (package:custom_lint_core/src/node_lint_visitor.g.dart:370:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #18     GeneralizingAstVisitor.visitNamedExpression (package:analyzer/dart/ast/visitor.dart:515:52)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #19     LinterVisitor.visitNamedExpression (package:custom_lint_core/src/node_lint_visitor.g.dart:754:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #20     NamedExpressionImpl.accept (package:analyzer/src/dart/ast/ast.dart:9387:50)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #21     NodeListImpl.accept (package:analyzer/src/dart/ast/ast.dart:9721:20)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #22     ArgumentListImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:402:16)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #23     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #24     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #25     GeneralizingAstVisitor.visitArgumentList (package:analyzer/dart/ast/visitor.dart:143:46)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #26     LinterVisitor.visitArgumentList (package:custom_lint_core/src/node_lint_visitor.g.dart:58:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #27     ArgumentListImpl.accept (package:analyzer/src/dart/ast/ast.dart:398:50)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #28     InstanceCreationExpressionImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:7673:19)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #29     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #30     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #31     GeneralizingAstVisitor.visitCollectionElement (package:analyzer/dart/ast/visitor.dart:208:56)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #32     LinterVisitor.visitCollectionElement (package:custom_lint_core/src/node_lint_visitor.g.dart:184:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #33     GeneralizingAstVisitor.visitExpression (package:analyzer/dart/ast/visitor.dart:305:42)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #34     LinterVisitor.visitExpression (package:custom_lint_core/src/node_lint_visitor.g.dart:370:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #35     GeneralizingAstVisitor.visitInstanceCreationExpression (package:analyzer/dart/ast/visitor.dart:439:7)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #36     LinterVisitor.visitInstanceCreationExpression (package:custom_lint_core/src/node_lint_visitor.g.dart:610:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #37     InstanceCreationExpressionImpl.accept (package:analyzer/src/dart/ast/ast.dart:7662:15)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #38     ReturnStatementImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:11703:18)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #39     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #40     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #41     GeneralizingAstVisitor.visitStatement (package:analyzer/dart/ast/visitor.dart:667:40)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #42     LinterVisitor.visitStatement (package:custom_lint_core/src/node_lint_visitor.g.dart:1029:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #43     GeneralizingAstVisitor.visitReturnStatement (package:analyzer/dart/ast/visitor.dart:639:52)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #44     LinterVisitor.visitReturnStatement (package:custom_lint_core/src/node_lint_visitor.g.dart:975:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #45     ReturnStatementImpl.accept (package:analyzer/src/dart/ast/ast.dart:11699:50)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #46     NodeListImpl.accept (package:analyzer/src/dart/ast/ast.dart:9721:20)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #47     BlockImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:1259:17)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #48     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #49     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #50     GeneralizingAstVisitor.visitStatement (package:analyzer/dart/ast/visitor.dart:667:40)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #51     LinterVisitor.visitStatement (package:custom_lint_core/src/node_lint_visitor.g.dart:1029:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #52     GeneralizingAstVisitor.visitBlock (package:analyzer/dart/ast/visitor.dart:173:32)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #53     LinterVisitor.visitBlock (package:custom_lint_core/src/node_lint_visitor.g.dart:112:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #54     BlockImpl.accept (package:analyzer/src/dart/ast/ast.dart:1255:50)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #55     BlockFunctionBodyImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:1210:12)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #56     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #57     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #58     GeneralizingAstVisitor.visitFunctionBody (package:analyzer/dart/ast/visitor.dart:369:46)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #59     LinterVisitor.visitFunctionBody (package:custom_lint_core/src/node_lint_visitor.g.dart:490:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #60     GeneralizingAstVisitor.visitBlockFunctionBody (package:analyzer/dart/ast/visitor.dart:176:56)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #61     LinterVisitor.visitBlockFunctionBody (package:custom_lint_core/src/node_lint_visitor.g.dart:118:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #62     BlockFunctionBodyImpl.accept (package:analyzer/src/dart/ast/ast.dart:1202:50)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #63     MethodDeclarationImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:8996:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #64     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #65     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #66     GeneralizingAstVisitor.visitAnnotatedNode (package:analyzer/dart/ast/visitor.dart:137:48)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #67     LinterVisitor.visitAnnotatedNode (package:custom_lint_core/src/node_lint_visitor.g.dart:46:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #68     GeneralizingAstVisitor.visitDeclaration (package:analyzer/dart/ast/visitor.dart:260:44)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #69     LinterVisitor.visitDeclaration (package:custom_lint_core/src/node_lint_visitor.g.dart:286:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #70     GeneralizingAstVisitor.visitClassMember (package:analyzer/dart/ast/visitor.dart:203:44)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #71     LinterVisitor.visitClassMember (package:custom_lint_core/src/node_lint_visitor.g.dart:172:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #72     GeneralizingAstVisitor.visitMethodDeclaration (package:analyzer/dart/ast/visitor.dart:501:56)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #73     LinterVisitor.visitMethodDeclaration (package:custom_lint_core/src/node_lint_visitor.g.dart:730:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #74     MethodDeclarationImpl.accept (package:analyzer/src/dart/ast/ast.dart:8988:50)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #75     NodeListImpl.accept (package:analyzer/src/dart/ast/ast.dart:9721:20)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #76     ClassDeclarationImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:2059:13)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #77     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #78     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #79     GeneralizingAstVisitor.visitAnnotatedNode (package:analyzer/dart/ast/visitor.dart:137:48)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #80     LinterVisitor.visitAnnotatedNode (package:custom_lint_core/src/node_lint_visitor.g.dart:46:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #81     GeneralizingAstVisitor.visitDeclaration (package:analyzer/dart/ast/visitor.dart:260:44)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #82     LinterVisitor.visitDeclaration (package:custom_lint_core/src/node_lint_visitor.g.dart:286:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #83     GeneralizingAstVisitor.visitCompilationUnitMember (package:analyzer/dart/ast/visitor.dart:222:7)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #84     LinterVisitor.visitCompilationUnitMember (package:custom_lint_core/src/node_lint_visitor.g.dart:214:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #85     GeneralizingAstVisitor.visitNamedCompilationUnitMember (package:analyzer/dart/ast/visitor.dart:512:7)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #86     LinterVisitor.visitNamedCompilationUnitMember (package:custom_lint_core/src/node_lint_visitor.g.dart:748:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #87     GeneralizingAstVisitor.visitClassDeclaration (package:analyzer/dart/ast/visitor.dart:201:7)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #88     LinterVisitor.visitClassDeclaration (package:custom_lint_core/src/node_lint_visitor.g.dart:166:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #89     ClassDeclarationImpl.accept (package:analyzer/src/dart/ast/ast.dart:2049:50)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #90     NodeListImpl.accept (package:analyzer/src/dart/ast/ast.dart:9721:20)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #91     CompilationUnitImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:2594:21)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #92     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #93     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #94     GeneralizingAstVisitor.visitCompilationUnit (package:analyzer/dart/ast/visitor.dart:219:52)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #95     LinterVisitor.visitCompilationUnit (package:custom_lint_core/src/node_lint_visitor.g.dart:208:11)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #96     CompilationUnitImpl.accept (package:analyzer/src/dart/ast/ast.dart:2587:50)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #97     DartAssist.startUp.<anonymous closure> (package:custom_lint_core/src/assist.dart:81:17)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #98     _rootRun (dart:async/zone.dart:1399:13)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #99     _CustomZone.run (dart:async/zone.dart:1301:19)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #100    _CustomZone.bindCallback.<anonymous closure> (dart:async/zone.dart:1233:23)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #101    runPostRunCallbacks (package:custom_lint_core/src/plugin_base.dart:16:19)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #102    _ClientAnalyzerPlugin.handleEditGetAssists (package:custom_lint_builder/src/client.dart:463:5)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 <asynchronous suspension>
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #103    ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:564:18)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 <asynchronous suspension>
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 #104    ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:611:18)
+[WrapWithConsumer] 2023-05-20T19:29:55.870233 <asynchronous suspension>
+[WrapWithConsumer] 2023-05-20T19:29:55.870233
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 Plugin WrapWithProviderScope threw while analyzing /Users/aubreymalabie/Work/gio_android_ios_web/lib/ui/activity/activity_header.dart:
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 InconsistentAnalysisException: Requested result might be inconsistent with previously returned results
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #0      AnalysisSessionImpl._checkConsistency (package:analyzer/src/dart/analysis/session.dart:135:7)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #1      AnalysisSessionImpl.getResolvedUnit (package:analyzer/src/dart/analysis/session.dart:121:5)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #2      ChangeBuilderImpl._createDartFileEditBuilder (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:286:33)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #3      ChangeBuilderImpl.addDartFileEdit (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:134:23)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #4      _ChangeBuilderImpl.addDartFileEdit (package:custom_lint_core/src/change_reporter.dart:116:33)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #5      WrapWithProviderScope.run.<anonymous closure> (package:riverpod_lint/src/assists/wrap_with_provider_scope.dart:33:21)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #6      _rootRunUnary (dart:async/zone.dart:1415:13)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #7      _CustomZone.runUnary (dart:async/zone.dart:1308:19)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #8      LinterVisitor._runSubscriptions (package:custom_lint_core/src/node_lint_visitor.g.dart:29:27)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #9      LinterVisitor.visitInstanceCreationExpression (package:custom_lint_core/src/node_lint_visitor.g.dart:609:5)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #10     InstanceCreationExpressionImpl.accept (package:analyzer/src/dart/ast/ast.dart:7662:15)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #11     NamedExpressionImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:9397:17)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #12     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #13     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #14     GeneralizingAstVisitor.visitCollectionElement (package:analyzer/dart/ast/visitor.dart:208:56)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #15     LinterVisitor.visitCollectionElement (package:custom_lint_core/src/node_lint_visitor.g.dart:184:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #16     GeneralizingAstVisitor.visitExpression (package:analyzer/dart/ast/visitor.dart:305:42)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #17     LinterVisitor.visitExpression (package:custom_lint_core/src/node_lint_visitor.g.dart:370:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #18     GeneralizingAstVisitor.visitNamedExpression (package:analyzer/dart/ast/visitor.dart:515:52)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #19     LinterVisitor.visitNamedExpression (package:custom_lint_core/src/node_lint_visitor.g.dart:754:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #20     NamedExpressionImpl.accept (package:analyzer/src/dart/ast/ast.dart:9387:50)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #21     NodeListImpl.accept (package:analyzer/src/dart/ast/ast.dart:9721:20)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #22     ArgumentListImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:402:16)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #23     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #24     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #25     GeneralizingAstVisitor.visitArgumentList (package:analyzer/dart/ast/visitor.dart:143:46)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #26     LinterVisitor.visitArgumentList (package:custom_lint_core/src/node_lint_visitor.g.dart:58:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #27     ArgumentListImpl.accept (package:analyzer/src/dart/ast/ast.dart:398:50)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #28     InstanceCreationExpressionImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:7673:19)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #29     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #30     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #31     GeneralizingAstVisitor.visitCollectionElement (package:analyzer/dart/ast/visitor.dart:208:56)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #32     LinterVisitor.visitCollectionElement (package:custom_lint_core/src/node_lint_visitor.g.dart:184:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #33     GeneralizingAstVisitor.visitExpression (package:analyzer/dart/ast/visitor.dart:305:42)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #34     LinterVisitor.visitExpression (package:custom_lint_core/src/node_lint_visitor.g.dart:370:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #35     GeneralizingAstVisitor.visitInstanceCreationExpression (package:analyzer/dart/ast/visitor.dart:439:7)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #36     LinterVisitor.visitInstanceCreationExpression (package:custom_lint_core/src/node_lint_visitor.g.dart:610:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #37     InstanceCreationExpressionImpl.accept (package:analyzer/src/dart/ast/ast.dart:7662:15)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #38     ReturnStatementImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:11703:18)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #39     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #40     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #41     GeneralizingAstVisitor.visitStatement (package:analyzer/dart/ast/visitor.dart:667:40)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #42     LinterVisitor.visitStatement (package:custom_lint_core/src/node_lint_visitor.g.dart:1029:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #43     GeneralizingAstVisitor.visitReturnStatement (package:analyzer/dart/ast/visitor.dart:639:52)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #44     LinterVisitor.visitReturnStatement (package:custom_lint_core/src/node_lint_visitor.g.dart:975:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #45     ReturnStatementImpl.accept (package:analyzer/src/dart/ast/ast.dart:11699:50)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #46     NodeListImpl.accept (package:analyzer/src/dart/ast/ast.dart:9721:20)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #47     BlockImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:1259:17)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #48     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #49     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #50     GeneralizingAstVisitor.visitStatement (package:analyzer/dart/ast/visitor.dart:667:40)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #51     LinterVisitor.visitStatement (package:custom_lint_core/src/node_lint_visitor.g.dart:1029:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #52     GeneralizingAstVisitor.visitBlock (package:analyzer/dart/ast/visitor.dart:173:32)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #53     LinterVisitor.visitBlock (package:custom_lint_core/src/node_lint_visitor.g.dart:112:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #54     BlockImpl.accept (package:analyzer/src/dart/ast/ast.dart:1255:50)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #55     BlockFunctionBodyImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:1210:12)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #56     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #57     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #58     GeneralizingAstVisitor.visitFunctionBody (package:analyzer/dart/ast/visitor.dart:369:46)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #59     LinterVisitor.visitFunctionBody (package:custom_lint_core/src/node_lint_visitor.g.dart:490:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #60     GeneralizingAstVisitor.visitBlockFunctionBody (package:analyzer/dart/ast/visitor.dart:176:56)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #61     LinterVisitor.visitBlockFunctionBody (package:custom_lint_core/src/node_lint_visitor.g.dart:118:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #62     BlockFunctionBodyImpl.accept (package:analyzer/src/dart/ast/ast.dart:1202:50)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #63     MethodDeclarationImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:8996:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #64     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #65     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #66     GeneralizingAstVisitor.visitAnnotatedNode (package:analyzer/dart/ast/visitor.dart:137:48)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #67     LinterVisitor.visitAnnotatedNode (package:custom_lint_core/src/node_lint_visitor.g.dart:46:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #68     GeneralizingAstVisitor.visitDeclaration (package:analyzer/dart/ast/visitor.dart:260:44)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #69     LinterVisitor.visitDeclaration (package:custom_lint_core/src/node_lint_visitor.g.dart:286:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #70     GeneralizingAstVisitor.visitClassMember (package:analyzer/dart/ast/visitor.dart:203:44)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #71     LinterVisitor.visitClassMember (package:custom_lint_core/src/node_lint_visitor.g.dart:172:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #72     GeneralizingAstVisitor.visitMethodDeclaration (package:analyzer/dart/ast/visitor.dart:501:56)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #73     LinterVisitor.visitMethodDeclaration (package:custom_lint_core/src/node_lint_visitor.g.dart:730:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #74     MethodDeclarationImpl.accept (package:analyzer/src/dart/ast/ast.dart:8988:50)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #75     NodeListImpl.accept (package:analyzer/src/dart/ast/ast.dart:9721:20)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #76     ClassDeclarationImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:2059:13)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #77     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #78     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #79     GeneralizingAstVisitor.visitAnnotatedNode (package:analyzer/dart/ast/visitor.dart:137:48)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #80     LinterVisitor.visitAnnotatedNode (package:custom_lint_core/src/node_lint_visitor.g.dart:46:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #81     GeneralizingAstVisitor.visitDeclaration (package:analyzer/dart/ast/visitor.dart:260:44)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #82     LinterVisitor.visitDeclaration (package:custom_lint_core/src/node_lint_visitor.g.dart:286:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #83     GeneralizingAstVisitor.visitCompilationUnitMember (package:analyzer/dart/ast/visitor.dart:222:7)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #84     LinterVisitor.visitCompilationUnitMember (package:custom_lint_core/src/node_lint_visitor.g.dart:214:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #85     GeneralizingAstVisitor.visitNamedCompilationUnitMember (package:analyzer/dart/ast/visitor.dart:512:7)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #86     LinterVisitor.visitNamedCompilationUnitMember (package:custom_lint_core/src/node_lint_visitor.g.dart:748:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #87     GeneralizingAstVisitor.visitClassDeclaration (package:analyzer/dart/ast/visitor.dart:201:7)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #88     LinterVisitor.visitClassDeclaration (package:custom_lint_core/src/node_lint_visitor.g.dart:166:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #89     ClassDeclarationImpl.accept (package:analyzer/src/dart/ast/ast.dart:2049:50)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #90     NodeListImpl.accept (package:analyzer/src/dart/ast/ast.dart:9721:20)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #91     CompilationUnitImpl.visitChildren (package:analyzer/src/dart/ast/ast.dart:2594:21)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #92     GeneralizingAstVisitor.visitNode (package:analyzer/dart/ast/visitor.dart:531:10)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #93     LinterVisitor.visitNode (package:custom_lint_core/src/node_lint_visitor.g.dart:784:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #94     GeneralizingAstVisitor.visitCompilationUnit (package:analyzer/dart/ast/visitor.dart:219:52)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #95     LinterVisitor.visitCompilationUnit (package:custom_lint_core/src/node_lint_visitor.g.dart:208:11)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #96     CompilationUnitImpl.accept (package:analyzer/src/dart/ast/ast.dart:2587:50)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #97     DartAssist.startUp.<anonymous closure> (package:custom_lint_core/src/assist.dart:81:17)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #98     _rootRun (dart:async/zone.dart:1399:13)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #99     _CustomZone.run (dart:async/zone.dart:1301:19)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #100    _CustomZone.bindCallback.<anonymous closure> (dart:async/zone.dart:1233:23)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #101    runPostRunCallbacks (package:custom_lint_core/src/plugin_base.dart:16:19)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #102    _ClientAnalyzerPlugin.handleEditGetAssists (package:custom_lint_builder/src/client.dart:463:5)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 <asynchronous suspension>
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #103    ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:564:18)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 <asynchronous suspension>
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 #104    ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:611:18)
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059 <asynchronous suspension>
+[WrapWithProviderScope] 2023-05-20T19:29:55.872059

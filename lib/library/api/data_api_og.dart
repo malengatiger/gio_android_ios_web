@@ -14,6 +14,7 @@ import 'package:geo_monitor/library/data/project_summary.dart';
 import 'package:geo_monitor/library/errors/error_handler.dart';
 import 'package:geo_monitor/utilities/environment.dart';
 import 'package:http/http.dart' as http;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../utilities/sharedprefs.dart';
 import '../auth/app_auth.dart';
@@ -52,6 +53,8 @@ import '../functions.dart';
 late DataApiDog dataApiDog;
 
 /// Handles all data requests to backend api using Riverpod
+///
+
 class DataApiDog {
   static const mm = '❤️❤️❤️ DataApiDog: ❤️: ';
   Map<String, String> headers = {

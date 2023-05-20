@@ -6,6 +6,7 @@ import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/data/photo.dart';
 import 'package:geo_monitor/library/data/video.dart';
+import 'package:geo_monitor/library/users/edit/user_edit_main.dart';
 import 'package:geo_monitor/library/users/edit/user_edit_tablet.dart';
 import 'package:geo_monitor/library/users/list/user_list_card.dart';
 import 'package:geo_monitor/ui/activity/geo_activity.dart';
@@ -330,17 +331,17 @@ class _GioUserListState extends State<GioUserList> {
             type: PageTransitionType.scale,
             alignment: Alignment.topLeft,
             duration: const Duration(seconds: 1),
-            child: UserEditTablet(
-                fcmBloc: widget.fcmBloc,
-                organizationBloc: widget.organizationBloc,
-                projectBloc: widget.projectBloc,
-                project: null,
-                dataApiDog: widget.dataApiDog,
-                geoUploader: widget.geoUploader,
-                cloudStorageBloc: widget.cloudStorageBloc,
-                prefsOGx: widget.prefsOGx,
-                cacheManager: widget.cacheManager,
-                user: user)));
+            child: UserEditMain(
+              user,
+              fcmBloc: widget.fcmBloc,
+              organizationBloc: widget.organizationBloc,
+              projectBloc: widget.projectBloc,
+              dataApiDog: widget.dataApiDog,
+              geoUploader: widget.geoUploader,
+              cloudStorageBloc: widget.cloudStorageBloc,
+              prefsOGx: widget.prefsOGx,
+              cacheManager: widget.cacheManager,
+            )));
   }
 
   Future<void> navigateToKillPage(User user) async {

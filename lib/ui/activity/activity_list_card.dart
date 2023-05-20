@@ -62,7 +62,7 @@ class _ActivityListCardState extends State<ActivityListCard> {
     super.initState();
     _setTexts();
     _listenToFCM();
-    _getData(true);
+    _getData(false);
   }
 
   Future _setTexts() async {
@@ -160,11 +160,11 @@ class _ActivityListCardState extends State<ActivityListCard> {
       });
     }
     pp('$mm _getOrganizationData 1: ............ activities: ${models.length}');
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(seconds: 10));
     models = await organizationBloc.getOrganizationActivity(
         organizationId: settings!.organizationId!,
         hours: hours,
-        forceRefresh: true);
+        forceRefresh: forceRefresh);
 
     pp('$mm _getOrganizationData 2 :............ activities: ${models.length}');
     if (models.isNotEmpty) {
@@ -207,7 +207,7 @@ class _ActivityListCardState extends State<ActivityListCard> {
 
     subscription = fcmBloc.activityStream.listen((ActivityModel model) async {
       pp('$mm activityStream delivered activity data ... ${model.date!}, current models: ${models.length}');
-      if (models.isEmpty || models.length == 1) {
+      if (models.length < 2) {
         await _getData(true);
       } else {
         await _getData(false);

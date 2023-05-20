@@ -12,6 +12,7 @@ import 'package:geo_monitor/library/bloc/zip_bloc.dart';
 import 'package:geo_monitor/library/errors/error_handler.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../api/data_api_og.dart';
 import '../auth/app_auth.dart';
@@ -20,8 +21,16 @@ import '../data/data_bag.dart';
 import 'fcm_bloc.dart';
 import 'organization_bloc.dart';
 
+part 'isolate_handler.g.dart';
 late IsolateDataHandler dataHandler;
 
+@riverpod
+Future<DataBag?> getOrganizationData(GetOrganizationDataRef ref) async {
+  pp('+++++++++++ provider getting data via isolate');
+ final DataBag? bag = await dataHandler.getOrganizationData();
+  pp('+++++++++++ provider returning data from isolate');
+ return bag;
+}
 class IsolateDataHandler {
   static const xx = ' 🎁 🎁 🎁 🎁 🎁 🎁 IsolateDataHandler:  🎁 ';
   IsolateDataHandler(this.prefsOGx, this.appAuth, this.cacheManager) {}

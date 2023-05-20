@@ -339,7 +339,7 @@ class GioAudioPlayerState extends State<GioAudioPlayer> {
                 playAudioClip == null ? 'Play Audio' : playAudioClip!,
                 style: myTextStyleMediumLarge(context),
               ),
-              bottom: const PreferredSize(preferredSize: Size.fromHeight(48), child: Column(
+              bottom: const PreferredSize(preferredSize: Size.fromHeight(24), child: Column(
                 children: [
 
                 ],

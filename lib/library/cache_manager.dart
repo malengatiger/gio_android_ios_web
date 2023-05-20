@@ -380,7 +380,7 @@ class CacheManager {
 
   Future addActivityModels({required List<ActivityModel> activities}) async {
     late String key;
-    await deleteActivityModels();
+    //await deleteActivityModels();
     for (var activity in activities) {
         key = '${activity.activityModelId}';
       _activityBox?.put(key, activity);

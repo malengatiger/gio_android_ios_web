@@ -38,38 +38,42 @@ class UserEditMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenTypeLayout(
-      mobile: UserEditMobile(user),
-      tablet: OrientationLayoutBuilder(
-        portrait: (context) {
-          return UserEditTablet(
-            fcmBloc: fcmBloc,
-            organizationBloc: organizationBloc,
-            dataApiDog: dataApiDog,
-            project: null,
-            projectBloc: projectBloc,
-            cloudStorageBloc: cloudStorageBloc,
-            geoUploader: geoUploader,
-            prefsOGx: prefsOGx,
-            cacheManager: cacheManager,
-            user: user,
-          );
-        },
-        landscape: (context) {
-          return UserEditTablet(
-            fcmBloc: fcmBloc,
-            organizationBloc: organizationBloc,
-            dataApiDog: dataApiDog,
-            cloudStorageBloc: cloudStorageBloc,
-            geoUploader: geoUploader,
-            project: null,
-            projectBloc: projectBloc,
-            prefsOGx: prefsOGx,
-            cacheManager: cacheManager,
-            user: user,
-          );
-        },
-      ),
+    return ScreenTypeLayout.builder(
+      tablet: (ctx) {
+        return OrientationLayoutBuilder(
+          portrait: (context) {
+            return UserEditTablet(
+              fcmBloc: fcmBloc,
+              organizationBloc: organizationBloc,
+              dataApiDog: dataApiDog,
+              project: null,
+              projectBloc: projectBloc,
+              cloudStorageBloc: cloudStorageBloc,
+              geoUploader: geoUploader,
+              prefsOGx: prefsOGx,
+              cacheManager: cacheManager,
+              user: user,
+            );
+          },
+          landscape: (context) {
+            return UserEditTablet(
+              fcmBloc: fcmBloc,
+              organizationBloc: organizationBloc,
+              dataApiDog: dataApiDog,
+              cloudStorageBloc: cloudStorageBloc,
+              geoUploader: geoUploader,
+              project: null,
+              projectBloc: projectBloc,
+              prefsOGx: prefsOGx,
+              cacheManager: cacheManager,
+              user: user,
+            );
+          },
+        );
+      },
+      mobile: (ctx) {
+        return UserEditMobile(user);
+      },
     );
   }
 }

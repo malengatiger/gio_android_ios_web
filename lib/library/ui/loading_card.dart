@@ -14,7 +14,7 @@ class LoadingCard extends StatelessWidget {
         elevation: 8,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: SizedBox(height: 100, width:200, child: Column(
+          child: SizedBox(height: 160, width:400, child: Column(
             children:  [
               const SizedBox(height: 48,),
               const SizedBox(

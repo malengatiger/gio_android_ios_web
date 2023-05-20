@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geo_monitor/library/api/data_api_og.dart';
+import 'package:geo_monitor/library/api/prefs_og.dart';
+import 'package:geo_monitor/library/cache_manager.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
 import 'package:geo_monitor/library/data/app_error.dart';
 import 'package:geo_monitor/library/data/audio.dart';
@@ -25,7 +27,7 @@ import 'get_data_test.mocks.dart';
 final MockClient client = MockClient();
 MockDataApiDog? dog;
 
-@GenerateMocks([http.Client, DataApiDog])
+@GenerateMocks([http.Client, DataApiDog, CacheManager, PrefsOGx, ])
 void main() {
   const url = 'http://192.168.86.230:8080/geo/v1/';
   const organizationId = 'orgId';

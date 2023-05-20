@@ -333,7 +333,7 @@ class UserProfilePictureEditorState extends State<UserProfilePictureEditor>
                       children: [
                         Text(
                           '${widget.user.name}',
-                          style: myTextStyleLargePrimaryColor(context),
+                          style: myTextStyleMediumBoldPrimaryColor(context),
                         ),
                         imageFile == null
                             ? const SizedBox()
@@ -384,7 +384,7 @@ class UserProfilePictureEditorState extends State<UserProfilePictureEditor>
                     _showOldPhoto
                         ? SizedBox(
                             width: 320,
-                            height: 360,
+                            height: 340,
                             child: CachedNetworkImage(
                                 imageUrl: widget.user.imageUrl!,
                                 fit: BoxFit.cover,

@@ -71,3 +71,39 @@ ezSg6VF5Rb2gRUS85tnc0w
 Share your locally developed app with others on your account for further testing.
 
 https://zoom.us/oauth/authorize?client_id=ezSg6VF5Rb2gRUS85tnc0w&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fgeo%2Fv1%2Fredirect
+
+
+# Install custom_lint for all projects
+dart pub global activate custom_lint
+# run custom_lint's command line in a project
+custom_lint
+
+dart pub run build_runner watch
+
+dart run custom_lint
+
+
+// import the package
+import 'package:responsive_builder/responsive_builder.dart';
+
+// Use the widget
+ResponsiveBuilder(
+    builder: (context, sizingInformation) {
+      // Check the sizing information here and return your UI
+          if (sizingInformation.deviceScreenType == DeviceScreenType.desktop) {
+          return Container(color:Colors.blue);
+        }
+
+        if (sizingInformation.deviceScreenType == DeviceScreenType.tablet) {
+          return Container(color:Colors.red);
+        }
+
+        if (sizingInformation.deviceScreenType == DeviceScreenType.watch) {
+          return Container(color:Colors.yellow);
+        }
+
+        return Container(color:Colors.purple);
+      },
+    },
+  );
+}

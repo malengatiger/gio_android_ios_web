@@ -87,9 +87,12 @@ class IntroPageState extends State<IntroPage>
                           builder: (BuildContext context, Widget? child) {
                             return FadeScaleTransition(animation: _textAnimationController, child: child,);
                           },
-                          child: Text(
-                            widget.title,
-                            style: myTextStyleLargerPrimaryColor(context),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                            child: Text(
+                              widget.title,
+                              style: myTextStyleLargerPrimaryColor(context),
+                            ),
                           ),
                         ),
                         const SizedBox(

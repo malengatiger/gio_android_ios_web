@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geo_monitor/initializer.dart';
-import 'package:geo_monitor/l10n/translation_handler.dart';
 import 'package:geo_monitor/library/bloc/isolate_handler.dart';
 import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/bloc/project_bloc.dart';
@@ -16,7 +16,7 @@ import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/splash/splash_page.dart';
 import 'package:geo_monitor/ui/dashboard/dashboard_main.dart';
 import 'package:geo_monitor/ui/intro/intro_main.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:geo_monitor/utils/test_river_pod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:universal_platform/universal_platform.dart';
 
@@ -42,7 +42,14 @@ final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const ProviderScope(child: GeoApp()));
+  runApp(ProviderScope(
+      child: DevicePreview(
+    enabled: !kReleaseMode,
+    builder: (BuildContext context) {
+      return const GeoApp();
+    },
+  )));
+
 }
 
 class GeoApp extends ConsumerWidget {
@@ -50,7 +57,6 @@ class GeoApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     return GestureDetector(
       onTap: () {
         pp('$mx 🌀🌀🌀🌀 Tap detected; should dismiss keyboard ...');
@@ -69,14 +75,16 @@ class GeoApp extends ConsumerWidget {
           }
 
           return MaterialApp(
-            locale: locale,
+            // useInheritedMediaQuery: true,
+            locale: DevicePreview.locale(context),
+            builder: DevicePreview.appBuilder,
             scaffoldMessengerKey: rootScaffoldMessengerKey,
             debugShowCheckedModeBanner: false,
             title: 'Gio',
             theme: themeBloc.getTheme(themeIndex).lightTheme,
             darkTheme: themeBloc.getTheme(themeIndex).darkTheme,
             themeMode: ThemeMode.system,
-            // home:  const ComboAudio()
+            // home:  const TestRiverPod()
             home: AnimatedSplashScreen(
               duration: 5000,
               splash: const SplashWidget(),
