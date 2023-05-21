@@ -35,7 +35,10 @@
 
        <meta-data
                android:name="com.google.android.geo.API_KEY"
-               android:value="${MAPS_API_KEY}" />
+               android:value="AIzaSyAppCGKY2IfL3R1lSyoUKXrdU7yUj5weMc" />
+<!--       <meta-data-->
+<!--               android:name="com.google.android.geo.API_KEY"-->
+<!--               android:value="${MAPS_API_KEY}" />-->
        <service
                android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
                android:foregroundServiceType="location"

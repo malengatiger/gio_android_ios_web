@@ -478,8 +478,6 @@ W
 'lib/ui/auth/auth_registration_main.dart,d/f/df8d915f31bf1a7b34bc86f7d0c79cb2e6230195
 Y
 )android/app/src/debug/AndroidManifest.xml,e/9/e9b8a57f79617fe2b2612f997e0f60425ebc5097
-X
-(android/app/src/main/AndroidManifest.xml,e/f/ef79bfd51db69a15dbf5807c05bb249bdccb0556
 [
 +android/app/src/profile/AndroidManifest.xml,d/2/d2c744cc316dff823a081098f4a97f18cd817497
 i
@@ -719,8 +717,6 @@ Z
 *lib/dashboard_khaya/recent_event_list.dart,4/6/46f3f6d8cd53e542a05de34471da2002a4feafd9
 ^
 .lib/ui/dashboard/project_dashboard_tablet.dart,a/a/aa28cf4e88149adcc3cc3fe6d1c32777024a97fd
-j
-:lib/library/ui/media/time_line/project_media_timeline.dart,a/2/a295077ec07635f906959f177af1323fd75c30ad
 C
 assets/l10n/es.json,0/c/0c2aeee561efc293de02d8529db50e7b1302940a
 C
@@ -763,7 +759,5 @@ T
 $lib/ui/dashboard/user_dashboard.dart,d/c/dc7968fc0a76a31184ddda0d3c45f76526426736
 b
 2lib/library/ui/project_list/project_list_card.dart,b/9/b9216320af48053debd39773b4bad857553c61a8
-P
- lib/ui/audio/audio_recorder.dart,6/8/68ba0347d698b387fc409c879914b7e330fa9484
 ]
 -lib/library/ui/project_list/gio_projects.dart,c/3/c39abac0e7b9a45b22a3de1f8bee8120df3e58f7

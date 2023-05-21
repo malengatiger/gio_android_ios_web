@@ -137,24 +137,31 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     });
     photoSub = widget.fcmBloc.photoStream.listen((photo) {
       pp('$mm photoStream delivered  : ${photo.toJson()}');
-      photos.insert(0, photo);
-      _consolidateItems();
+      if (photo.projectId == projectSelected!.projectId) {
+        photos.insert(0, photo);
+        _consolidateItems();
+      }
+
       if (mounted) {
         setState(() {});
       }
     });
     videoSub = widget.fcmBloc.videoStream.listen((video) {
       pp('$mm videoStream delivered : ${video.toJson()}');
-      videos.insert(0, video);
-      _consolidateItems();
+      if (video.projectId == projectSelected!.projectId) {
+        videos.insert(0, video);
+        _consolidateItems();
+      }
       if (mounted) {
         setState(() {});
       }
     });
     audioSub = widget.fcmBloc.audioStream.listen((audio) {
       pp('$mm audioStream delivered : ${audio.toJson()}');
-      audios.insert(0, audio);
-      _consolidateItems();
+      if (audio.projectId == projectSelected!.projectId) {
+        audios.insert(0, audio);
+        _consolidateItems();
+      }
       if (mounted) {
         setState(() {});
       }

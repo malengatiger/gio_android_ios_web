@@ -807,13 +807,6 @@
             </list>
           </value>
         </entry>
-        <entry key="flutter_dotenv">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_dotenv-5.0.2/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="flutter_email_sender">
           <value>
             <list>
@@ -2247,7 +2240,6 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_blurhash-0.7.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_cache_manager-3.3.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_credit_card-3.0.6/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_dotenv-5.0.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_email_sender-5.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_foreground_task-3.10.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_isolate-2.0.4/lib" />

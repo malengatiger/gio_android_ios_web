@@ -278,7 +278,7 @@ class AudioRecorderState extends State<AudioRecorder> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(title == null ? 'Audio Recording' : title!),
-            bottom: PreferredSize(preferredSize: const Size.fromHeight(100), child: Column(
+            bottom: PreferredSize(preferredSize: const Size.fromHeight(48), child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0),
@@ -289,7 +289,7 @@ class AudioRecorderState extends State<AudioRecorder> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 48,)
+                const SizedBox(height: 8,)
               ],
             )),
           ),
@@ -526,7 +526,7 @@ class AudioRecorderCard extends StatelessWidget {
                             userName: user.name!,
                             userThumbUrl: user.thumbnailUrl,
                             namePictureHorizontal: true,
-                            avatarRadius: 24.0,
+                            avatarRadius: 18.0,
                             padding: 8.0,
                             elevation: 4.0,
                           ),
