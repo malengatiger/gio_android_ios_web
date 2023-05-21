@@ -28,6 +28,7 @@ import '../../library/data/project_polygon.dart';
 import '../../library/data/project_position.dart';
 import '../../library/data/user.dart';
 import '../../library/data/video.dart';
+import '../../library/emojis.dart';
 import '../../library/functions.dart';
 import '../../library/ui/media/time_line/project_media_timeline.dart';
 
@@ -111,7 +112,7 @@ class GioActivitiesState extends State<GioActivities>
   }
 
   void _onTapped(ActivityModel activity) async {
-    pp('onTapped - ActivityModel: ${activity.toJson()}');
+    pp('${E.redDot} GioActivitiesState: onTapped - ActivityModel: ${activity.toJson()}');
     if (activity.photo != null) {
       widget.onPhotoTapped(activity.photo!);
     }
@@ -140,6 +141,7 @@ class GioActivitiesState extends State<GioActivities>
 
   @override
   Widget build(BuildContext context) {
+    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
     return ScreenTypeLayout.builder(
       mobile: (context) {
         return MobileList(
@@ -307,12 +309,14 @@ class _MobileListState extends State<MobileList> {
 
   @override
   Widget build(BuildContext context) {
+    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
         title: Text(
           title == null ? 'Events' : title!,
-          style: myTextStyleLarge(context),
+          style: myTitleTextStyle(context, color),
         ),
       ),
       body: Padding(

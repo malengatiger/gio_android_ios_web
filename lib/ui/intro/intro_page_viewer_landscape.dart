@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/ui/auth/auth_registration_main.dart';
 import 'package:geo_monitor/ui/auth/auth_signin_main.dart';
@@ -34,7 +35,11 @@ class IntroPageViewerLandscape extends StatefulWidget {
       required this.cacheManager,
       required this.fcmBloc,
       required this.organizationBloc,
-      required this.projectBloc, required this.dataHandler, required this.geoUploader, required this.cloudStorageBloc})
+      required this.projectBloc,
+      required this.dataHandler,
+      required this.geoUploader,
+      required this.cloudStorageBloc,
+      required this.firebaseAuth})
       : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
@@ -45,7 +50,7 @@ class IntroPageViewerLandscape extends StatefulWidget {
   final IsolateDataHandler dataHandler;
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
-
+  final FirebaseAuth firebaseAuth;
 
   @override
   State<IntroPageViewerLandscape> createState() =>
@@ -151,7 +156,9 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
                   projectBloc: widget.projectBloc,
                   cloudStorageBloc: cloudStorageBloc,
                   geoUploader: geoUploader,
-                  prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+                  prefsOGx: widget.prefsOGx,
+                  firebaseAuth: widget.firebaseAuth,
+                  cacheManager: widget.cacheManager,
                 )));
       } else {
         pp('$mm User is null,  🔆 🔆 🔆 🔆 cannot navigate to Dashboard');
@@ -210,6 +217,7 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
               prefsOGx: prefsOGx,
               dataApiDog: dataApiDog,
               cacheManager: cacheManager,
+              firebaseAuth: firebaseAuth,
             )));
 
     if (result is ur.User) {
@@ -229,8 +237,8 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
     await widget.prefsOGx.saveSettings(settingsModel);
     await _setTexts();
     Locale newLocale = Locale(p1.languageCode);
-    final m =
-    LocaleAndTheme(themeIndex: settingsModel.themeIndex!, locale: newLocale);
+    final m = LocaleAndTheme(
+        themeIndex: settingsModel.themeIndex!, locale: newLocale);
     themeBloc.themeStreamController.sink.add(m);
     widget.fcmBloc.settingsStreamController.sink.add(settingsModel!);
 

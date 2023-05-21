@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/dashboard_khaya/xd_dashboard.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
@@ -25,7 +26,12 @@ class DashboardMain extends StatefulWidget {
     required this.fcmBloc,
     required this.organizationBloc,
     required this.projectBloc,
-    required this.prefsOGx, required this.cacheManager, required this.dataHandler, required this.geoUploader, required this.cloudStorageBloc,
+    required this.prefsOGx,
+    required this.cacheManager,
+    required this.dataHandler,
+    required this.geoUploader,
+    required this.cloudStorageBloc,
+    required this.firebaseAuth,
   }) : super(key: key);
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
@@ -36,7 +42,7 @@ class DashboardMain extends StatefulWidget {
   final IsolateDataHandler dataHandler;
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
-
+  final auth.FirebaseAuth firebaseAuth;
 
   @override
   DashboardMainState createState() => DashboardMainState();
@@ -184,8 +190,10 @@ class DashboardMainState extends State<DashboardMain>
                   organizationBloc: widget.organizationBloc,
                   projectBloc: widget.projectBloc,
                   geoUploader: widget.geoUploader,
+                  firebaseAuth: widget.firebaseAuth,
                   cloudStorageBloc: widget.cloudStorageBloc,
-                  prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+                  prefsOGx: widget.prefsOGx,
+                  cacheManager: widget.cacheManager,
                 ),
                 tablet: OrientationLayoutBuilder(
                   portrait: (context) {
@@ -197,7 +205,9 @@ class DashboardMainState extends State<DashboardMain>
                       prefsOGx: widget.prefsOGx,
                       geoUploader: widget.geoUploader,
                       cloudStorageBloc: widget.cloudStorageBloc,
-                      organizationBloc: widget.organizationBloc, cacheManager: widget.cacheManager,
+                      firebaseAuth: widget.firebaseAuth,
+                      organizationBloc: widget.organizationBloc,
+                      cacheManager: widget.cacheManager,
                     );
                   },
                   landscape: (context) {
@@ -207,9 +217,11 @@ class DashboardMainState extends State<DashboardMain>
                       fcmBloc: widget.fcmBloc,
                       organizationBloc: widget.organizationBloc,
                       projectBloc: widget.projectBloc,
+                      firebaseAuth: widget.firebaseAuth,
                       geoUploader: widget.geoUploader,
                       cloudStorageBloc: widget.cloudStorageBloc,
-                      prefsOGx: widget.prefsOGx, cacheManager: widget.cacheManager,
+                      prefsOGx: widget.prefsOGx,
+                      cacheManager: widget.cacheManager,
                     );
                   },
                 ),

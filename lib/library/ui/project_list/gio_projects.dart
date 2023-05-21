@@ -54,7 +54,9 @@ class GioProjects extends StatefulWidget {
       required this.organizationBloc,
       required this.cacheManager,
       required this.dataApiDog,
-      required this.fcmBloc, required this.geoUploader, required this.cloudStorageBloc})
+      required this.fcmBloc,
+      required this.geoUploader,
+      required this.cloudStorageBloc})
       : super(key: key);
   final Project? project;
   final int instruction;
@@ -68,10 +70,10 @@ class GioProjects extends StatefulWidget {
   final CloudStorageBloc cloudStorageBloc;
 
   @override
-  State<GioProjects> createState() => _GioProjectsState();
+  State<GioProjects> createState() => GioProjectsState();
 }
 
-class _GioProjectsState extends State<GioProjects>
+class GioProjectsState extends State<GioProjects>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   var projects = <Project>[];
@@ -142,27 +144,28 @@ class _GioProjectsState extends State<GioProjects>
   }
 
   void _sort() {
+    pp('......... sort projects, sortedByName: $sortedByName');
     if (sortedByName) {
       _sortByDate();
     } else {
       _sortByName();
+    }
+    projectsToDisplay = projects;
+    if (mounted) {
+      setState(() {});
     }
   }
 
   void _sortByName() {
     projects.sort((a, b) => a.name!.compareTo(b.name!));
     sortedByName = true;
-    if (mounted) {
-      setState(() {});
-    }
+
   }
 
   void _sortByDate() {
     projects.sort((a, b) => b.created!.compareTo(a.created!));
     sortedByName = false;
-    if (mounted) {
-      setState(() {});
-    }
+
   }
 
   void _getUser() async {
@@ -361,7 +364,9 @@ class _GioProjectsState extends State<GioProjects>
               prefsOGx: widget.prefsOGx,
               cacheManager: widget.cacheManager,
               dataApiDog: widget.dataApiDog,
-              fcmBloc: widget.fcmBloc, geoUploader: widget.geoUploader, cloudStorageBloc: widget.cloudStorageBloc,
+              fcmBloc: widget.fcmBloc,
+              geoUploader: widget.geoUploader,
+              cloudStorageBloc: widget.cloudStorageBloc,
             )));
   }
 
@@ -385,7 +390,7 @@ class _GioProjectsState extends State<GioProjects>
         alignment: Alignment.topLeft,
         duration: const Duration(milliseconds: 1500),
         child: AudioRecorder(
-          cloudStorageBloc: widget.cloudStorageBloc,
+            cloudStorageBloc: widget.cloudStorageBloc,
             onCloseRequested: () {
               pp('On stop requested');
               Navigator.of(context).pop();
@@ -405,7 +410,7 @@ class _GioProjectsState extends State<GioProjects>
               type: PageTransitionType.leftToRightWithFade,
               alignment: Alignment.topLeft,
               duration: const Duration(milliseconds: 1000),
-              child:  OrganizationMap(
+              child: OrganizationMap(
                 organizationBloc: widget.organizationBloc,
                 prefsOGx: widget.prefsOGx,
               )));
@@ -736,98 +741,64 @@ class _GioProjectsState extends State<GioProjects>
     if (type == 'phone') {
       searchWidth = 300.0;
     }
+    final color = getTextColorForBackground(Theme.of(context).primaryColor);
 
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(
-        title: Text(
-          projectsText == null ? 'Projects' : projectsText!,
-          style: myTextStyleLarge(context),
-        ),
-        bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: searchWidth,
-                      child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 20.0, horizontal: 12.0),
-                          child: TextField(
-                            controller: _textEditingController,
-                            onChanged: (text) {
-                              pp(' ........... changing to: $text');
-                              _runFilter(text);
-                            },
-                            decoration: InputDecoration(
-                                label:
-                                    Text(search == null ? 'Search' : search!),
-                                icon: const Icon(Icons.search),
-                                border: const OutlineInputBorder(),
-                                hintText: searchProjects == null
-                                    ? 'Search Projects'
-                                    : searchProjects!,
-                                hintStyle: myTextStyleSmall(context)),
-                          )),
-                    ),
-                    const SizedBox(
-                      height: 24,
-                    )
-                  ],
-                )
+            appBar: AppBar(
+              title: Text(
+                projectsText == null ? 'Projects' : projectsText!,
+                style: myTextStyleLargeWithColor(context, color),
+              ),
+              bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(100),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: searchWidth,
+                            child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 20.0, horizontal: 12.0),
+                                child: TextField(
+                                  controller: _textEditingController,
+                                  onChanged: (text) {
+                                    pp(' ........... changing to: $text');
+                                    _runFilter(text);
+                                  },
+                                  decoration: InputDecoration(
+                                      label: Text(
+                                        search == null ? 'Search' : search!,
+                                        style: myTextStyleSmallWithColor(
+                                            context, color),
+                                      ),
+                                      icon: Icon(
+                                        Icons.search,
+                                        color: color,
+                                      ),
+                                      border: const OutlineInputBorder(),
+                                      hintText: searchProjects == null
+                                          ? 'Search Projects'
+                                          : searchProjects!,
+                                      hintStyle: myTextStyleSmallWithColor(
+                                          context, color)),
+                                )),
+                          ),
+                          const SizedBox(
+                            height: 24,
+                          )
+                        ],
+                      )
+                    ],
+                  )),
+              actions: [
+                IconButton(onPressed: () {}, icon: const Icon(Icons.refresh)),
               ],
-            )),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.refresh)),
-        ],
-      ),
-      body: ScreenTypeLayout(
-        mobile: GestureDetector(
-            onTap: _sort,
-            child: bd.Badge(
-              badgeStyle: bd.BadgeStyle(
-                badgeColor: Theme.of(context).primaryColor,
-                elevation: 8,
-                padding: const EdgeInsets.all(8),
-              ),
-              position: bd.BadgePosition.topEnd(top: -2, end: 2),
-              badgeContent: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text('${projectsToDisplay.length}',
-                    style: myNumberStyleSmall(context)),
-              ),
-              child: user == null
-                  ? const SizedBox()
-                  : ProjectListCard(
-                      projects: projectsToDisplay,
-                      width: width,
-                      horizontalPadding: 12,
-                      navigateToDetail: _navigateToDetail,
-                      navigateToProjectLocation: _navigateToProjectLocation,
-                      navigateToProjectMedia: _navigateToProjectMedia,
-                      navigateToProjectMap: _navigateToProjectMap,
-                      navigateToProjectPolygonMap: _navigateToProjectPolygonMap,
-                      navigateToProjectDashboard: _navigateToProjectDashboard,
-                      user: user!,
-                      navigateToProjectDirections: (project) async {
-                        var poss = await cacheManager
-                            .getProjectPositions(project.projectId!);
-                        if (poss.isNotEmpty) {
-                          _navigateToDirections(
-                            latitude: poss.first.position!.coordinates[1],
-                            longitude: poss.first.position!.coordinates[0],
-                          );
-                        }
-                      }, prefsOGx: widget.prefsOGx,
-                    ),
-            )),
-        tablet: OrientationLayoutBuilder(
-          portrait: (ctx) {
-            return Row(
-              children: [
-                GestureDetector(
+            ),
+            body: ScreenTypeLayout.builder(
+              mobile: (ctx) {
+                return GestureDetector(
                     onTap: _sort,
                     child: bd.Badge(
                       badgeStyle: bd.BadgeStyle(
@@ -835,17 +806,17 @@ class _GioProjectsState extends State<GioProjects>
                         elevation: 8,
                         padding: const EdgeInsets.all(8),
                       ),
-                      position: bd.BadgePosition.topEnd(top: -2, end: -4),
+                      position: bd.BadgePosition.topEnd(top: 2, end: 8),
                       badgeContent: Padding(
                         padding: const EdgeInsets.all(4.0),
                         child: Text('${projectsToDisplay.length}',
-                            style: myNumberStyleSmall(context)),
+                            style: myTextStyleSmallWithColor(context, color)),
                       ),
                       child: user == null
                           ? const SizedBox()
                           : ProjectListCard(
                               projects: projectsToDisplay,
-                              width: (width / 2) - 20,
+                              width: width,
                               horizontalPadding: 12,
                               navigateToDetail: _navigateToDetail,
                               navigateToProjectLocation:
@@ -857,7 +828,6 @@ class _GioProjectsState extends State<GioProjects>
                               navigateToProjectDashboard:
                                   _navigateToProjectDashboard,
                               user: user!,
-                        prefsOGx: widget.prefsOGx,
                               navigateToProjectDirections: (project) async {
                                 var poss = await cacheManager
                                     .getProjectPositions(project.projectId!);
@@ -870,105 +840,169 @@ class _GioProjectsState extends State<GioProjects>
                                   );
                                 }
                               },
+                              prefsOGx: widget.prefsOGx,
                             ),
-                    )),
-                GeoActivity(
-                    width: (width / 2),
-                    thinMode: true,
-                    prefsOGx: widget.prefsOGx,
-                    cacheManager: widget.cacheManager,
-                    dataApiDog: widget.dataApiDog,
-                    organizationBloc: widget.organizationBloc,
-                    projectBloc: widget.projectBloc,
-                    fcmBloc: widget.fcmBloc,
-                    geoUploader: widget.geoUploader,
-                    cloudStorageBloc: widget.cloudStorageBloc,
-                    project: null,
-                    showPhoto: (p) {},
-                    showVideo: (p) {},
-                    showAudio: (p) {},
-                    forceRefresh: true,
-                    showLocationResponse: (p) {},
-                    showLocationRequest: (p) {},
-                    showUser: (p) {},
-                    showProjectPosition: (p) {},
-                    showOrgMessage: (p) {},
-                    showGeofenceEvent: (p) {},
-                    showProjectPolygon: (p) {}),
-              ],
-            );
-          },
-          landscape: (ctx) {
-            return Row(
-              children: [
-                GestureDetector(
-                    onTap: _sort,
-                    child: bd.Badge(
-                      badgeStyle: bd.BadgeStyle(
-                        badgeColor: Theme.of(context).primaryColor,
-                        elevation: 8,
-                        padding: const EdgeInsets.all(8),
-                      ),
-                      position: bd.BadgePosition.topEnd(top: -2, end: 2),
-                      badgeContent: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text('${projectsToDisplay.length}',
-                            style: myNumberStyleSmall(context)),
-                      ),
-                      child: ProjectListCard(
-                        projects: projectsToDisplay,
-                        width: width / 2,
-                        horizontalPadding: 12,
-                        prefsOGx: widget.prefsOGx,
-                        navigateToDetail: _navigateToDetail,
-                        navigateToProjectLocation: _navigateToProjectLocation,
-                        navigateToProjectMedia: _navigateToProjectMedia,
-                        navigateToProjectMap: _navigateToProjectMap,
-                        navigateToProjectPolygonMap:
-                            _navigateToProjectPolygonMap,
-                        navigateToProjectDashboard: _navigateToProjectDashboard,
-                        user: user!,
-                        navigateToProjectDirections: (project) async {
-                          var poss = await cacheManager
-                              .getProjectPositions(project.projectId!);
-                          if (poss.isNotEmpty) {
-                            _navigateToDirections(
-                              latitude: poss.first.position!.coordinates[1],
-                              longitude: poss.first.position!.coordinates[0],
-                            );
-                          }
-                        },
-                      ),
-                    )),
-                GeoActivity(
-                    width: (width / 2) - 48,
-                    thinMode: true,
-                    prefsOGx: widget.prefsOGx,
-                    cacheManager: widget.cacheManager,
-                    fcmBloc: widget.fcmBloc,
-                    organizationBloc: widget.organizationBloc,
-                    projectBloc: widget.projectBloc,
-                    project: widget.project,
-                    dataApiDog: widget.dataApiDog,
-                    geoUploader: widget.geoUploader,
-                    cloudStorageBloc: widget.cloudStorageBloc,
-                    showPhoto: (p) {},
-                    showVideo: (p) {},
-                    showAudio: (p) {},
-                    forceRefresh: true,
-                    showLocationResponse: (p) {},
-                    showLocationRequest: (p) {},
-                    showUser: (p) {},
-                    showProjectPosition: (p) {},
-                    showOrgMessage: (p) {},
-                    showGeofenceEvent: (p) {},
-                    showProjectPolygon: (p) {}),
-              ],
-            );
-          },
-        ),
-      ),
-    ));
+                    ));
+              },
+              tablet: (ctx) {
+                return OrientationLayoutBuilder(
+                  portrait: (ctx) {
+                    return Row(
+                      children: [
+                        GestureDetector(
+                            onTap: _sort,
+                            child: bd.Badge(
+                              badgeStyle: bd.BadgeStyle(
+                                badgeColor: Theme.of(context).primaryColor,
+                                elevation: 8,
+                                padding: const EdgeInsets.all(8),
+                              ),
+                              position:
+                                  bd.BadgePosition.topEnd(top: -2, end: -4),
+                              badgeContent: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text('${projectsToDisplay.length}',
+                                    style: myTextStyleSmallWithColor(
+                                        context, color)),
+                              ),
+                              child: user == null
+                                  ? const SizedBox()
+                                  : ProjectListCard(
+                                      projects: projectsToDisplay,
+                                      width: (width / 2) - 20,
+                                      horizontalPadding: 12,
+                                      navigateToDetail: _navigateToDetail,
+                                      navigateToProjectLocation:
+                                          _navigateToProjectLocation,
+                                      navigateToProjectMedia:
+                                          _navigateToProjectMedia,
+                                      navigateToProjectMap:
+                                          _navigateToProjectMap,
+                                      navigateToProjectPolygonMap:
+                                          _navigateToProjectPolygonMap,
+                                      navigateToProjectDashboard:
+                                          _navigateToProjectDashboard,
+                                      user: user!,
+                                      prefsOGx: widget.prefsOGx,
+                                      navigateToProjectDirections:
+                                          (project) async {
+                                        var poss = await cacheManager
+                                            .getProjectPositions(
+                                                project.projectId!);
+                                        if (poss.isNotEmpty) {
+                                          _navigateToDirections(
+                                            latitude: poss
+                                                .first.position!.coordinates[1],
+                                            longitude: poss
+                                                .first.position!.coordinates[0],
+                                          );
+                                        }
+                                      },
+                                    ),
+                            )),
+                        GeoActivity(
+                            width: (width / 2),
+                            thinMode: true,
+                            prefsOGx: widget.prefsOGx,
+                            cacheManager: widget.cacheManager,
+                            dataApiDog: widget.dataApiDog,
+                            organizationBloc: widget.organizationBloc,
+                            projectBloc: widget.projectBloc,
+                            fcmBloc: widget.fcmBloc,
+                            geoUploader: widget.geoUploader,
+                            cloudStorageBloc: widget.cloudStorageBloc,
+                            project: null,
+                            showPhoto: (p) {},
+                            showVideo: (p) {},
+                            showAudio: (p) {},
+                            forceRefresh: true,
+                            showLocationResponse: (p) {},
+                            showLocationRequest: (p) {},
+                            showUser: (p) {},
+                            showProjectPosition: (p) {},
+                            showOrgMessage: (p) {},
+                            showGeofenceEvent: (p) {},
+                            showProjectPolygon: (p) {}),
+                      ],
+                    );
+                  },
+                  landscape: (ctx) {
+                    return Row(
+                      children: [
+                        GestureDetector(
+                            onTap: _sort,
+                            child: bd.Badge(
+                              badgeStyle: bd.BadgeStyle(
+                                badgeColor: Theme.of(context).primaryColor,
+                                elevation: 8,
+                                padding: const EdgeInsets.all(8),
+                              ),
+                              position:
+                                  bd.BadgePosition.topEnd(top: -2, end: 2),
+                              badgeContent: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text('${projectsToDisplay.length}',
+                                    style: myTextStyleSmallWithColor(
+                                        context, color)),
+                              ),
+                              child: ProjectListCard(
+                                projects: projectsToDisplay,
+                                width: width / 2,
+                                horizontalPadding: 12,
+                                prefsOGx: widget.prefsOGx,
+                                navigateToDetail: _navigateToDetail,
+                                navigateToProjectLocation:
+                                    _navigateToProjectLocation,
+                                navigateToProjectMedia: _navigateToProjectMedia,
+                                navigateToProjectMap: _navigateToProjectMap,
+                                navigateToProjectPolygonMap:
+                                    _navigateToProjectPolygonMap,
+                                navigateToProjectDashboard:
+                                    _navigateToProjectDashboard,
+                                user: user!,
+                                navigateToProjectDirections: (project) async {
+                                  var poss = await cacheManager
+                                      .getProjectPositions(project.projectId!);
+                                  if (poss.isNotEmpty) {
+                                    _navigateToDirections(
+                                      latitude:
+                                          poss.first.position!.coordinates[1],
+                                      longitude:
+                                          poss.first.position!.coordinates[0],
+                                    );
+                                  }
+                                },
+                              ),
+                            )),
+                        GeoActivity(
+                            width: (width / 2) - 48,
+                            thinMode: true,
+                            prefsOGx: widget.prefsOGx,
+                            cacheManager: widget.cacheManager,
+                            fcmBloc: widget.fcmBloc,
+                            organizationBloc: widget.organizationBloc,
+                            projectBloc: widget.projectBloc,
+                            project: widget.project,
+                            dataApiDog: widget.dataApiDog,
+                            geoUploader: widget.geoUploader,
+                            cloudStorageBloc: widget.cloudStorageBloc,
+                            showPhoto: (p) {},
+                            showVideo: (p) {},
+                            showAudio: (p) {},
+                            forceRefresh: true,
+                            showLocationResponse: (p) {},
+                            showLocationRequest: (p) {},
+                            showUser: (p) {},
+                            showProjectPosition: (p) {},
+                            showOrgMessage: (p) {},
+                            showGeofenceEvent: (p) {},
+                            showProjectPolygon: (p) {}),
+                      ],
+                    );
+                  },
+                );
+              },
+            )));
   }
 
   Widget _fieldBuilder(

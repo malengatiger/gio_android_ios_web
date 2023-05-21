@@ -455,6 +455,8 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     var videoBottomPadding = 64.0;
     var mStyle = myTextStyleLarge(context);
     final type = getThisDeviceType();
+    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
     if (type == 'phone') {
       audioLeftPadding = 24;
       audioRightPadding = 24;
@@ -463,7 +465,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
       videoLeftPadding = 24;
       videoRightPadding = 24;
       videoBottomPadding = 24;
-      mStyle = myTextStyleMediumLarge(context);
+      mStyle = myTitleTextStyle(context, color);
     }
     final ori = MediaQuery.of(context).orientation;
     if (ori.name == 'landscape') {
@@ -474,7 +476,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
       videoLeftPadding = 24;
       videoRightPadding = 24;
       videoBottomPadding = 24;
-      mStyle = myTextStyleLarge(context);
+      mStyle = myTitleTextStyle(context, color);
     }
     return SafeArea(
       child: Scaffold(
@@ -484,7 +486,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
               style: mStyle,
             ),
             bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(72),
+                preferredSize: const Size.fromHeight(48),
                 child: Column(
                   children: [
                     projectSelected != null
@@ -733,6 +735,7 @@ class TimelineHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final mStart = getFmtDateShortWithSlash(startDate, locale);
     final mEnd = getFmtDateShortWithSlash(endDate, locale);
+    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
     var vertical = true;
     final type = getThisDeviceType();
     if (type == 'phone') {
@@ -756,7 +759,7 @@ class TimelineHeader extends StatelessWidget {
                   children: [
                     Text(
                       startText,
-                      style: myTextStyleTiny(context),
+                      style: myTextStyleSmallWithColor(context, color),
                     ),
                     const SizedBox(
                       width: 4,
@@ -770,7 +773,7 @@ class TimelineHeader extends StatelessWidget {
                     ),
                     Text(
                       endText,
-                      style: myTextStyleTiny(context),
+                      style: myTextStyleSmallWithColor(context, color),
                     ),
                     const SizedBox(
                       width: 4,

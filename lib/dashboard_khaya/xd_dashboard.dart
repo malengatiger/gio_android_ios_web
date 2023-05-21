@@ -3,6 +3,7 @@ import 'dart:core';
 import 'dart:core';
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geo_monitor/dashboard_khaya/project_list.dart';
@@ -35,6 +36,7 @@ import 'package:geo_monitor/ui/activity/gio_activities.dart';
 import 'package:geo_monitor/ui/audio/gio_audio_player.dart';
 import 'package:geo_monitor/ui/dashboard/photo_frame.dart';
 import 'package:geo_monitor/ui/intro/intro_main.dart';
+import 'package:geo_monitor/ui/subscription/subscription_selection.dart';
 import 'package:geo_monitor/utilities/transitions.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -74,7 +76,7 @@ class DashboardKhaya extends StatefulWidget {
       required this.cacheManager,
       required this.dataHandler,
       required this.geoUploader,
-      required this.cloudStorageBloc})
+      required this.cloudStorageBloc, required this.firebaseAuth})
       : super(key: key);
 
   final DataApiDog dataApiDog;
@@ -86,6 +88,8 @@ class DashboardKhaya extends StatefulWidget {
   final IsolateDataHandler dataHandler;
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
+  final auth.FirebaseAuth firebaseAuth;
+
 
   @override
   State<DashboardKhaya> createState() => DashboardKhayaState();
@@ -210,7 +214,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
 
     projectSubscriptionFCM =
         widget.fcmBloc.projectStream.listen((Project project) async {
-          _getCachedData();
+      _getCachedData();
       if (mounted) {
         pp('$mm: 🍎 🍎 project arrived: ${project.name} ... 🍎 🍎');
         setState(() {});
@@ -299,12 +303,12 @@ class DashboardKhayaState extends State<DashboardKhaya> {
         busy = true;
       });
       pp('$mm _getCachedData .... ');
-      final m = await getStartEndDates(numberOfDays: settingsModel.numberOfDays);
-      users = await widget.organizationBloc.getUsers(organizationId: settingsModel.organizationId!,
-          forceRefresh: false);
+      final m =
+          await getStartEndDates(numberOfDays: settingsModel.numberOfDays);
+      users = await widget.organizationBloc.getUsers(
+          organizationId: settingsModel.organizationId!, forceRefresh: false);
       projects = await widget.organizationBloc.getOrganizationProjects(
-          organizationId: settingsModel.organizationId!,
-          forceRefresh: false);
+          organizationId: settingsModel.organizationId!, forceRefresh: false);
 
       events = await widget.organizationBloc.getOrganizationActivity(
           organizationId: settingsModel.organizationId!,
@@ -316,7 +320,6 @@ class DashboardKhayaState extends State<DashboardKhaya> {
       });
       // events = await organizationBloc.getCachedOrganizationActivity(
       //     organizationId: settingsModel.organizationId!, hours: settingsModel.activityStreamHours!);
-
 
       pp('$mm _getCachedData .... projects: ${projects.length} users: ${users.length} events: ${events.length}');
       totalEvents = events.length;
@@ -358,7 +361,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
           endDate: m['endDate']!);
       projects = bag.projects!;
       events = await organizationBloc.getCachedOrganizationActivity(
-          organizationId: settingsModel.organizationId!, hours: settingsModel.activityStreamHours!);
+          organizationId: settingsModel.organizationId!,
+          hours: settingsModel.activityStreamHours!);
       users = bag.users!;
 
       totalEvents = events.length;
@@ -461,7 +465,16 @@ class DashboardKhayaState extends State<DashboardKhaya> {
             organizationBloc: widget.organizationBloc,
             geoUploader: widget.geoUploader,
             cloudStorageBloc: widget.cloudStorageBloc,
-            projectBloc: widget.projectBloc),
+            projectBloc: widget.projectBloc, firebaseAuth: widget.firebaseAuth,),
+        context);
+  }
+
+  void navigateToSubscription() {
+    navigateWithScale(
+        SubscriptionSelection(
+          prefsOGx: widget.prefsOGx,
+          dataApiDog: widget.dataApiDog,
+        ),
         context);
   }
 
@@ -681,7 +694,8 @@ class DashboardKhayaState extends State<DashboardKhaya> {
           PhoneVideoPlayer(
             video: p1,
             onCloseRequested: () {},
-            dataApiDog: widget.dataApiDog, title: videoTitle!,
+            dataApiDog: widget.dataApiDog,
+            title: videoTitle!,
           ),
           context);
     } else {
@@ -917,6 +931,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                     },
                     organizationBloc: widget.organizationBloc,
                     fcmBloc: widget.fcmBloc,
+                    onGioSubscriptionRequired: navigateToSubscription,
                   );
           },
           tablet: (ctx) {
@@ -956,6 +971,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                             eventsText: eventsText!,
                             dashboardText: dashboardText!,
                             recentEventsText: recentEventsText!,
+                            onGioSubscriptionRequired: navigateToSubscription,
                             onEventTapped: (event) {
                               _onEventTapped(event);
                             },
@@ -1075,14 +1091,15 @@ class DashboardKhayaState extends State<DashboardKhaya> {
                             },
                             centerTopCards: true,
                             locale: settings.locale!,
+                            onGioSubscriptionRequired: navigateToSubscription,
                           );
                   },
                 ),
                 playAudio
                     ? Positioned(
                         child: GioAudioPlayer(
-                          cacheManager: widget.cacheManager,
-                          prefsOGx: widget.prefsOGx,
+                        cacheManager: widget.cacheManager,
+                        prefsOGx: widget.prefsOGx,
                         audio: audio!,
                         onCloseRequested: () {},
                         dataApiDog: widget.dataApiDog,
@@ -1203,6 +1220,7 @@ class RealDashboard extends StatelessWidget {
     required this.geoUploader,
     required this.cloudStorageBloc,
     required this.projectBloc,
+    required this.onGioSubscriptionRequired,
   }) : super(key: key);
 
   final Function onEventsSubtitleTapped;
@@ -1219,7 +1237,8 @@ class RealDashboard extends StatelessWidget {
   final Function onRefreshRequested,
       onSearchTapped,
       onSettingsRequested,
-      onDeviceUserTapped;
+      onDeviceUserTapped,
+      onGioSubscriptionRequired;
   final User user;
   final double width;
   final String dashboardText,
@@ -1302,7 +1321,13 @@ class RealDashboard extends StatelessWidget {
               child: CircleAvatar(
                   radius: 16.0,
                   backgroundImage: NetworkImage(user.thumbnailUrl!)),
-            )
+            ),
+            PopupMenuItem(
+                value: 4,
+                child: Icon(
+                  Icons.subscriptions_sharp,
+                  color: Theme.of(context).primaryColor,
+                )),
           ];
         },
         onSelected: (index) {
@@ -1316,11 +1341,20 @@ class RealDashboard extends StatelessWidget {
             case 3:
               onDeviceUserTapped();
               break;
+            case 4:
+              onGioSubscriptionRequired();
+              break;
           }
         },
       )
     ];
-
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var backgroundColor = Theme.of(context).primaryColor;
+    if ((!isDarkMode)) {
+      backgroundColor = Colors.white30;
+    }
+    ;
     return SizedBox(
       width: width,
       child: Stack(
@@ -1419,6 +1453,7 @@ class RealDashboard extends StatelessWidget {
             child: SizedBox(
               height: 112,
               child: AppBar(
+                // backgroundColor: backgroundColor,
                 // centerTitle: false,
                 flexibleSpace: ClipRect(
                   child: BackdropFilter(
@@ -1668,16 +1703,17 @@ class TopCardListState extends State<TopCardList> {
     }
   }
 
+  late SettingsModel settings;
   Future _setTexts() async {
-    final sett = await prefsOGx.getSettings();
-    photosText = await translator.translate('photos', sett.locale!);
-    videosText = await translator.translate('videos', sett.locale!);
-    audiosText = await translator.translate('audioClips', sett.locale!);
-    locationsText = await translator.translate('locations', sett.locale!);
-    areasText = await translator.translate('areas', sett.locale!);
-    projectsText = await translator.translate('projects', sett.locale!);
-    membersText = await translator.translate('members', sett.locale!);
-    eventsText = await translator.translate('events', sett.locale!);
+    settings = await prefsOGx.getSettings();
+    photosText = await translator.translate('photos', settings.locale!);
+    videosText = await translator.translate('videos', settings.locale!);
+    audiosText = await translator.translate('audioClips', settings.locale!);
+    locationsText = await translator.translate('locations', settings.locale!);
+    areasText = await translator.translate('areas', settings.locale!);
+    projectsText = await translator.translate('projects', settings.locale!);
+    membersText = await translator.translate('members', settings.locale!);
+    eventsText = await translator.translate('events', settings.locale!);
 
     if (mounted) {
       setState(() {});
@@ -1852,9 +1888,9 @@ class TopCardListState extends State<TopCardList> {
     }
   }
 
-  void _navigateToActivities() {
+  void _navigateToActivities() async {
     pp(' 🌀🌀🌀🌀 .................. _navigateToActivities  ....');
-
+    final deviceScreenType = getThisDeviceType();
     if (mounted) {
       navigateWithScale(
           GioActivities(
@@ -1865,9 +1901,35 @@ class TopCardListState extends State<TopCardList> {
             geoUploader: widget.geoUploader,
             cloudStorageBloc: widget.cloudStorageBloc,
             project: null,
-            onPhotoTapped: (p) {},
-            onVideoTapped: (p) {},
-            onAudioTapped: (p) {},
+            onPhotoTapped: (p) {
+              pp('$mm navigateWithScale ... onPhotoTapped');
+              if ((deviceScreenType == 'phone')) {
+                navigateWithScale(
+                    PhotoFrame(
+                        photo: p,
+                        onMapRequested: (p) {},
+                        onRatingRequested: (p) {},
+                        elevation: 0,
+                        onPhotoCardClose: (p) {},
+                        translatedDate: 'translatedDate',
+                        locale: settings.locale!,
+                        cacheManager: cacheManager,
+                        dataApiDog: dataApiDog,
+                        prefsOGx: prefsOGx,
+                        fcmBloc: fcmBloc,
+                        projectBloc: projectBloc,
+                        organizationBloc: organizationBloc,
+                        geoUploader: geoUploader,
+                        cloudStorageBloc: cloudStorageBloc),
+                    context);
+              }
+            },
+            onVideoTapped: (p) {
+              pp('$mm navigateWithScale ... onVideoTapped');
+            },
+            onAudioTapped: (p) {
+              pp('$mm navigateWithScale ... onAudioTapped');
+            },
             onUserTapped: (p) {},
             onProjectTapped: (p) {},
             onProjectPositionTapped: (p) {},
@@ -1882,6 +1944,10 @@ class TopCardListState extends State<TopCardList> {
           context);
     }
   }
+
+  bool showPhoto = false;
+  bool showVideo = false;
+  bool showAudio = false;
 
   @override
   Widget build(BuildContext context) {
@@ -1904,111 +1970,125 @@ class TopCardListState extends State<TopCardList> {
     //     ),
     //   );
     // }
-    return SizedBox(
-      height: 140,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: busy
-            ? const Center(
-                child: SizedBox(
-                  width: 14,
-                  height: 14,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 4,
-                    backgroundColor: Colors.greenAccent,
+    return Stack(children: [
+      SizedBox(
+        height: 140,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: busy
+              ? const Center(
+                  child: SizedBox(
+                    width: 14,
+                    height: 14,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 4,
+                      backgroundColor: Colors.greenAccent,
+                    ),
                   ),
+                )
+              : ListView(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  children: [
+                    DashboardTopCard(
+                        width: events > 999 ? 128 : 108,
+                        number: events,
+                        title: eventsText,
+                        onTapped: () {
+                          _onTapped(0);
+                        }),
+                    SizedBox(
+                      width: padding1,
+                    ),
+                    DashboardTopCard(
+                        width: projects > 999 ? 128 : 108,
+                        number: projects,
+                        title: projectsText,
+                        onTapped: () {
+                          _onTapped(1);
+                        }),
+                    SizedBox(
+                      width: padding1,
+                    ),
+                    DashboardTopCard(
+                        width: members > 999 ? 128 : 108,
+                        number: members,
+                        title: membersText,
+                        onTapped: () {
+                          _onTapped(2);
+                        }),
+                    SizedBox(
+                      width: padding2,
+                    ),
+                    DashboardTopCard(
+                        width: photos > 999 ? 128 : 108,
+                        textStyle:
+                            myNumberStyleLargerPrimaryColorLight(context),
+                        number: photos,
+                        title: photosText,
+                        onTapped: () {
+                          _onTapped(3);
+                        }),
+                    SizedBox(
+                      width: padding1,
+                    ),
+                    DashboardTopCard(
+                        textStyle:
+                            myNumberStyleLargerPrimaryColorLight(context),
+                        width: videos > 999 ? 128 : 108,
+                        number: videos,
+                        title: videosText,
+                        onTapped: () {
+                          _onTapped(4);
+                        }),
+                    SizedBox(
+                      width: padding1,
+                    ),
+                    DashboardTopCard(
+                        width: audios > 999 ? 128 : 108,
+                        textStyle:
+                            myNumberStyleLargerPrimaryColorLight(context),
+                        number: audios,
+                        title: audiosText,
+                        onTapped: () {
+                          _onTapped(5);
+                        }),
+                    SizedBox(
+                      width: padding2,
+                    ),
+                    DashboardTopCard(
+                        textStyle: myNumberStyleLargerPrimaryColorDark(context),
+                        width: locations > 999 ? 128 : 108,
+                        number: locations,
+                        title: locationsText,
+                        onTapped: () {
+                          _onTapped(6);
+                        }),
+                    SizedBox(
+                      width: padding1,
+                    ),
+                    DashboardTopCard(
+                        textStyle: myNumberStyleLargerPrimaryColorDark(context),
+                        width: areas > 999 ? 128 : 108,
+                        number: areas,
+                        title: areasText,
+                        onTapped: () {
+                          _onTapped(7);
+                        }),
+                  ],
                 ),
-              )
-            : ListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                children: [
-                  DashboardTopCard(
-                      width: events > 999 ? 128 : 108,
-                      number: events,
-                      title: eventsText,
-                      onTapped: () {
-                        _onTapped(0);
-                      }),
-                  SizedBox(
-                    width: padding1,
-                  ),
-                  DashboardTopCard(
-                      width: projects > 999 ? 128 : 108,
-                      number: projects,
-                      title: projectsText,
-                      onTapped: () {
-                        _onTapped(1);
-                      }),
-                  SizedBox(
-                    width: padding1,
-                  ),
-                  DashboardTopCard(
-                      width: members > 999 ? 128 : 108,
-                      number: members,
-                      title: membersText,
-                      onTapped: () {
-                        _onTapped(2);
-                      }),
-                  SizedBox(
-                    width: padding2,
-                  ),
-                  DashboardTopCard(
-                      width: photos > 999 ? 128 : 108,
-                      textStyle: myNumberStyleLargerPrimaryColorLight(context),
-                      number: photos,
-                      title: photosText,
-                      onTapped: () {
-                        _onTapped(3);
-                      }),
-                  SizedBox(
-                    width: padding1,
-                  ),
-                  DashboardTopCard(
-                      textStyle: myNumberStyleLargerPrimaryColorLight(context),
-                      width: videos > 999 ? 128 : 108,
-                      number: videos,
-                      title: videosText,
-                      onTapped: () {
-                        _onTapped(4);
-                      }),
-                  SizedBox(
-                    width: padding1,
-                  ),
-                  DashboardTopCard(
-                      width: audios > 999 ? 128 : 108,
-                      textStyle: myNumberStyleLargerPrimaryColorLight(context),
-                      number: audios,
-                      title: audiosText,
-                      onTapped: () {
-                        _onTapped(5);
-                      }),
-                  SizedBox(
-                    width: padding2,
-                  ),
-                  DashboardTopCard(
-                      textStyle: myNumberStyleLargerPrimaryColorDark(context),
-                      width: locations > 999 ? 128 : 108,
-                      number: locations,
-                      title: locationsText,
-                      onTapped: () {
-                        _onTapped(6);
-                      }),
-                  SizedBox(
-                    width: padding1,
-                  ),
-                  DashboardTopCard(
-                      textStyle: myNumberStyleLargerPrimaryColorDark(context),
-                      width: areas > 999 ? 128 : 108,
-                      number: areas,
-                      title: areasText,
-                      onTapped: () {
-                        _onTapped(7);
-                      }),
-                ],
-              ),
+        ),
       ),
-    );
+      showAudio
+          ? const Positioned(child: Text('show audio'))
+          : const SizedBox(),
+      showPhoto
+          ? const Positioned(child: Text('show photo'))
+          : const SizedBox(),
+      showVideo
+          ? const Positioned(child: Text('show video'))
+          : const SizedBox(),
+    ]);
   }
 
   void _onTapped(int id) {
@@ -2048,7 +2128,8 @@ class PhoneVideoPlayer extends StatelessWidget {
       required this.video,
       required this.onCloseRequested,
       required this.dataApiDog,
-      this.width, required this.title})
+      this.width,
+      required this.title})
       : super(key: key);
 
   final Video video;
@@ -2062,7 +2143,10 @@ class PhoneVideoPlayer extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(title, style: myTextStyleMediumLarge(context),),
+          title: Text(
+            title,
+            style: myTextStyleMediumLarge(context),
+          ),
         ),
         body: GioVideoPlayer(
           video: video,

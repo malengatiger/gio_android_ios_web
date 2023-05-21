@@ -235,6 +235,20 @@ TextStyle myTextStyleMediumBold(BuildContext context) {
     fontSize: 16.0,
   );
 }
+TextStyle myTitleTextStyle(BuildContext context, Color color) {
+  return GoogleFonts.lato(
+    textStyle: Theme.of(context).textTheme.headlineMedium,
+    fontWeight: FontWeight.w900,
+    color: color,
+    fontSize: 20.0,
+  );
+}
+TextStyle myTextStyleSmallWithColor(BuildContext context, Color color) {
+  return GoogleFonts.lato(
+    textStyle: Theme.of(context).textTheme.bodySmall,
+    color: color,
+  );
+}
 
 TextStyle myTextStyleMediumBoldGrey(BuildContext context) {
   return GoogleFonts.lato(
@@ -251,10 +265,18 @@ TextStyle myTextStyleLarge(BuildContext context) {
       fontWeight: FontWeight.w900,
       fontSize: 28);
 }
+TextStyle myTextStyleLargeWithColor(BuildContext context, Color color) {
+  return GoogleFonts.roboto(
+      textStyle: Theme.of(context).textTheme.headlineLarge,
+      fontWeight: FontWeight.w900,
+      color: color,
+      fontSize: 28);
+}
+
 TextStyle myTextStyleMediumLarge(BuildContext context) {
   return GoogleFonts.roboto(
       textStyle: Theme.of(context).textTheme.headlineLarge,
-      fontWeight: FontWeight.w900, color: const Color(0xFF424343),
+      fontWeight: FontWeight.w900,
       fontSize: 24);
 }
 TextStyle myTextStyleMediumLargeWithOpacity(BuildContext context, double opacity) {
@@ -354,6 +376,12 @@ TextStyle myNumberStyleLargest(BuildContext context) {
       textStyle: Theme.of(context).textTheme.headlineLarge,
       fontWeight: FontWeight.w900,
       fontSize: 36);
+}
+TextStyle myNumberStyleWithSizeColor(BuildContext context, double fontSize, Color color) {
+  return GoogleFonts.secularOne(
+      textStyle: Theme.of(context).textTheme.headlineLarge,
+      fontWeight: FontWeight.w900, color: color,
+      fontSize: fontSize);
 }
 
 TextStyle myNumberStyleBig(BuildContext context) {
@@ -966,7 +994,13 @@ pp(dynamic msg) {
     }
   }
 }
+Color getTextColorForBackground(Color backgroundColor) {
+  if (ThemeData.estimateBrightnessForColor(backgroundColor) == Brightness.dark) {
+    return Colors.white;
+  }
 
+  return Colors.black;
+}
 List<Image> getImages()  {
   final images = <Image>[];
   images.add(Image.asset('assets/projects/proj1.jpg'));

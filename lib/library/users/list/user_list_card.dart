@@ -53,6 +53,7 @@ class _UserListCardState extends State<UserListCard> {
     super.initState();
     _setTexts();
   }
+
   void _setTexts() async {
     var sett = await prefsOGx.getSettings();
     callMember = await translator.translate('callMember', sett.locale!);
@@ -66,6 +67,7 @@ class _UserListCardState extends State<UserListCard> {
 
     });
   }
+
   List<FocusedMenuItem> _getMenuItems(User someUser, BuildContext context) {
     List<FocusedMenuItem> list = [];
 
@@ -166,6 +168,8 @@ class _UserListCardState extends State<UserListCard> {
 
   @override
   Widget build(BuildContext context) {
+    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
     return Card(
       elevation: 4,
       shape: getRoundedBorder(radius: 16),
@@ -212,7 +216,7 @@ class _UserListCardState extends State<UserListCard> {
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
                       '${widget.users.length}',
-                      style: myTextStyleSmall(context),
+                      style: myTextStyleSmallWithColor(context, color),
                     ),
                   ),
                   badgeStyle: bd.BadgeStyle(

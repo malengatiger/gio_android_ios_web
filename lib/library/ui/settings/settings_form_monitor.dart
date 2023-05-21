@@ -174,6 +174,8 @@ class SettingsFormMonitorState extends State<SettingsFormMonitor> {
 
   @override
   Widget build(BuildContext context) {
+    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
     return Stack(
       children: [
         Card(
@@ -206,7 +208,7 @@ class SettingsFormMonitorState extends State<SettingsFormMonitor> {
                                   height: 48,
                                   width: 240,
                                   child: Container(
-                                    color: Theme.of(context).primaryColorLight,
+                                    color: Theme.of(context).primaryColor,
                                     child: Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -214,7 +216,7 @@ class SettingsFormMonitorState extends State<SettingsFormMonitor> {
                                           tapForColorScheme == null
                                               ? 'Tap Me for Colour Scheme'
                                               : tapForColorScheme!,
-                                          style: myTextStyleSmall(context),
+                                          style: myTextStyleSmallWithColor(context, color),
                                         ),
                                       ),
                                     ),
@@ -249,6 +251,33 @@ class SettingsFormMonitorState extends State<SettingsFormMonitor> {
                       ),
                       const SizedBox(
                         height: 48,
+                      ),
+                      SizedBox(
+                        width: 400,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            LocaleChooser(
+                              onSelected: (locale, language) {
+                                _handleLocaleChange(locale, language);
+                              },
+                              hint: hint == null ? 'Select Language' : hint!,
+                            ),
+                            const SizedBox(
+                              width: 32,
+                            ),
+                            translatedLanguage == null
+                                ? const Text('No language')
+                                : Text(
+                              translatedLanguage!,
+                              style: myTextStyleMediumBoldPrimaryColor(
+                                  context),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 60,
                       ),
                       SizedBox(
                         width: 400,
@@ -385,33 +414,7 @@ class SettingsFormMonitorState extends State<SettingsFormMonitor> {
                       const SizedBox(
                         height: 60,
                       ),
-                      SizedBox(
-                        width: 400,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            LocaleChooser(
-                              onSelected: (locale, language) {
-                                _handleLocaleChange(locale, language);
-                              },
-                              hint: hint == null ? 'Select Language' : hint!,
-                            ),
-                            const SizedBox(
-                              width: 32,
-                            ),
-                            translatedLanguage == null
-                                ? const Text('No language')
-                                : Text(
-                                    translatedLanguage!,
-                                    style: myTextStyleMediumBoldPrimaryColor(
-                                        context),
-                                  ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 24,
-                      ),
+
                     ],
                   ),
                 ),

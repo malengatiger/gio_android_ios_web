@@ -12,6 +12,30 @@ class MyKeys {
 
   static _buildMap() {
 
+    hashMap["freeDesc"] = "freeDesc";
+    hashMap["monthlyDesc"] = "monthlyDesc";
+    hashMap["annualDesc"] = "annualDesc";
+    hashMap["corporateDesc"] = "corporateDesc";
+    hashMap["confirm"] = "confirm";
+    hashMap["errorTrans"] = "errorTrans";
+    hashMap["submitText"] = "submitText";
+
+    hashMap["subscriptionPlans"] = "subscriptionPlans";
+    hashMap["selectPlan"] = "selectPlan";
+    hashMap["freeSub"] = "freeSub";
+    hashMap["monthly"] = "monthly";
+    hashMap["annual"] = "annual";
+    hashMap["corporate"] = "corporate";
+    hashMap["free"] = "free";
+    hashMap["paymentReceived"] = "paymentReceived";
+    hashMap["thanksForSub"] = "thanksForSub";
+
+    hashMap["enrolledFree"] = "enrolledFree";
+
+    hashMap["subscriptionSubTitle"] = "subscriptionSubTitle";
+    
+    
+    hashMap["subscriptionSubTitle"] = "subscriptionSubTitle";
     hashMap["saveProjectLocation"] = "saveProjectLocation";
     hashMap["latitude"] = "latitude";
     hashMap["longitude"] = "longitude";

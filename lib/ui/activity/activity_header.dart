@@ -32,11 +32,13 @@ class ActivityHeader extends StatelessWidget {
     if ((number > 999)) {
       padding = 8.0;
     }
+    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
     return SizedBox(
       child: bd.Badge(
         badgeContent: Padding(
           padding: EdgeInsets.all(padding),
-          child: Text(mNumber, style: myTextStyleTiny(context),),
+          child: Text(mNumber, style: myTextStyleSmallWithColor(context, color),),
         ),
         badgeAnimation: const bd.BadgeAnimation.scale(),
         position: bd.BadgePosition.topEnd(),

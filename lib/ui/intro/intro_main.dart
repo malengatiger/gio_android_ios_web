@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/ui/intro/intro_page_viewer_portrait.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -23,15 +24,20 @@ class IntroMain extends StatefulWidget {
   final ProjectBloc projectBloc;
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
-
+  final FirebaseAuth firebaseAuth;
 
   const IntroMain({
     Key? key,
     required this.prefsOGx,
     required this.dataApiDog,
     required this.cacheManager,
-    required this.isolateHandler, required this.fcmBloc, required this.organizationBloc, required this.projectBloc, required this.geoUploader, required this.cloudStorageBloc,
-
+    required this.isolateHandler,
+    required this.fcmBloc,
+    required this.organizationBloc,
+    required this.projectBloc,
+    required this.geoUploader,
+    required this.cloudStorageBloc,
+    required this.firebaseAuth,
   }) : super(key: key);
   @override
   IntroMainState createState() => IntroMainState();
@@ -56,7 +62,6 @@ class IntroMainState extends State<IntroMain>
 
   @override
   Widget build(BuildContext context) {
-
     return ScreenTypeLayout.builder(
       mobile: (ctx) {
         return IntroPageViewerPortrait(
@@ -70,15 +75,17 @@ class IntroMainState extends State<IntroMain>
           isolateHandler: widget.isolateHandler,
           geoUploader: widget.geoUploader,
           cloudStorageBloc: widget.cloudStorageBloc,
+          firebaseAuth: widget.firebaseAuth,
         );
       },
-      tablet: (ctx){
+      tablet: (ctx) {
         return OrientationLayoutBuilder(
           portrait: (context) {
             return IntroPageViewerPortrait(
               fcmBloc: widget.fcmBloc,
               projectBloc: widget.projectBloc,
               organizationBloc: widget.organizationBloc,
+              firebaseAuth: widget.firebaseAuth,
               prefsOGx: widget.prefsOGx,
               dataHandler: widget.isolateHandler,
               dataApiDog: widget.dataApiDog,
@@ -98,6 +105,7 @@ class IntroMainState extends State<IntroMain>
               organizationBloc: widget.organizationBloc,
               geoUploader: widget.geoUploader,
               cloudStorageBloc: widget.cloudStorageBloc,
+              firebaseAuth: widget.firebaseAuth,
               fcmBloc: widget.fcmBloc,
             );
           },

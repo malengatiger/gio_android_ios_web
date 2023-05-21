@@ -1220,6 +1220,13 @@
             </list>
           </value>
         </entry>
+        <entry key="json_serializable">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/json_serializable-6.7.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="just_audio">
           <value>
             <list>
@@ -1441,6 +1448,34 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_windows-2.1.6/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="pay">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/pay-1.1.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="pay_android">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/pay_android-1.0.10/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="pay_ios">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/pay_ios-1.0.8/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="pay_platform_interface">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/pay_platform_interface-1.0.3/lib" />
             </list>
           </value>
         </entry>
@@ -2296,6 +2331,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/isolate_handler-1.0.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/js-0.6.7/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/json_annotation-4.8.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/json_serializable-6.7.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/just_audio-0.9.33/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/just_audio_platform_interface-4.2.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/just_audio_web-0.4.8/lib" />
@@ -2328,6 +2364,10 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_linux-2.1.10/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_platform_interface-2.0.6/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_windows-2.1.6/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/pay-1.1.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/pay_android-1.0.10/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/pay_ios-1.0.8/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/pay_platform_interface-1.0.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/pedantic-1.11.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/permission_handler-10.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/permission_handler_android-10.2.1/lib" />

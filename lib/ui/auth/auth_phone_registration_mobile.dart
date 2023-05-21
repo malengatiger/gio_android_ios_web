@@ -23,11 +23,18 @@ import '../../library/generic_functions.dart';
 import '../../library/users/edit/country_chooser.dart';
 
 class AuthPhoneRegistrationMobile extends StatefulWidget {
-  const AuthPhoneRegistrationMobile({Key? key, required this.prefsOGx, required this.dataApiDog, required this.cacheManager}) : super(key: key);
+  const AuthPhoneRegistrationMobile(
+      {Key? key,
+      required this.prefsOGx,
+      required this.dataApiDog,
+      required this.cacheManager, required this.firebaseAuth})
+      : super(key: key);
 
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
   final CacheManager cacheManager;
+  final FirebaseAuth firebaseAuth;
+
   @override
   AuthPhoneRegistrationMobileState createState() =>
       AuthPhoneRegistrationMobileState();
@@ -38,7 +45,6 @@ class AuthPhoneRegistrationMobileState
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   bool _codeHasBeenSent = false;
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final mm = '🥬🥬🥬🥬🥬🥬 OrgRegistrationPage: ';
   String? phoneVerificationId;
   String? code;
@@ -75,10 +81,10 @@ class AuthPhoneRegistrationMobileState
     signInStrings = await SignInStrings.getTranslated(settingsModel!);
     settingsModel = await prefsOGx.getSettings();
 
-      if (country != null) {
-        translatedCountryName =
-            await translator.translate('${country!.name}', settingsModel!.locale!);
-      }
+    if (country != null) {
+      translatedCountryName = await translator.translate(
+          '${country!.name}', settingsModel!.locale!);
+    }
 
     setState(() {});
   }
@@ -89,7 +95,7 @@ class AuthPhoneRegistrationMobileState
       busy = true;
     });
 
-    await firebaseAuth.verifyPhoneNumber(
+    await widget.firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneController.value.text,
         timeout: const Duration(seconds: 60),
         verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {
@@ -205,7 +211,7 @@ class AuthPhoneRegistrationMobileState
       }
       PhoneAuthCredential authCredential = PhoneAuthProvider.credential(
           verificationId: phoneVerificationId!, smsCode: code!);
-      var userCred = await firebaseAuth.signInWithCredential(authCredential);
+      var userCred = await widget.firebaseAuth.signInWithCredential(authCredential);
       pp('$mm ... start _doTheRegistration ...');
       await _doTheRegistration(userCred);
     } catch (e) {
@@ -241,7 +247,7 @@ class AuthPhoneRegistrationMobileState
       showToast(
           backgroundColor: Theme.of(context).primaryColor,
           padding: 16,
-          message: 'Country not initialized',
+          message: 'Please select country',
           context: context);
       return;
     }
@@ -263,7 +269,8 @@ class AuthPhoneRegistrationMobileState
       settingsModel!.organizationId = organizationId;
       pp('$mm create user object');
       final sett = await cacheManager.getSettings();
-      final memberAddedChanged = await translator.translate('memberAddedChanged', sett!.locale!);
+      final memberAddedChanged =
+          await translator.translate('memberAddedChanged', sett!.locale!);
       final messageFromGeo = await getFCMMessageTitle();
       user = ur.User(
           name: adminController.value.text,
@@ -291,20 +298,21 @@ class AuthPhoneRegistrationMobileState
           latitude: loc.latitude,
           longitude: loc.longitude);
 
-      var resultBag = await dataApiDog.registerOrganization(bag);
-      await cacheManager.addOrganization(organization: resultBag.organization!);
+      var resultBag = await widget.dataApiDog.registerOrganization(bag);
+      await widget.cacheManager
+          .addOrganization(organization: resultBag.organization!);
       user!.password = const Uuid().v4();
       // var result = await DataAPI.updateAuthedUser(user!);
 
       pp('\n$mm Organization OG Administrator registered OK: adding org settings default. '
           '😡😡😡😡  ');
-      await prefsOGx.saveSettings(settingsModel!);
+      await widget.prefsOGx.saveSettings(settingsModel!);
       await themeBloc.changeToTheme(settingsModel!.themeIndex!);
-      await prefsOGx.saveUser(user!);
-      await cacheManager.addUser(user: user!);
-      await cacheManager.addProject(project: resultBag.project!);
-      await cacheManager.addProjectPosition(
-          projectPosition: resultBag.projectPosition!);
+      await widget.prefsOGx.saveUser(user!);
+      await widget.cacheManager.addUser(user: user!);
+      await widget.cacheManager.addProject(project: resultBag.project!);
+      await widget.cacheManager
+          .addProjectPosition(projectPosition: resultBag.projectPosition!);
       pp('\n$mm Organization OG Administrator registered OK:🌍🌍🌍🌍  🍎 '
           '${user!.toJson()} 🌍🌍🌍🌍');
       pp('\n\n$mm Organization registered: 🌍🌍🌍🌍 🍎 ${resultBag.toJson()} 🌍🌍🌍🌍\n\n');
@@ -320,17 +328,18 @@ class AuthPhoneRegistrationMobileState
 
   _onCountrySelected(Country p1) async {
     country = p1;
-    if (settingsModel != null) {
-      translatedCountryName =
-          await translator.translate('${country!.name}', settingsModel!.locale!);
-    } else {
-      translatedCountryName = await translator.translate('${country!.name}', 'en');
-    }
+    await widget.prefsOGx.saveCountry(p1);
 
+    if (settingsModel != null) {
+      translatedCountryName = await translator.translate(
+          '${country!.name}', settingsModel!.locale!);
+    } else {
+      translatedCountryName =
+          await translator.translate('${country!.name}', 'en');
+    }
     if (mounted) {
       setState(() {});
     }
-    prefsOGx.saveCountry(p1);
   }
 
   bool refreshCountries = false;
@@ -391,15 +400,17 @@ class AuthPhoneRegistrationMobileState
                         const SizedBox(
                           width: 8,
                         ),
-                        verificationCompleted? IconButton(
-                            onPressed: () {
-                              _processRegistration();
-                            },
-                            icon: Icon(
-                              Icons.check,
-                              color: Theme.of(context).primaryColor,
-                              size: 32,
-                            )): const SizedBox(),
+                        verificationCompleted
+                            ? IconButton(
+                                onPressed: () {
+                                  _processRegistration();
+                                },
+                                icon: Icon(
+                                  Icons.check,
+                                  color: Theme.of(context).primaryColor,
+                                  size: 32,
+                                ))
+                            : const SizedBox(),
                       ],
                     ),
                     const SizedBox(

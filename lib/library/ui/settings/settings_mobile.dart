@@ -123,12 +123,14 @@ class SettingsMobileState extends State<SettingsMobile>
 
   @override
   Widget build(BuildContext context) {
+    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
         title: Text(
           title == null ? 'Settings' : title!,
-          style: myTextStyleMediumBold(context),
+          style: myTitleTextStyle(context, color),
         ),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(showMonitorForm ? 12 : 8),

@@ -12,6 +12,7 @@ import '../../l10n/translation_handler.dart';
 import '../../library/api/prefs_og.dart';
 import '../../library/bloc/theme_bloc.dart';
 import '../../library/cache_manager.dart';
+import '../../library/data/country.dart';
 import '../../library/data/user.dart' as ur;
 import '../../library/functions.dart';
 
@@ -90,8 +91,6 @@ class AuthPhoneSignInState extends State<AuthPhoneSignIn>
   }
 
   void _onSignedIn(ur.User user) async {
-    final sett = await widget.prefsOGx.getSettings();
-
     dataHandler.getOrganizationData();
     if (mounted) {
       Navigator.of(context).pop(user);
@@ -104,41 +103,41 @@ class AuthPhoneSignInState extends State<AuthPhoneSignIn>
     if (deviceType == 'phone') {
       return SafeArea(
           child: Scaffold(
-            appBar: AppBar(
-              title: Text(
-                signInStrings == null ? 'Phone SignIn' : signInStrings!.phoneSignIn,
-                style: myTextStyleMedium(context),
+        appBar: AppBar(
+          title: Text(
+            signInStrings == null ? 'Phone SignIn' : signInStrings!.phoneSignIn,
+            style: myTextStyleMedium(context),
+          ),
+          bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(100.0),
+              child: Column(
+                children: const [
+                  SizedBox(),
+                ],
+              )),
+        ),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: AuthPhoneSigninCard(
+                  prefsOGx: widget.prefsOGx,
+                  cacheManager: widget.cacheManager,
+                  dataApiDog: widget.dataApiDog,
+                  showAvatarBuilder: () {
+                    _navigateToAvatarBuilder();
+                  },
+                  width: MediaQuery.of(context).size.width,
+                  onSuccessfulSignIn: (ur.User user) {
+                    _onSignedIn(user);
+                  },
+                ),
               ),
-              bottom: PreferredSize(
-                  preferredSize: const Size.fromHeight(100.0),
-                  child: Column(
-                    children: const [
-                      SizedBox(),
-                    ],
-                  )),
-            ),
-            body: Stack(
-              children: [
-                SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: AuthPhoneSigninCard(
-                      prefsOGx: widget.prefsOGx,
-                      cacheManager: widget.cacheManager,
-                      dataApiDog: widget.dataApiDog,
-                      showAvatarBuilder: () {
-                        _navigateToAvatarBuilder();
-                      },
-                      width: MediaQuery.of(context).size.width,
-                      onSuccessfulSignIn: (ur.User user) {
-                        _onSignedIn(user);
-                      },
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ));
+            )
+          ],
+        ),
+      ));
     } else {
       return AuthPhoneSigninCard(
         dataApiDog: widget.dataApiDog,
@@ -157,12 +156,12 @@ class AuthPhoneSignInState extends State<AuthPhoneSignIn>
 class AuthPhoneSigninCard extends StatefulWidget {
   const AuthPhoneSigninCard(
       {Key? key,
-        required this.showAvatarBuilder,
-        required this.width,
-        required this.onSuccessfulSignIn,
-        required this.prefsOGx,
-        required this.dataApiDog,
-        required this.cacheManager})
+      required this.showAvatarBuilder,
+      required this.width,
+      required this.onSuccessfulSignIn,
+      required this.prefsOGx,
+      required this.dataApiDog,
+      required this.cacheManager})
       : super(key: key);
 
   final Function showAvatarBuilder;
@@ -236,15 +235,28 @@ class _AuthPhoneSigninCardState extends State<AuthPhoneSigninCard> {
       pp('\n$mm user signed in to firebase? userCred: $userCred');
       pp('$mm seeking to acquire this user from the Geo database by their id: 🌀🌀🌀${userCred.user?.uid}');
       user = await widget.dataApiDog.getUserById(userId: userCred.user!.uid);
+
       if (user != null) {
         pp('$mm Gio user found on database:  🍎 ${user!.name!} 🍎');
+        final org =
+        await widget.dataApiDog.getOrganization(user!.organizationId!);
+        final countries = await widget.dataApiDog.getCountries();
+        Country? myCountry;
+        for (var country in countries) {
+          await widget.cacheManager.addCountry(country: country);
+          if (country.countryId == org!.countryId!) {
+            myCountry = country;
+            await widget.prefsOGx.saveCountry(myCountry);
+            user!.countryId = myCountry.countryId!;
+          }
+        }
         await widget.prefsOGx.saveUser(user!);
         await widget.cacheManager.addUser(user: user!);
-        var settings = await widget.dataApiDog
+        var settingsList = await widget.dataApiDog
             .getOrganizationSettings(user!.organizationId!);
-        settings.sort((a, b) => b.created!.compareTo(a.created!));
-        await themeBloc.changeToTheme(settings.first.themeIndex!);
-        if (settings.isEmpty) {
+        settingsList.sort((a, b) => b.created!.compareTo(a.created!));
+        await themeBloc.changeToTheme(settingsList.first.themeIndex!);
+        if (settingsList.isEmpty) {
           var sett = getBaseSettings();
           sett.organizationId = user!.organizationId!;
           await widget.prefsOGx.saveSettings(sett);
@@ -252,9 +264,9 @@ class _AuthPhoneSigninCardState extends State<AuthPhoneSigninCard> {
           await themeBloc.changeToTheme(0);
           await themeBloc.changeToLocale(sett.locale!);
         } else {
-          await widget.prefsOGx.saveSettings(settings.first);
-          await themeBloc.changeToTheme(settings.first.themeIndex!);
-          await themeBloc.changeToLocale(settings.first.locale!);
+          await widget.prefsOGx.saveSettings(settingsList.first);
+          await themeBloc.changeToTheme(settingsList.first.themeIndex!);
+          await themeBloc.changeToLocale(settingsList.first.locale!);
         }
         setState(() {
           busy = false;
@@ -395,24 +407,24 @@ class _AuthPhoneSigninCardState extends State<AuthPhoneSigninCard> {
             children: [
               busy
                   ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 4,
-                        backgroundColor: Colors.pink,
-                      ),
-                    ),
-                  ),
-                ],
-              )
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 4,
+                              backgroundColor: Colors.pink,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
                   : const SizedBox(
-                height: 12,
-              ),
+                      height: 12,
+                    ),
               const SizedBox(
                 height: 24,
               ),
@@ -484,90 +496,90 @@ class _AuthPhoneSigninCardState extends State<AuthPhoneSigninCard> {
                         ),
                         _codeHasBeenSent
                             ? SizedBox(
-                          height: 200,
-                          child: Column(
-                            children: [
-                              Text(
-                                signInStrings == null
-                                    ? 'Enter SMS pin code sent'
-                                    : signInStrings!.enterSMS,
-                                style: myTextStyleSmall(context),
-                              ),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: PinCodeTextField(
-                                  length: 6,
-                                  obscureText: false,
-                                  textStyle: myNumberStyleLarge(context),
-                                  animationType: AnimationType.fade,
-                                  pinTheme: PinTheme(
-                                    shape: PinCodeFieldShape.box,
-                                    borderRadius:
-                                    BorderRadius.circular(5),
-                                    fieldHeight: 50,
-                                    fieldWidth: 40,
-                                    activeFillColor: Theme.of(context)
-                                        .colorScheme
-                                        .background,
-                                  ),
-                                  animationDuration:
-                                  const Duration(milliseconds: 300),
-                                  backgroundColor: Theme.of(context)
-                                      .colorScheme
-                                      .background,
-                                  enableActiveFill: true,
-                                  errorAnimationController:
-                                  errorController,
-                                  controller: codeController,
-                                  onCompleted: (v) {
-                                    pp("$mm PinCodeTextField: Completed: $v - should call submit ...");
-                                  },
-                                  onChanged: (value) {
-                                    pp(value);
-                                    setState(() {
-                                      currentText = value;
-                                    });
-                                  },
-                                  beforeTextPaste: (text) {
-                                    pp("$mm Allowing to paste $text");
-                                    //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
-                                    //but you can show anything you want here, like your pop up saying wrong paste format or etc
-                                    return true;
-                                  },
-                                  appContext: context,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 28,
-                              ),
-                              busy
-                                  ? const SizedBox(
-                                height: 16,
-                                width: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 4,
-                                  backgroundColor: Colors.pink,
+                                height: 200,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      signInStrings == null
+                                          ? 'Enter SMS pin code sent'
+                                          : signInStrings!.enterSMS,
+                                      style: myTextStyleSmall(context),
+                                    ),
+                                    const SizedBox(
+                                      height: 16,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: PinCodeTextField(
+                                        length: 6,
+                                        obscureText: false,
+                                        textStyle: myNumberStyleLarge(context),
+                                        animationType: AnimationType.fade,
+                                        pinTheme: PinTheme(
+                                          shape: PinCodeFieldShape.box,
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          fieldHeight: 50,
+                                          fieldWidth: 40,
+                                          activeFillColor: Theme.of(context)
+                                              .colorScheme
+                                              .background,
+                                        ),
+                                        animationDuration:
+                                            const Duration(milliseconds: 300),
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .background,
+                                        enableActiveFill: true,
+                                        errorAnimationController:
+                                            errorController,
+                                        controller: codeController,
+                                        onCompleted: (v) {
+                                          pp("$mm PinCodeTextField: Completed: $v - should call submit ...");
+                                        },
+                                        onChanged: (value) {
+                                          pp(value);
+                                          setState(() {
+                                            currentText = value;
+                                          });
+                                        },
+                                        beforeTextPaste: (text) {
+                                          pp("$mm Allowing to paste $text");
+                                          //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+                                          //but you can show anything you want here, like your pop up saying wrong paste format or etc
+                                          return true;
+                                        },
+                                        appContext: context,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 28,
+                                    ),
+                                    busy
+                                        ? const SizedBox(
+                                            height: 16,
+                                            width: 16,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 4,
+                                              backgroundColor: Colors.pink,
+                                            ),
+                                          )
+                                        : ElevatedButton(
+                                            onPressed: _processSignIn,
+                                            style: ButtonStyle(
+                                              elevation: MaterialStateProperty
+                                                  .all<double>(8.0),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: Text(signInStrings == null
+                                                  ? 'Send Code'
+                                                  : signInStrings!.sendCode),
+                                            )),
+                                  ],
                                 ),
                               )
-                                  : ElevatedButton(
-                                  onPressed: _processSignIn,
-                                  style: ButtonStyle(
-                                    elevation: MaterialStateProperty
-                                        .all<double>(8.0),
-                                  ),
-                                  child: Padding(
-                                    padding:
-                                    const EdgeInsets.all(4.0),
-                                    child: Text(signInStrings == null
-                                        ? 'Send Code'
-                                        : signInStrings!.sendCode),
-                                  )),
-                            ],
-                          ),
-                        )
                             : const SizedBox(),
                       ],
                     )),
@@ -610,56 +622,56 @@ class SignInStrings {
 
   SignInStrings(
       {required this.signIn,
-        required this.memberSignedIn,
-        required this.putInCode,
-        required this.duplicateOrg,
-        required this.enterPhone,
-        required this.serverUnreachable,
-        required this.phoneSignIn,
-        required this.phoneAuth,
-        required this.phoneNumber,
-        required this.verifyPhone,
-        required this.enterSMS,
-        required this.sendCode,
-        required this.registerOrganization,
-        required this.verifyComplete,
-        required this.verifyFailed,
-        required this.enterOrg,
-        required this.orgName,
-        required this.enterAdmin,
-        required this.adminName,
-        required this.memberNotExist,
-        required this.enterEmail,
-        required this.pleaseSelectCountry,
-        required this.signInOK,
-        required this.enterPassword,
-        required this.password,
-        required this.emailAddress});
+      required this.memberSignedIn,
+      required this.putInCode,
+      required this.duplicateOrg,
+      required this.enterPhone,
+      required this.serverUnreachable,
+      required this.phoneSignIn,
+      required this.phoneAuth,
+      required this.phoneNumber,
+      required this.verifyPhone,
+      required this.enterSMS,
+      required this.sendCode,
+      required this.registerOrganization,
+      required this.verifyComplete,
+      required this.verifyFailed,
+      required this.enterOrg,
+      required this.orgName,
+      required this.enterAdmin,
+      required this.adminName,
+      required this.memberNotExist,
+      required this.enterEmail,
+      required this.pleaseSelectCountry,
+      required this.signInOK,
+      required this.enterPassword,
+      required this.password,
+      required this.emailAddress});
 
   static Future<SignInStrings> getTranslated(SettingsModel sett) async {
     var signIn = await translator.translate('signIn', sett!.locale!);
     var memberNotExist =
-    await translator.translate('memberNotExist', sett.locale!);
+        await translator.translate('memberNotExist', sett.locale!);
     var memberSignedIn =
-    await translator.translate('memberSignedIn', sett.locale!);
+        await translator.translate('memberSignedIn', sett.locale!);
     var putInCode = await translator.translate('putInCode', sett.locale!);
     var duplicateOrg = await translator.translate('duplicateOrg', sett.locale!);
     var pleaseSelectCountry =
-    await translator.translate('pleaseSelectCountry', sett.locale!);
+        await translator.translate('pleaseSelectCountry', sett.locale!);
 
     var registerOrganization =
-    await translator.translate('registerOrganization', sett.locale!);
+        await translator.translate('registerOrganization', sett.locale!);
 
     var enterPhone = await translator.translate('enterPhone', sett.locale!);
     var signInOK = await translator.translate('signInOK', sett.locale!);
 
     var enterPassword =
-    await translator.translate('enterPassword', sett.locale!);
+        await translator.translate('enterPassword', sett.locale!);
 
     var password = await translator.translate('password', sett.locale!);
 
     var serverUnreachable =
-    await translator.translate('serverUnreachable', sett.locale!);
+        await translator.translate('serverUnreachable', sett.locale!);
     var phoneSignIn = await translator.translate('phoneSignIn', sett.locale!);
     var phoneAuth = await translator.translate('phoneAuth', sett.locale!);
     var phoneNumber = await translator.translate('phoneNumber', sett.locale!);
@@ -667,7 +679,7 @@ class SignInStrings {
     var enterSMS = await translator.translate('enterSMS', sett.locale!);
     var sendCode = await translator.translate('sendCode', sett.locale!);
     var verifyComplete =
-    await translator.translate('verifyComplete', sett.locale!);
+        await translator.translate('verifyComplete', sett.locale!);
     var verifyFailed = await translator.translate('verifyFailed', sett.locale!);
     var enterOrg = await translator.translate('enterOrg', sett.locale!);
     var orgName = await translator.translate('orgName', sett.locale!);

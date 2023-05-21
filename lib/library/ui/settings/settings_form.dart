@@ -338,6 +338,7 @@ class SettingsFormState extends State<SettingsForm> {
 
   @override
   Widget build(BuildContext context) {
+    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
     return Stack(
       children: [
         Card(
@@ -379,7 +380,9 @@ class SettingsFormState extends State<SettingsForm> {
                                           tapForColorScheme == null
                                               ? 'Tap Me for Colour Scheme'
                                               : tapForColorScheme!,
-                                          style: myTextStyleSmall(context),
+                                          style: TextStyle(
+                                            color: color,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -426,6 +429,33 @@ class SettingsFormState extends State<SettingsForm> {
                                 : fieldMonitorInstruction!,
                             style: myTextStyleSmall(context),
                           ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 24,
+                      ),
+                      SizedBox(
+                        width: 400,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            LocaleChooser(
+                              onSelected: (locale, language) {
+                                _handleLocaleChange(locale, language);
+                              },
+                              hint: hint == null ? 'Select Language' : hint!,
+                            ),
+                            const SizedBox(
+                              width: 32,
+                            ),
+                            translatedLanguage == null
+                                ? const Text('No language')
+                                : Text(
+                              translatedLanguage!,
+                              style: myTextStyleMediumBoldPrimaryColor(
+                                  context),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(
@@ -625,33 +655,7 @@ class SettingsFormState extends State<SettingsForm> {
                       const SizedBox(
                         height: 24,
                       ),
-                      SizedBox(
-                        width: 400,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            LocaleChooser(
-                              onSelected: (locale, language) {
-                                _handleLocaleChange(locale, language);
-                              },
-                              hint: hint == null ? 'Select Language' : hint!,
-                            ),
-                            const SizedBox(
-                              width: 32,
-                            ),
-                            translatedLanguage == null
-                                ? const Text('No language')
-                                : Text(
-                                    translatedLanguage!,
-                                    style: myTextStyleMediumBoldPrimaryColor(
-                                        context),
-                                  ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 24,
-                      ),
+
                       busyWritingToDB
                           ? const SizedBox(
                               height: 20,

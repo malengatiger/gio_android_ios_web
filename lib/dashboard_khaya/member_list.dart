@@ -70,7 +70,7 @@ class UserView extends StatelessWidget {
               child: Text(
                 '${user.name}',
                 overflow: TextOverflow.ellipsis,
-                style: myTextStyleTiny(context),
+                style: myTextStyleTinyPrimaryColor(context),
               ),
             )
           ],

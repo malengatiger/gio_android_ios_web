@@ -506,12 +506,14 @@ class _GioUserListState extends State<GioUserList> {
       amInPortrait = true;
     }
     var mWidth = MediaQuery.of(context).size.width;
+    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: Text(
             title == null ? 'Members' : title!,
-            style: style,
+            style: myTitleTextStyle(context, color),
           ),
           actions: _getActions(),
         ),

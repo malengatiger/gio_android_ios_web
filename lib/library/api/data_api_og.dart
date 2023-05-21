@@ -11,6 +11,7 @@ import 'package:geo_monitor/library/data/location_request.dart';
 import 'package:geo_monitor/library/data/organization_registration_bag.dart';
 import 'package:geo_monitor/library/data/project_polygon.dart';
 import 'package:geo_monitor/library/data/project_summary.dart';
+import 'package:geo_monitor/library/data/subscription.dart';
 import 'package:geo_monitor/library/errors/error_handler.dart';
 import 'package:geo_monitor/utilities/environment.dart';
 import 'package:http/http.dart' as http;
@@ -36,6 +37,7 @@ import '../data/location_response.dart';
 import '../data/org_message.dart';
 import '../data/organization.dart';
 import '../data/photo.dart';
+import '../data/pricing.dart';
 import '../data/project.dart';
 import '../data/project_position.dart';
 import '../data/questionnaire.dart';
@@ -108,6 +110,53 @@ class DataApiDog {
     return s;
   }
 
+  Future<GioSubscription> addSubscription(GioSubscription subscription) async {
+    Map bag = subscription.toJson();
+
+    var result = await _callWebAPIPost('${url!}addSubscription', bag);
+    var s = GioSubscription.fromJson(result);
+    await prefsOGx.saveGioSubscription(s);
+    return s;
+  }
+  Future<GioSubscription> updateSubscription(GioSubscription subscription) async {
+    Map bag = subscription.toJson();
+
+    var result = await _callWebAPIPost('${url!}updateSubscription', bag);
+    var s = GioSubscription.fromJson(result);
+    await prefsOGx.saveGioSubscription(s);
+    return s;
+  }
+  Future<GioSubscription> activateSubscription(GioSubscription subscription) async {
+    Map bag = subscription.toJson();
+
+    var result = await _callWebAPIPost('${url!}activateSubscription', bag);
+    var s = GioSubscription.fromJson(result);
+    await prefsOGx.saveGioSubscription(s);
+    return s;
+  }
+  Future<GioSubscription> deActivateSubscription(GioSubscription subscription) async {
+    Map bag = subscription.toJson();
+
+    var result = await _callWebAPIPost('${url!}deActivateSubscription', bag);
+    var s = GioSubscription.fromJson(result);
+    await prefsOGx.saveGioSubscription(s);
+    return s;
+  }
+
+  Future<List<Pricing>> getPricing(
+      String countryId) async {
+    List<Pricing> mList = [];
+
+    List result = await _sendHttpGET(
+        '${url!}getCountryPricing?countryId=$countryId');
+    for (var element in result) {
+      mList.add(Pricing.fromJson(element));
+    }
+    pp('🌿 🌿 🌿 getPricing returned: 🌿 ${mList.length}');
+    mList.sort((a,b) => b.date!.compareTo(a.date!));
+    return mList;
+  }
+
   Future<GeofenceEvent> addGeofenceEvent(GeofenceEvent geofenceEvent) async {
     Map bag = geofenceEvent.toJson();
 
@@ -116,6 +165,7 @@ class DataApiDog {
     await cacheManager.addGeofenceEvent(geofenceEvent: s);
     return s;
   }
+
 
   Future<LocationResponse> addLocationResponse(
       LocationResponse response) async {
@@ -228,6 +278,17 @@ class DataApiDog {
 
     pp('$xz 🌿 🌿 🌿 getOrganizationActivity returned: 🌿 ${mList.length}');
     return mList;
+  }
+
+  Future<Organization?> getOrganization(
+      String organizationId) async {
+    Organization? org;
+
+    final result = await _sendHttpGET(
+        '${url!}getOrganization?organizationId=$organizationId');
+
+   org = Organization.fromJson(result);
+   return org;
   }
 
   Future<List<ProjectSummary>> getOrganizationDailySummary(

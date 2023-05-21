@@ -3,54 +3,55 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i32;
-import 'dart:convert' as _i33;
-import 'dart:math' as _i30;
-import 'dart:typed_data' as _i34;
+import 'dart:async' as _i33;
+import 'dart:convert' as _i34;
+import 'dart:math' as _i31;
+import 'dart:typed_data' as _i35;
 
-import 'package:geo_monitor/library/api/data_api_og.dart' as _i35;
+import 'package:geo_monitor/library/api/data_api_og.dart' as _i36;
 import 'package:geo_monitor/library/api/prefs_og.dart' as _i5;
 import 'package:geo_monitor/library/auth/app_auth.dart' as _i3;
-import 'package:geo_monitor/library/bloc/audio_for_upload.dart' as _i45;
-import 'package:geo_monitor/library/bloc/photo_for_upload.dart' as _i47;
-import 'package:geo_monitor/library/bloc/video_for_upload.dart' as _i46;
+import 'package:geo_monitor/library/bloc/audio_for_upload.dart' as _i46;
+import 'package:geo_monitor/library/bloc/photo_for_upload.dart' as _i48;
+import 'package:geo_monitor/library/bloc/video_for_upload.dart' as _i47;
 import 'package:geo_monitor/library/cache_manager.dart' as _i4;
-import 'package:geo_monitor/library/data/activity_model.dart' as _i37;
-import 'package:geo_monitor/library/data/app_error.dart' as _i21;
-import 'package:geo_monitor/library/data/audio.dart' as _i24;
-import 'package:geo_monitor/library/data/city.dart' as _i41;
-import 'package:geo_monitor/library/data/community.dart' as _i18;
-import 'package:geo_monitor/library/data/condition.dart' as _i26;
-import 'package:geo_monitor/library/data/counters.dart' as _i14;
-import 'package:geo_monitor/library/data/country.dart' as _i43;
-import 'package:geo_monitor/library/data/data_bag.dart' as _i17;
+import 'package:geo_monitor/library/data/activity_model.dart' as _i38;
+import 'package:geo_monitor/library/data/app_error.dart' as _i22;
+import 'package:geo_monitor/library/data/audio.dart' as _i25;
+import 'package:geo_monitor/library/data/city.dart' as _i42;
+import 'package:geo_monitor/library/data/community.dart' as _i19;
+import 'package:geo_monitor/library/data/condition.dart' as _i27;
+import 'package:geo_monitor/library/data/counters.dart' as _i15;
+import 'package:geo_monitor/library/data/country.dart' as _i44;
+import 'package:geo_monitor/library/data/data_bag.dart' as _i18;
 import 'package:geo_monitor/library/data/field_monitor_schedule.dart' as _i7;
-import 'package:geo_monitor/library/data/geofence_event.dart' as _i9;
-import 'package:geo_monitor/library/data/kill_response.dart' as _i12;
-import 'package:geo_monitor/library/data/location_request.dart' as _i16;
-import 'package:geo_monitor/library/data/location_response.dart' as _i10;
-import 'package:geo_monitor/library/data/monitor_report.dart' as _i48;
-import 'package:geo_monitor/library/data/org_message.dart' as _i29;
-import 'package:geo_monitor/library/data/organization.dart' as _i28;
+import 'package:geo_monitor/library/data/geofence_event.dart' as _i10;
+import 'package:geo_monitor/library/data/kill_response.dart' as _i13;
+import 'package:geo_monitor/library/data/location_request.dart' as _i17;
+import 'package:geo_monitor/library/data/location_response.dart' as _i11;
+import 'package:geo_monitor/library/data/monitor_report.dart' as _i49;
+import 'package:geo_monitor/library/data/org_message.dart' as _i30;
+import 'package:geo_monitor/library/data/organization.dart' as _i29;
 import 'package:geo_monitor/library/data/organization_registration_bag.dart'
-    as _i13;
-import 'package:geo_monitor/library/data/photo.dart' as _i22;
-import 'package:geo_monitor/library/data/project.dart' as _i15;
-import 'package:geo_monitor/library/data/project_assignment.dart' as _i44;
-import 'package:geo_monitor/library/data/project_polygon.dart' as _i20;
-import 'package:geo_monitor/library/data/project_position.dart' as _i19;
-import 'package:geo_monitor/library/data/project_summary.dart' as _i38;
-import 'package:geo_monitor/library/data/questionnaire.dart' as _i27;
-import 'package:geo_monitor/library/data/rating.dart' as _i25;
-import 'package:geo_monitor/library/data/section.dart' as _i42;
+    as _i14;
+import 'package:geo_monitor/library/data/photo.dart' as _i23;
+import 'package:geo_monitor/library/data/project.dart' as _i16;
+import 'package:geo_monitor/library/data/project_assignment.dart' as _i45;
+import 'package:geo_monitor/library/data/project_polygon.dart' as _i21;
+import 'package:geo_monitor/library/data/project_position.dart' as _i20;
+import 'package:geo_monitor/library/data/project_summary.dart' as _i39;
+import 'package:geo_monitor/library/data/questionnaire.dart' as _i28;
+import 'package:geo_monitor/library/data/rating.dart' as _i26;
+import 'package:geo_monitor/library/data/section.dart' as _i43;
 import 'package:geo_monitor/library/data/settings_model.dart' as _i8;
-import 'package:geo_monitor/library/data/translation_bag.dart' as _i36;
-import 'package:geo_monitor/library/data/user.dart' as _i11;
-import 'package:geo_monitor/library/data/video.dart' as _i23;
-import 'package:geo_monitor/library/data/weather/daily_forecast.dart' as _i39;
-import 'package:geo_monitor/library/data/weather/hourly_forecast.dart' as _i40;
+import 'package:geo_monitor/library/data/subscription.dart' as _i9;
+import 'package:geo_monitor/library/data/translation_bag.dart' as _i37;
+import 'package:geo_monitor/library/data/user.dart' as _i12;
+import 'package:geo_monitor/library/data/video.dart' as _i24;
+import 'package:geo_monitor/library/data/weather/daily_forecast.dart' as _i40;
+import 'package:geo_monitor/library/data/weather/hourly_forecast.dart' as _i41;
 import 'package:geo_monitor/library/errors/error_handler.dart' as _i6;
-import 'package:get_storage/get_storage.dart' as _i31;
+import 'package:get_storage/get_storage.dart' as _i32;
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -157,8 +158,9 @@ class _FakeSettingsModel_8 extends _i1.SmartFake implements _i8.SettingsModel {
         );
 }
 
-class _FakeGeofenceEvent_9 extends _i1.SmartFake implements _i9.GeofenceEvent {
-  _FakeGeofenceEvent_9(
+class _FakeGioSubscription_9 extends _i1.SmartFake
+    implements _i9.GioSubscription {
+  _FakeGioSubscription_9(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -167,9 +169,9 @@ class _FakeGeofenceEvent_9 extends _i1.SmartFake implements _i9.GeofenceEvent {
         );
 }
 
-class _FakeLocationResponse_10 extends _i1.SmartFake
-    implements _i10.LocationResponse {
-  _FakeLocationResponse_10(
+class _FakeGeofenceEvent_10 extends _i1.SmartFake
+    implements _i10.GeofenceEvent {
+  _FakeGeofenceEvent_10(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -178,8 +180,9 @@ class _FakeLocationResponse_10 extends _i1.SmartFake
         );
 }
 
-class _FakeUser_11 extends _i1.SmartFake implements _i11.User {
-  _FakeUser_11(
+class _FakeLocationResponse_11 extends _i1.SmartFake
+    implements _i11.LocationResponse {
+  _FakeLocationResponse_11(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -188,8 +191,8 @@ class _FakeUser_11 extends _i1.SmartFake implements _i11.User {
         );
 }
 
-class _FakeKillResponse_12 extends _i1.SmartFake implements _i12.KillResponse {
-  _FakeKillResponse_12(
+class _FakeUser_12 extends _i1.SmartFake implements _i12.User {
+  _FakeUser_12(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -198,9 +201,8 @@ class _FakeKillResponse_12 extends _i1.SmartFake implements _i12.KillResponse {
         );
 }
 
-class _FakeOrganizationRegistrationBag_13 extends _i1.SmartFake
-    implements _i13.OrganizationRegistrationBag {
-  _FakeOrganizationRegistrationBag_13(
+class _FakeKillResponse_13 extends _i1.SmartFake implements _i13.KillResponse {
+  _FakeKillResponse_13(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -209,8 +211,9 @@ class _FakeOrganizationRegistrationBag_13 extends _i1.SmartFake
         );
 }
 
-class _FakeProjectCount_14 extends _i1.SmartFake implements _i14.ProjectCount {
-  _FakeProjectCount_14(
+class _FakeOrganizationRegistrationBag_14 extends _i1.SmartFake
+    implements _i14.OrganizationRegistrationBag {
+  _FakeOrganizationRegistrationBag_14(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -219,8 +222,8 @@ class _FakeProjectCount_14 extends _i1.SmartFake implements _i14.ProjectCount {
         );
 }
 
-class _FakeUserCount_15 extends _i1.SmartFake implements _i14.UserCount {
-  _FakeUserCount_15(
+class _FakeProjectCount_15 extends _i1.SmartFake implements _i15.ProjectCount {
+  _FakeProjectCount_15(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -229,8 +232,8 @@ class _FakeUserCount_15 extends _i1.SmartFake implements _i14.UserCount {
         );
 }
 
-class _FakeProject_16 extends _i1.SmartFake implements _i15.Project {
-  _FakeProject_16(
+class _FakeUserCount_16 extends _i1.SmartFake implements _i15.UserCount {
+  _FakeUserCount_16(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -239,9 +242,8 @@ class _FakeProject_16 extends _i1.SmartFake implements _i15.Project {
         );
 }
 
-class _FakeLocationRequest_17 extends _i1.SmartFake
-    implements _i16.LocationRequest {
-  _FakeLocationRequest_17(
+class _FakeProject_17 extends _i1.SmartFake implements _i16.Project {
+  _FakeProject_17(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -250,8 +252,9 @@ class _FakeLocationRequest_17 extends _i1.SmartFake
         );
 }
 
-class _FakeDataBag_18 extends _i1.SmartFake implements _i17.DataBag {
-  _FakeDataBag_18(
+class _FakeLocationRequest_18 extends _i1.SmartFake
+    implements _i17.LocationRequest {
+  _FakeLocationRequest_18(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -260,8 +263,8 @@ class _FakeDataBag_18 extends _i1.SmartFake implements _i17.DataBag {
         );
 }
 
-class _FakeCommunity_19 extends _i1.SmartFake implements _i18.Community {
-  _FakeCommunity_19(
+class _FakeDataBag_19 extends _i1.SmartFake implements _i18.DataBag {
+  _FakeDataBag_19(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -270,9 +273,8 @@ class _FakeCommunity_19 extends _i1.SmartFake implements _i18.Community {
         );
 }
 
-class _FakeProjectPosition_20 extends _i1.SmartFake
-    implements _i19.ProjectPosition {
-  _FakeProjectPosition_20(
+class _FakeCommunity_20 extends _i1.SmartFake implements _i19.Community {
+  _FakeCommunity_20(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -281,9 +283,9 @@ class _FakeProjectPosition_20 extends _i1.SmartFake
         );
 }
 
-class _FakeProjectPolygon_21 extends _i1.SmartFake
-    implements _i20.ProjectPolygon {
-  _FakeProjectPolygon_21(
+class _FakeProjectPosition_21 extends _i1.SmartFake
+    implements _i20.ProjectPosition {
+  _FakeProjectPosition_21(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -292,8 +294,9 @@ class _FakeProjectPolygon_21 extends _i1.SmartFake
         );
 }
 
-class _FakeAppError_22 extends _i1.SmartFake implements _i21.AppError {
-  _FakeAppError_22(
+class _FakeProjectPolygon_22 extends _i1.SmartFake
+    implements _i21.ProjectPolygon {
+  _FakeProjectPolygon_22(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -302,8 +305,8 @@ class _FakeAppError_22 extends _i1.SmartFake implements _i21.AppError {
         );
 }
 
-class _FakePhoto_23 extends _i1.SmartFake implements _i22.Photo {
-  _FakePhoto_23(
+class _FakeAppError_23 extends _i1.SmartFake implements _i22.AppError {
+  _FakeAppError_23(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -312,8 +315,8 @@ class _FakePhoto_23 extends _i1.SmartFake implements _i22.Photo {
         );
 }
 
-class _FakeVideo_24 extends _i1.SmartFake implements _i23.Video {
-  _FakeVideo_24(
+class _FakePhoto_24 extends _i1.SmartFake implements _i23.Photo {
+  _FakePhoto_24(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -322,8 +325,8 @@ class _FakeVideo_24 extends _i1.SmartFake implements _i23.Video {
         );
 }
 
-class _FakeAudio_25 extends _i1.SmartFake implements _i24.Audio {
-  _FakeAudio_25(
+class _FakeVideo_25 extends _i1.SmartFake implements _i24.Video {
+  _FakeVideo_25(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -332,8 +335,8 @@ class _FakeAudio_25 extends _i1.SmartFake implements _i24.Audio {
         );
 }
 
-class _FakeRating_26 extends _i1.SmartFake implements _i25.Rating {
-  _FakeRating_26(
+class _FakeAudio_26 extends _i1.SmartFake implements _i25.Audio {
+  _FakeAudio_26(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -342,8 +345,8 @@ class _FakeRating_26 extends _i1.SmartFake implements _i25.Rating {
         );
 }
 
-class _FakeCondition_27 extends _i1.SmartFake implements _i26.Condition {
-  _FakeCondition_27(
+class _FakeRating_27 extends _i1.SmartFake implements _i26.Rating {
+  _FakeRating_27(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -352,9 +355,8 @@ class _FakeCondition_27 extends _i1.SmartFake implements _i26.Condition {
         );
 }
 
-class _FakeQuestionnaire_28 extends _i1.SmartFake
-    implements _i27.Questionnaire {
-  _FakeQuestionnaire_28(
+class _FakeCondition_28 extends _i1.SmartFake implements _i27.Condition {
+  _FakeCondition_28(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -363,8 +365,9 @@ class _FakeQuestionnaire_28 extends _i1.SmartFake
         );
 }
 
-class _FakeOrganization_29 extends _i1.SmartFake implements _i28.Organization {
-  _FakeOrganization_29(
+class _FakeQuestionnaire_29 extends _i1.SmartFake
+    implements _i28.Questionnaire {
+  _FakeQuestionnaire_29(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -373,8 +376,8 @@ class _FakeOrganization_29 extends _i1.SmartFake implements _i28.Organization {
         );
 }
 
-class _FakeOrgMessage_30 extends _i1.SmartFake implements _i29.OrgMessage {
-  _FakeOrgMessage_30(
+class _FakeOrganization_30 extends _i1.SmartFake implements _i29.Organization {
+  _FakeOrganization_30(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -383,8 +386,8 @@ class _FakeOrgMessage_30 extends _i1.SmartFake implements _i29.OrgMessage {
         );
 }
 
-class _FakeRandom_31 extends _i1.SmartFake implements _i30.Random {
-  _FakeRandom_31(
+class _FakeOrgMessage_31 extends _i1.SmartFake implements _i30.OrgMessage {
+  _FakeOrgMessage_31(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -393,8 +396,18 @@ class _FakeRandom_31 extends _i1.SmartFake implements _i30.Random {
         );
 }
 
-class _FakeGetStorage_32 extends _i1.SmartFake implements _i31.GetStorage {
-  _FakeGetStorage_32(
+class _FakeRandom_32 extends _i1.SmartFake implements _i31.Random {
+  _FakeRandom_32(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeGetStorage_33 extends _i1.SmartFake implements _i32.GetStorage {
+  _FakeGetStorage_33(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -412,7 +425,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
   }
 
   @override
-  _i32.Future<_i2.Response> head(
+  _i33.Future<_i2.Response> head(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
@@ -422,7 +435,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i32.Future<_i2.Response>.value(_FakeResponse_0(
+        returnValue: _i33.Future<_i2.Response>.value(_FakeResponse_0(
           this,
           Invocation.method(
             #head,
@@ -430,9 +443,9 @@ class MockClient extends _i1.Mock implements _i2.Client {
             {#headers: headers},
           ),
         )),
-      ) as _i32.Future<_i2.Response>);
+      ) as _i33.Future<_i2.Response>);
   @override
-  _i32.Future<_i2.Response> get(
+  _i33.Future<_i2.Response> get(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
@@ -442,7 +455,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i32.Future<_i2.Response>.value(_FakeResponse_0(
+        returnValue: _i33.Future<_i2.Response>.value(_FakeResponse_0(
           this,
           Invocation.method(
             #get,
@@ -450,13 +463,13 @@ class MockClient extends _i1.Mock implements _i2.Client {
             {#headers: headers},
           ),
         )),
-      ) as _i32.Future<_i2.Response>);
+      ) as _i33.Future<_i2.Response>);
   @override
-  _i32.Future<_i2.Response> post(
+  _i33.Future<_i2.Response> post(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i33.Encoding? encoding,
+    _i34.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -468,7 +481,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
             #encoding: encoding,
           },
         ),
-        returnValue: _i32.Future<_i2.Response>.value(_FakeResponse_0(
+        returnValue: _i33.Future<_i2.Response>.value(_FakeResponse_0(
           this,
           Invocation.method(
             #post,
@@ -480,13 +493,13 @@ class MockClient extends _i1.Mock implements _i2.Client {
             },
           ),
         )),
-      ) as _i32.Future<_i2.Response>);
+      ) as _i33.Future<_i2.Response>);
   @override
-  _i32.Future<_i2.Response> put(
+  _i33.Future<_i2.Response> put(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i33.Encoding? encoding,
+    _i34.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -498,7 +511,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
             #encoding: encoding,
           },
         ),
-        returnValue: _i32.Future<_i2.Response>.value(_FakeResponse_0(
+        returnValue: _i33.Future<_i2.Response>.value(_FakeResponse_0(
           this,
           Invocation.method(
             #put,
@@ -510,13 +523,13 @@ class MockClient extends _i1.Mock implements _i2.Client {
             },
           ),
         )),
-      ) as _i32.Future<_i2.Response>);
+      ) as _i33.Future<_i2.Response>);
   @override
-  _i32.Future<_i2.Response> patch(
+  _i33.Future<_i2.Response> patch(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i33.Encoding? encoding,
+    _i34.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -528,7 +541,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
             #encoding: encoding,
           },
         ),
-        returnValue: _i32.Future<_i2.Response>.value(_FakeResponse_0(
+        returnValue: _i33.Future<_i2.Response>.value(_FakeResponse_0(
           this,
           Invocation.method(
             #patch,
@@ -540,13 +553,13 @@ class MockClient extends _i1.Mock implements _i2.Client {
             },
           ),
         )),
-      ) as _i32.Future<_i2.Response>);
+      ) as _i33.Future<_i2.Response>);
   @override
-  _i32.Future<_i2.Response> delete(
+  _i33.Future<_i2.Response> delete(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i33.Encoding? encoding,
+    _i34.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -558,7 +571,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
             #encoding: encoding,
           },
         ),
-        returnValue: _i32.Future<_i2.Response>.value(_FakeResponse_0(
+        returnValue: _i33.Future<_i2.Response>.value(_FakeResponse_0(
           this,
           Invocation.method(
             #delete,
@@ -570,9 +583,9 @@ class MockClient extends _i1.Mock implements _i2.Client {
             },
           ),
         )),
-      ) as _i32.Future<_i2.Response>);
+      ) as _i33.Future<_i2.Response>);
   @override
-  _i32.Future<String> read(
+  _i33.Future<String> read(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
@@ -582,10 +595,10 @@ class MockClient extends _i1.Mock implements _i2.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i32.Future<String>.value(''),
-      ) as _i32.Future<String>);
+        returnValue: _i33.Future<String>.value(''),
+      ) as _i33.Future<String>);
   @override
-  _i32.Future<_i34.Uint8List> readBytes(
+  _i33.Future<_i35.Uint8List> readBytes(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
@@ -595,24 +608,24 @@ class MockClient extends _i1.Mock implements _i2.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i32.Future<_i34.Uint8List>.value(_i34.Uint8List(0)),
-      ) as _i32.Future<_i34.Uint8List>);
+        returnValue: _i33.Future<_i35.Uint8List>.value(_i35.Uint8List(0)),
+      ) as _i33.Future<_i35.Uint8List>);
   @override
-  _i32.Future<_i2.StreamedResponse> send(_i2.BaseRequest? request) =>
+  _i33.Future<_i2.StreamedResponse> send(_i2.BaseRequest? request) =>
       (super.noSuchMethod(
         Invocation.method(
           #send,
           [request],
         ),
         returnValue:
-            _i32.Future<_i2.StreamedResponse>.value(_FakeStreamedResponse_1(
+            _i33.Future<_i2.StreamedResponse>.value(_FakeStreamedResponse_1(
           this,
           Invocation.method(
             #send,
             [request],
           ),
         )),
-      ) as _i32.Future<_i2.StreamedResponse>);
+      ) as _i33.Future<_i2.StreamedResponse>);
   @override
   void close() => super.noSuchMethod(
         Invocation.method(
@@ -626,7 +639,7 @@ class MockClient extends _i1.Mock implements _i2.Client {
 /// A class which mocks [DataApiDog].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
+class MockDataApiDog extends _i1.Mock implements _i36.DataApiDog {
   MockDataApiDog() {
     _i1.throwOnMissingStub(this);
   }
@@ -719,14 +732,14 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
         returnValue: '',
       ) as String);
   @override
-  _i32.Future<_i7.FieldMonitorSchedule> addFieldMonitorSchedule(
+  _i33.Future<_i7.FieldMonitorSchedule> addFieldMonitorSchedule(
           _i7.FieldMonitorSchedule? monitorSchedule) =>
       (super.noSuchMethod(
         Invocation.method(
           #addFieldMonitorSchedule,
           [monitorSchedule],
         ),
-        returnValue: _i32.Future<_i7.FieldMonitorSchedule>.value(
+        returnValue: _i33.Future<_i7.FieldMonitorSchedule>.value(
             _FakeFieldMonitorSchedule_7(
           this,
           Invocation.method(
@@ -734,108 +747,126 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             [monitorSchedule],
           ),
         )),
-      ) as _i32.Future<_i7.FieldMonitorSchedule>);
+      ) as _i33.Future<_i7.FieldMonitorSchedule>);
   @override
-  _i32.Future<_i8.SettingsModel> addSettings(_i8.SettingsModel? settings) =>
+  _i33.Future<_i8.SettingsModel> addSettings(_i8.SettingsModel? settings) =>
       (super.noSuchMethod(
         Invocation.method(
           #addSettings,
           [settings],
         ),
-        returnValue: _i32.Future<_i8.SettingsModel>.value(_FakeSettingsModel_8(
+        returnValue: _i33.Future<_i8.SettingsModel>.value(_FakeSettingsModel_8(
           this,
           Invocation.method(
             #addSettings,
             [settings],
           ),
         )),
-      ) as _i32.Future<_i8.SettingsModel>);
+      ) as _i33.Future<_i8.SettingsModel>);
   @override
-  _i32.Future<_i9.GeofenceEvent> addGeofenceEvent(
-          _i9.GeofenceEvent? geofenceEvent) =>
+  _i33.Future<_i9.GioSubscription> addSubscription(
+          _i9.GioSubscription? subscription) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #addSubscription,
+          [subscription],
+        ),
+        returnValue:
+            _i33.Future<_i9.GioSubscription>.value(_FakeGioSubscription_9(
+          this,
+          Invocation.method(
+            #addSubscription,
+            [subscription],
+          ),
+        )),
+      ) as _i33.Future<_i9.GioSubscription>);
+  @override
+  _i33.Future<_i10.GeofenceEvent> addGeofenceEvent(
+          _i10.GeofenceEvent? geofenceEvent) =>
       (super.noSuchMethod(
         Invocation.method(
           #addGeofenceEvent,
           [geofenceEvent],
         ),
-        returnValue: _i32.Future<_i9.GeofenceEvent>.value(_FakeGeofenceEvent_9(
+        returnValue:
+            _i33.Future<_i10.GeofenceEvent>.value(_FakeGeofenceEvent_10(
           this,
           Invocation.method(
             #addGeofenceEvent,
             [geofenceEvent],
           ),
         )),
-      ) as _i32.Future<_i9.GeofenceEvent>);
+      ) as _i33.Future<_i10.GeofenceEvent>);
   @override
-  _i32.Future<_i10.LocationResponse> addLocationResponse(
-          _i10.LocationResponse? response) =>
+  _i33.Future<_i11.LocationResponse> addLocationResponse(
+          _i11.LocationResponse? response) =>
       (super.noSuchMethod(
         Invocation.method(
           #addLocationResponse,
           [response],
         ),
         returnValue:
-            _i32.Future<_i10.LocationResponse>.value(_FakeLocationResponse_10(
+            _i33.Future<_i11.LocationResponse>.value(_FakeLocationResponse_11(
           this,
           Invocation.method(
             #addLocationResponse,
             [response],
           ),
         )),
-      ) as _i32.Future<_i10.LocationResponse>);
+      ) as _i33.Future<_i11.LocationResponse>);
   @override
-  _i32.Future<List<_i7.FieldMonitorSchedule>> getProjectFieldMonitorSchedules(
+  _i33.Future<List<_i7.FieldMonitorSchedule>> getProjectFieldMonitorSchedules(
           String? projectId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProjectFieldMonitorSchedules,
           [projectId],
         ),
-        returnValue: _i32.Future<List<_i7.FieldMonitorSchedule>>.value(
+        returnValue: _i33.Future<List<_i7.FieldMonitorSchedule>>.value(
             <_i7.FieldMonitorSchedule>[]),
-      ) as _i32.Future<List<_i7.FieldMonitorSchedule>>);
+      ) as _i33.Future<List<_i7.FieldMonitorSchedule>>);
   @override
-  _i32.Future<List<_i7.FieldMonitorSchedule>> getUserFieldMonitorSchedules(
+  _i33.Future<List<_i7.FieldMonitorSchedule>> getUserFieldMonitorSchedules(
           String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getUserFieldMonitorSchedules,
           [userId],
         ),
-        returnValue: _i32.Future<List<_i7.FieldMonitorSchedule>>.value(
+        returnValue: _i33.Future<List<_i7.FieldMonitorSchedule>>.value(
             <_i7.FieldMonitorSchedule>[]),
-      ) as _i32.Future<List<_i7.FieldMonitorSchedule>>);
+      ) as _i33.Future<List<_i7.FieldMonitorSchedule>>);
   @override
-  _i32.Future<String> testUploadPhoto() => (super.noSuchMethod(
+  _i33.Future<String> testUploadPhoto() => (super.noSuchMethod(
         Invocation.method(
           #testUploadPhoto,
           [],
         ),
-        returnValue: _i32.Future<String>.value(''),
-      ) as _i32.Future<String>);
+        returnValue: _i33.Future<String>.value(''),
+      ) as _i33.Future<String>);
   @override
-  _i32.Future<List<_i7.FieldMonitorSchedule>> getMonitorFieldMonitorSchedules(
+  _i33.Future<List<_i7.FieldMonitorSchedule>> getMonitorFieldMonitorSchedules(
           String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getMonitorFieldMonitorSchedules,
           [userId],
         ),
-        returnValue: _i32.Future<List<_i7.FieldMonitorSchedule>>.value(
+        returnValue: _i33.Future<List<_i7.FieldMonitorSchedule>>.value(
             <_i7.FieldMonitorSchedule>[]),
-      ) as _i32.Future<List<_i7.FieldMonitorSchedule>>);
+      ) as _i33.Future<List<_i7.FieldMonitorSchedule>>);
   @override
-  _i32.Future<List<_i36.TranslationBag>> getTranslationBags() =>
+  _i33.Future<List<_i37.TranslationBag>> getTranslationBags() =>
       (super.noSuchMethod(
         Invocation.method(
           #getTranslationBags,
           [],
         ),
-        returnValue: _i32.Future<List<_i36.TranslationBag>>.value(
-            <_i36.TranslationBag>[]),
-      ) as _i32.Future<List<_i36.TranslationBag>>);
+        returnValue: _i33.Future<List<_i37.TranslationBag>>.value(
+            <_i37.TranslationBag>[]),
+      ) as _i33.Future<List<_i37.TranslationBag>>);
   @override
-  _i32.Future<List<_i8.SettingsModel>> getOrganizationSettings(
+  _i33.Future<List<_i8.SettingsModel>> getOrganizationSettings(
           String? organizationId) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -843,10 +874,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
           [organizationId],
         ),
         returnValue:
-            _i32.Future<List<_i8.SettingsModel>>.value(<_i8.SettingsModel>[]),
-      ) as _i32.Future<List<_i8.SettingsModel>>);
+            _i33.Future<List<_i8.SettingsModel>>.value(<_i8.SettingsModel>[]),
+      ) as _i33.Future<List<_i8.SettingsModel>>);
   @override
-  _i32.Future<List<_i37.ActivityModel>> getOrganizationActivity(
+  _i33.Future<List<_i38.ActivityModel>> getOrganizationActivity(
     String? organizationId,
     int? hours,
   ) =>
@@ -859,10 +890,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
           ],
         ),
         returnValue:
-            _i32.Future<List<_i37.ActivityModel>>.value(<_i37.ActivityModel>[]),
-      ) as _i32.Future<List<_i37.ActivityModel>>);
+            _i33.Future<List<_i38.ActivityModel>>.value(<_i38.ActivityModel>[]),
+      ) as _i33.Future<List<_i38.ActivityModel>>);
   @override
-  _i32.Future<List<_i38.ProjectSummary>> getOrganizationDailySummary(
+  _i33.Future<List<_i39.ProjectSummary>> getOrganizationDailySummary(
     String? organizationId,
     String? startDate,
     String? endDate,
@@ -876,11 +907,11 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i38.ProjectSummary>>.value(
-            <_i38.ProjectSummary>[]),
-      ) as _i32.Future<List<_i38.ProjectSummary>>);
+        returnValue: _i33.Future<List<_i39.ProjectSummary>>.value(
+            <_i39.ProjectSummary>[]),
+      ) as _i33.Future<List<_i39.ProjectSummary>>);
   @override
-  _i32.Future<List<_i38.ProjectSummary>> getProjectDailySummary(
+  _i33.Future<List<_i39.ProjectSummary>> getProjectDailySummary(
     String? projectId,
     String? startDate,
     String? endDate,
@@ -894,11 +925,11 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i38.ProjectSummary>>.value(
-            <_i38.ProjectSummary>[]),
-      ) as _i32.Future<List<_i38.ProjectSummary>>);
+        returnValue: _i33.Future<List<_i39.ProjectSummary>>.value(
+            <_i39.ProjectSummary>[]),
+      ) as _i33.Future<List<_i39.ProjectSummary>>);
   @override
-  _i32.Future<List<_i37.ActivityModel>> getProjectActivity(
+  _i33.Future<List<_i38.ActivityModel>> getProjectActivity(
     String? projectId,
     int? hours,
   ) =>
@@ -911,10 +942,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
           ],
         ),
         returnValue:
-            _i32.Future<List<_i37.ActivityModel>>.value(<_i37.ActivityModel>[]),
-      ) as _i32.Future<List<_i37.ActivityModel>>);
+            _i33.Future<List<_i38.ActivityModel>>.value(<_i38.ActivityModel>[]),
+      ) as _i33.Future<List<_i38.ActivityModel>>);
   @override
-  _i32.Future<List<_i37.ActivityModel>> getUserActivity(
+  _i33.Future<List<_i38.ActivityModel>> getUserActivity(
     String? userId,
     int? hours,
   ) =>
@@ -927,10 +958,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
           ],
         ),
         returnValue:
-            _i32.Future<List<_i37.ActivityModel>>.value(<_i37.ActivityModel>[]),
-      ) as _i32.Future<List<_i37.ActivityModel>>);
+            _i33.Future<List<_i38.ActivityModel>>.value(<_i38.ActivityModel>[]),
+      ) as _i33.Future<List<_i38.ActivityModel>>);
   @override
-  _i32.Future<List<_i7.FieldMonitorSchedule>> getOrgFieldMonitorSchedules(
+  _i33.Future<List<_i7.FieldMonitorSchedule>> getOrgFieldMonitorSchedules(
     String? organizationId,
     String? startDate,
     String? endDate,
@@ -944,33 +975,33 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i7.FieldMonitorSchedule>>.value(
+        returnValue: _i33.Future<List<_i7.FieldMonitorSchedule>>.value(
             <_i7.FieldMonitorSchedule>[]),
-      ) as _i32.Future<List<_i7.FieldMonitorSchedule>>);
+      ) as _i33.Future<List<_i7.FieldMonitorSchedule>>);
   @override
-  _i32.Future<_i11.User> addUser(_i11.User? user) => (super.noSuchMethod(
+  _i33.Future<_i12.User> addUser(_i12.User? user) => (super.noSuchMethod(
         Invocation.method(
           #addUser,
           [user],
         ),
-        returnValue: _i32.Future<_i11.User>.value(_FakeUser_11(
+        returnValue: _i33.Future<_i12.User>.value(_FakeUser_12(
           this,
           Invocation.method(
             #addUser,
             [user],
           ),
         )),
-      ) as _i32.Future<_i11.User>);
+      ) as _i33.Future<_i12.User>);
   @override
-  _i32.Future<int> deleteAuthUser(String? userId) => (super.noSuchMethod(
+  _i33.Future<int> deleteAuthUser(String? userId) => (super.noSuchMethod(
         Invocation.method(
           #deleteAuthUser,
           [userId],
         ),
-        returnValue: _i32.Future<int>.value(0),
-      ) as _i32.Future<int>);
+        returnValue: _i33.Future<int>.value(0),
+      ) as _i33.Future<int>);
   @override
-  _i32.Future<_i12.KillResponse> killUser({
+  _i33.Future<_i13.KillResponse> killUser({
     required String? userId,
     required String? killerId,
   }) =>
@@ -983,7 +1014,7 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             #killerId: killerId,
           },
         ),
-        returnValue: _i32.Future<_i12.KillResponse>.value(_FakeKillResponse_12(
+        returnValue: _i33.Future<_i13.KillResponse>.value(_FakeKillResponse_13(
           this,
           Invocation.method(
             #killUser,
@@ -994,118 +1025,118 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             },
           ),
         )),
-      ) as _i32.Future<_i12.KillResponse>);
+      ) as _i33.Future<_i13.KillResponse>);
   @override
-  _i32.Future<_i13.OrganizationRegistrationBag> registerOrganization(
-          _i13.OrganizationRegistrationBag? orgBag) =>
+  _i33.Future<_i14.OrganizationRegistrationBag> registerOrganization(
+          _i14.OrganizationRegistrationBag? orgBag) =>
       (super.noSuchMethod(
         Invocation.method(
           #registerOrganization,
           [orgBag],
         ),
-        returnValue: _i32.Future<_i13.OrganizationRegistrationBag>.value(
-            _FakeOrganizationRegistrationBag_13(
+        returnValue: _i33.Future<_i14.OrganizationRegistrationBag>.value(
+            _FakeOrganizationRegistrationBag_14(
           this,
           Invocation.method(
             #registerOrganization,
             [orgBag],
           ),
         )),
-      ) as _i32.Future<_i13.OrganizationRegistrationBag>);
+      ) as _i33.Future<_i14.OrganizationRegistrationBag>);
   @override
-  _i32.Future<_i11.User> createUser(_i11.User? user) => (super.noSuchMethod(
+  _i33.Future<_i12.User> createUser(_i12.User? user) => (super.noSuchMethod(
         Invocation.method(
           #createUser,
           [user],
         ),
-        returnValue: _i32.Future<_i11.User>.value(_FakeUser_11(
+        returnValue: _i33.Future<_i12.User>.value(_FakeUser_12(
           this,
           Invocation.method(
             #createUser,
             [user],
           ),
         )),
-      ) as _i32.Future<_i11.User>);
+      ) as _i33.Future<_i12.User>);
   @override
-  _i32.Future<_i11.User> updateUser(_i11.User? user) => (super.noSuchMethod(
+  _i33.Future<_i12.User> updateUser(_i12.User? user) => (super.noSuchMethod(
         Invocation.method(
           #updateUser,
           [user],
         ),
-        returnValue: _i32.Future<_i11.User>.value(_FakeUser_11(
+        returnValue: _i33.Future<_i12.User>.value(_FakeUser_12(
           this,
           Invocation.method(
             #updateUser,
             [user],
           ),
         )),
-      ) as _i32.Future<_i11.User>);
+      ) as _i33.Future<_i12.User>);
   @override
-  _i32.Future<int> updateAuthedUser(_i11.User? user) => (super.noSuchMethod(
+  _i33.Future<int> updateAuthedUser(_i12.User? user) => (super.noSuchMethod(
         Invocation.method(
           #updateAuthedUser,
           [user],
         ),
-        returnValue: _i32.Future<int>.value(0),
-      ) as _i32.Future<int>);
+        returnValue: _i33.Future<int>.value(0),
+      ) as _i33.Future<int>);
   @override
-  _i32.Future<_i14.ProjectCount> getProjectCount(String? projectId) =>
+  _i33.Future<_i15.ProjectCount> getProjectCount(String? projectId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProjectCount,
           [projectId],
         ),
-        returnValue: _i32.Future<_i14.ProjectCount>.value(_FakeProjectCount_14(
+        returnValue: _i33.Future<_i15.ProjectCount>.value(_FakeProjectCount_15(
           this,
           Invocation.method(
             #getProjectCount,
             [projectId],
           ),
         )),
-      ) as _i32.Future<_i14.ProjectCount>);
+      ) as _i33.Future<_i15.ProjectCount>);
   @override
-  _i32.Future<_i14.UserCount> getUserCount(String? userId) =>
+  _i33.Future<_i15.UserCount> getUserCount(String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getUserCount,
           [userId],
         ),
-        returnValue: _i32.Future<_i14.UserCount>.value(_FakeUserCount_15(
+        returnValue: _i33.Future<_i15.UserCount>.value(_FakeUserCount_16(
           this,
           Invocation.method(
             #getUserCount,
             [userId],
           ),
         )),
-      ) as _i32.Future<_i14.UserCount>);
+      ) as _i33.Future<_i15.UserCount>);
   @override
-  _i32.Future<_i15.Project> findProjectById(String? projectId) =>
+  _i33.Future<_i16.Project> findProjectById(String? projectId) =>
       (super.noSuchMethod(
         Invocation.method(
           #findProjectById,
           [projectId],
         ),
-        returnValue: _i32.Future<_i15.Project>.value(_FakeProject_16(
+        returnValue: _i33.Future<_i16.Project>.value(_FakeProject_17(
           this,
           Invocation.method(
             #findProjectById,
             [projectId],
           ),
         )),
-      ) as _i32.Future<_i15.Project>);
+      ) as _i33.Future<_i16.Project>);
   @override
-  _i32.Future<List<_i20.ProjectPolygon>> findProjectPolygonsById(
+  _i33.Future<List<_i21.ProjectPolygon>> findProjectPolygonsById(
           String? projectId) =>
       (super.noSuchMethod(
         Invocation.method(
           #findProjectPolygonsById,
           [projectId],
         ),
-        returnValue: _i32.Future<List<_i20.ProjectPolygon>>.value(
-            <_i20.ProjectPolygon>[]),
-      ) as _i32.Future<List<_i20.ProjectPolygon>>);
+        returnValue: _i33.Future<List<_i21.ProjectPolygon>>.value(
+            <_i21.ProjectPolygon>[]),
+      ) as _i33.Future<List<_i21.ProjectPolygon>>);
   @override
-  _i32.Future<List<_i19.ProjectPosition>> getOrganizationProjectPositions(
+  _i33.Future<List<_i20.ProjectPosition>> getOrganizationProjectPositions(
     String? organizationId,
     String? startDate,
     String? endDate,
@@ -1119,22 +1150,22 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i19.ProjectPosition>>.value(
-            <_i19.ProjectPosition>[]),
-      ) as _i32.Future<List<_i19.ProjectPosition>>);
+        returnValue: _i33.Future<List<_i20.ProjectPosition>>.value(
+            <_i20.ProjectPosition>[]),
+      ) as _i33.Future<List<_i20.ProjectPosition>>);
   @override
-  _i32.Future<List<_i19.ProjectPosition>> getAllOrganizationProjectPositions(
+  _i33.Future<List<_i20.ProjectPosition>> getAllOrganizationProjectPositions(
           String? organizationId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getAllOrganizationProjectPositions,
           [organizationId],
         ),
-        returnValue: _i32.Future<List<_i19.ProjectPosition>>.value(
-            <_i19.ProjectPosition>[]),
-      ) as _i32.Future<List<_i19.ProjectPosition>>);
+        returnValue: _i33.Future<List<_i20.ProjectPosition>>.value(
+            <_i20.ProjectPosition>[]),
+      ) as _i33.Future<List<_i20.ProjectPosition>>);
   @override
-  _i32.Future<List<_i20.ProjectPolygon>> getOrganizationProjectPolygons(
+  _i33.Future<List<_i21.ProjectPolygon>> getOrganizationProjectPolygons(
     String? organizationId,
     String? startDate,
     String? endDate,
@@ -1148,49 +1179,49 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i20.ProjectPolygon>>.value(
-            <_i20.ProjectPolygon>[]),
-      ) as _i32.Future<List<_i20.ProjectPolygon>>);
+        returnValue: _i33.Future<List<_i21.ProjectPolygon>>.value(
+            <_i21.ProjectPolygon>[]),
+      ) as _i33.Future<List<_i21.ProjectPolygon>>);
   @override
-  _i32.Future<List<_i20.ProjectPolygon>> getAllOrganizationProjectPolygons(
+  _i33.Future<List<_i21.ProjectPolygon>> getAllOrganizationProjectPolygons(
           String? organizationId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getAllOrganizationProjectPolygons,
           [organizationId],
         ),
-        returnValue: _i32.Future<List<_i20.ProjectPolygon>>.value(
-            <_i20.ProjectPolygon>[]),
-      ) as _i32.Future<List<_i20.ProjectPolygon>>);
+        returnValue: _i33.Future<List<_i21.ProjectPolygon>>.value(
+            <_i21.ProjectPolygon>[]),
+      ) as _i33.Future<List<_i21.ProjectPolygon>>);
   @override
-  _i32.Future<_i16.LocationRequest> sendLocationRequest(
-          _i16.LocationRequest? request) =>
+  _i33.Future<_i17.LocationRequest> sendLocationRequest(
+          _i17.LocationRequest? request) =>
       (super.noSuchMethod(
         Invocation.method(
           #sendLocationRequest,
           [request],
         ),
         returnValue:
-            _i32.Future<_i16.LocationRequest>.value(_FakeLocationRequest_17(
+            _i33.Future<_i17.LocationRequest>.value(_FakeLocationRequest_18(
           this,
           Invocation.method(
             #sendLocationRequest,
             [request],
           ),
         )),
-      ) as _i32.Future<_i16.LocationRequest>);
+      ) as _i33.Future<_i17.LocationRequest>);
   @override
-  _i32.Future<_i11.User?> getUserById({required String? userId}) =>
+  _i33.Future<_i12.User?> getUserById({required String? userId}) =>
       (super.noSuchMethod(
         Invocation.method(
           #getUserById,
           [],
           {#userId: userId},
         ),
-        returnValue: _i32.Future<_i11.User?>.value(),
-      ) as _i32.Future<_i11.User?>);
+        returnValue: _i33.Future<_i12.User?>.value(),
+      ) as _i33.Future<_i12.User?>);
   @override
-  _i32.Future<List<_i19.ProjectPosition>> getProjectPositions(
+  _i33.Future<List<_i20.ProjectPosition>> getProjectPositions(
     String? projectId,
     String? startDate,
     String? endDate,
@@ -1204,11 +1235,11 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i19.ProjectPosition>>.value(
-            <_i19.ProjectPosition>[]),
-      ) as _i32.Future<List<_i19.ProjectPosition>>);
+        returnValue: _i33.Future<List<_i20.ProjectPosition>>.value(
+            <_i20.ProjectPosition>[]),
+      ) as _i33.Future<List<_i20.ProjectPosition>>);
   @override
-  _i32.Future<List<_i20.ProjectPolygon>> getProjectPolygons(
+  _i33.Future<List<_i21.ProjectPolygon>> getProjectPolygons(
     String? projectId,
     String? startDate,
     String? endDate,
@@ -1222,11 +1253,11 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i20.ProjectPolygon>>.value(
-            <_i20.ProjectPolygon>[]),
-      ) as _i32.Future<List<_i20.ProjectPolygon>>);
+        returnValue: _i33.Future<List<_i21.ProjectPolygon>>.value(
+            <_i21.ProjectPolygon>[]),
+      ) as _i33.Future<List<_i21.ProjectPolygon>>);
   @override
-  _i32.Future<List<_i39.DailyForecast>> getDailyForecast({
+  _i33.Future<List<_i40.DailyForecast>> getDailyForecast({
     required double? latitude,
     required double? longitude,
     required String? timeZone,
@@ -1248,10 +1279,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
           },
         ),
         returnValue:
-            _i32.Future<List<_i39.DailyForecast>>.value(<_i39.DailyForecast>[]),
-      ) as _i32.Future<List<_i39.DailyForecast>>);
+            _i33.Future<List<_i40.DailyForecast>>.value(<_i40.DailyForecast>[]),
+      ) as _i33.Future<List<_i40.DailyForecast>>);
   @override
-  _i32.Future<List<_i40.HourlyForecast?>> getHourlyForecast({
+  _i33.Future<List<_i41.HourlyForecast?>> getHourlyForecast({
     required double? latitude,
     required double? longitude,
     required String? timeZone,
@@ -1272,11 +1303,11 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             #projectName: projectName,
           },
         ),
-        returnValue: _i32.Future<List<_i40.HourlyForecast?>>.value(
-            <_i40.HourlyForecast?>[]),
-      ) as _i32.Future<List<_i40.HourlyForecast?>>);
+        returnValue: _i33.Future<List<_i41.HourlyForecast?>>.value(
+            <_i41.HourlyForecast?>[]),
+      ) as _i33.Future<List<_i41.HourlyForecast?>>);
   @override
-  _i32.Future<List<_i22.Photo>> getProjectPhotos({
+  _i33.Future<List<_i23.Photo>> getProjectPhotos({
     required String? projectId,
     required String? startDate,
     required String? endDate,
@@ -1291,19 +1322,19 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             #endDate: endDate,
           },
         ),
-        returnValue: _i32.Future<List<_i22.Photo>>.value(<_i22.Photo>[]),
-      ) as _i32.Future<List<_i22.Photo>>);
+        returnValue: _i33.Future<List<_i23.Photo>>.value(<_i23.Photo>[]),
+      ) as _i33.Future<List<_i23.Photo>>);
   @override
-  _i32.Future<List<_i22.Photo>> getUserProjectPhotos(String? userId) =>
+  _i33.Future<List<_i23.Photo>> getUserProjectPhotos(String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getUserProjectPhotos,
           [userId],
         ),
-        returnValue: _i32.Future<List<_i22.Photo>>.value(<_i22.Photo>[]),
-      ) as _i32.Future<List<_i22.Photo>>);
+        returnValue: _i33.Future<List<_i23.Photo>>.value(<_i23.Photo>[]),
+      ) as _i33.Future<List<_i23.Photo>>);
   @override
-  _i32.Future<_i17.DataBag> getProjectData(
+  _i33.Future<_i18.DataBag> getProjectData(
     String? projectId,
     String? startDate,
     String? endDate,
@@ -1317,7 +1348,7 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<_i17.DataBag>.value(_FakeDataBag_18(
+        returnValue: _i33.Future<_i18.DataBag>.value(_FakeDataBag_19(
           this,
           Invocation.method(
             #getProjectData,
@@ -1328,27 +1359,27 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             ],
           ),
         )),
-      ) as _i32.Future<_i17.DataBag>);
+      ) as _i33.Future<_i18.DataBag>);
   @override
-  _i32.Future<List<_i23.Video>> getUserProjectVideos(String? userId) =>
+  _i33.Future<List<_i24.Video>> getUserProjectVideos(String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getUserProjectVideos,
           [userId],
         ),
-        returnValue: _i32.Future<List<_i23.Video>>.value(<_i23.Video>[]),
-      ) as _i32.Future<List<_i23.Video>>);
+        returnValue: _i33.Future<List<_i24.Video>>.value(<_i24.Video>[]),
+      ) as _i33.Future<List<_i24.Video>>);
   @override
-  _i32.Future<List<_i24.Audio>> getUserProjectAudios(String? userId) =>
+  _i33.Future<List<_i25.Audio>> getUserProjectAudios(String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getUserProjectAudios,
           [userId],
         ),
-        returnValue: _i32.Future<List<_i24.Audio>>.value(<_i24.Audio>[]),
-      ) as _i32.Future<List<_i24.Audio>>);
+        returnValue: _i33.Future<List<_i25.Audio>>.value(<_i25.Audio>[]),
+      ) as _i33.Future<List<_i25.Audio>>);
   @override
-  _i32.Future<List<_i23.Video>> getProjectVideos(
+  _i33.Future<List<_i24.Video>> getProjectVideos(
     String? projectId,
     String? startDate,
     String? endDate,
@@ -1362,10 +1393,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i23.Video>>.value(<_i23.Video>[]),
-      ) as _i32.Future<List<_i23.Video>>);
+        returnValue: _i33.Future<List<_i24.Video>>.value(<_i24.Video>[]),
+      ) as _i33.Future<List<_i24.Video>>);
   @override
-  _i32.Future<List<_i24.Audio>> getProjectAudios(
+  _i33.Future<List<_i25.Audio>> getProjectAudios(
     String? projectId,
     String? startDate,
     String? endDate,
@@ -1379,40 +1410,40 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i24.Audio>>.value(<_i24.Audio>[]),
-      ) as _i32.Future<List<_i24.Audio>>);
+        returnValue: _i33.Future<List<_i25.Audio>>.value(<_i25.Audio>[]),
+      ) as _i33.Future<List<_i25.Audio>>);
   @override
-  _i32.Future<List<_i11.User>> findUsersByOrganization(
+  _i33.Future<List<_i12.User>> findUsersByOrganization(
           String? organizationId) =>
       (super.noSuchMethod(
         Invocation.method(
           #findUsersByOrganization,
           [organizationId],
         ),
-        returnValue: _i32.Future<List<_i11.User>>.value(<_i11.User>[]),
-      ) as _i32.Future<List<_i11.User>>);
+        returnValue: _i33.Future<List<_i12.User>>.value(<_i12.User>[]),
+      ) as _i33.Future<List<_i12.User>>);
   @override
-  _i32.Future<List<_i15.Project>> findProjectsByOrganization(
+  _i33.Future<List<_i16.Project>> findProjectsByOrganization(
           String? organizationId) =>
       (super.noSuchMethod(
         Invocation.method(
           #findProjectsByOrganization,
           [organizationId],
         ),
-        returnValue: _i32.Future<List<_i15.Project>>.value(<_i15.Project>[]),
-      ) as _i32.Future<List<_i15.Project>>);
+        returnValue: _i33.Future<List<_i16.Project>>.value(<_i16.Project>[]),
+      ) as _i33.Future<List<_i16.Project>>);
   @override
-  _i32.Future<_i28.Organization?> findOrganizationById(
+  _i33.Future<_i29.Organization?> findOrganizationById(
           String? organizationId) =>
       (super.noSuchMethod(
         Invocation.method(
           #findOrganizationById,
           [organizationId],
         ),
-        returnValue: _i32.Future<_i28.Organization?>.value(),
-      ) as _i32.Future<_i28.Organization?>);
+        returnValue: _i33.Future<_i29.Organization?>.value(),
+      ) as _i33.Future<_i29.Organization?>);
   @override
-  _i32.Future<List<_i22.Photo>> getOrganizationPhotos(
+  _i33.Future<List<_i23.Photo>> getOrganizationPhotos(
     String? organizationId,
     String? startDate,
     String? endDate,
@@ -1426,10 +1457,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i22.Photo>>.value(<_i22.Photo>[]),
-      ) as _i32.Future<List<_i22.Photo>>);
+        returnValue: _i33.Future<List<_i23.Photo>>.value(<_i23.Photo>[]),
+      ) as _i33.Future<List<_i23.Photo>>);
   @override
-  _i32.Future<List<_i23.Video>> getOrganizationVideos(
+  _i33.Future<List<_i24.Video>> getOrganizationVideos(
     String? organizationId,
     String? startDate,
     String? endDate,
@@ -1443,38 +1474,38 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i23.Video>>.value(<_i23.Video>[]),
-      ) as _i32.Future<List<_i23.Video>>);
+        returnValue: _i33.Future<List<_i24.Video>>.value(<_i24.Video>[]),
+      ) as _i33.Future<List<_i24.Video>>);
   @override
-  _i32.Future<List<_i24.Audio>> getOrganizationAudios(String? organizationId) =>
+  _i33.Future<List<_i25.Audio>> getOrganizationAudios(String? organizationId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getOrganizationAudios,
           [organizationId],
         ),
-        returnValue: _i32.Future<List<_i24.Audio>>.value(<_i24.Audio>[]),
-      ) as _i32.Future<List<_i24.Audio>>);
+        returnValue: _i33.Future<List<_i25.Audio>>.value(<_i25.Audio>[]),
+      ) as _i33.Future<List<_i25.Audio>>);
   @override
-  _i32.Future<List<_i15.Project>> getOrganizationProjects(
+  _i33.Future<List<_i16.Project>> getOrganizationProjects(
           String? organizationId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getOrganizationProjects,
           [organizationId],
         ),
-        returnValue: _i32.Future<List<_i15.Project>>.value(<_i15.Project>[]),
-      ) as _i32.Future<List<_i15.Project>>);
+        returnValue: _i33.Future<List<_i16.Project>>.value(<_i16.Project>[]),
+      ) as _i33.Future<List<_i16.Project>>);
   @override
-  _i32.Future<List<_i11.User>> getOrganizationUsers(String? organizationId) =>
+  _i33.Future<List<_i12.User>> getOrganizationUsers(String? organizationId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getOrganizationUsers,
           [organizationId],
         ),
-        returnValue: _i32.Future<List<_i11.User>>.value(<_i11.User>[]),
-      ) as _i32.Future<List<_i11.User>>);
+        returnValue: _i33.Future<List<_i12.User>>.value(<_i12.User>[]),
+      ) as _i33.Future<List<_i12.User>>);
   @override
-  _i32.Future<List<_i9.GeofenceEvent>> getGeofenceEventsByProjectPosition(
+  _i33.Future<List<_i10.GeofenceEvent>> getGeofenceEventsByProjectPosition(
           String? projectPositionId) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -1482,10 +1513,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
           [projectPositionId],
         ),
         returnValue:
-            _i32.Future<List<_i9.GeofenceEvent>>.value(<_i9.GeofenceEvent>[]),
-      ) as _i32.Future<List<_i9.GeofenceEvent>>);
+            _i33.Future<List<_i10.GeofenceEvent>>.value(<_i10.GeofenceEvent>[]),
+      ) as _i33.Future<List<_i10.GeofenceEvent>>);
   @override
-  _i32.Future<List<_i9.GeofenceEvent>> getGeofenceEventsByUser(
+  _i33.Future<List<_i10.GeofenceEvent>> getGeofenceEventsByUser(
           String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -1493,10 +1524,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
           [userId],
         ),
         returnValue:
-            _i32.Future<List<_i9.GeofenceEvent>>.value(<_i9.GeofenceEvent>[]),
-      ) as _i32.Future<List<_i9.GeofenceEvent>>);
+            _i33.Future<List<_i10.GeofenceEvent>>.value(<_i10.GeofenceEvent>[]),
+      ) as _i33.Future<List<_i10.GeofenceEvent>>);
   @override
-  _i32.Future<List<_i15.Project>> findProjectsByLocation({
+  _i33.Future<List<_i16.Project>> findProjectsByLocation({
     required String? organizationId,
     required double? latitude,
     required double? longitude,
@@ -1513,10 +1544,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             #radiusInKM: radiusInKM,
           },
         ),
-        returnValue: _i32.Future<List<_i15.Project>>.value(<_i15.Project>[]),
-      ) as _i32.Future<List<_i15.Project>>);
+        returnValue: _i33.Future<List<_i16.Project>>.value(<_i16.Project>[]),
+      ) as _i33.Future<List<_i16.Project>>);
   @override
-  _i32.Future<List<_i41.City>> findCitiesByLocation({
+  _i33.Future<List<_i42.City>> findCitiesByLocation({
     required double? latitude,
     required double? longitude,
     required double? radiusInKM,
@@ -1531,10 +1562,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             #radiusInKM: radiusInKM,
           },
         ),
-        returnValue: _i32.Future<List<_i41.City>>.value(<_i41.City>[]),
-      ) as _i32.Future<List<_i41.City>>);
+        returnValue: _i33.Future<List<_i42.City>>.value(<_i42.City>[]),
+      ) as _i33.Future<List<_i42.City>>);
   @override
-  _i32.Future<List<_i19.ProjectPosition>> findProjectPositionsByLocation({
+  _i33.Future<List<_i20.ProjectPosition>> findProjectPositionsByLocation({
     required String? organizationId,
     required double? latitude,
     required double? longitude,
@@ -1551,11 +1582,11 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             #radiusInKM: radiusInKM,
           },
         ),
-        returnValue: _i32.Future<List<_i19.ProjectPosition>>.value(
-            <_i19.ProjectPosition>[]),
-      ) as _i32.Future<List<_i19.ProjectPosition>>);
+        returnValue: _i33.Future<List<_i20.ProjectPosition>>.value(
+            <_i20.ProjectPosition>[]),
+      ) as _i33.Future<List<_i20.ProjectPosition>>);
   @override
-  _i32.Future<List<_i27.Questionnaire>> getQuestionnairesByOrganization(
+  _i33.Future<List<_i28.Questionnaire>> getQuestionnairesByOrganization(
           String? organizationId) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -1563,40 +1594,40 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
           [organizationId],
         ),
         returnValue:
-            _i32.Future<List<_i27.Questionnaire>>.value(<_i27.Questionnaire>[]),
-      ) as _i32.Future<List<_i27.Questionnaire>>);
+            _i33.Future<List<_i28.Questionnaire>>.value(<_i28.Questionnaire>[]),
+      ) as _i33.Future<List<_i28.Questionnaire>>);
   @override
-  _i32.Future<_i18.Community> updateCommunity(_i18.Community? community) =>
+  _i33.Future<_i19.Community> updateCommunity(_i19.Community? community) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateCommunity,
           [community],
         ),
-        returnValue: _i32.Future<_i18.Community>.value(_FakeCommunity_19(
+        returnValue: _i33.Future<_i19.Community>.value(_FakeCommunity_20(
           this,
           Invocation.method(
             #updateCommunity,
             [community],
           ),
         )),
-      ) as _i32.Future<_i18.Community>);
+      ) as _i33.Future<_i19.Community>);
   @override
-  _i32.Future<_i18.Community> addCommunity(_i18.Community? community) =>
+  _i33.Future<_i19.Community> addCommunity(_i19.Community? community) =>
       (super.noSuchMethod(
         Invocation.method(
           #addCommunity,
           [community],
         ),
-        returnValue: _i32.Future<_i18.Community>.value(_FakeCommunity_19(
+        returnValue: _i33.Future<_i19.Community>.value(_FakeCommunity_20(
           this,
           Invocation.method(
             #addCommunity,
             [community],
           ),
         )),
-      ) as _i32.Future<_i18.Community>);
+      ) as _i33.Future<_i19.Community>);
   @override
-  _i32.Future<dynamic> addPointToPolygon({
+  _i33.Future<dynamic> addPointToPolygon({
     required String? communityId,
     required double? latitude,
     required double? longitude,
@@ -1611,12 +1642,12 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             #longitude: longitude,
           },
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addQuestionnaireSection({
+  _i33.Future<dynamic> addQuestionnaireSection({
     required String? questionnaireId,
-    required _i42.Section? section,
+    required _i43.Section? section,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -1627,10 +1658,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             #section: section,
           },
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<List<_i18.Community>> findCommunitiesByCountry(
+  _i33.Future<List<_i19.Community>> findCommunitiesByCountry(
           String? countryId) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -1638,40 +1669,40 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
           [countryId],
         ),
         returnValue:
-            _i32.Future<List<_i18.Community>>.value(<_i18.Community>[]),
-      ) as _i32.Future<List<_i18.Community>>);
+            _i33.Future<List<_i19.Community>>.value(<_i19.Community>[]),
+      ) as _i33.Future<List<_i19.Community>>);
   @override
-  _i32.Future<_i15.Project> addProject(_i15.Project? project) =>
+  _i33.Future<_i16.Project> addProject(_i16.Project? project) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProject,
           [project],
         ),
-        returnValue: _i32.Future<_i15.Project>.value(_FakeProject_16(
+        returnValue: _i33.Future<_i16.Project>.value(_FakeProject_17(
           this,
           Invocation.method(
             #addProject,
             [project],
           ),
         )),
-      ) as _i32.Future<_i15.Project>);
+      ) as _i33.Future<_i16.Project>);
   @override
-  _i32.Future<_i15.Project> updateProject(_i15.Project? project) =>
+  _i33.Future<_i16.Project> updateProject(_i16.Project? project) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateProject,
           [project],
         ),
-        returnValue: _i32.Future<_i15.Project>.value(_FakeProject_16(
+        returnValue: _i33.Future<_i16.Project>.value(_FakeProject_17(
           this,
           Invocation.method(
             #updateProject,
             [project],
           ),
         )),
-      ) as _i32.Future<_i15.Project>);
+      ) as _i33.Future<_i16.Project>);
   @override
-  _i32.Future<_i15.Project> addSettlementToProject({
+  _i33.Future<_i16.Project> addSettlementToProject({
     required String? projectId,
     required String? settlementId,
   }) =>
@@ -1684,7 +1715,7 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             #settlementId: settlementId,
           },
         ),
-        returnValue: _i32.Future<_i15.Project>.value(_FakeProject_16(
+        returnValue: _i33.Future<_i16.Project>.value(_FakeProject_17(
           this,
           Invocation.method(
             #addSettlementToProject,
@@ -1695,10 +1726,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             },
           ),
         )),
-      ) as _i32.Future<_i15.Project>);
+      ) as _i33.Future<_i16.Project>);
   @override
-  _i32.Future<_i19.ProjectPosition> addProjectPosition(
-          {required _i19.ProjectPosition? position}) =>
+  _i33.Future<_i20.ProjectPosition> addProjectPosition(
+          {required _i20.ProjectPosition? position}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProjectPosition,
@@ -1706,7 +1737,7 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
           {#position: position},
         ),
         returnValue:
-            _i32.Future<_i19.ProjectPosition>.value(_FakeProjectPosition_20(
+            _i33.Future<_i20.ProjectPosition>.value(_FakeProjectPosition_21(
           this,
           Invocation.method(
             #addProjectPosition,
@@ -1714,10 +1745,10 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             {#position: position},
           ),
         )),
-      ) as _i32.Future<_i19.ProjectPosition>);
+      ) as _i33.Future<_i20.ProjectPosition>);
   @override
-  _i32.Future<_i20.ProjectPolygon> addProjectPolygon(
-          {required _i20.ProjectPolygon? polygon}) =>
+  _i33.Future<_i21.ProjectPolygon> addProjectPolygon(
+          {required _i21.ProjectPolygon? polygon}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProjectPolygon,
@@ -1725,7 +1756,7 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
           {#polygon: polygon},
         ),
         returnValue:
-            _i32.Future<_i20.ProjectPolygon>.value(_FakeProjectPolygon_21(
+            _i33.Future<_i21.ProjectPolygon>.value(_FakeProjectPolygon_22(
           this,
           Invocation.method(
             #addProjectPolygon,
@@ -1733,96 +1764,96 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             {#polygon: polygon},
           ),
         )),
-      ) as _i32.Future<_i20.ProjectPolygon>);
+      ) as _i33.Future<_i21.ProjectPolygon>);
   @override
-  _i32.Future<_i21.AppError> addAppError(_i21.AppError? appError) =>
+  _i33.Future<_i22.AppError> addAppError(_i22.AppError? appError) =>
       (super.noSuchMethod(
         Invocation.method(
           #addAppError,
           [appError],
         ),
-        returnValue: _i32.Future<_i21.AppError>.value(_FakeAppError_22(
+        returnValue: _i33.Future<_i22.AppError>.value(_FakeAppError_23(
           this,
           Invocation.method(
             #addAppError,
             [appError],
           ),
         )),
-      ) as _i32.Future<_i21.AppError>);
+      ) as _i33.Future<_i22.AppError>);
   @override
-  _i32.Future<_i22.Photo> addPhoto(_i22.Photo? photo) => (super.noSuchMethod(
+  _i33.Future<_i23.Photo> addPhoto(_i23.Photo? photo) => (super.noSuchMethod(
         Invocation.method(
           #addPhoto,
           [photo],
         ),
-        returnValue: _i32.Future<_i22.Photo>.value(_FakePhoto_23(
+        returnValue: _i33.Future<_i23.Photo>.value(_FakePhoto_24(
           this,
           Invocation.method(
             #addPhoto,
             [photo],
           ),
         )),
-      ) as _i32.Future<_i22.Photo>);
+      ) as _i33.Future<_i23.Photo>);
   @override
-  _i32.Future<_i23.Video> addVideo(_i23.Video? video) => (super.noSuchMethod(
+  _i33.Future<_i24.Video> addVideo(_i24.Video? video) => (super.noSuchMethod(
         Invocation.method(
           #addVideo,
           [video],
         ),
-        returnValue: _i32.Future<_i23.Video>.value(_FakeVideo_24(
+        returnValue: _i33.Future<_i24.Video>.value(_FakeVideo_25(
           this,
           Invocation.method(
             #addVideo,
             [video],
           ),
         )),
-      ) as _i32.Future<_i23.Video>);
+      ) as _i33.Future<_i24.Video>);
   @override
-  _i32.Future<_i24.Audio> addAudio(_i24.Audio? audio) => (super.noSuchMethod(
+  _i33.Future<_i25.Audio> addAudio(_i25.Audio? audio) => (super.noSuchMethod(
         Invocation.method(
           #addAudio,
           [audio],
         ),
-        returnValue: _i32.Future<_i24.Audio>.value(_FakeAudio_25(
+        returnValue: _i33.Future<_i25.Audio>.value(_FakeAudio_26(
           this,
           Invocation.method(
             #addAudio,
             [audio],
           ),
         )),
-      ) as _i32.Future<_i24.Audio>);
+      ) as _i33.Future<_i25.Audio>);
   @override
-  _i32.Future<_i25.Rating> addRating(_i25.Rating? rating) =>
+  _i33.Future<_i26.Rating> addRating(_i26.Rating? rating) =>
       (super.noSuchMethod(
         Invocation.method(
           #addRating,
           [rating],
         ),
-        returnValue: _i32.Future<_i25.Rating>.value(_FakeRating_26(
+        returnValue: _i33.Future<_i26.Rating>.value(_FakeRating_27(
           this,
           Invocation.method(
             #addRating,
             [rating],
           ),
         )),
-      ) as _i32.Future<_i25.Rating>);
+      ) as _i33.Future<_i26.Rating>);
   @override
-  _i32.Future<_i26.Condition> addCondition(_i26.Condition? condition) =>
+  _i33.Future<_i27.Condition> addCondition(_i27.Condition? condition) =>
       (super.noSuchMethod(
         Invocation.method(
           #addCondition,
           [condition],
         ),
-        returnValue: _i32.Future<_i26.Condition>.value(_FakeCondition_27(
+        returnValue: _i33.Future<_i27.Condition>.value(_FakeCondition_28(
           this,
           Invocation.method(
             #addCondition,
             [condition],
           ),
         )),
-      ) as _i32.Future<_i26.Condition>);
+      ) as _i33.Future<_i27.Condition>);
   @override
-  _i32.Future<_i22.Photo> addSettlementPhoto({
+  _i33.Future<_i23.Photo> addSettlementPhoto({
     required String? settlementId,
     required String? url,
     required String? comment,
@@ -1843,7 +1874,7 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             #userId: userId,
           },
         ),
-        returnValue: _i32.Future<_i22.Photo>.value(_FakePhoto_23(
+        returnValue: _i33.Future<_i23.Photo>.value(_FakePhoto_24(
           this,
           Invocation.method(
             #addSettlementPhoto,
@@ -1858,9 +1889,9 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             },
           ),
         )),
-      ) as _i32.Future<_i22.Photo>);
+      ) as _i33.Future<_i23.Photo>);
   @override
-  _i32.Future<_i23.Video> addProjectVideo({
+  _i33.Future<_i24.Video> addProjectVideo({
     required String? projectId,
     required String? url,
     required String? comment,
@@ -1881,7 +1912,7 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             #userId: userId,
           },
         ),
-        returnValue: _i32.Future<_i23.Video>.value(_FakeVideo_24(
+        returnValue: _i33.Future<_i24.Video>.value(_FakeVideo_25(
           this,
           Invocation.method(
             #addProjectVideo,
@@ -1896,9 +1927,9 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             },
           ),
         )),
-      ) as _i32.Future<_i23.Video>);
+      ) as _i33.Future<_i24.Video>);
   @override
-  _i32.Future<_i15.Project> addProjectRating({
+  _i33.Future<_i16.Project> addProjectRating({
     required String? projectId,
     required String? rating,
     required String? comment,
@@ -1919,7 +1950,7 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             #userId: userId,
           },
         ),
-        returnValue: _i32.Future<_i15.Project>.value(_FakeProject_16(
+        returnValue: _i33.Future<_i16.Project>.value(_FakeProject_17(
           this,
           Invocation.method(
             #addProjectRating,
@@ -1934,136 +1965,136 @@ class MockDataApiDog extends _i1.Mock implements _i35.DataApiDog {
             },
           ),
         )),
-      ) as _i32.Future<_i15.Project>);
+      ) as _i33.Future<_i16.Project>);
   @override
-  _i32.Future<_i27.Questionnaire> addQuestionnaire(
-          _i27.Questionnaire? questionnaire) =>
+  _i33.Future<_i28.Questionnaire> addQuestionnaire(
+          _i28.Questionnaire? questionnaire) =>
       (super.noSuchMethod(
         Invocation.method(
           #addQuestionnaire,
           [questionnaire],
         ),
         returnValue:
-            _i32.Future<_i27.Questionnaire>.value(_FakeQuestionnaire_28(
+            _i33.Future<_i28.Questionnaire>.value(_FakeQuestionnaire_29(
           this,
           Invocation.method(
             #addQuestionnaire,
             [questionnaire],
           ),
         )),
-      ) as _i32.Future<_i27.Questionnaire>);
+      ) as _i33.Future<_i28.Questionnaire>);
   @override
-  _i32.Future<List<_i15.Project>> findAllProjects(String? organizationId) =>
+  _i33.Future<List<_i16.Project>> findAllProjects(String? organizationId) =>
       (super.noSuchMethod(
         Invocation.method(
           #findAllProjects,
           [organizationId],
         ),
-        returnValue: _i32.Future<List<_i15.Project>>.value(<_i15.Project>[]),
-      ) as _i32.Future<List<_i15.Project>>);
+        returnValue: _i33.Future<List<_i16.Project>>.value(<_i16.Project>[]),
+      ) as _i33.Future<List<_i16.Project>>);
   @override
-  _i32.Future<_i28.Organization> addOrganization(_i28.Organization? org) =>
+  _i33.Future<_i29.Organization> addOrganization(_i29.Organization? org) =>
       (super.noSuchMethod(
         Invocation.method(
           #addOrganization,
           [org],
         ),
-        returnValue: _i32.Future<_i28.Organization>.value(_FakeOrganization_29(
+        returnValue: _i33.Future<_i29.Organization>.value(_FakeOrganization_30(
           this,
           Invocation.method(
             #addOrganization,
             [org],
           ),
         )),
-      ) as _i32.Future<_i28.Organization>);
+      ) as _i33.Future<_i29.Organization>);
   @override
-  _i32.Future<_i29.OrgMessage> sendMessage(_i29.OrgMessage? message) =>
+  _i33.Future<_i30.OrgMessage> sendMessage(_i30.OrgMessage? message) =>
       (super.noSuchMethod(
         Invocation.method(
           #sendMessage,
           [message],
         ),
-        returnValue: _i32.Future<_i29.OrgMessage>.value(_FakeOrgMessage_30(
+        returnValue: _i33.Future<_i30.OrgMessage>.value(_FakeOrgMessage_31(
           this,
           Invocation.method(
             #sendMessage,
             [message],
           ),
         )),
-      ) as _i32.Future<_i29.OrgMessage>);
+      ) as _i33.Future<_i30.OrgMessage>);
   @override
-  _i32.Future<_i11.User?> findUserByEmail(String? email) => (super.noSuchMethod(
+  _i33.Future<_i12.User?> findUserByEmail(String? email) => (super.noSuchMethod(
         Invocation.method(
           #findUserByEmail,
           [email],
         ),
-        returnValue: _i32.Future<_i11.User?>.value(),
-      ) as _i32.Future<_i11.User?>);
+        returnValue: _i33.Future<_i12.User?>.value(),
+      ) as _i33.Future<_i12.User?>);
   @override
-  _i32.Future<_i22.Photo?> findPhotoById(String? photoId) =>
+  _i33.Future<_i23.Photo?> findPhotoById(String? photoId) =>
       (super.noSuchMethod(
         Invocation.method(
           #findPhotoById,
           [photoId],
         ),
-        returnValue: _i32.Future<_i22.Photo?>.value(),
-      ) as _i32.Future<_i22.Photo?>);
+        returnValue: _i33.Future<_i23.Photo?>.value(),
+      ) as _i33.Future<_i23.Photo?>);
   @override
-  _i32.Future<_i23.Video?> findVideoById(String? videoId) =>
+  _i33.Future<_i24.Video?> findVideoById(String? videoId) =>
       (super.noSuchMethod(
         Invocation.method(
           #findVideoById,
           [videoId],
         ),
-        returnValue: _i32.Future<_i23.Video?>.value(),
-      ) as _i32.Future<_i23.Video?>);
+        returnValue: _i33.Future<_i24.Video?>.value(),
+      ) as _i33.Future<_i24.Video?>);
   @override
-  _i32.Future<_i24.Audio?> findAudioById(String? audioId) =>
+  _i33.Future<_i25.Audio?> findAudioById(String? audioId) =>
       (super.noSuchMethod(
         Invocation.method(
           #findAudioById,
           [audioId],
         ),
-        returnValue: _i32.Future<_i24.Audio?>.value(),
-      ) as _i32.Future<_i24.Audio?>);
+        returnValue: _i33.Future<_i25.Audio?>.value(),
+      ) as _i33.Future<_i25.Audio?>);
   @override
-  _i32.Future<_i11.User> findUserByUid(String? uid) => (super.noSuchMethod(
+  _i33.Future<_i12.User> findUserByUid(String? uid) => (super.noSuchMethod(
         Invocation.method(
           #findUserByUid,
           [uid],
         ),
-        returnValue: _i32.Future<_i11.User>.value(_FakeUser_11(
+        returnValue: _i33.Future<_i12.User>.value(_FakeUser_12(
           this,
           Invocation.method(
             #findUserByUid,
             [uid],
           ),
         )),
-      ) as _i32.Future<_i11.User>);
+      ) as _i33.Future<_i12.User>);
   @override
-  _i32.Future<List<_i43.Country>> getCountries() => (super.noSuchMethod(
+  _i33.Future<List<_i44.Country>> getCountries() => (super.noSuchMethod(
         Invocation.method(
           #getCountries,
           [],
         ),
-        returnValue: _i32.Future<List<_i43.Country>>.value(<_i43.Country>[]),
-      ) as _i32.Future<List<_i43.Country>>);
+        returnValue: _i33.Future<List<_i44.Country>>.value(<_i44.Country>[]),
+      ) as _i33.Future<List<_i44.Country>>);
   @override
-  _i32.Future<dynamic> hello() => (super.noSuchMethod(
+  _i33.Future<dynamic> hello() => (super.noSuchMethod(
         Invocation.method(
           #hello,
           [],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> ping() => (super.noSuchMethod(
+  _i33.Future<dynamic> ping() => (super.noSuchMethod(
         Invocation.method(
           #ping,
           [],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
 }
 
 /// A class which mocks [CacheManager].
@@ -2080,15 +2111,15 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
         returnValue: '',
       ) as String);
   @override
-  _i30.Random get random => (super.noSuchMethod(
+  _i31.Random get random => (super.noSuchMethod(
         Invocation.getter(#random),
-        returnValue: _FakeRandom_31(
+        returnValue: _FakeRandom_32(
           this,
           Invocation.getter(#random),
         ),
-      ) as _i30.Random);
+      ) as _i31.Random);
   @override
-  set random(_i30.Random? _random) => super.noSuchMethod(
+  set random(_i31.Random? _random) => super.noSuchMethod(
         Invocation.setter(
           #random,
           _random,
@@ -2096,37 +2127,37 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
         returnValueForMissingStub: null,
       );
   @override
-  _i32.Future<dynamic> initialize() => (super.noSuchMethod(
+  _i33.Future<dynamic> initialize() => (super.noSuchMethod(
         Invocation.method(
           #initialize,
           [],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addProjectSummaries(
-          {required List<_i38.ProjectSummary>? summaries}) =>
+  _i33.Future<dynamic> addProjectSummaries(
+          {required List<_i39.ProjectSummary>? summaries}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProjectSummaries,
           [],
           {#summaries: summaries},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addProjectSummary(
-          {required _i38.ProjectSummary? summary}) =>
+  _i33.Future<dynamic> addProjectSummary(
+          {required _i39.ProjectSummary? summary}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProjectSummary,
           [],
           {#summary: summary},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<List<_i38.ProjectSummary>> getOrganizationSummaries(
+  _i33.Future<List<_i39.ProjectSummary>> getOrganizationSummaries(
     String? startDate,
     String? endDate,
   ) =>
@@ -2138,11 +2169,11 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i38.ProjectSummary>>.value(
-            <_i38.ProjectSummary>[]),
-      ) as _i32.Future<List<_i38.ProjectSummary>>);
+        returnValue: _i33.Future<List<_i39.ProjectSummary>>.value(
+            <_i39.ProjectSummary>[]),
+      ) as _i33.Future<List<_i39.ProjectSummary>>);
   @override
-  _i32.Future<List<_i38.ProjectSummary>> getProjectSummaries(
+  _i33.Future<List<_i39.ProjectSummary>> getProjectSummaries(
     String? projectId,
     String? startDate,
     String? endDate,
@@ -2156,59 +2187,59 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
             endDate,
           ],
         ),
-        returnValue: _i32.Future<List<_i38.ProjectSummary>>.value(
-            <_i38.ProjectSummary>[]),
-      ) as _i32.Future<List<_i38.ProjectSummary>>);
+        returnValue: _i33.Future<List<_i39.ProjectSummary>>.value(
+            <_i39.ProjectSummary>[]),
+      ) as _i33.Future<List<_i39.ProjectSummary>>);
   @override
-  _i32.Future<dynamic> addActivityModel(
-          {required _i37.ActivityModel? activity}) =>
+  _i33.Future<dynamic> addActivityModel(
+          {required _i38.ActivityModel? activity}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addActivityModel,
           [],
           {#activity: activity},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addActivityModels(
-          {required List<_i37.ActivityModel>? activities}) =>
+  _i33.Future<dynamic> addActivityModels(
+          {required List<_i38.ActivityModel>? activities}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addActivityModels,
           [],
           {#activities: activities},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> deleteActivityModels() => (super.noSuchMethod(
+  _i33.Future<dynamic> deleteActivityModels() => (super.noSuchMethod(
         Invocation.method(
           #deleteActivityModels,
           [],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> deleteProjects() => (super.noSuchMethod(
+  _i33.Future<dynamic> deleteProjects() => (super.noSuchMethod(
         Invocation.method(
           #deleteProjects,
           [],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<List<_i37.ActivityModel>> getActivitiesWithinHours(int? hours) =>
+  _i33.Future<List<_i38.ActivityModel>> getActivitiesWithinHours(int? hours) =>
       (super.noSuchMethod(
         Invocation.method(
           #getActivitiesWithinHours,
           [hours],
         ),
         returnValue:
-            _i32.Future<List<_i37.ActivityModel>>.value(<_i37.ActivityModel>[]),
-      ) as _i32.Future<List<_i37.ActivityModel>>);
+            _i33.Future<List<_i38.ActivityModel>>.value(<_i38.ActivityModel>[]),
+      ) as _i33.Future<List<_i38.ActivityModel>>);
   @override
-  _i32.Future<List<_i37.ActivityModel>> getUserActivitiesWithinHours(
+  _i33.Future<List<_i38.ActivityModel>> getUserActivitiesWithinHours(
     String? userId,
     int? hours,
   ) =>
@@ -2221,10 +2252,10 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
           ],
         ),
         returnValue:
-            _i32.Future<List<_i37.ActivityModel>>.value(<_i37.ActivityModel>[]),
-      ) as _i32.Future<List<_i37.ActivityModel>>);
+            _i33.Future<List<_i38.ActivityModel>>.value(<_i38.ActivityModel>[]),
+      ) as _i33.Future<List<_i38.ActivityModel>>);
   @override
-  _i32.Future<List<_i37.ActivityModel>> getProjectActivitiesWithinHours(
+  _i33.Future<List<_i38.ActivityModel>> getProjectActivitiesWithinHours(
     String? projectId,
     int? hours,
   ) =>
@@ -2237,180 +2268,180 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
           ],
         ),
         returnValue:
-            _i32.Future<List<_i37.ActivityModel>>.value(<_i37.ActivityModel>[]),
-      ) as _i32.Future<List<_i37.ActivityModel>>);
+            _i33.Future<List<_i38.ActivityModel>>.value(<_i38.ActivityModel>[]),
+      ) as _i33.Future<List<_i38.ActivityModel>>);
   @override
-  _i32.Future<List<_i37.ActivityModel>> getActivities() => (super.noSuchMethod(
+  _i33.Future<List<_i38.ActivityModel>> getActivities() => (super.noSuchMethod(
         Invocation.method(
           #getActivities,
           [],
         ),
         returnValue:
-            _i32.Future<List<_i37.ActivityModel>>.value(<_i37.ActivityModel>[]),
-      ) as _i32.Future<List<_i37.ActivityModel>>);
+            _i33.Future<List<_i38.ActivityModel>>.value(<_i38.ActivityModel>[]),
+      ) as _i33.Future<List<_i38.ActivityModel>>);
   @override
-  _i32.Future<dynamic> addLocationResponse(
-          {required _i10.LocationResponse? locationResponse}) =>
+  _i33.Future<dynamic> addLocationResponse(
+          {required _i11.LocationResponse? locationResponse}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addLocationResponse,
           [],
           {#locationResponse: locationResponse},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addDailyForecasts(
-          {required List<_i39.DailyForecast>? forecasts}) =>
+  _i33.Future<dynamic> addDailyForecasts(
+          {required List<_i40.DailyForecast>? forecasts}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addDailyForecasts,
           [],
           {#forecasts: forecasts},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addDailyForecast(
-          {required _i39.DailyForecast? forecast}) =>
+  _i33.Future<dynamic> addDailyForecast(
+          {required _i40.DailyForecast? forecast}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addDailyForecast,
           [],
           {#forecast: forecast},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addHourlyForecasts(
-          {required List<_i40.HourlyForecast>? forecasts}) =>
+  _i33.Future<dynamic> addHourlyForecasts(
+          {required List<_i41.HourlyForecast>? forecasts}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addHourlyForecasts,
           [],
           {#forecasts: forecasts},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addHourlyForecast(
-          {required _i40.HourlyForecast? forecast}) =>
+  _i33.Future<dynamic> addHourlyForecast(
+          {required _i41.HourlyForecast? forecast}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addHourlyForecast,
           [],
           {#forecast: forecast},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addProjectAssignments(
-          {required List<_i44.ProjectAssignment>? assignments}) =>
+  _i33.Future<dynamic> addProjectAssignments(
+          {required List<_i45.ProjectAssignment>? assignments}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProjectAssignments,
           [],
           {#assignments: assignments},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addProjectAssignment(
-          {required _i44.ProjectAssignment? assignment}) =>
+  _i33.Future<dynamic> addProjectAssignment(
+          {required _i45.ProjectAssignment? assignment}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProjectAssignment,
           [],
           {#assignment: assignment},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addRegistration(
-          {required _i13.OrganizationRegistrationBag? bag}) =>
+  _i33.Future<dynamic> addRegistration(
+          {required _i14.OrganizationRegistrationBag? bag}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addRegistration,
           [],
           {#bag: bag},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addCondition({required _i26.Condition? condition}) =>
+  _i33.Future<dynamic> addCondition({required _i27.Condition? condition}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addCondition,
           [],
           {#condition: condition},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addAudioForUpload(
-          {required _i45.AudioForUpload? audio}) =>
+  _i33.Future<dynamic> addAudioForUpload(
+          {required _i46.AudioForUpload? audio}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addAudioForUpload,
           [],
           {#audio: audio},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addVideoForUpload(
-          {required _i46.VideoForUpload? video}) =>
+  _i33.Future<dynamic> addVideoForUpload(
+          {required _i47.VideoForUpload? video}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addVideoForUpload,
           [],
           {#video: video},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addPhotoForUpload(
-          {required _i47.PhotoForUpload? photo}) =>
+  _i33.Future<dynamic> addPhotoForUpload(
+          {required _i48.PhotoForUpload? photo}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addPhotoForUpload,
           [],
           {#photo: photo},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addSettings({required _i8.SettingsModel? settings}) =>
+  _i33.Future<dynamic> addSettings({required _i8.SettingsModel? settings}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addSettings,
           [],
           {#settings: settings},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addRating({required _i25.Rating? rating}) =>
+  _i33.Future<dynamic> addRating({required _i26.Rating? rating}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addRating,
           [],
           {#rating: rating},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addRatings({required List<_i25.Rating>? ratings}) =>
+  _i33.Future<dynamic> addRatings({required List<_i26.Rating>? ratings}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addRatings,
           [],
           {#ratings: ratings},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<List<_i25.Rating>> getProjectRatings(
+  _i33.Future<List<_i26.Rating>> getProjectRatings(
           {required String? projectId}) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -2418,18 +2449,18 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
           [],
           {#projectId: projectId},
         ),
-        returnValue: _i32.Future<List<_i25.Rating>>.value(<_i25.Rating>[]),
-      ) as _i32.Future<List<_i25.Rating>>);
+        returnValue: _i33.Future<List<_i26.Rating>>.value(<_i26.Rating>[]),
+      ) as _i33.Future<List<_i26.Rating>>);
   @override
-  _i32.Future<int> countOrganizationRatings() => (super.noSuchMethod(
+  _i33.Future<int> countOrganizationRatings() => (super.noSuchMethod(
         Invocation.method(
           #countOrganizationRatings,
           [],
         ),
-        returnValue: _i32.Future<int>.value(0),
-      ) as _i32.Future<int>);
+        returnValue: _i33.Future<int>.value(0),
+      ) as _i33.Future<int>);
   @override
-  _i32.Future<dynamic> addFieldMonitorSchedules(
+  _i33.Future<dynamic> addFieldMonitorSchedules(
           {required List<_i7.FieldMonitorSchedule>? schedules}) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -2437,90 +2468,90 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
           [],
           {#schedules: schedules},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addOrgMessage({required _i29.OrgMessage? message}) =>
+  _i33.Future<dynamic> addOrgMessage({required _i30.OrgMessage? message}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addOrgMessage,
           [],
           {#message: message},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addPhotos({required List<_i22.Photo>? photos}) =>
+  _i33.Future<dynamic> addPhotos({required List<_i23.Photo>? photos}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addPhotos,
           [],
           {#photos: photos},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addProjectPositions(
-          {required List<_i19.ProjectPosition>? positions}) =>
+  _i33.Future<dynamic> addProjectPositions(
+          {required List<_i20.ProjectPosition>? positions}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProjectPositions,
           [],
           {#positions: positions},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addProjectPolygons(
-          {required List<_i20.ProjectPolygon>? polygons}) =>
+  _i33.Future<dynamic> addProjectPolygons(
+          {required List<_i21.ProjectPolygon>? polygons}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProjectPolygons,
           [],
           {#polygons: polygons},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addProjects({required List<_i15.Project>? projects}) =>
+  _i33.Future<dynamic> addProjects({required List<_i16.Project>? projects}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProjects,
           [],
           {#projects: projects},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addUsers({required List<_i11.User>? users}) =>
+  _i33.Future<dynamic> addUsers({required List<_i12.User>? users}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addUsers,
           [],
           {#users: users},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addVideos({required List<_i23.Video>? videos}) =>
+  _i33.Future<dynamic> addVideos({required List<_i24.Video>? videos}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addVideos,
           [],
           {#videos: videos},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addAudios({required List<_i24.Audio>? audios}) =>
+  _i33.Future<dynamic> addAudios({required List<_i25.Audio>? audios}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addAudios,
           [],
           {#audios: audios},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
   List<_i7.FieldMonitorSchedule> filterSchedulesByProject(
     List<_i7.FieldMonitorSchedule>? mList,
@@ -2537,142 +2568,142 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
         returnValue: <_i7.FieldMonitorSchedule>[],
       ) as List<_i7.FieldMonitorSchedule>);
   @override
-  _i32.Future<_i15.Project?> getProjectById({required String? projectId}) =>
+  _i33.Future<_i16.Project?> getProjectById({required String? projectId}) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProjectById,
           [],
           {#projectId: projectId},
         ),
-        returnValue: _i32.Future<_i15.Project?>.value(),
-      ) as _i32.Future<_i15.Project?>);
+        returnValue: _i33.Future<_i16.Project?>.value(),
+      ) as _i33.Future<_i16.Project?>);
   @override
-  _i32.Future<List<_i7.FieldMonitorSchedule>> getFieldMonitorSchedules(
+  _i33.Future<List<_i7.FieldMonitorSchedule>> getFieldMonitorSchedules(
           String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getFieldMonitorSchedules,
           [userId],
         ),
-        returnValue: _i32.Future<List<_i7.FieldMonitorSchedule>>.value(
+        returnValue: _i33.Future<List<_i7.FieldMonitorSchedule>>.value(
             <_i7.FieldMonitorSchedule>[]),
-      ) as _i32.Future<List<_i7.FieldMonitorSchedule>>);
+      ) as _i33.Future<List<_i7.FieldMonitorSchedule>>);
   @override
-  _i32.Future<List<_i7.FieldMonitorSchedule>>
+  _i33.Future<List<_i7.FieldMonitorSchedule>>
       getOrganizationMonitorSchedules() => (super.noSuchMethod(
             Invocation.method(
               #getOrganizationMonitorSchedules,
               [],
             ),
-            returnValue: _i32.Future<List<_i7.FieldMonitorSchedule>>.value(
+            returnValue: _i33.Future<List<_i7.FieldMonitorSchedule>>.value(
                 <_i7.FieldMonitorSchedule>[]),
-          ) as _i32.Future<List<_i7.FieldMonitorSchedule>>);
+          ) as _i33.Future<List<_i7.FieldMonitorSchedule>>);
   @override
-  _i32.Future<List<_i45.AudioForUpload>> getAudioForUpload() =>
+  _i33.Future<List<_i46.AudioForUpload>> getAudioForUpload() =>
       (super.noSuchMethod(
         Invocation.method(
           #getAudioForUpload,
           [],
         ),
-        returnValue: _i32.Future<List<_i45.AudioForUpload>>.value(
-            <_i45.AudioForUpload>[]),
-      ) as _i32.Future<List<_i45.AudioForUpload>>);
+        returnValue: _i33.Future<List<_i46.AudioForUpload>>.value(
+            <_i46.AudioForUpload>[]),
+      ) as _i33.Future<List<_i46.AudioForUpload>>);
   @override
-  _i32.Future<List<_i46.VideoForUpload>> getVideosForUpload() =>
+  _i33.Future<List<_i47.VideoForUpload>> getVideosForUpload() =>
       (super.noSuchMethod(
         Invocation.method(
           #getVideosForUpload,
           [],
         ),
-        returnValue: _i32.Future<List<_i46.VideoForUpload>>.value(
-            <_i46.VideoForUpload>[]),
-      ) as _i32.Future<List<_i46.VideoForUpload>>);
+        returnValue: _i33.Future<List<_i47.VideoForUpload>>.value(
+            <_i47.VideoForUpload>[]),
+      ) as _i33.Future<List<_i47.VideoForUpload>>);
   @override
-  _i32.Future<List<_i47.PhotoForUpload>> getPhotosForUpload() =>
+  _i33.Future<List<_i48.PhotoForUpload>> getPhotosForUpload() =>
       (super.noSuchMethod(
         Invocation.method(
           #getPhotosForUpload,
           [],
         ),
-        returnValue: _i32.Future<List<_i47.PhotoForUpload>>.value(
-            <_i47.PhotoForUpload>[]),
-      ) as _i32.Future<List<_i47.PhotoForUpload>>);
+        returnValue: _i33.Future<List<_i48.PhotoForUpload>>.value(
+            <_i48.PhotoForUpload>[]),
+      ) as _i33.Future<List<_i48.PhotoForUpload>>);
   @override
-  _i32.Future<List<_i8.SettingsModel>> getOrganizationSettings() =>
+  _i33.Future<List<_i8.SettingsModel>> getOrganizationSettings() =>
       (super.noSuchMethod(
         Invocation.method(
           #getOrganizationSettings,
           [],
         ),
         returnValue:
-            _i32.Future<List<_i8.SettingsModel>>.value(<_i8.SettingsModel>[]),
-      ) as _i32.Future<List<_i8.SettingsModel>>);
+            _i33.Future<List<_i8.SettingsModel>>.value(<_i8.SettingsModel>[]),
+      ) as _i33.Future<List<_i8.SettingsModel>>);
   @override
-  _i32.Future<_i8.SettingsModel> getSettings() => (super.noSuchMethod(
+  _i33.Future<_i8.SettingsModel> getSettings() => (super.noSuchMethod(
         Invocation.method(
           #getSettings,
           [],
         ),
-        returnValue: _i32.Future<_i8.SettingsModel>.value(_FakeSettingsModel_8(
+        returnValue: _i33.Future<_i8.SettingsModel>.value(_FakeSettingsModel_8(
           this,
           Invocation.method(
             #getSettings,
             [],
           ),
         )),
-      ) as _i32.Future<_i8.SettingsModel>);
+      ) as _i33.Future<_i8.SettingsModel>);
   @override
-  _i32.Future<List<_i8.SettingsModel>> getProjectSettings(String? projectId) =>
+  _i33.Future<List<_i8.SettingsModel>> getProjectSettings(String? projectId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProjectSettings,
           [projectId],
         ),
         returnValue:
-            _i32.Future<List<_i8.SettingsModel>>.value(<_i8.SettingsModel>[]),
-      ) as _i32.Future<List<_i8.SettingsModel>>);
+            _i33.Future<List<_i8.SettingsModel>>.value(<_i8.SettingsModel>[]),
+      ) as _i33.Future<List<_i8.SettingsModel>>);
   @override
-  _i32.Future<List<_i44.ProjectAssignment>> getProjectAssignments(
+  _i33.Future<List<_i45.ProjectAssignment>> getProjectAssignments(
           String? projectId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProjectAssignments,
           [projectId],
         ),
-        returnValue: _i32.Future<List<_i44.ProjectAssignment>>.value(
-            <_i44.ProjectAssignment>[]),
-      ) as _i32.Future<List<_i44.ProjectAssignment>>);
+        returnValue: _i33.Future<List<_i45.ProjectAssignment>>.value(
+            <_i45.ProjectAssignment>[]),
+      ) as _i33.Future<List<_i45.ProjectAssignment>>);
   @override
-  _i32.Future<List<_i44.ProjectAssignment>> getUserProjectAssignments(
+  _i33.Future<List<_i45.ProjectAssignment>> getUserProjectAssignments(
           String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getUserProjectAssignments,
           [userId],
         ),
-        returnValue: _i32.Future<List<_i44.ProjectAssignment>>.value(
-            <_i44.ProjectAssignment>[]),
-      ) as _i32.Future<List<_i44.ProjectAssignment>>);
+        returnValue: _i33.Future<List<_i45.ProjectAssignment>>.value(
+            <_i45.ProjectAssignment>[]),
+      ) as _i33.Future<List<_i45.ProjectAssignment>>);
   @override
-  _i32.Future<List<_i44.ProjectAssignment>>
+  _i33.Future<List<_i45.ProjectAssignment>>
       getOrganizationProjectAssignments() => (super.noSuchMethod(
             Invocation.method(
               #getOrganizationProjectAssignments,
               [],
             ),
-            returnValue: _i32.Future<List<_i44.ProjectAssignment>>.value(
-                <_i44.ProjectAssignment>[]),
-          ) as _i32.Future<List<_i44.ProjectAssignment>>);
+            returnValue: _i33.Future<List<_i45.ProjectAssignment>>.value(
+                <_i45.ProjectAssignment>[]),
+          ) as _i33.Future<List<_i45.ProjectAssignment>>);
   @override
-  _i32.Future<_i11.User?> getUserById(String? userId) => (super.noSuchMethod(
+  _i33.Future<_i12.User?> getUserById(String? userId) => (super.noSuchMethod(
         Invocation.method(
           #getUserById,
           [userId],
         ),
-        returnValue: _i32.Future<_i11.User?>.value(),
-      ) as _i32.Future<_i11.User?>);
+        returnValue: _i33.Future<_i12.User?>.value(),
+      ) as _i33.Future<_i12.User?>);
   @override
-  _i32.Future<List<_i9.GeofenceEvent>> getGeofenceEventsByUser(
+  _i33.Future<List<_i10.GeofenceEvent>> getGeofenceEventsByUser(
           String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -2680,10 +2711,10 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
           [userId],
         ),
         returnValue:
-            _i32.Future<List<_i9.GeofenceEvent>>.value(<_i9.GeofenceEvent>[]),
-      ) as _i32.Future<List<_i9.GeofenceEvent>>);
+            _i33.Future<List<_i10.GeofenceEvent>>.value(<_i10.GeofenceEvent>[]),
+      ) as _i33.Future<List<_i10.GeofenceEvent>>);
   @override
-  _i32.Future<List<_i9.GeofenceEvent>> getGeofenceEventsByProjectPosition(
+  _i33.Future<List<_i10.GeofenceEvent>> getGeofenceEventsByProjectPosition(
           String? projectPositionId) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -2691,10 +2722,10 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
           [projectPositionId],
         ),
         returnValue:
-            _i32.Future<List<_i9.GeofenceEvent>>.value(<_i9.GeofenceEvent>[]),
-      ) as _i32.Future<List<_i9.GeofenceEvent>>);
+            _i33.Future<List<_i10.GeofenceEvent>>.value(<_i10.GeofenceEvent>[]),
+      ) as _i33.Future<List<_i10.GeofenceEvent>>);
   @override
-  _i32.Future<_i17.DataBag> getOrganizationData(
+  _i33.Future<_i18.DataBag> getOrganizationData(
           {required String? organizationId}) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -2702,7 +2733,7 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
           [],
           {#organizationId: organizationId},
         ),
-        returnValue: _i32.Future<_i17.DataBag>.value(_FakeDataBag_18(
+        returnValue: _i33.Future<_i18.DataBag>.value(_FakeDataBag_19(
           this,
           Invocation.method(
             #getOrganizationData,
@@ -2710,16 +2741,16 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
             {#organizationId: organizationId},
           ),
         )),
-      ) as _i32.Future<_i17.DataBag>);
+      ) as _i33.Future<_i18.DataBag>);
   @override
-  _i32.Future<_i17.DataBag> getUserData({required String? userId}) =>
+  _i33.Future<_i18.DataBag> getUserData({required String? userId}) =>
       (super.noSuchMethod(
         Invocation.method(
           #getUserData,
           [],
           {#userId: userId},
         ),
-        returnValue: _i32.Future<_i17.DataBag>.value(_FakeDataBag_18(
+        returnValue: _i33.Future<_i18.DataBag>.value(_FakeDataBag_19(
           this,
           Invocation.method(
             #getUserData,
@@ -2727,28 +2758,28 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
             {#userId: userId},
           ),
         )),
-      ) as _i32.Future<_i17.DataBag>);
+      ) as _i33.Future<_i18.DataBag>);
   @override
-  _i32.Future<List<_i22.Photo>> getOrganizationPhotos() => (super.noSuchMethod(
+  _i33.Future<List<_i23.Photo>> getOrganizationPhotos() => (super.noSuchMethod(
         Invocation.method(
           #getOrganizationPhotos,
           [],
         ),
-        returnValue: _i32.Future<List<_i22.Photo>>.value(<_i22.Photo>[]),
-      ) as _i32.Future<List<_i22.Photo>>);
+        returnValue: _i33.Future<List<_i23.Photo>>.value(<_i23.Photo>[]),
+      ) as _i33.Future<List<_i23.Photo>>);
   @override
-  _i32.Future<List<_i7.FieldMonitorSchedule>> getProjectMonitorSchedules(
+  _i33.Future<List<_i7.FieldMonitorSchedule>> getProjectMonitorSchedules(
           String? projectId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProjectMonitorSchedules,
           [projectId],
         ),
-        returnValue: _i32.Future<List<_i7.FieldMonitorSchedule>>.value(
+        returnValue: _i33.Future<List<_i7.FieldMonitorSchedule>>.value(
             <_i7.FieldMonitorSchedule>[]),
-      ) as _i32.Future<List<_i7.FieldMonitorSchedule>>);
+      ) as _i33.Future<List<_i7.FieldMonitorSchedule>>);
   @override
-  _i32.Future<List<_i22.Photo>> getProjectPhotos({
+  _i33.Future<List<_i23.Photo>> getProjectPhotos({
     required String? projectId,
     required String? startDate,
     required String? endDate,
@@ -2763,10 +2794,10 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
             #endDate: endDate,
           },
         ),
-        returnValue: _i32.Future<List<_i22.Photo>>.value(<_i22.Photo>[]),
-      ) as _i32.Future<List<_i22.Photo>>);
+        returnValue: _i33.Future<List<_i23.Photo>>.value(<_i23.Photo>[]),
+      ) as _i33.Future<List<_i23.Photo>>);
   @override
-  _i32.Future<List<_i20.ProjectPolygon>> getProjectPolygons(
+  _i33.Future<List<_i21.ProjectPolygon>> getProjectPolygons(
           {required String? projectId}) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -2774,11 +2805,11 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
           [],
           {#projectId: projectId},
         ),
-        returnValue: _i32.Future<List<_i20.ProjectPolygon>>.value(
-            <_i20.ProjectPolygon>[]),
-      ) as _i32.Future<List<_i20.ProjectPolygon>>);
+        returnValue: _i33.Future<List<_i21.ProjectPolygon>>.value(
+            <_i21.ProjectPolygon>[]),
+      ) as _i33.Future<List<_i21.ProjectPolygon>>);
   @override
-  _i32.Future<List<_i23.Video>> getProjectVideos({
+  _i33.Future<List<_i24.Video>> getProjectVideos({
     required String? projectId,
     required String? startDate,
     required String? endDate,
@@ -2793,34 +2824,34 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
             #endDate: endDate,
           },
         ),
-        returnValue: _i32.Future<List<_i23.Video>>.value(<_i23.Video>[]),
-      ) as _i32.Future<List<_i23.Video>>);
+        returnValue: _i33.Future<List<_i24.Video>>.value(<_i24.Video>[]),
+      ) as _i33.Future<List<_i24.Video>>);
   @override
-  _i32.Future<_i23.Video?> getVideoById(String? id) => (super.noSuchMethod(
+  _i33.Future<_i24.Video?> getVideoById(String? id) => (super.noSuchMethod(
         Invocation.method(
           #getVideoById,
           [id],
         ),
-        returnValue: _i32.Future<_i23.Video?>.value(),
-      ) as _i32.Future<_i23.Video?>);
+        returnValue: _i33.Future<_i24.Video?>.value(),
+      ) as _i33.Future<_i24.Video?>);
   @override
-  _i32.Future<_i22.Photo?> getPhotoById(String? id) => (super.noSuchMethod(
+  _i33.Future<_i23.Photo?> getPhotoById(String? id) => (super.noSuchMethod(
         Invocation.method(
           #getPhotoById,
           [id],
         ),
-        returnValue: _i32.Future<_i22.Photo?>.value(),
-      ) as _i32.Future<_i22.Photo?>);
+        returnValue: _i33.Future<_i23.Photo?>.value(),
+      ) as _i33.Future<_i23.Photo?>);
   @override
-  _i32.Future<_i24.Audio?> getAudioById(String? id) => (super.noSuchMethod(
+  _i33.Future<_i25.Audio?> getAudioById(String? id) => (super.noSuchMethod(
         Invocation.method(
           #getAudioById,
           [id],
         ),
-        returnValue: _i32.Future<_i24.Audio?>.value(),
-      ) as _i32.Future<_i24.Audio?>);
+        returnValue: _i33.Future<_i25.Audio?>.value(),
+      ) as _i33.Future<_i25.Audio?>);
   @override
-  _i32.Future<List<_i24.Audio>> getProjectAudios({
+  _i33.Future<List<_i25.Audio>> getProjectAudios({
     required String? projectId,
     required String? startDate,
     required String? endDate,
@@ -2835,51 +2866,51 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
             #endDate: endDate,
           },
         ),
-        returnValue: _i32.Future<List<_i24.Audio>>.value(<_i24.Audio>[]),
-      ) as _i32.Future<List<_i24.Audio>>);
+        returnValue: _i33.Future<List<_i25.Audio>>.value(<_i25.Audio>[]),
+      ) as _i33.Future<List<_i25.Audio>>);
   @override
-  _i32.Future<List<_i23.Video>> getOrganizationVideos() => (super.noSuchMethod(
+  _i33.Future<List<_i24.Video>> getOrganizationVideos() => (super.noSuchMethod(
         Invocation.method(
           #getOrganizationVideos,
           [],
         ),
-        returnValue: _i32.Future<List<_i23.Video>>.value(<_i23.Video>[]),
-      ) as _i32.Future<List<_i23.Video>>);
+        returnValue: _i33.Future<List<_i24.Video>>.value(<_i24.Video>[]),
+      ) as _i33.Future<List<_i24.Video>>);
   @override
-  _i32.Future<List<_i24.Audio>> getOrganizationAudios() => (super.noSuchMethod(
+  _i33.Future<List<_i25.Audio>> getOrganizationAudios() => (super.noSuchMethod(
         Invocation.method(
           #getOrganizationAudios,
           [],
         ),
-        returnValue: _i32.Future<List<_i24.Audio>>.value(<_i24.Audio>[]),
-      ) as _i32.Future<List<_i24.Audio>>);
+        returnValue: _i33.Future<List<_i25.Audio>>.value(<_i25.Audio>[]),
+      ) as _i33.Future<List<_i25.Audio>>);
   @override
-  _i32.Future<List<_i22.Photo>> getUserPhotos(String? userId) =>
+  _i33.Future<List<_i23.Photo>> getUserPhotos(String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getUserPhotos,
           [userId],
         ),
-        returnValue: _i32.Future<List<_i22.Photo>>.value(<_i22.Photo>[]),
-      ) as _i32.Future<List<_i22.Photo>>);
+        returnValue: _i33.Future<List<_i23.Photo>>.value(<_i23.Photo>[]),
+      ) as _i33.Future<List<_i23.Photo>>);
   @override
-  _i32.Future<List<_i11.User>> getUsers() => (super.noSuchMethod(
+  _i33.Future<List<_i12.User>> getUsers() => (super.noSuchMethod(
         Invocation.method(
           #getUsers,
           [],
         ),
-        returnValue: _i32.Future<List<_i11.User>>.value(<_i11.User>[]),
-      ) as _i32.Future<List<_i11.User>>);
+        returnValue: _i33.Future<List<_i12.User>>.value(<_i12.User>[]),
+      ) as _i33.Future<List<_i12.User>>);
   @override
-  _i32.Future<List<_i23.Video>> getVideos() => (super.noSuchMethod(
+  _i33.Future<List<_i24.Video>> getVideos() => (super.noSuchMethod(
         Invocation.method(
           #getVideos,
           [],
         ),
-        returnValue: _i32.Future<List<_i23.Video>>.value(<_i23.Video>[]),
-      ) as _i32.Future<List<_i23.Video>>);
+        returnValue: _i33.Future<List<_i24.Video>>.value(<_i24.Video>[]),
+      ) as _i33.Future<List<_i24.Video>>);
   @override
-  _i32.Future<dynamic> addFieldMonitorSchedule(
+  _i33.Future<dynamic> addFieldMonitorSchedule(
           {required _i7.FieldMonitorSchedule? schedule}) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -2887,282 +2918,282 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
           [],
           {#schedule: schedule},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addPhoto({required _i22.Photo? photo}) =>
+  _i33.Future<dynamic> addPhoto({required _i23.Photo? photo}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addPhoto,
           [],
           {#photo: photo},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addAppError({required _i21.AppError? appError}) =>
+  _i33.Future<dynamic> addAppError({required _i22.AppError? appError}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addAppError,
           [],
           {#appError: appError},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<List<_i21.AppError>> getAppErrors() => (super.noSuchMethod(
+  _i33.Future<List<_i22.AppError>> getAppErrors() => (super.noSuchMethod(
         Invocation.method(
           #getAppErrors,
           [],
         ),
-        returnValue: _i32.Future<List<_i21.AppError>>.value(<_i21.AppError>[]),
-      ) as _i32.Future<List<_i21.AppError>>);
+        returnValue: _i33.Future<List<_i22.AppError>>.value(<_i22.AppError>[]),
+      ) as _i33.Future<List<_i22.AppError>>);
   @override
-  _i32.Future<dynamic> removeUploadedPhoto(
-          {required _i47.PhotoForUpload? photo}) =>
+  _i33.Future<dynamic> removeUploadedPhoto(
+          {required _i48.PhotoForUpload? photo}) =>
       (super.noSuchMethod(
         Invocation.method(
           #removeUploadedPhoto,
           [],
           {#photo: photo},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> removeUploadedAudio(
-          {required _i45.AudioForUpload? audio}) =>
+  _i33.Future<dynamic> removeUploadedAudio(
+          {required _i46.AudioForUpload? audio}) =>
       (super.noSuchMethod(
         Invocation.method(
           #removeUploadedAudio,
           [],
           {#audio: audio},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> removeUploadedVideo(
-          {required _i46.VideoForUpload? video}) =>
+  _i33.Future<dynamic> removeUploadedVideo(
+          {required _i47.VideoForUpload? video}) =>
       (super.noSuchMethod(
         Invocation.method(
           #removeUploadedVideo,
           [],
           {#video: video},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addProject({required _i15.Project? project}) =>
+  _i33.Future<dynamic> addProject({required _i16.Project? project}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProject,
           [],
           {#project: project},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addProjectPosition(
-          {required _i19.ProjectPosition? projectPosition}) =>
+  _i33.Future<dynamic> addProjectPosition(
+          {required _i20.ProjectPosition? projectPosition}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProjectPosition,
           [],
           {#projectPosition: projectPosition},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addUser({required _i11.User? user}) =>
+  _i33.Future<dynamic> addUser({required _i12.User? user}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addUser,
           [],
           {#user: user},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> deleteUser({required _i11.User? user}) =>
+  _i33.Future<dynamic> deleteUser({required _i12.User? user}) =>
       (super.noSuchMethod(
         Invocation.method(
           #deleteUser,
           [],
           {#user: user},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addVideo({required _i23.Video? video}) =>
+  _i33.Future<dynamic> addVideo({required _i24.Video? video}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addVideo,
           [],
           {#video: video},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addAudio({required _i24.Audio? audio}) =>
+  _i33.Future<dynamic> addAudio({required _i25.Audio? audio}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addAudio,
           [],
           {#audio: audio},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<List<_i15.Project>> getOrganizationProjects() =>
+  _i33.Future<List<_i16.Project>> getOrganizationProjects() =>
       (super.noSuchMethod(
         Invocation.method(
           #getOrganizationProjects,
           [],
         ),
-        returnValue: _i32.Future<List<_i15.Project>>.value(<_i15.Project>[]),
-      ) as _i32.Future<List<_i15.Project>>);
+        returnValue: _i33.Future<List<_i16.Project>>.value(<_i16.Project>[]),
+      ) as _i33.Future<List<_i16.Project>>);
   @override
-  _i32.Future<dynamic> addCities({required List<_i41.City>? cities}) =>
+  _i33.Future<dynamic> addCities({required List<_i42.City>? cities}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addCities,
           [],
           {#cities: cities},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addCity({required _i41.City? city}) =>
+  _i33.Future<dynamic> addCity({required _i42.City? city}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addCity,
           [],
           {#city: city},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addCountry({required _i43.Country? country}) =>
+  _i33.Future<dynamic> addCountry({required _i44.Country? country}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addCountry,
           [],
           {#country: country},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addMonitorReport(
-          {required _i48.MonitorReport? monitorReport}) =>
+  _i33.Future<dynamic> addMonitorReport(
+          {required _i49.MonitorReport? monitorReport}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addMonitorReport,
           [],
           {#monitorReport: monitorReport},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addMonitorReports(
-          {required List<_i48.MonitorReport>? monitorReports}) =>
+  _i33.Future<dynamic> addMonitorReports(
+          {required List<_i49.MonitorReport>? monitorReports}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addMonitorReports,
           [],
           {#monitorReports: monitorReports},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addCommunities(
-          {required List<_i18.Community>? communities}) =>
+  _i33.Future<dynamic> addCommunities(
+          {required List<_i19.Community>? communities}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addCommunities,
           [],
           {#communities: communities},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addGeofenceEvent(
-          {required _i9.GeofenceEvent? geofenceEvent}) =>
+  _i33.Future<dynamic> addGeofenceEvent(
+          {required _i10.GeofenceEvent? geofenceEvent}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addGeofenceEvent,
           [],
           {#geofenceEvent: geofenceEvent},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addCommunity({required _i18.Community? community}) =>
+  _i33.Future<dynamic> addCommunity({required _i19.Community? community}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addCommunity,
           [],
           {#community: community},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> addOrganization(
-          {required _i28.Organization? organization}) =>
+  _i33.Future<dynamic> addOrganization(
+          {required _i29.Organization? organization}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addOrganization,
           [],
           {#organization: organization},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<List<_i18.Community>> getCommunities() => (super.noSuchMethod(
+  _i33.Future<List<_i19.Community>> getCommunities() => (super.noSuchMethod(
         Invocation.method(
           #getCommunities,
           [],
         ),
         returnValue:
-            _i32.Future<List<_i18.Community>>.value(<_i18.Community>[]),
-      ) as _i32.Future<List<_i18.Community>>);
+            _i33.Future<List<_i19.Community>>.value(<_i19.Community>[]),
+      ) as _i33.Future<List<_i19.Community>>);
   @override
-  _i32.Future<List<_i43.Country>> getCountries() => (super.noSuchMethod(
+  _i33.Future<List<_i44.Country>> getCountries() => (super.noSuchMethod(
         Invocation.method(
           #getCountries,
           [],
         ),
-        returnValue: _i32.Future<List<_i43.Country>>.value(<_i43.Country>[]),
-      ) as _i32.Future<List<_i43.Country>>);
+        returnValue: _i33.Future<List<_i44.Country>>.value(<_i44.Country>[]),
+      ) as _i33.Future<List<_i44.Country>>);
   @override
-  _i32.Future<List<_i28.Organization>> getOrganizations() =>
+  _i33.Future<List<_i29.Organization>> getOrganizations() =>
       (super.noSuchMethod(
         Invocation.method(
           #getOrganizations,
           [],
         ),
         returnValue:
-            _i32.Future<List<_i28.Organization>>.value(<_i28.Organization>[]),
-      ) as _i32.Future<List<_i28.Organization>>);
+            _i33.Future<List<_i29.Organization>>.value(<_i29.Organization>[]),
+      ) as _i33.Future<List<_i29.Organization>>);
   @override
-  _i32.Future<dynamic> addSection({required _i42.Section? section}) =>
+  _i33.Future<dynamic> addSection({required _i43.Section? section}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addSection,
           [],
           {#section: section},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<List<_i22.Photo>> getSections(String? questionnaireId) =>
+  _i33.Future<List<_i23.Photo>> getSections(String? questionnaireId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getSections,
           [questionnaireId],
         ),
-        returnValue: _i32.Future<List<_i22.Photo>>.value(<_i22.Photo>[]),
-      ) as _i32.Future<List<_i22.Photo>>);
+        returnValue: _i33.Future<List<_i23.Photo>>.value(<_i23.Photo>[]),
+      ) as _i33.Future<List<_i23.Photo>>);
   @override
-  _i32.Future<_i28.Organization?> getOrganizationById(
+  _i33.Future<_i29.Organization?> getOrganizationById(
           {required String? organizationId}) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -3170,78 +3201,78 @@ class MockCacheManager extends _i1.Mock implements _i4.CacheManager {
           [],
           {#organizationId: organizationId},
         ),
-        returnValue: _i32.Future<_i28.Organization?>.value(),
-      ) as _i32.Future<_i28.Organization?>);
+        returnValue: _i33.Future<_i29.Organization?>.value(),
+      ) as _i33.Future<_i29.Organization?>);
   @override
-  _i32.Future<List<_i19.ProjectPosition>> getOrganizationProjectPositions() =>
+  _i33.Future<List<_i20.ProjectPosition>> getOrganizationProjectPositions() =>
       (super.noSuchMethod(
         Invocation.method(
           #getOrganizationProjectPositions,
           [],
         ),
-        returnValue: _i32.Future<List<_i19.ProjectPosition>>.value(
-            <_i19.ProjectPosition>[]),
-      ) as _i32.Future<List<_i19.ProjectPosition>>);
+        returnValue: _i33.Future<List<_i20.ProjectPosition>>.value(
+            <_i20.ProjectPosition>[]),
+      ) as _i33.Future<List<_i20.ProjectPosition>>);
   @override
-  _i32.Future<dynamic> addProjectPolygon(
-          {required _i20.ProjectPolygon? projectPolygon}) =>
+  _i33.Future<dynamic> addProjectPolygon(
+          {required _i21.ProjectPolygon? projectPolygon}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addProjectPolygon,
           [],
           {#projectPolygon: projectPolygon},
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<List<_i20.ProjectPolygon>> getOrganizationProjectPolygons() =>
+  _i33.Future<List<_i21.ProjectPolygon>> getOrganizationProjectPolygons() =>
       (super.noSuchMethod(
         Invocation.method(
           #getOrganizationProjectPolygons,
           [],
         ),
-        returnValue: _i32.Future<List<_i20.ProjectPolygon>>.value(
-            <_i20.ProjectPolygon>[]),
-      ) as _i32.Future<List<_i20.ProjectPolygon>>);
+        returnValue: _i33.Future<List<_i21.ProjectPolygon>>.value(
+            <_i21.ProjectPolygon>[]),
+      ) as _i33.Future<List<_i21.ProjectPolygon>>);
   @override
-  _i32.Future<List<_i19.ProjectPosition>> getProjectPositions(
+  _i33.Future<List<_i20.ProjectPosition>> getProjectPositions(
           String? projectId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProjectPositions,
           [projectId],
         ),
-        returnValue: _i32.Future<List<_i19.ProjectPosition>>.value(
-            <_i19.ProjectPosition>[]),
-      ) as _i32.Future<List<_i19.ProjectPosition>>);
+        returnValue: _i33.Future<List<_i20.ProjectPosition>>.value(
+            <_i20.ProjectPosition>[]),
+      ) as _i33.Future<List<_i20.ProjectPosition>>);
   @override
-  _i32.Future<_i19.ProjectPosition?> getProjectPosition(
+  _i33.Future<_i20.ProjectPosition?> getProjectPosition(
           String? projectPositionId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProjectPosition,
           [projectPositionId],
         ),
-        returnValue: _i32.Future<_i19.ProjectPosition?>.value(),
-      ) as _i32.Future<_i19.ProjectPosition?>);
+        returnValue: _i33.Future<_i20.ProjectPosition?>.value(),
+      ) as _i33.Future<_i20.ProjectPosition?>);
   @override
-  _i32.Future<List<_i23.Video>> getUserVideos(String? userId) =>
+  _i33.Future<List<_i24.Video>> getUserVideos(String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getUserVideos,
           [userId],
         ),
-        returnValue: _i32.Future<List<_i23.Video>>.value(<_i23.Video>[]),
-      ) as _i32.Future<List<_i23.Video>>);
+        returnValue: _i33.Future<List<_i24.Video>>.value(<_i24.Video>[]),
+      ) as _i33.Future<List<_i24.Video>>);
   @override
-  _i32.Future<List<_i24.Audio>> getUserAudios(String? userId) =>
+  _i33.Future<List<_i25.Audio>> getUserAudios(String? userId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getUserAudios,
           [userId],
         ),
-        returnValue: _i32.Future<List<_i24.Audio>>.value(<_i24.Audio>[]),
-      ) as _i32.Future<List<_i24.Audio>>);
+        returnValue: _i33.Future<List<_i25.Audio>>.value(<_i25.Audio>[]),
+      ) as _i33.Future<List<_i25.Audio>>);
 }
 
 /// A class which mocks [PrefsOGx].
@@ -3253,132 +3284,132 @@ class MockPrefsOGx extends _i1.Mock implements _i5.PrefsOGx {
   }
 
   @override
-  _i31.GetStorage get box => (super.noSuchMethod(
+  _i32.GetStorage get box => (super.noSuchMethod(
         Invocation.getter(#box),
-        returnValue: _FakeGetStorage_32(
+        returnValue: _FakeGetStorage_33(
           this,
           Invocation.getter(#box),
         ),
-      ) as _i31.GetStorage);
+      ) as _i32.GetStorage);
   @override
-  _i32.Future<dynamic> setDateRefreshed(String? date) => (super.noSuchMethod(
+  _i33.Future<dynamic> setDateRefreshed(String? date) => (super.noSuchMethod(
         Invocation.method(
           #setDateRefreshed,
           [date],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<bool> shouldRefreshBePerformed() => (super.noSuchMethod(
+  _i33.Future<bool> shouldRefreshBePerformed() => (super.noSuchMethod(
         Invocation.method(
           #shouldRefreshBePerformed,
           [],
         ),
-        returnValue: _i32.Future<bool>.value(false),
-      ) as _i32.Future<bool>);
+        returnValue: _i33.Future<bool>.value(false),
+      ) as _i33.Future<bool>);
   @override
-  _i32.Future<dynamic> setFCMSubscriptionFlag() => (super.noSuchMethod(
+  _i33.Future<dynamic> setFCMSubscriptionFlag() => (super.noSuchMethod(
         Invocation.method(
           #setFCMSubscriptionFlag,
           [],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> resetFCMSubscriptionFlag() => (super.noSuchMethod(
+  _i33.Future<dynamic> resetFCMSubscriptionFlag() => (super.noSuchMethod(
         Invocation.method(
           #resetFCMSubscriptionFlag,
           [],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<bool> getFCMSubscriptionFlag() => (super.noSuchMethod(
+  _i33.Future<bool> getFCMSubscriptionFlag() => (super.noSuchMethod(
         Invocation.method(
           #getFCMSubscriptionFlag,
           [],
         ),
-        returnValue: _i32.Future<bool>.value(false),
-      ) as _i32.Future<bool>);
+        returnValue: _i33.Future<bool>.value(false),
+      ) as _i33.Future<bool>);
   @override
-  _i32.Future<dynamic> saveUser(_i11.User? user) => (super.noSuchMethod(
+  _i33.Future<dynamic> saveUser(_i12.User? user) => (super.noSuchMethod(
         Invocation.method(
           #saveUser,
           [user],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<_i11.User?> getUser() => (super.noSuchMethod(
+  _i33.Future<_i12.User?> getUser() => (super.noSuchMethod(
         Invocation.method(
           #getUser,
           [],
         ),
-        returnValue: _i32.Future<_i11.User?>.value(),
-      ) as _i32.Future<_i11.User?>);
+        returnValue: _i33.Future<_i12.User?>.value(),
+      ) as _i33.Future<_i12.User?>);
   @override
-  _i32.Future<dynamic> saveSettings(_i8.SettingsModel? settings) =>
+  _i33.Future<dynamic> saveSettings(_i8.SettingsModel? settings) =>
       (super.noSuchMethod(
         Invocation.method(
           #saveSettings,
           [settings],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<_i8.SettingsModel> getSettings() => (super.noSuchMethod(
+  _i33.Future<_i8.SettingsModel> getSettings() => (super.noSuchMethod(
         Invocation.method(
           #getSettings,
           [],
         ),
-        returnValue: _i32.Future<_i8.SettingsModel>.value(_FakeSettingsModel_8(
+        returnValue: _i33.Future<_i8.SettingsModel>.value(_FakeSettingsModel_8(
           this,
           Invocation.method(
             #getSettings,
             [],
           ),
         )),
-      ) as _i32.Future<_i8.SettingsModel>);
+      ) as _i33.Future<_i8.SettingsModel>);
   @override
-  _i32.Future<dynamic> deleteUser() => (super.noSuchMethod(
+  _i33.Future<dynamic> deleteUser() => (super.noSuchMethod(
         Invocation.method(
           #deleteUser,
           [],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<dynamic> saveCountry(_i43.Country? country) =>
+  _i33.Future<dynamic> saveCountry(_i44.Country? country) =>
       (super.noSuchMethod(
         Invocation.method(
           #saveCountry,
           [country],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<_i43.Country?> getCountry() => (super.noSuchMethod(
+  _i33.Future<_i44.Country?> getCountry() => (super.noSuchMethod(
         Invocation.method(
           #getCountry,
           [],
         ),
-        returnValue: _i32.Future<_i43.Country?>.value(),
-      ) as _i32.Future<_i43.Country?>);
+        returnValue: _i33.Future<_i44.Country?>.value(),
+      ) as _i33.Future<_i44.Country?>);
   @override
-  _i32.Future<dynamic> saveProject(_i15.Project? project) =>
+  _i33.Future<dynamic> saveProject(_i16.Project? project) =>
       (super.noSuchMethod(
         Invocation.method(
           #saveProject,
           [project],
         ),
-        returnValue: _i32.Future<dynamic>.value(),
-      ) as _i32.Future<dynamic>);
+        returnValue: _i33.Future<dynamic>.value(),
+      ) as _i33.Future<dynamic>);
   @override
-  _i32.Future<_i15.Project?> getProject() => (super.noSuchMethod(
+  _i33.Future<_i16.Project?> getProject() => (super.noSuchMethod(
         Invocation.method(
           #getProject,
           [],
         ),
-        returnValue: _i32.Future<_i15.Project?>.value(),
-      ) as _i32.Future<_i15.Project?>);
+        returnValue: _i33.Future<_i16.Project?>.value(),
+      ) as _i33.Future<_i16.Project?>);
 }

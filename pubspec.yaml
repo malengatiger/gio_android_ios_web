@@ -102,6 +102,9 @@ dependencies:
   riverpod_annotation:
   riverpod:
   device_preview: ^1.1.0
+  pay: ^1.1.1
+  json_serializable: ^6.7.0
+  json_annotation: ^4.8.1
 
 
 

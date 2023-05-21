@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:geo_monitor/library/data/questionnaire.dart';
+import 'package:geo_monitor/library/data/subscription.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../data/country.dart';
@@ -169,6 +170,27 @@ class PrefsOGx {
       project = Project.fromJson(jsonDecode(mJson));
       pp("$mm getProject 🧩🧩🧩🧩🧩 retrieved .. ${project.name}  🔴🔴");
       return project;
+    }
+  }
+
+  Future saveGioSubscription(GioSubscription subscription) async {
+    final s = jsonEncode(subscription.toJson());
+    await box.write('GioSubscription', s);
+    pp("\n\n$mm saveGioSubscription SAVED: 🌽 ${subscription.organizationName}\n");
+    return null;
+  }
+
+  Future<GioSubscription?> getGioSubscription() async {
+    GioSubscription? sub;
+    var mJson = box.read('GioSubscription');
+    if (mJson == null) {
+      pp('$mm GioSubscription does not exist in Prefs, '
+          ' 🍎🍎🍎');
+      return null;
+    } else {
+      sub = GioSubscription.fromJson(jsonDecode(mJson));
+      pp("$mm getGioSubscription 🧩🧩🧩🧩🧩 retrieved .. ${sub.organizationName}  🔴🔴");
+      return sub;
     }
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/ui/settings/settings_form.dart';
@@ -36,7 +37,11 @@ class IntroPageViewerPortrait extends StatefulWidget {
     required this.isolateHandler,
     required this.fcmBloc,
     required this.organizationBloc,
-    required this.projectBloc, required this.dataHandler, required this.geoUploader, required this.cloudStorageBloc,
+    required this.projectBloc,
+    required this.dataHandler,
+    required this.geoUploader,
+    required this.cloudStorageBloc,
+    required this.firebaseAuth,
   }) : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
@@ -48,7 +53,7 @@ class IntroPageViewerPortrait extends StatefulWidget {
   final IsolateDataHandler dataHandler;
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
-
+  final FirebaseAuth firebaseAuth;
 
   @override
   IntroPageViewerPortraitState createState() => IntroPageViewerPortraitState();
@@ -131,7 +136,7 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
                 prefsOGx: widget.prefsOGx,
                 cacheManager: widget.cacheManager,
                 geoUploader: widget.geoUploader,
-                cloudStorageBloc: widget.cloudStorageBloc,
+                cloudStorageBloc: widget.cloudStorageBloc, firebaseAuth: widget.firebaseAuth,
               )));
     } else {
       pp('User is null,  🔆 🔆 🔆 🔆 cannot navigate to Dashboard');
@@ -189,6 +194,7 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
               prefsOGx: prefsOGx,
               dataApiDog: dataApiDog,
               cacheManager: cacheManager,
+              firebaseAuth: firebaseAuth,
             )));
 
     if (result is ur.User) {
@@ -237,8 +243,8 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
     await _setTexts(selectedLocale: p1.languageCode);
     Locale newLocale = Locale(settingsModel!.locale!);
     _setTexts();
-    final m =
-    LocaleAndTheme(themeIndex: settingsModel!.themeIndex!, locale: newLocale);
+    final m = LocaleAndTheme(
+        themeIndex: settingsModel!.themeIndex!, locale: newLocale);
     themeBloc.themeStreamController.sink.add(m);
     widget.fcmBloc.settingsStreamController.sink.add(settingsModel!);
   }
@@ -417,33 +423,24 @@ class IntroStrings {
       required this.registerOrganization});
 
   static Future<IntroStrings> getTranslated(String locale) async {
-    var hint =
-        await translator.translate('selectLanguage', locale);
+    var hint = await translator.translate('selectLanguage', locale);
 
     var signIn = await translator.translate('signIn', locale);
-    var organizations =
-        await translator.translate('organizations', locale);
+    var organizations = await translator.translate('organizations', locale);
     var managementPeople =
         await translator.translate('managementPeople', locale);
-    var fieldWorkers =
-        await translator.translate('fieldWorkers', locale);
-    var executives =
-        await translator.translate('executives', locale);
-    var information =
-        await translator.translate('information', locale);
-    var thankYou =
-        await translator.translate('thankYou', locale);
-    var thankYouMessage =
-        await translator.translate('thankYouMessage', locale);
+    var fieldWorkers = await translator.translate('fieldWorkers', locale);
+    var executives = await translator.translate('executives', locale);
+    var information = await translator.translate('information', locale);
+    var thankYou = await translator.translate('thankYou', locale);
+    var thankYouMessage = await translator.translate('thankYouMessage', locale);
 
-    var infrastructure =
-        await translator.translate('infrastructure', locale);
+    var infrastructure = await translator.translate('infrastructure', locale);
     var govt = await translator.translate('govt', locale);
     var youth = await translator.translate('youth', locale);
-    var community =
-        await translator.translate('community', locale);
-    var registerOrganization = await translator.translate(
-        'registerOrganization', locale);
+    var community = await translator.translate('community', locale);
+    var registerOrganization =
+        await translator.translate('registerOrganization', locale);
 
     final m = IntroStrings(
         organizations: organizations,

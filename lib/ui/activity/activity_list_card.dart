@@ -240,6 +240,7 @@ class _ActivityListCardState extends State<ActivityListCard> {
                     }
                     return GestureDetector(
                       onTap: () {
+                        pp('$mm event has been tapped - calling widget.onTapped(act); $widget');
                         widget.onTapped(act);
                       },
                       child: EventView(

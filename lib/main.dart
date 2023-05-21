@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -184,6 +185,7 @@ class LandingPageState extends State<LandingPage> {
     pp('$mx initialize: '
         ' Firebase App has been initialized: ${firebaseApp.name}, checking for authed current user');
     fbAuthedUser = fb.FirebaseAuth.instance.currentUser;
+
     await initializer.initializeGeo();
 
     final end = DateTime.now();
@@ -200,7 +202,7 @@ class LandingPageState extends State<LandingPage> {
       return const SizedBox();
     }
     if (fbAuthedUser == null) {
-      pp('$mx getWidget returning widget IntroMain ..');
+      pp('$mx getWidget returning widget IntroMain ..(fbAuthedUser == null)');
       return IntroMain(
         prefsOGx: prefsOGx,
         dataApiDog: dataApiDog,
@@ -210,16 +212,17 @@ class LandingPageState extends State<LandingPage> {
         organizationBloc: organizationBloc,
         projectBloc: projectBloc,
         geoUploader: geoUploader,
-        cloudStorageBloc: cloudStorageBloc,
+        cloudStorageBloc: cloudStorageBloc, firebaseAuth: FirebaseAuth.instance,
       );
     } else {
-      pp('$mx getWidget returning widget DashboardMain ..');
+      pp('$mx getWidget returning widget DashboardMain ..(fbAuthedUser == ✅)');
       return DashboardMain(
         dataHandler: dataHandler,
         dataApiDog: dataApiDog,
         fcmBloc: fcmBloc,
         projectBloc: projectBloc,
         prefsOGx: prefsOGx,
+        firebaseAuth: FirebaseAuth.instance,
         cloudStorageBloc: cloudStorageBloc,
         geoUploader: geoUploader,
         organizationBloc: organizationBloc,
