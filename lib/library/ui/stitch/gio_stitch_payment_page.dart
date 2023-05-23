@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/api/data_api_og.dart';
 import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:geo_monitor/library/data/stitch/amount.dart';
@@ -18,13 +19,14 @@ class GioStitchPaymentPage extends StatefulWidget {
       required this.stitchService,
       required this.prefsOGx,
       required this.title,
-      required this.amount})
+      required this.amount, required this.dataApiDog})
       : super(key: key);
 
   final StitchService stitchService;
   final PrefsOGx prefsOGx;
   final String title;
   final int amount;
+  final DataApiDog dataApiDog;
 
   @override
   GioStitchPaymentPageState createState() => GioStitchPaymentPageState();
@@ -66,6 +68,7 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
       busy = false;
     });
   }
+  GioPaymentRequest? gioPaymentRequest;
 
   Future _getPaymentRequest() async {
     pp('$mm _getPaymentRequest, token: $token');
@@ -73,7 +76,7 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
       busy2 = true;
     });
     try {
-      var req = GioPaymentRequest(
+      gioPaymentRequest = GioPaymentRequest(
           amount: Amount(quantity: widget.amount, currency: 'ZAR'),
           payerReference: 'Gio Services',
           externalReference: settings.organizationId,
@@ -82,9 +85,9 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
           beneficiaryReference: settings.organizationId,
           merchant: 'merchant_id_here',
           beneficiaryName: user!.organizationName);
-      pp('$mm _getPaymentRequest, request: ${req.toJson()}');
+      pp('$mm _getPaymentRequest, request: ${gioPaymentRequest!.toJson()}');
       var result =
-          await widget.stitchService.sendGraphQlPaymentRequest(req, token!);
+          await widget.stitchService.sendGraphQlPaymentRequest(gioPaymentRequest!, token!);
       pp('$mm back in the land of the living, id: ${result['id']} url: ${result['url']}');
       _navigateToWebView(result['id'], result['url']);
     } catch (e) {
@@ -96,12 +99,30 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
     });
   }
 
-  _navigateToWebView(String id, String url) {
+  _navigateToWebView(String id, String url) async {
     const redirectUrl = 'http://localhost:8080/return';
     final mUri = Uri.encodeComponent(redirectUrl);
     var redirect = '$url?redirect_uri=$mUri';
     pp('$mm url: $redirect');
-    navigateWithScale(StitchWebViewer(url: redirect), context);
+    var id = await navigateWithScale(StitchWebViewer(url: redirect), context);
+    if (id is String) {
+      //todo - write id to database
+      pp('$mm id returned from payment: $id, will be written to the database ...');
+      var sub = await widget.prefsOGx.getGioSubscription();
+      gioPaymentRequest?.paymentRequestId = id;
+      gioPaymentRequest?.organizationId = settings.organizationId;
+      gioPaymentRequest?.date = DateTime.now().toUtc().toIso8601String();
+      if (sub != null) {
+        gioPaymentRequest?.subscriptionId = sub.subscriptionId;
+      }
+      widget.dataApiDog.addPaymentRequest(gioPaymentRequest!);
+
+      if (mounted) {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      }
+    }
   }
 
   @override

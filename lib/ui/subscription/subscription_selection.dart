@@ -142,6 +142,7 @@ class SubscriptionSelectionState extends State<SubscriptionSelection> {
         PaymentMethods(
           amount: amount,
           label: label,
+          dataApiDog: widget.dataApiDog,
           stitchService: widget.stitchService,
           prefsOGx: widget.prefsOGx,
         ),
@@ -356,12 +357,14 @@ class PaymentMethods extends StatefulWidget {
     Key? key,
     required this.amount,
     required this.label,
-    required this.stitchService, required this.prefsOGx,
+    required this.stitchService, required this.prefsOGx, required this.dataApiDog,
   }) : super(key: key);
   final double amount;
   final String label;
   final StitchService stitchService;
   final PrefsOGx prefsOGx;
+  final DataApiDog dataApiDog;
+
 
 
   @override
@@ -415,6 +418,7 @@ class PaymentMethodsState extends State<PaymentMethods> {
           stitchService: widget.stitchService,
           prefsOGx: widget.prefsOGx,
           title: widget.label,
+          dataApiDog: widget.dataApiDog,
           amount: widget.amount.toInt(),
         ),
         context);

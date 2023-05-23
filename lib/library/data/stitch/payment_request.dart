@@ -19,6 +19,10 @@ class GioPaymentRequest {
     this.beneficiaryBankId,
     this.beneficiaryAccountNumber,
     this.merchant,
+    this.paymentRequestId,
+    this.organizationId,
+    this.subscriptionId,
+    this.date,
   });
 
   GioPaymentRequest.fromJson(dynamic json) {
@@ -30,6 +34,10 @@ class GioPaymentRequest {
     beneficiaryBankId = json['beneficiaryBankId'];
     beneficiaryAccountNumber = json['beneficiaryAccountNumber'];
     merchant = json['merchant'];
+    paymentRequestId = json['paymentRequestId'];
+    organizationId = json['organizationId'];
+    subscriptionId = json['subscriptionId'];
+    date = json['date'];
 
   }
   Amount? amount;
@@ -40,6 +48,10 @@ class GioPaymentRequest {
   String? beneficiaryBankId;
   String? beneficiaryAccountNumber;
   String? merchant;
+  String? paymentRequestId;
+  String? organizationId;
+  String? subscriptionId;
+  String? date;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -53,6 +65,11 @@ class GioPaymentRequest {
     map['beneficiaryBankId'] = beneficiaryBankId;
     map['beneficiaryAccountNumber'] = beneficiaryAccountNumber;
     map['merchant'] = merchant;
+    map['paymentRequestId'] = paymentRequestId;
+    map['subscriptionId'] = subscriptionId;
+    map['organizationId'] = organizationId;
+    map['date'] = date;
+
     return map;
   }
 }

@@ -11,6 +11,7 @@ import 'package:geo_monitor/library/data/location_request.dart';
 import 'package:geo_monitor/library/data/organization_registration_bag.dart';
 import 'package:geo_monitor/library/data/project_polygon.dart';
 import 'package:geo_monitor/library/data/project_summary.dart';
+import 'package:geo_monitor/library/data/stitch/payment_request.dart';
 import 'package:geo_monitor/library/data/subscription.dart';
 import 'package:geo_monitor/library/errors/error_handler.dart';
 import 'package:geo_monitor/utilities/environment.dart';
@@ -110,6 +111,14 @@ class DataApiDog {
     return s;
   }
 
+  Future<GioPaymentRequest> addPaymentRequest(GioPaymentRequest paymentRequest) async {
+    Map bag = paymentRequest.toJson();
+
+    var result = await _callWebAPIPost('${url}addPaymentRequest', bag);
+    var s = GioPaymentRequest.fromJson(result);
+    return s;
+  }
+
   Future<GioSubscription> addSubscription(GioSubscription subscription) async {
     Map bag = subscription.toJson();
 
@@ -118,6 +127,7 @@ class DataApiDog {
     await prefsOGx.saveGioSubscription(s);
     return s;
   }
+
   Future<GioSubscription> updateSubscription(GioSubscription subscription) async {
     Map bag = subscription.toJson();
 

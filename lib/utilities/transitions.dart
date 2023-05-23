@@ -16,8 +16,8 @@ void navigateWithFade(Widget widget, BuildContext context) {
     ),
   );
 }
-void navigateWithScale(Widget widget, BuildContext context) {
-  Navigator.push(
+Future navigateWithScale(Widget widget, BuildContext context) async {
+  var res = await Navigator.push(
     context,
     PageRouteBuilder(
       pageBuilder: (_, __, ___) => widget,
@@ -29,6 +29,7 @@ void navigateWithScale(Widget widget, BuildContext context) {
       },
     ),
   );
+  return res;
 }
 void navigateWithSlide(Widget widget, BuildContext context) {
   Navigator.push(
