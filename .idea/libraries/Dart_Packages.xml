@@ -821,6 +821,13 @@
             </list>
           </value>
         </entry>
+        <entry key="flutter_hooks">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_hooks-0.18.6/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flutter_isolate">
           <value>
             <list>
@@ -1077,6 +1084,69 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/google_maps_webservice-0.0.20-nullsafety.5/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="gql">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/gql-0.14.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="gql_dedupe_link">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/gql_dedupe_link-2.0.3+1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="gql_error_link">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/gql_error_link-0.2.3+1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="gql_exec">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/gql_exec-0.4.3/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="gql_http_link">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/gql_http_link-0.4.5/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="gql_link">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/gql_link-0.5.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="gql_transform_link">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/gql_transform_link-0.2.2+1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="graphql">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/graphql-5.1.2/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="graphql_flutter">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/graphql_flutter-5.1.0/lib" />
             </list>
           </value>
         </entry>
@@ -1371,6 +1441,13 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/nm-0.5.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="normalize">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/normalize-0.7.2/lib" />
             </list>
           </value>
         </entry>
@@ -2098,7 +2175,7 @@
         <entry key="web_socket_channel">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/web_socket_channel-2.4.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/web_socket_channel-2.2.0/lib" />
             </list>
           </value>
         </entry>
@@ -2277,6 +2354,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_credit_card-3.0.6/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_email_sender-5.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_foreground_task-3.10.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_hooks-0.18.6/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_isolate-2.0.4/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_libphonenumber-1.4.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_lints-2.0.1/lib" />
@@ -2311,6 +2389,15 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/google_maps_flutter_platform_interface-2.2.6/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/google_maps_utils-1.5.0+0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/google_maps_webservice-0.0.20-nullsafety.5/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/gql-0.14.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/gql_dedupe_link-2.0.3+1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/gql_error_link-0.2.3+1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/gql_exec-0.4.3/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/gql_http_link-0.4.5/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/gql_link-0.5.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/gql_transform_link-0.2.2+1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/graphql-5.1.2/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/graphql_flutter-5.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/graphs-2.3.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/hive-2.2.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/hive_flutter-1.1.0/lib" />
@@ -2353,6 +2440,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/native_device_orientation-1.1.4/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/nested-1.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/nm-0.5.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/normalize-0.7.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/octo_image-1.0.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/package_config-2.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/page_transition-2.0.9/lib" />
@@ -2455,7 +2543,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/wakelock_web-0.4.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/wakelock_windows-0.2.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/watcher-1.1.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/web_socket_channel-2.4.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/web_socket_channel-2.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/webview_flutter-4.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/webview_flutter_android-3.7.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/webview_flutter_platform_interface-2.3.0/lib" />

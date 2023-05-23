@@ -14,6 +14,7 @@ class SplashWidget extends StatefulWidget {
 
 class _SplashWidgetState extends State<SplashWidget> {
   static const mm = '💠💠💠💠💠💠💠💠 SplashWidget';
+
   @override
   void initState() {
     super.initState();
@@ -21,12 +22,15 @@ class _SplashWidgetState extends State<SplashWidget> {
   }
 
   String? message;
+
   void _performSetup() async {
     await GetStorage.init(cacheName);
     prefsOGx = PrefsOGx();
     var sett = await prefsOGx.getSettings();
     message = await translator.translate('weHelpYou', sett.locale!);
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override

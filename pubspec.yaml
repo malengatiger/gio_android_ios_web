@@ -105,6 +105,8 @@ dependencies:
   pay: ^1.1.1
   json_serializable: ^6.7.0
   json_annotation: ^4.8.1
+  graphql_flutter: ^5.1.0
+  web_socket_channel: 2.2.0
 
 
 
@@ -131,4 +133,5 @@ flutter:
     - assets/l10n/
     - assets/
     - assets/projects/
+    - assets/payment/
 #    - .env

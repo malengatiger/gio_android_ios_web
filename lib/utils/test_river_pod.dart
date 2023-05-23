@@ -29,7 +29,7 @@ class TestRiverPodState extends ConsumerState<TestRiverPod> {
   void _getData() async {
     //final sett = await prefsOGx.getSettings();
     pp('$mm _getData: start watching the provider ...');
-    await initializer.initializeGeo();
+    await initializer.setupGio();
     pp('$mm _getData: initializer complete ...');
     final mBak  = ref.watch(getOrganizationDataProvider);
     pp('$mm _getData: bag delivered ?? ... $mBak');

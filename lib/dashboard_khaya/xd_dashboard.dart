@@ -63,6 +63,7 @@ import '../library/ui/maps/geofence_map_tablet.dart';
 import '../library/ui/maps/org_map_mobile.dart';
 import '../library/ui/maps/project_polygon_map_mobile.dart';
 import '../library/ui/settings/settings_main.dart';
+import '../stitch/stitch_service.dart';
 import 'member_list.dart';
 
 class DashboardKhaya extends StatefulWidget {
@@ -76,7 +77,9 @@ class DashboardKhaya extends StatefulWidget {
       required this.cacheManager,
       required this.dataHandler,
       required this.geoUploader,
-      required this.cloudStorageBloc, required this.firebaseAuth})
+      required this.cloudStorageBloc,
+      required this.firebaseAuth,
+      required this.stitchService})
       : super(key: key);
 
   final DataApiDog dataApiDog;
@@ -89,7 +92,7 @@ class DashboardKhaya extends StatefulWidget {
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
   final auth.FirebaseAuth firebaseAuth;
-
+  final StitchService stitchService;
 
   @override
   State<DashboardKhaya> createState() => DashboardKhayaState();
@@ -457,15 +460,18 @@ class DashboardKhayaState extends State<DashboardKhaya> {
   void navigateToIntro() {
     navigateWithScale(
         IntroMain(
-            prefsOGx: widget.prefsOGx,
-            dataApiDog: widget.dataApiDog,
-            cacheManager: widget.cacheManager,
-            isolateHandler: widget.dataHandler,
-            fcmBloc: widget.fcmBloc,
-            organizationBloc: widget.organizationBloc,
-            geoUploader: widget.geoUploader,
-            cloudStorageBloc: widget.cloudStorageBloc,
-            projectBloc: widget.projectBloc, firebaseAuth: widget.firebaseAuth,),
+          prefsOGx: widget.prefsOGx,
+          dataApiDog: widget.dataApiDog,
+          cacheManager: widget.cacheManager,
+          isolateHandler: widget.dataHandler,
+          fcmBloc: widget.fcmBloc,
+          organizationBloc: widget.organizationBloc,
+          geoUploader: widget.geoUploader,
+          cloudStorageBloc: widget.cloudStorageBloc,
+          stitchService: widget.stitchService,
+          projectBloc: widget.projectBloc,
+          firebaseAuth: widget.firebaseAuth,
+        ),
         context);
   }
 
@@ -474,6 +480,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
         SubscriptionSelection(
           prefsOGx: widget.prefsOGx,
           dataApiDog: widget.dataApiDog,
+          stitchService: widget.stitchService,
         ),
         context);
   }
@@ -537,7 +544,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
   bool forceRefresh = false;
   void _onRefreshRequested() {
     pp(' ✅✅✅ .... _onRefreshRequested ... calling broadcastRefresh with true');
-    refreshBloc.broadcastRefresh();
+    // refreshBloc.broadcastRefresh();
     _getData();
   }
 

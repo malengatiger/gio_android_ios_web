@@ -15,13 +15,12 @@ import 'package:geo_monitor/library/bloc/organization_bloc.dart';
 import 'package:geo_monitor/library/bloc/project_bloc.dart';
 import 'package:geo_monitor/library/functions.dart';
 import 'package:geo_monitor/splash/splash_page.dart';
+import 'package:geo_monitor/stitch/stitch_service.dart';
 import 'package:geo_monitor/ui/dashboard/dashboard_main.dart';
 import 'package:geo_monitor/ui/intro/intro_main.dart';
-import 'package:geo_monitor/utils/test_river_pod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:universal_platform/universal_platform.dart';
 
-import 'firebase_options.dart';
 import 'library/api/data_api_og.dart';
 import 'library/api/prefs_og.dart';
 import 'library/bloc/cloud_storage_bloc.dart';
@@ -50,7 +49,6 @@ void main() async {
       return const GeoApp();
     },
   )));
-
 }
 
 class GeoApp extends ConsumerWidget {
@@ -92,7 +90,7 @@ class GeoApp extends ConsumerWidget {
               animationDuration: const Duration(milliseconds: 3000),
               curve: Curves.easeInCirc,
               splashIconSize: 160.0,
-              nextScreen: const LandingPage(),
+              nextScreen: LandingPage(prefsOGx: PrefsOGx()),
               splashTransition: SplashTransition.fadeTransition,
               pageTransitionType: PageTransitionType.leftToRight,
               backgroundColor: Colors.pink.shade900,
@@ -157,7 +155,9 @@ StreamSubscription<String> listenForKill({required BuildContext context}) {
 }
 
 class LandingPage extends StatefulWidget {
-  const LandingPage({Key? key}) : super(key: key);
+  const LandingPage({Key? key, required this.prefsOGx}) : super(key: key);
+
+  final PrefsOGx prefsOGx;
 
   @override
   State<LandingPage> createState() => LandingPageState();
@@ -180,16 +180,20 @@ class LandingPageState extends State<LandingPage> {
       busy = true;
     });
 
-    firebaseApp = await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-    pp('$mx initialize: '
-        ' Firebase App has been initialized: ${firebaseApp.name}, checking for authed current user');
-    fbAuthedUser = fb.FirebaseAuth.instance.currentUser;
-
-    await initializer.initializeGeo();
-
-    final end = DateTime.now();
-    pp('$mx ................. initialization took: 🔆 ${end.difference(start).inMilliseconds} inMilliseconds 🔆');
+    try {
+      final user = await widget.prefsOGx.getUser();
+      if (user != null) {
+        await initializer.setupGio();
+        final end = DateTime.now();
+        pp('$mx ................. initialization took: 🔆 ${end.difference(start).inMilliseconds} inMilliseconds 🔆');
+      } else {
+        await initializer.initializeGioServices();
+        fbAuthedUser = null;
+      }
+    } catch (e) {
+      pp(e);
+      showSnackBar(message: 'Initialization failed', context: context);
+    }
 
     setState(() {
       busy = false;
@@ -198,8 +202,10 @@ class LandingPageState extends State<LandingPage> {
 
   Widget getWidget() {
     if (busy) {
-      pp('$mx getWidget returning empty sizeBox because initialization is still going on ...');
-      return const SizedBox();
+      pp('$mx getWidget: BUSY! returning empty sizeBox because initialization is still going on ...');
+      return const Center(child: SizedBox(height: 24, width: 24,
+        child: CircularProgressIndicator(),
+      ));
     }
     if (fbAuthedUser == null) {
       pp('$mx getWidget returning widget IntroMain ..(fbAuthedUser == null)');
@@ -212,7 +218,9 @@ class LandingPageState extends State<LandingPage> {
         organizationBloc: organizationBloc,
         projectBloc: projectBloc,
         geoUploader: geoUploader,
-        cloudStorageBloc: cloudStorageBloc, firebaseAuth: FirebaseAuth.instance,
+        stitchService: stitchService,
+        cloudStorageBloc: cloudStorageBloc,
+        firebaseAuth: FirebaseAuth.instance,
       );
     } else {
       pp('$mx getWidget returning widget DashboardMain ..(fbAuthedUser == ✅)');
@@ -224,6 +232,7 @@ class LandingPageState extends State<LandingPage> {
         prefsOGx: prefsOGx,
         firebaseAuth: FirebaseAuth.instance,
         cloudStorageBloc: cloudStorageBloc,
+        stitchService: stitchService,
         geoUploader: geoUploader,
         organizationBloc: organizationBloc,
         cacheManager: cacheManager,
@@ -234,18 +243,20 @@ class LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     pp('$mx build method starting ....');
-    return busy
-        ? Center(
-            child: SizedBox(
-              width: 200,
-              height: 200,
-              child: Image.asset(
-                'assets/gio.png',
-                height: 100,
-                width: 80,
-              ),
-            ),
-          )
-        : getWidget();
+    return SafeArea(child: Scaffold(
+      body: busy
+          ? Center(
+        child: SizedBox(
+          width: 200,
+          height: 200,
+          child: Image.asset(
+            'assets/gio.png',
+            height: 120,
+            width: 100,
+          ),
+        ),
+      )
+          : getWidget(),
+    ));
   }
 }

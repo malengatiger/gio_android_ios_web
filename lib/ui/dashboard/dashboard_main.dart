@@ -18,6 +18,7 @@ import '../../library/cache_manager.dart';
 import '../../library/data/user.dart';
 import '../../library/generic_functions.dart';
 import '../../library/geofence/the_great_geofencer.dart';
+import '../../stitch/stitch_service.dart';
 
 class DashboardMain extends StatefulWidget {
   const DashboardMain({
@@ -31,7 +32,7 @@ class DashboardMain extends StatefulWidget {
     required this.dataHandler,
     required this.geoUploader,
     required this.cloudStorageBloc,
-    required this.firebaseAuth,
+    required this.firebaseAuth, required this.stitchService,
   }) : super(key: key);
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
@@ -43,6 +44,8 @@ class DashboardMain extends StatefulWidget {
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
   final auth.FirebaseAuth firebaseAuth;
+  final StitchService stitchService;
+
 
   @override
   DashboardMainState createState() => DashboardMainState();
@@ -153,7 +156,7 @@ class DashboardMainState extends State<DashboardMain>
               onWillStart: () async {
                 pp('\n\n$mm WillStartForegroundTask: onWillStart '
                     '🌎 what do we do now, Boss? 🌎🌎🌎🌎🌎🌎try data refresh? ... ');
-                _refreshWhileInBackground();
+               // _refreshWhileInBackground();
                 return geofenceService.isRunningService;
               },
               androidNotificationOptions: AndroidNotificationOptions(
@@ -191,6 +194,7 @@ class DashboardMainState extends State<DashboardMain>
                   projectBloc: widget.projectBloc,
                   geoUploader: widget.geoUploader,
                   firebaseAuth: widget.firebaseAuth,
+                  stitchService: widget.stitchService,
                   cloudStorageBloc: widget.cloudStorageBloc,
                   prefsOGx: widget.prefsOGx,
                   cacheManager: widget.cacheManager,
@@ -208,6 +212,7 @@ class DashboardMainState extends State<DashboardMain>
                       firebaseAuth: widget.firebaseAuth,
                       organizationBloc: widget.organizationBloc,
                       cacheManager: widget.cacheManager,
+                      stitchService: widget.stitchService,
                     );
                   },
                   landscape: (context) {
@@ -220,6 +225,7 @@ class DashboardMainState extends State<DashboardMain>
                       firebaseAuth: widget.firebaseAuth,
                       geoUploader: widget.geoUploader,
                       cloudStorageBloc: widget.cloudStorageBloc,
+                      stitchService: widget.stitchService,
                       prefsOGx: widget.prefsOGx,
                       cacheManager: widget.cacheManager,
                     );

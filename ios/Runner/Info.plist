@@ -100,7 +100,11 @@
 	<array>
 		<string>dev.flutter.background.refresh</string>
 	</array>
-
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Your location is requested by your manager or supervisor via notifications in the background</string>
 </dict>

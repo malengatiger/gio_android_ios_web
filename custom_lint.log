@@ -564,3 +564,135 @@ The Dart VM service is listening on http://127.0.0.1:62823/BdhasIlti20=/
 The Dart DevTools debugger and profiler is available at: http://127.0.0.1:62823/BdhasIlti20=/devtools?uri=ws://127.0.0.1:62823/BdhasIlti20=/ws
 The Dart VM service is listening on http://127.0.0.1:63397/qZdl9H11xWI=/
 The Dart DevTools debugger and profiler is available at: http://127.0.0.1:63397/qZdl9H11xWI=/devtools?uri=ws://127.0.0.1:63397/qZdl9H11xWI=/ws
+The Dart VM service is listening on http://127.0.0.1:61057/rh3-EJf0QLs=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:61057/rh3-EJf0QLs=/devtools?uri=ws://127.0.0.1:61057/rh3-EJf0QLs=/ws
+The Dart VM service is listening on http://127.0.0.1:50443/YhHahERa-oo=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:50443/YhHahERa-oo=/devtools?uri=ws://127.0.0.1:50443/YhHahERa-oo=/ws
+The Dart VM service is listening on http://127.0.0.1:50527/h2w-Xc4KCEk=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:50527/h2w-Xc4KCEk=/devtools?uri=ws://127.0.0.1:50527/h2w-Xc4KCEk=/ws
+The Dart VM service is listening on http://127.0.0.1:52826/c98I34VlzOo=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:52826/c98I34VlzOo=/devtools?uri=ws://127.0.0.1:52826/c98I34VlzOo=/ws
+The Dart VM service is listening on http://127.0.0.1:53954/XLejolYzxHI=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:53954/XLejolYzxHI=/devtools?uri=ws://127.0.0.1:53954/XLejolYzxHI=/ws
+The request edit.getAssists failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+A request throw the exception:Bad state: Unable to find the context to /Users/aubreymalabie/.pub-cache/hosted/pub.dev/pay-1.1.1/lib/src/widgets/pay_button.dart
+#0      AnalysisContextCollectionImpl.contextFor (package:analyzer/src/dart/analysis/analysis_context_collection.dart:143:5)
+#1      _ClientAnalyzerPlugin.handleEditGetAssists (package:custom_lint_builder/src/client.dart:406:47)
+<asynchronous suspension>
+#2      ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:564:18)
+<asynchronous suspension>
+#3      ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:611:18)
+<asynchronous suspension>
+
+at:
+#0      SocketCustomLintServerToClientChannel.sendCustomLintRequest.<anonymous closure> (package:custom_lint/src/v2/server_to_client_channel.dart:267:11)
+#1      _$_CustomLintResponseAnalyzerPluginResponse.map (package:custom_lint/src/v2/protocol.freezed.dart:924:34)
+#2      SocketCustomLintServerToClientChannel.sendCustomLintRequest (package:custom_lint/src/v2/server_to_client_channel.dart:261:14)
+<asynchronous suspension>
+#3      SocketCustomLintServerToClientChannel.sendAnalyzerPluginRequest (package:custom_lint/src/v2/server_to_client_channel.dart:238:22)
+<asynchronous suspension>
+#4      CustomLintServer._handleRequest.<anonymous closure>.<anonymous closure> (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:177:17)
+<asynchronous suspension>
+#5      PendingOperation.run (package:custom_lint/src/async_operation.dart:22:14)
+<asynchronous suspension>
+#6      CustomLintServer._handleRequest (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:160:22)
+<asynchronous suspension>
+
+The request edit.getAssists failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+A request throw the exception:Bad state: Unable to find the context to /Users/aubreymalabie/.pub-cache/hosted/pub.dev/pay-1.1.1/lib/src/widgets/pay_button.dart
+#0      AnalysisContextCollectionImpl.contextFor (package:analyzer/src/dart/analysis/analysis_context_collection.dart:143:5)
+#1      _ClientAnalyzerPlugin.handleEditGetAssists (package:custom_lint_builder/src/client.dart:406:47)
+<asynchronous suspension>
+#2      ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:564:18)
+<asynchronous suspension>
+#3      ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:611:18)
+<asynchronous suspension>
+
+at:
+#0      SocketCustomLintServerToClientChannel.sendCustomLintRequest.<anonymous closure> (package:custom_lint/src/v2/server_to_client_channel.dart:267:11)
+#1      _$_CustomLintResponseAnalyzerPluginResponse.map (package:custom_lint/src/v2/protocol.freezed.dart:924:34)
+#2      SocketCustomLintServerToClientChannel.sendCustomLintRequest (package:custom_lint/src/v2/server_to_client_channel.dart:261:14)
+<asynchronous suspension>
+#3      SocketCustomLintServerToClientChannel.sendAnalyzerPluginRequest (package:custom_lint/src/v2/server_to_client_channel.dart:238:22)
+<asynchronous suspension>
+#4      CustomLintServer._handleRequest.<anonymous closure>.<anonymous closure> (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:177:17)
+<asynchronous suspension>
+#5      PendingOperation.run (package:custom_lint/src/async_operation.dart:22:14)
+<asynchronous suspension>
+#6      CustomLintServer._handleRequest (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:160:22)
+<asynchronous suspension>
+
+The Dart VM service is listening on http://127.0.0.1:56389/TJymwtCf9oA=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:56389/TJymwtCf9oA=/devtools?uri=ws://127.0.0.1:56389/TJymwtCf9oA=/ws
+The Dart VM service is listening on http://127.0.0.1:56478/NNZQCeA0EZQ=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:56478/NNZQCeA0EZQ=/devtools?uri=ws://127.0.0.1:56478/NNZQCeA0EZQ=/ws
+The Dart VM service is listening on http://127.0.0.1:56520/HIGEdDG2f3E=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:56520/HIGEdDG2f3E=/devtools?uri=ws://127.0.0.1:56520/HIGEdDG2f3E=/ws
+The Dart VM service is listening on http://127.0.0.1:56572/y2C8IXTXvyE=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:56572/y2C8IXTXvyE=/devtools?uri=ws://127.0.0.1:56572/y2C8IXTXvyE=/ws
+The Dart VM service is listening on http://127.0.0.1:56646/nW-HkzXWRnk=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:56646/nW-HkzXWRnk=/devtools?uri=ws://127.0.0.1:56646/nW-HkzXWRnk=/ws
+The Dart VM service is listening on http://127.0.0.1:57009/FR93ucFC388=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:57009/FR93ucFC388=/devtools?uri=ws://127.0.0.1:57009/FR93ucFC388=/ws
+The Dart VM service is listening on http://127.0.0.1:57097/DNTF79xBohY=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:57097/DNTF79xBohY=/devtools?uri=ws://127.0.0.1:57097/DNTF79xBohY=/ws
+The Dart VM service is listening on http://127.0.0.1:58270/gv1cvyRgP94=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:58270/gv1cvyRgP94=/devtools?uri=ws://127.0.0.1:58270/gv1cvyRgP94=/ws
+The Dart VM service is listening on http://127.0.0.1:58338/O9vcSFfP4go=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:58338/O9vcSFfP4go=/devtools?uri=ws://127.0.0.1:58338/O9vcSFfP4go=/ws
+The Dart VM service is listening on http://127.0.0.1:59590/0T2654e5SnE=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:59590/0T2654e5SnE=/devtools?uri=ws://127.0.0.1:59590/0T2654e5SnE=/ws
+The Dart VM service is listening on http://127.0.0.1:59661/yVAlV_KFtOg=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:59661/yVAlV_KFtOg=/devtools?uri=ws://127.0.0.1:59661/yVAlV_KFtOg=/ws
+The Dart VM service is listening on http://127.0.0.1:60079/9Jkc4fPG94s=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:60079/9Jkc4fPG94s=/devtools?uri=ws://127.0.0.1:60079/9Jkc4fPG94s=/ws
+The Dart VM service is listening on http://127.0.0.1:60157/nnh8JQZcRdc=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:60157/nnh8JQZcRdc=/devtools?uri=ws://127.0.0.1:60157/nnh8JQZcRdc=/ws
+The Dart VM service is listening on http://127.0.0.1:60775/VvKhAkFPo7U=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:60775/VvKhAkFPo7U=/devtools?uri=ws://127.0.0.1:60775/VvKhAkFPo7U=/ws
+The Dart VM service is listening on http://127.0.0.1:61393/FtE8ERkM3sI=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:61393/FtE8ERkM3sI=/devtools?uri=ws://127.0.0.1:61393/FtE8ERkM3sI=/ws
+The Dart VM service is listening on http://127.0.0.1:49660/ndv-JOwIrT4=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:49660/ndv-JOwIrT4=/devtools?uri=ws://127.0.0.1:49660/ndv-JOwIrT4=/ws
+The Dart VM service is listening on http://127.0.0.1:56197/EJQHBz-aMfo=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:56197/EJQHBz-aMfo=/devtools?uri=ws://127.0.0.1:56197/EJQHBz-aMfo=/ws
+The Dart VM service is listening on http://127.0.0.1:56475/lJ11tO3iMXU=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:56475/lJ11tO3iMXU=/devtools?uri=ws://127.0.0.1:56475/lJ11tO3iMXU=/ws
+The Dart VM service is listening on http://127.0.0.1:53100/pzHv5jQ7Dio=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:53100/pzHv5jQ7Dio=/devtools?uri=ws://127.0.0.1:53100/pzHv5jQ7Dio=/ws
+The Dart VM service is listening on http://127.0.0.1:57566/0kS8h2Mp1ek=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:57566/0kS8h2Mp1ek=/devtools?uri=ws://127.0.0.1:57566/0kS8h2Mp1ek=/ws
+The Dart VM service is listening on http://127.0.0.1:60465/LVLm3-sBWqw=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:60465/LVLm3-sBWqw=/devtools?uri=ws://127.0.0.1:60465/LVLm3-sBWqw=/ws
+The Dart VM service is listening on http://127.0.0.1:53311/r26J2y2djZI=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:53311/r26J2y2djZI=/devtools?uri=ws://127.0.0.1:53311/r26J2y2djZI=/ws
+The Dart VM service is listening on http://127.0.0.1:53376/dw70QpvjZyM=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:53376/dw70QpvjZyM=/devtools?uri=ws://127.0.0.1:53376/dw70QpvjZyM=/ws
+The Dart VM service is listening on http://127.0.0.1:61326/uCxOvl8wmEY=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:61326/uCxOvl8wmEY=/devtools?uri=ws://127.0.0.1:61326/uCxOvl8wmEY=/ws
+The Dart VM service is listening on http://127.0.0.1:61405/K3kLz78wYNE=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:61405/K3kLz78wYNE=/devtools?uri=ws://127.0.0.1:61405/K3kLz78wYNE=/ws
+The Dart VM service is listening on http://127.0.0.1:61614/A1TIWLlSKzI=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:61614/A1TIWLlSKzI=/devtools?uri=ws://127.0.0.1:61614/A1TIWLlSKzI=/ws
+[custom_lint] 2023-05-23T08:23:29.606856 Could not start the VM service: localhost:61662 is already in use.
+[custom_lint] 2023-05-23T08:23:29.606856
+[custom_lint] 2023-05-23T08:23:29.606856
+Failed to start pluginsThe request analysis.setContextRoots failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+Bad state: Failed to start the plugins.
+at:
+#0      SocketCustomLintServerToClientChannel._checkInitializationFail.<anonymous closure> (package:custom_lint/src/v2/server_to_client_channel.dart:227:11)
+<asynchronous suspension>
+#1      Future.any.onValue (dart:async/future.dart:615:5)
+<asynchronous suspension>
+
+The Dart VM service is listening on http://127.0.0.1:62100/xFpFMK39R08=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:62100/xFpFMK39R08=/devtools?uri=ws://127.0.0.1:62100/xFpFMK39R08=/ws
+The Dart VM service is listening on http://127.0.0.1:64040/ZCCkxiZE77s=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:64040/ZCCkxiZE77s=/devtools?uri=ws://127.0.0.1:64040/ZCCkxiZE77s=/ws
+The Dart VM service is listening on http://127.0.0.1:64238/Qy9FeJ5zZls=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:64238/Qy9FeJ5zZls=/devtools?uri=ws://127.0.0.1:64238/Qy9FeJ5zZls=/ws
+The Dart VM service is listening on http://127.0.0.1:64334/PEZQbgjeZ2I=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:64334/PEZQbgjeZ2I=/devtools?uri=ws://127.0.0.1:64334/PEZQbgjeZ2I=/ws

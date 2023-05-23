@@ -13,7 +13,6 @@ class Assets {
   static const String assetsVideo3 = 'assets/video3.png';
   static const String assetsXd1 = 'assets/xd1.jpg';
   static const String filesPeople = 'assets/files/people.csv';
-  static const String geoMonitor = '.env';
   static const String introImg1 = 'assets/intro/img1.jpeg';
   static const String introImg2 = 'assets/intro/img2.jpeg';
   static const String introImg3 = 'assets/intro/img3.jpg';
@@ -121,6 +120,19 @@ class Assets {
   static const String mapiconsWatertower = 'assets/mapicons/watertower.png';
   static const String mapiconsWelding = 'assets/mapicons/welding.png';
   static const String mapiconsWindturbine = 'assets/mapicons/windturbine.png';
+  static const String paymentDefaultApplePayConfig = 'assets/payment/default_apple_pay_config.json';
+  static const String paymentDefaultGooglePayConfig = 'assets/payment/default_google_pay_config.json';
+  static const String projectsCamera = 'assets/projects/camera.png';
+  static const String projectsGpsOn = 'assets/projects/gps-on.png';
+  static const String projectsMicrophone = 'assets/projects/microphone.png';
+  static const String projectsNaviagtion = 'assets/projects/naviagtion.png';
+  static const String projectsPlay = 'assets/projects/play.png';
+  static const String projectsProj1 = 'assets/projects/proj1.jpg';
+  static const String projectsProj2 = 'assets/projects/proj2.jpg';
+  static const String projectsProj3 = 'assets/projects/proj3.jpg';
+  static const String projectsProj4 = 'assets/projects/proj4.jpg';
+  static const String projectsProj5 = 'assets/projects/proj5.jpg';
+  static const String projectsProj6 = 'assets/projects/proj6.jpg';
   static const String weatherCloudy = 'assets/weather/cloudy.png';
   static const String weatherCloudy2 = 'assets/weather/cloudy2.png';
   static const String weatherColoureWeatherIcons = 'assets/weather/coloure-weather-icons.zip';

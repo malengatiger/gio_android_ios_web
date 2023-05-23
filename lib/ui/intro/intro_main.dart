@@ -12,6 +12,7 @@ import '../../library/bloc/isolate_handler.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
 import '../../library/cache_manager.dart';
+import '../../stitch/stitch_service.dart';
 import 'intro_page_viewer_landscape.dart';
 
 class IntroMain extends StatefulWidget {
@@ -25,6 +26,8 @@ class IntroMain extends StatefulWidget {
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
   final FirebaseAuth firebaseAuth;
+  final StitchService stitchService;
+
 
   const IntroMain({
     Key? key,
@@ -37,7 +40,7 @@ class IntroMain extends StatefulWidget {
     required this.projectBloc,
     required this.geoUploader,
     required this.cloudStorageBloc,
-    required this.firebaseAuth,
+    required this.firebaseAuth, required this.stitchService,
   }) : super(key: key);
   @override
   IntroMainState createState() => IntroMainState();
@@ -76,6 +79,8 @@ class IntroMainState extends State<IntroMain>
           geoUploader: widget.geoUploader,
           cloudStorageBloc: widget.cloudStorageBloc,
           firebaseAuth: widget.firebaseAuth,
+          stitchService: widget.stitchService,
+
         );
       },
       tablet: (ctx) {
@@ -92,6 +97,7 @@ class IntroMainState extends State<IntroMain>
               cacheManager: widget.cacheManager,
               isolateHandler: widget.isolateHandler,
               geoUploader: widget.geoUploader,
+              stitchService: widget.stitchService,
               cloudStorageBloc: widget.cloudStorageBloc,
             );
           },
@@ -106,6 +112,8 @@ class IntroMainState extends State<IntroMain>
               geoUploader: widget.geoUploader,
               cloudStorageBloc: widget.cloudStorageBloc,
               firebaseAuth: widget.firebaseAuth,
+              stitchService: widget.stitchService,
+
               fcmBloc: widget.fcmBloc,
             );
           },

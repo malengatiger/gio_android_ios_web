@@ -25,6 +25,7 @@ import '../../library/emojis.dart';
 import '../../library/functions.dart';
 import '../../library/generic_functions.dart';
 import '../../library/ui/settings/settings_form.dart';
+import '../../stitch/stitch_service.dart';
 import 'intro_page_one_landscape.dart';
 
 class IntroPageViewerLandscape extends StatefulWidget {
@@ -39,7 +40,7 @@ class IntroPageViewerLandscape extends StatefulWidget {
       required this.dataHandler,
       required this.geoUploader,
       required this.cloudStorageBloc,
-      required this.firebaseAuth})
+      required this.firebaseAuth, required this.stitchService})
       : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
@@ -51,6 +52,8 @@ class IntroPageViewerLandscape extends StatefulWidget {
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
   final FirebaseAuth firebaseAuth;
+  final StitchService stitchService;
+
 
   @override
   State<IntroPageViewerLandscape> createState() =>
@@ -158,6 +161,7 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
                   geoUploader: geoUploader,
                   prefsOGx: widget.prefsOGx,
                   firebaseAuth: widget.firebaseAuth,
+                  stitchService: widget.stitchService,
                   cacheManager: widget.cacheManager,
                 )));
       } else {
