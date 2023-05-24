@@ -334,35 +334,43 @@ class PhotoFrameState extends State<PhotoFrame> {
       leftPadding = 20;
       rightPadding = 20;
     }
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text(title == null?'Photo': title!, style: myTextStyleMediumLarge(context),),
+        title: Text(title == null?'Photo': title!, style: myTextStyleLargeWithColor(context, color),),
         bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(80),
+            preferredSize: const Size.fromHeight(96),
             child: Column(
               children: [
                 PhotoHeader(
                   title: widget.photo.projectName!,
                   date: widget.photo.created!,
                   locale: widget.locale,
+                  color: color,
                   userUrl: widget.photo.userUrl,
                 ),
                 const SizedBox(
-                  height: 8,
+                  height: 16,
                 ),
               ],
             )),
-        actions: [
-          IconButton(
-              onPressed: () {
-                _navigateToTimeline();
-              },
-              icon: Icon(
-                Icons.view_list_sharp,
-                color: Theme.of(context).primaryColor,
-              ))
-        ],
+        // actions: [
+        //   IconButton(
+        //       onPressed: () {
+        //        Navigator.of(context).pop();
+        //       },
+        //       icon: Icon(
+        //         Icons.view_list_sharp,
+        //         color: color,
+        //       ))
+        // ],
       ),
       body: Stack(
         children: [
@@ -585,11 +593,12 @@ class PhotoHeader extends StatelessWidget {
     required this.title,
     required this.date,
     required this.locale,
-    required this.userUrl,
+    required this.userUrl, required this.color,
   }) : super(key: key);
   final String title;
   final String date, locale;
   final String? userUrl;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -607,7 +616,7 @@ class PhotoHeader extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: myTextStyleMediumBoldPrimaryColor(context),
+                  style: myTextStyleMediumBoldWithColor(context, color),
                 ),
                 const SizedBox(
                   height: 8,
@@ -617,7 +626,7 @@ class PhotoHeader extends StatelessWidget {
                   children: [
                     Text(
                       mStart,
-                      style: myTextStyleSmall(context),
+                      style: myTextStyleSmallWithColor(context, color),
                     ),
                     const SizedBox(
                       width: 16,

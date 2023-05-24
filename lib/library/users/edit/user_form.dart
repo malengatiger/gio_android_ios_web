@@ -420,10 +420,17 @@ class UserFormState extends State<UserForm>
     var ori = MediaQuery.of(context).orientation;
     if (ori.name == 'portrait') {
       spaceToButtons = 20;
-      spaceToTop = 24;
+      spaceToTop = 12;
     } else {
       spaceToButtons = 20;
-      spaceToTop = 12;
+      spaceToTop = 8;
+    }
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  mColor = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      mColor = Colors.white;
     }
     return SizedBox(
       width: widget.width,
@@ -463,7 +470,7 @@ class UserFormState extends State<UserForm>
                           },
                         ),
                         const SizedBox(
-                          height: 4,
+                          height: 2,
                         ),
                         TextFormField(
                           controller: emailController,
@@ -535,7 +542,7 @@ class UserFormState extends State<UserForm>
                           ],
                         ),
                         const SizedBox(
-                          height: 8,
+                          height: 4,
                         ),
                         Column(
                           children: <Widget>[
@@ -591,7 +598,7 @@ class UserFormState extends State<UserForm>
                           ],
                         ),
                         const SizedBox(
-                          height: 8,
+                          height: 2,
                         ),
                         CountryChooser(
                           refreshCountries: refreshCountries,
@@ -631,14 +638,14 @@ class UserFormState extends State<UserForm>
                                 ),
                               )
                             : SizedBox(
-                                width: 200,
+                                width: 220,
                                 child: ElevatedButton(
                                   onPressed: _submit,
                                   child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
+                                    padding: const EdgeInsets.all(16.0),
                                     child: Text(
                                       userFormStrings!.submitMember,
-                                      style: myTextStyleSmall(context),
+                                      style: myTextStyleSmallWithColor(context,mColor),
                                     ),
                                   ),
                                 ),
@@ -647,20 +654,20 @@ class UserFormState extends State<UserForm>
                           height: 16,
                         ),
                         SizedBox(
-                          width: 200,
+                          width: 220,
                           child: ElevatedButton(
                             onPressed: _navigateToAvatarBuilder,
                             child: Padding(
-                              padding: const EdgeInsets.all(12.0),
+                              padding: const EdgeInsets.all(16.0),
                               child: Text(
                                 userFormStrings!.profilePhoto,
-                                style: myTextStyleSmall(context),
+                                style: myTextStyleSmallWithColor(context, mColor),
                               ),
                             ),
                           ),
                         ),
                         const SizedBox(
-                          height: 8,
+                          height: 4,
                         ),
                       ],
                     ),

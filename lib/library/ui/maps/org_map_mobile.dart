@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:badges/badges.dart' as bd;
 import 'package:flutter/material.dart';
+import 'package:geo_monitor/library/data/settings_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../l10n/translation_handler.dart';
@@ -47,6 +48,7 @@ class OrganizationMapState extends State<OrganizationMap>
   bool loading = false;
   User? user;
   String? projectLocatedHere;
+  late SettingsModel settings;
 
   @override
   void initState() {
@@ -56,11 +58,12 @@ class OrganizationMapState extends State<OrganizationMap>
     _setTexts();
   }
   Future _setTexts() async {
-    var sett = await widget.prefsOGx.getSettings();
+    user = await widget.prefsOGx.getUser();
+    settings = await widget.prefsOGx.getSettings();
     organizationProjects =
-    await translator.translate('organizationProjects', sett.locale!);
+    await translator.translate('organizationProjects', settings.locale!);
     projectLocatedHere =
-    await translator.translate('projectLocatedHere', sett.locale!);
+    await translator.translate('projectLocatedHere', settings.locale!);
     setState(() {
 
     });
@@ -174,6 +177,13 @@ class OrganizationMapState extends State<OrganizationMap>
 
   @override
   Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return SafeArea(
       child: Scaffold(
         key: _key,
@@ -182,56 +192,58 @@ class OrganizationMapState extends State<OrganizationMap>
             organizationProjects == null
                 ? 'Organization Projects'
                 : organizationProjects!,
-            style: myTextStyleMediumBold(context),
+            style: myTextStyleMediumBoldWithColor(context, color),
           ),
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(48),
+          bottom:  PreferredSize(
+            preferredSize: const Size.fromHeight(60),
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 28.0),
-                  child: InkWell(
-                    onTap: () {
-                      _refreshProjectPositions(forceRefresh: true);
-                    },
-                    child: bd.Badge(
-                      // badgeColor: Theme.of(context).primaryColor,
-                      position: bd.BadgePosition.topEnd(top: -20, end: 12),
-                      badgeContent: Text(
-                        '${_projects.length}',
-                        style: myTextStyleMedium(context),
-                      ),
-                      // padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          organization == null
-                              ? const SizedBox()
-                              : Expanded(
-                                  child: Text(
-                                    organization!.name!,
-                                    style: myTextStyleMediumBoldPrimaryColor(context),
-                                  ),
-                                ),
-                          const SizedBox(
-                            width: 28,
-                          ),
-                          loading
-                              ? SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 4,
-                                    backgroundColor:
-                                        Theme.of(context).primaryColor,
-                                  ),
-                                )
-                              : const SizedBox(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                //   child: InkWell(
+                //     onTap: () {
+                //       _refreshProjectPositions(forceRefresh: true);
+                //     },
+                //     child: bd.Badge(
+                //       // badgeColor: Theme.of(context).primaryColor,
+                //       position: bd.BadgePosition.topEnd(top: -20, end: 12),
+                //       badgeContent: Text(
+                //         '${_projects.length}',
+                //         style: myTextStyleMediumBoldWithColor(context, color),
+                //       ),
+                //       // padding: const EdgeInsets.all(8.0),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: [
+                //           organization == null
+                //               ? const SizedBox()
+                //               : Expanded(
+                //                   child: Text(
+                //                     organization!.name!,
+                //                     style: myTextStyleMediumWithColor(context, color),
+                //                   ),
+                //                 ),
+                //           const SizedBox(
+                //             width: 28,
+                //           ),
+                //           loading
+                //               ? SizedBox(
+                //                   width: 16,
+                //                   height: 16,
+                //                   child: CircularProgressIndicator(
+                //                     strokeWidth: 4,
+                //                     backgroundColor:
+                //                         Theme.of(context).primaryColor,
+                //                   ),
+                //                 )
+                //               : const SizedBox(),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                user == null? const SizedBox(): Text(user!.organizationName!,
+                  style: myTextStyleMediumWithColor(context, color),),
                 const SizedBox(
                   height: 16,
                 ),
@@ -241,38 +253,21 @@ class OrganizationMapState extends State<OrganizationMap>
         ),
         body: Stack(
           children: [
-            GestureDetector(
-              onTap: () {
-                _refreshProjectPositions(forceRefresh: true);
+            GoogleMap(
+              mapType: MapType.hybrid,
+              mapToolbarEnabled: true,
+              initialCameraPosition: _kGooglePlex,
+              zoomControlsEnabled: true,
+              // myLocationButtonEnabled: true,
+              compassEnabled: true,
+              buildingsEnabled: true,
+              onMapCreated: (GoogleMapController controller) {
+                pp('$mm onMapCreated ... ready to rumble? ...');
+                _mapController.complete(controller);
+                googleMapController = controller;
+                _getOrganizationLocations();
               },
-              child: bd.Badge(
-                badgeContent: Text(
-                  '${_projectPositions.length}',
-                  style: myTextStyleSmall(context),
-                ),
-                badgeStyle: bd.BadgeStyle(
-                  badgeColor: Theme.of(context).primaryColor,
-                  elevation: 8,
-                  padding: const EdgeInsets.all(8),
-                ),
-                position: bd.BadgePosition.topEnd(top: 8, end: 8),
-                child: GoogleMap(
-                  mapType: MapType.hybrid,
-                  mapToolbarEnabled: true,
-                  initialCameraPosition: _kGooglePlex,
-                  zoomControlsEnabled: true,
-                  // myLocationButtonEnabled: true,
-                  compassEnabled: true,
-                  buildingsEnabled: true,
-                  onMapCreated: (GoogleMapController controller) {
-                    pp('$mm onMapCreated ... ready to rumble? ...');
-                    _mapController.complete(controller);
-                    googleMapController = controller;
-                    _getOrganizationLocations();
-                  },
-                  markers: Set<Marker>.of(markers.values),
-                ),
-              ),
+              markers: Set<Marker>.of(markers.values),
             ),
           ],
         ),

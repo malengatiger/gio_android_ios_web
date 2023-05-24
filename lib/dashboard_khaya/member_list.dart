@@ -43,7 +43,7 @@ class UserView extends StatelessWidget {
       width: width,
       child: Card(
         shape: getRoundedBorder(radius: 10),
-        elevation: 2,
+        elevation: 4,
         child: Column(
           children: [
             const SizedBox(

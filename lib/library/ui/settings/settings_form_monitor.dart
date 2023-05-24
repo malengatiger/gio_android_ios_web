@@ -174,8 +174,13 @@ class SettingsFormMonitorState extends State<SettingsFormMonitor> {
 
   @override
   Widget build(BuildContext context) {
-    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
 
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return Stack(
       children: [
         Card(
@@ -261,7 +266,7 @@ class SettingsFormMonitorState extends State<SettingsFormMonitor> {
                               onSelected: (locale, language) {
                                 _handleLocaleChange(locale, language);
                               },
-                              hint: hint == null ? 'Select Language' : hint!,
+                              hint: hint == null ? 'Select Language' : hint!, color: color,
                             ),
                             const SizedBox(
                               width: 32,

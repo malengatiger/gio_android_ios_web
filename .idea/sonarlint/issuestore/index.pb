@@ -345,12 +345,8 @@ F
 linux/my_application.h,a/5/a56e4501a358577d0ee3aebac03b481b676cfc32
 @
 linux/.gitignore,3/5/3515c6986a07c48e71cbea39e9f71a36f473b3ac
-\
-,linux/flutter/generated_plugin_registrant.cc,8/2/82aa08567025817252f7150da6951611f932fce3
 L
 linux/flutter/CMakeLists.txt,f/8/f871e65f12c98cc1c448b643b9882b86da7e0399
-U
-%linux/flutter/generated_plugins.cmake,e/a/ea61ff9ff38cb6431283c0e1c4f383234ad068aa
 [
 +linux/flutter/generated_plugin_registrant.h,d/9/d95a1fc8fea41fc6cc122196d542db7f4130fb92
 S
@@ -553,10 +549,6 @@ Y
 )lib/ui/activity/activity_stream_card.dart,d/2/d278cd09ded49a185062495482af5a0c4c703a1f
 P
  lib/library/ui/project_list.dart,2/2/221f742e0269d9f0df0d9f97c15966a96d5bab15
-^
-.windows/flutter/generated_plugin_registrant.cc,a/4/a460a0a443b57f23ba67cbcc77064889847c76a7
-W
-'windows/flutter/generated_plugins.cmake,8/8/88ca6865187a33a9504c7309c5e20c833b7b0094
 [
 +lib/library/ui/maps/project_map_tablet.dart,1/3/132edff8d122746a64b57f0a85f7fcc1a9025e56
 ;
@@ -587,16 +579,12 @@ _
 /lib/library/ui/weather/daily_forecast_page.dart,e/f/efbb5706434f2522f6ac35eb804fde2d26c1318b
 P
  lib/library/dio/dio_service.dart,a/8/a8a852e2748ee18e40c46e2f071b98e36ceaafb3
-Y
-)lib/library/ui/maps/project_map_main.dart,1/c/1c3cb8b414ce38bf2ae388206f770c3e36069c9f
 [
 +lib/library/ui/maps/project_map_mobile.dart,2/e/2ec61e9c1e17bd762ca3436484da8eec3091288f
 c
 3lib/library/ui/maps/project_polygon_map_mobile.dart,6/0/60c82ea1f20b19990fa5c795593be310031aa978
 R
 "lib/library/bloc/project_bloc.dart,a/e/ae4935cde6cd5f0a2c6c0ef188ddb17d5b9071d5
-U
-%lib/library/users/edit/user_form.dart,3/f/3fcfd9a5dbee720cfecf82ee9b684d70dd113e2a
 \
 ,lib/library/users/edit/user_detail_form.dart,a/8/a8a08c85915d292c6b78b97052f647825673b31f
 W
@@ -607,8 +595,6 @@ M
 ios/firebase_app_id_file.json,a/0/a0799973e0bf1bad4e739e1320488659cd5da822
 V
 &lib/library/users/full_user_photo.dart,1/4/14c00d6a225bce14ec6e99a247288fbf14a5dce9
-W
-'lib/library/ui/maps/org_map_mobile.dart,d/d/ddc0bf8f28a0c81eef99fddba0a2663fa1aa93dc
 I
 lib/firebase_options.dart,0/f/0f4c3391435ed7c33948e13687a0bd929288bdb6
 U
@@ -641,18 +627,12 @@ U
 .lib/ui/dashboard/project_dashboard_mobile.dart,f/7/f7017790b3267d1df879d3ba44005188e45d6993
 N
 lib/library/auth/app_auth.dart,2/7/27b9d1ff643c291d720302ce7d07ba0aad90d666
-Q
-!lib/ui/dashboard/photo_frame.dart,8/3/83eadfcaf77e4cd539a10e1fe8463dff86c9428d
-X
-(lib/library/ui/camera/photo_handler.dart,e/6/e6a5bbdb6844e1b292255fc4f2dde935e041a21d
 T
 $lib/library/bloc/data_refresher.dart,9/8/98d60306af869ba9890f133ccf1a9927b14fc02a
 N
 lib/library/bloc/fcm_bloc.dart,a/e/ae73d6a3cb5b2c49c9d1485ebf9ab308c81e196f
 Z
 *lib/library/ui/settings/settings_main.dart,8/0/80a049148f2da3cb71d50e2180a48f8ab2e542aa
-\
-,lib/library/ui/settings/settings_tablet.dart,3/b/3bf5db5f445553576e8d4d7a378286839f4cde8a
 W
 'lib/library/bloc/organization_bloc.dart,6/1/616ca60e23da75888292b10525d51dcdfbeccf75
 R
@@ -685,14 +665,10 @@ X
 (lib/library/bloc/cloud_storage_bloc.dart,e/4/e4b559545d8c90dcca929565067770e3c3eb551e
 T
 $lib/ui/dashboard/user_dashboard.dart,d/c/dc7968fc0a76a31184ddda0d3c45f76526426736
-Y
-)lib/library/ui/camera/video_recorder.dart,b/a/ba583e030b56bbb71702057086a9f7ef175bd1ab
 ^
 .lib/library/bloc/location_request_handler.dart,c/4/c4eff05f812de68eb83170771bec6a5b38dd12fe
 `
 0lib/library/ui/project_list/project_chooser.dart,4/d/4d5c8b2e9f02c2e4a2c185fc3304262df5a642a3
-\
-,lib/library/users/edit/user_edit_mobile.dart,d/b/dba24c507264c5e25fb13c3d3d700af214250b9d
 \
 ,lib/library/users/edit/user_edit_tablet.dart,5/d/5da44c1fb5ef7ad4123b434f5b2800caa1827641
 H
@@ -707,8 +683,6 @@ E
 analysis_options.yaml,9/5/9573dd68c24611034c89c926cde7e71d100ed7ab
 T
 $lib/library/users/avatar_editor.dart,0/d/0d24328766e39a266f008e43768dab9c02754e4f
-]
--macos/Flutter/GeneratedPluginRegistrant.swift,0/2/021794e7deab8f440a40813c70fb58a0cddd4d00
 R
 "lib/ui/audio/gio_audio_player.dart,f/c/fc43f4837b7ba336b35156c54e9f179df44dcc32
 Z
@@ -723,12 +697,8 @@ T
 $lib/library/providers/river_pod.dart,5/0/501406f395613af8df1e3721dd671bd2f562e7fe
 P
  lib/library/ui/loading_card.dart,b/0/b09069a7af08a6673c369463c06eb9d5decac6a4
-P
- lib/ui/intro/intro_page_one.dart,5/b/5bb6959cdab188d89b3cc4de3aad91ba67b31274
 8
 cmds.txt,9/6/96aabe83f58456692f5d448a6988674171d63b89
-P
- lib/ui/audio/audio_recorder.dart,6/8/68ba0347d698b387fc409c879914b7e330fa9484
 b
 2lib/library/ui/project_list/project_list_card.dart,b/9/b9216320af48053debd39773b4bad857553c61a8
 Q
@@ -767,8 +737,6 @@ C
 assets/l10n/fr.json,3/f/3f3cc9d6e518ea5d7315bb268ce2d414d4930d1e
 C
 assets/l10n/en.json,4/7/47319f07263f966871a92d84f602f574518e627e
-j
-:lib/library/ui/media/time_line/project_media_timeline.dart,a/2/a295077ec07635f906959f177af1323fd75c30ad
 W
 'lib/ui/auth/auth_registration_main.dart,d/f/df8d915f31bf1a7b34bc86f7d0c79cb2e6230195
 C
@@ -781,31 +749,17 @@ C
 assets/l10n/de.json,8/a/8adabfc11fe9b5afd66c0fda54313d697a3de534
 ]
 -lib/library/ui/project_list/gio_projects.dart,c/3/c39abac0e7b9a45b22a3de1f8bee8120df3e58f7
-S
-#.idea/libraries/Flutter_Plugins.xml,e/8/e8bbc0fdfcefee9aa7b463c83a8a480b92333860
 Y
 )lib/library/users/list/geo_user_list.dart,9/d/9dbae7a5e0f9d9df856d18f641d7b211b6a27bd8
 Z
 *lib/library/users/list/user_list_card.dart,6/e/6ed934aefd09a4034e01df1d8eee584fb4075eaf
-\
-,lib/library/ui/settings/settings_mobile.dart,3/c/3cc5c75ecd3d90ee79ab914473a215899b1b20c4
-Z
-*lib/library/ui/settings/settings_form.dart,3/a/3a5a74d13e680010531cefeb6efd7fc57e2cd354
-b
-2lib/library/ui/settings/settings_form_monitor.dart,c/c/ccfdfc30d2dd480103fadf3934d0788c793be7ed
 T
 $lib/ui/activity/activity_header.dart,7/f/7fdb37c03b3eab22eab615998d590b1c09172298
 S
 #lib/ui/activity/gio_activities.dart,9/7/97f00582bdd27949b2bd38445ae9bde45e2e1c82
 W
 'lib/ui/activity/activity_list_card.dart,7/d/7de0b7b8f242b987d8be563db3950c93807ef3b1
-T
-$lib/dashboard_khaya/member_list.dart,7/c/7c81e80837b35aefd0e297d546d60d79ae752215
-R
-"lib/dashboard_khaya/xd_header.dart,8/7/87a9a5d59981965cf667669cf2c2e300d2103a05
 M
 lib/library/api/prefs_og.dart,7/c/7cab30b50fee7c48f9c08e461c053ff07d031063
-J
-lib/library/functions.dart,2/2/225122cfb53e949a8f9edb84cbe772d4b4d73b07
 M
 lib/library/data/pricing.dart,5/0/504067383b67cab0225232e71136d9d02315927b

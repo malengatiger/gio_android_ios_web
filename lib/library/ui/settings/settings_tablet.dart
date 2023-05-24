@@ -88,12 +88,19 @@ class SettingsTabletState extends State<SettingsTablet>
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
         title: Text(
           title == null ? 'Settings' : title!,
-          style: myTextStyleLarge(context),
+          style: myTextStyleLargeWithColor(context, color),
         ),
       ),
       body: OrientationLayoutBuilder(landscape: (ctx) {

@@ -42,13 +42,15 @@ final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(ProviderScope(
-      child: DevicePreview(
-    enabled: !kReleaseMode,
-    builder: (BuildContext context) {
-      return const GeoApp();
-    },
-  )));
+  // runApp(ProviderScope(
+  //     child: DevicePreview(
+  //   enabled: !kReleaseMode,
+  //   builder: (BuildContext context) {
+  //     return const GeoApp();
+  //   },
+  // )));
+  runApp(const ProviderScope(
+      child: GeoApp()));
 }
 
 class GeoApp extends ConsumerWidget {

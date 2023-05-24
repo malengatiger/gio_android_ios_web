@@ -421,6 +421,13 @@ class VideoRecorderState extends State<VideoRecorder>
       pad = 100.0;
       bottomPad = 12.0;
     }
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return ScreenTypeLayout.builder(
       mobile: (ctx){
         return SafeArea(
@@ -428,7 +435,7 @@ class VideoRecorderState extends State<VideoRecorder>
             appBar: AppBar(
               title: Text(
                 title == null ? 'Record Video' : title!,
-                style: myTextStyleMediumLarge(context),
+                style: myTextStyleMediumLargeWithColor(context,color),
               ),
             ),
             body: Stack(
@@ -535,12 +542,12 @@ class VideoRecorderState extends State<VideoRecorder>
                         padding: const EdgeInsets.all(12.0),
                         child: Text(
                           getHourMinuteSecond(duration),
-                          style: myTextStyleMediumPrimaryColor(context),
+                          style: myTextStyleMediumBoldPrimaryColor(context),
                         ),
                       ),
                     )),
                 Positioned(
-                    bottom: -20,
+                    bottom: 20,
                     right: pad,
                     left: pad,
                     child: VideoControls(

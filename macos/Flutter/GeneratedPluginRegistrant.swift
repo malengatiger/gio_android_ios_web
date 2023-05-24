@@ -21,6 +21,7 @@ import just_audio
 import location
 import mic_stream
 import path_provider_foundation
+import realm
 import record_macos
 import shared_preferences_foundation
 import sqflite
@@ -44,6 +45,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   LocationPlugin.register(with: registry.registrar(forPlugin: "LocationPlugin"))
   MicStreamPlugin.register(with: registry.registrar(forPlugin: "MicStreamPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
+  RealmPlugin.register(with: registry.registrar(forPlugin: "RealmPlugin"))
   RecordMacosPlugin.register(with: registry.registrar(forPlugin: "RecordMacosPlugin"))
   SharedPreferencesPlugin.register(with: registry.registrar(forPlugin: "SharedPreferencesPlugin"))
   SqflitePlugin.register(with: registry.registrar(forPlugin: "SqflitePlugin"))

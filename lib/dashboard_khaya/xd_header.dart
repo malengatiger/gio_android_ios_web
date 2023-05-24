@@ -38,7 +38,11 @@ class GioHeaderState extends State<GioHeader>
     }
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isDarkMode = brightness == Brightness.dark;
-    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return SizedBox(width: 300,
       child: GestureDetector(
           onTap: (){
@@ -46,7 +50,7 @@ class GioHeaderState extends State<GioHeader>
           },
           child: Row(mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Image.asset('assets/gio.png', height: 40, width: 40,),
+              Image.asset('assets/gio.png', height: 32, width: 32,),
               SizedBox(width: width,),
               Text('Gio', style: myTextStyleLargeWithColor(context, color),),
             ],

@@ -455,8 +455,15 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
     var videoBottomPadding = 64.0;
     var mStyle = myTextStyleLarge(context);
     final type = getThisDeviceType();
-    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
 
+    if (!isDarkMode) {
+      color = Colors.white;
+    } else {
+      color = Theme.of(context).primaryColor;
+    }
     if (type == 'phone') {
       audioLeftPadding = 24;
       audioRightPadding = 24;
@@ -478,6 +485,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
       videoBottomPadding = 24;
       mStyle = myTitleTextStyle(context, color);
     }
+
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
@@ -486,7 +494,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
               style: mStyle,
             ),
             bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(48),
+                preferredSize: const Size.fromHeight(72),
                 child: Column(
                   children: [
                     projectSelected != null
@@ -495,6 +503,7 @@ class ProjectMediaTimelineState extends State<ProjectMediaTimeline>
                             startDate: startDate,
                             endDate: endDate,
                             locale: settings.locale!,
+                            color: color,
                             startText:
                                 startText == null ? 'Start Date' : startText!,
                             endText: endText == null ? 'End Date' : endText!,
@@ -726,22 +735,29 @@ class TimelineHeader extends StatelessWidget {
     required this.endDate,
     required this.locale,
     required this.startText,
-    required this.endText,
+    required this.endText, required this.color,
   }) : super(key: key);
   final String title;
   final String startDate, endDate, locale, startText, endText;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     final mStart = getFmtDateShortWithSlash(startDate, locale);
     final mEnd = getFmtDateShortWithSlash(endDate, locale);
-    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
     var vertical = true;
     final type = getThisDeviceType();
     if (type == 'phone') {
       vertical = true;
     }
-
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    if (!isDarkMode) {
+      color = Colors.white;
+    } else {
+      color = Theme.of(context).primaryColor;
+    }
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: vertical
@@ -749,7 +765,7 @@ class TimelineHeader extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: myTextStyleMediumBoldPrimaryColor(context),
+                  style: myTextStyleMediumBoldWithColor(context, color),
                 ),
                 const SizedBox(
                   height: 16,
@@ -766,10 +782,10 @@ class TimelineHeader extends StatelessWidget {
                     ),
                     Text(
                       mStart,
-                      style: myTextStyleSmallBold(context),
+                      style: myTextStyleSmallWithColor(context, color),
                     ),
                     const SizedBox(
-                      width: 12,
+                      width: 24,
                     ),
                     Text(
                       endText,
@@ -780,7 +796,7 @@ class TimelineHeader extends StatelessWidget {
                     ),
                     Text(
                       mEnd,
-                      style: myTextStyleSmallBold(context),
+                      style: myTextStyleSmallWithColor(context, color),
                     ),
                   ],
                 )

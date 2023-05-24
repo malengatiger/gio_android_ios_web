@@ -321,6 +321,13 @@ class PhotoHandlerState extends State<PhotoHandler>
 
   @override
   Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -331,16 +338,16 @@ class PhotoHandlerState extends State<PhotoHandler>
               icon: const Icon(Icons.arrow_back_ios)),
           title: Text(
             '${widget.project.name}',
-            style: myTextStyleSmall(context),
+            style: myTextStyleMediumWithColor(context, color),
           ),
-          actions: [
-            IconButton(
-                onPressed: _navigateTimeline,
-                icon: Icon(
-                  Icons.list,
-                  color: Theme.of(context).primaryColor,
-                )),
-          ],
+          // actions: [
+          //   IconButton(
+          //       onPressed: _navigateTimeline,
+          //       icon: Icon(
+          //         Icons.list,
+          //         color: Theme.of(context).primaryColor,
+          //       )),
+          // ],
         ),
         body: Stack(
           children: [
@@ -382,10 +389,10 @@ class PhotoHandlerState extends State<PhotoHandler>
                       TextButton(
                           onPressed: _startNextPhoto,
                           child: Padding(
-                            padding: const EdgeInsets.all(12.0),
+                            padding: const EdgeInsets.all(6.0),
                             child: Text(takePicture == null
                                 ? 'Take Picture'
-                                : takePicture!),
+                                : takePicture!, style: myTextStyleMediumWithColor(context, color),),
                           )),
                     ],
                   ),

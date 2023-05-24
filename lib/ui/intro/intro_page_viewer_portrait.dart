@@ -255,60 +255,74 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
 
   @override
   Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
         title: Text(
           introStrings == null ? 'Geo Information' : introStrings!.information!,
-          style: myTextStyleLarge(context),
+          style: myTextStyleLargeWithColor(context, color),
         ),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(authed ? 36 : 100),
-          child: authed
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+          preferredSize: Size.fromHeight(authed ? 80 : 124),
+          child: Column(
+            children: [
+              authed
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  LocaleChooser(
+                      onSelected: onLanguageSelected,
+                      color: color,
+                      hint: introStrings == null
+                          ? 'Select Language'
+                          : introStrings!.hint),
+                ],
+              )
+                  : Card(
+                elevation: 4,
+                color: Colors.black26,
+                // shape: getRoundedBorder(radius: 16),
+                child: Column(
                   children: [
-                    LocaleChooser(
-                        onSelected: onLanguageSelected,
-                        hint: introStrings == null
-                            ? 'Select Language'
-                            : introStrings!.hint),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                            onPressed: onSignIn,
+                            child: Text(introStrings == null
+                                ? 'Sign In'
+                                : introStrings!.signIn, style: myTextStyleSmallWithColor(context, color),)),
+                        TextButton(
+                            onPressed: onRegistration,
+                            child: Text(introStrings == null
+                                ? 'Register Organization'
+                                : introStrings!.registerOrganization, style: myTextStyleSmallWithColor(context, color),)),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        LocaleChooser(
+                            onSelected: onLanguageSelected,
+                            color: color,
+                            hint: introStrings == null
+                                ? 'Select Language'
+                                : introStrings!.hint),
+                      ],
+                    )
                   ],
-                )
-              : Card(
-                  elevation: 4,
-                  color: Colors.black26,
-                  // shape: getRoundedBorder(radius: 16),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                              onPressed: onSignIn,
-                              child: Text(introStrings == null
-                                  ? 'Sign In'
-                                  : introStrings!.signIn)),
-                          TextButton(
-                              onPressed: onRegistration,
-                              child: Text(introStrings == null
-                                  ? 'Register Organization'
-                                  : introStrings!.registerOrganization)),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          LocaleChooser(
-                              onSelected: onLanguageSelected,
-                              hint: introStrings == null
-                                  ? 'Select Language'
-                                  : introStrings!.hint),
-                        ],
-                      )
-                    ],
-                  ),
                 ),
+              ),
+              const SizedBox(height: 12,),
+            ],
+          )
         ),
       ),
       body: Stack(

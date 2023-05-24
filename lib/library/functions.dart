@@ -224,7 +224,7 @@ TextStyle myTextStyleMediumBoldPrimaryColor(BuildContext context) {
   return GoogleFonts.lato(
       textStyle: Theme.of(context).textTheme.bodyMedium,
       fontWeight: FontWeight.w900,
-      fontSize: 16,
+      fontSize: 20,
       color: Theme.of(context).primaryColor);
 }
 
@@ -233,6 +233,20 @@ TextStyle myTextStyleMediumBold(BuildContext context) {
     textStyle: Theme.of(context).textTheme.headlineMedium,
     fontWeight: FontWeight.w900,
     fontSize: 16.0,
+  );
+}
+TextStyle myTextStyleMediumBoldWithColor(BuildContext context, Color color) {
+  return GoogleFonts.lato(
+    textStyle: Theme.of(context).textTheme.headlineMedium,
+    fontWeight: FontWeight.w900,
+    fontSize: 20.0, color: color,
+  );
+}
+TextStyle myTextStyleMediumWithColor(BuildContext context, Color color) {
+  return GoogleFonts.lato(
+    textStyle: Theme.of(context).textTheme.headlineMedium,
+    fontWeight: FontWeight.normal,
+    fontSize: 20.0, color: color,
   );
 }
 TextStyle myTitleTextStyle(BuildContext context, Color color) {
@@ -277,6 +291,13 @@ TextStyle myTextStyleMediumLarge(BuildContext context) {
   return GoogleFonts.roboto(
       textStyle: Theme.of(context).textTheme.headlineLarge,
       fontWeight: FontWeight.w900,
+      fontSize: 24);
+}
+TextStyle myTextStyleMediumLargeWithColor(BuildContext context, Color color) {
+  return GoogleFonts.roboto(
+      textStyle: Theme.of(context).textTheme.headlineLarge,
+      fontWeight: FontWeight.w900,
+      color: color,
       fontSize: 24);
 }
 TextStyle myTextStyleMediumLargeWithOpacity(BuildContext context, double opacity) {

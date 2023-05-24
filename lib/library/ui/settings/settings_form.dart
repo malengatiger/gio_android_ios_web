@@ -338,7 +338,14 @@ class SettingsFormState extends State<SettingsForm> {
 
   @override
   Widget build(BuildContext context) {
-    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+    // final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      color = Colors.white;
+    }
     return Stack(
       children: [
         Card(
@@ -443,7 +450,7 @@ class SettingsFormState extends State<SettingsForm> {
                               onSelected: (locale, language) {
                                 _handleLocaleChange(locale, language);
                               },
-                              hint: hint == null ? 'Select Language' : hint!,
+                              hint: hint == null ? 'Select Language' : hint!, color: color,
                             ),
                             const SizedBox(
                               width: 32,
@@ -726,11 +733,12 @@ class SettingsFormState extends State<SettingsForm> {
 
 ///select supported locale
 class LocaleChooser extends StatefulWidget {
-  const LocaleChooser({Key? key, required this.onSelected, required this.hint})
+  const LocaleChooser({Key? key, required this.onSelected, required this.hint, required this.color})
       : super(key: key);
 
   final Function(Locale, String) onSelected;
   final String hint;
+  final Color color;
 
   @override
   State<LocaleChooser> createState() => LocaleChooserState();
@@ -788,7 +796,7 @@ class LocaleChooserState extends State<LocaleChooser> {
         : DropdownButton<Locale>(
             hint: Text(
               widget.hint,
-              style: myTextStyleSmall(context),
+              style: myTextStyleSmallWithColor(context, widget.color),
             ),
             items: [
               DropdownMenuItem(
@@ -964,6 +972,7 @@ class ColorSchemePicker extends StatelessWidget {
   final Function(int) onColorScheme;
   final int crossAxisCount;
   final double itemWidth, elevation;
+
 
   @override
   Widget build(BuildContext context) {

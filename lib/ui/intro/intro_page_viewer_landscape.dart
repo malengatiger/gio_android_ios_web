@@ -251,6 +251,13 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
 
   @override
   Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -277,6 +284,7 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
                           children: [
                             LocaleChooser(
                                 onSelected: onSelected,
+                                color: color,
                                 hint: hint == null ? 'Select Language' : hint!),
                           ],
                         )
@@ -294,6 +302,7 @@ class IntroPageViewerLandscapeState extends State<IntroPageViewerLandscape>
                                 child: const Text('Register Organization')),
                             LocaleChooser(
                                 onSelected: onSelected,
+                                color: color,
                                 hint: hint == null ? 'Select Language' : hint!),
                           ],
                         ),

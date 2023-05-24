@@ -1312,6 +1312,13 @@ class RealDashboard extends StatelessWidget {
         itemBuilder: (context) {
           return [
             PopupMenuItem(
+              value: 3,
+              child: CircleAvatar(
+                  radius: 24.0,
+                  backgroundImage: NetworkImage(user.thumbnailUrl!)),
+            ),
+
+            PopupMenuItem(
                 value: 1,
                 child: Icon(
                   Icons.refresh,
@@ -1323,12 +1330,6 @@ class RealDashboard extends StatelessWidget {
                   Icons.settings,
                   color: Theme.of(context).primaryColor,
                 )),
-            PopupMenuItem(
-              value: 3,
-              child: CircleAvatar(
-                  radius: 16.0,
-                  backgroundImage: NetworkImage(user.thumbnailUrl!)),
-            ),
             PopupMenuItem(
                 value: 4,
                 child: Icon(
@@ -1357,11 +1358,11 @@ class RealDashboard extends StatelessWidget {
     ];
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isDarkMode = brightness == Brightness.dark;
-    var backgroundColor = Theme.of(context).primaryColor;
+    var backgroundColor = Theme.of(context).canvasColor;
     if ((!isDarkMode)) {
-      backgroundColor = Colors.white30;
+      backgroundColor = Colors.black;
     }
-    ;
+
     return SizedBox(
       width: width,
       child: Stack(
@@ -1373,7 +1374,7 @@ class RealDashboard extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 16.0),
                   child: Column(
                     children: [
-                      const SizedBox(height: 130),
+                      const SizedBox(height: 100),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -1458,19 +1459,17 @@ class RealDashboard extends StatelessWidget {
           ),
           Positioned(
             child: SizedBox(
-              height: 112,
-              child: AppBar(
-                // backgroundColor: backgroundColor,
-                // centerTitle: false,
-                flexibleSpace: ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
-                    child: Container(
-                      decoration:
-                          BoxDecoration(color: Colors.white.withOpacity(0.0)),
-                    ),
-                  ),
-                ),
+              height: 80,
+              child: AppBar(backgroundColor: backgroundColor,
+                // flexibleSpace: ClipRect(
+                //   child: BackdropFilter(
+                //     filter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
+                //     child: Container(
+                //       decoration:
+                //           BoxDecoration(color: Colors.white.withOpacity(0.0)),
+                //     ),
+                //   ),
+                // ),
                 title: GioHeader(
                   navigateToIntro: () {
                     navigateToIntro();
@@ -1587,6 +1586,7 @@ class DashboardTopCard extends StatelessWidget {
       },
       child: Card(
         shape: getRoundedBorder(radius: 16),
+        elevation: 4,
         child: SizedBox(
           height: height == null ? 104 : height!,
           width: width == null ? 128 : width!,

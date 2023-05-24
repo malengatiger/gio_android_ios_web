@@ -123,8 +123,14 @@ class SettingsMobileState extends State<SettingsMobile>
 
   @override
   Widget build(BuildContext context) {
-    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+    // final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
 
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(

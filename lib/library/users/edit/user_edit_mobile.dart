@@ -71,6 +71,7 @@ class UserEditMobileState extends State<UserEditMobile>
     name = await translator.translate('name', sett.locale!);
     setState(() {});
   }
+
   void _listen() async {
     settingsSubscription = fcmBloc.settingsStream.listen((event) async {
       if (country != null) {
@@ -85,6 +86,7 @@ class UserEditMobileState extends State<UserEditMobile>
 
   @override
   void dispose() {
+    settingsSubscription.cancel();
     super.dispose();
   }
 
@@ -105,27 +107,34 @@ class UserEditMobileState extends State<UserEditMobile>
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var deviceType = getThisDeviceType();
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return SafeArea(
       child: Scaffold(
         key: _key,
         appBar: AppBar(
           title: Text(
-            title == null ? 'User Editor' : title!,
+            title == null ? 'User Editor' : title!, style: myTextStyleMediumLargeWithColor(context, color),
           ),
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(40),
+            preferredSize: const Size.fromHeight(64),
             child: Column(
               children: [
-                Text(
-                  widget.user == null
-                      ? newMember == null
-                          ? 'New Member'
-                          : newMember!
-                      : editMember == null
-                          ? 'Edit Member'
-                          : editMember!,
-                  style: myTextStyleSmall(context),
-                ),
+                // Text(
+                //   widget.user == null
+                //       ? newMember == null
+                //           ? 'New Member'
+                //           : newMember!
+                //       : editMember == null
+                //           ? 'Edit Member'
+                //           : editMember!,
+                //   style: myTextStyleSmall(context),
+                // ),
                 admin == null
                     ? Container()
                     : const SizedBox(
@@ -133,10 +142,10 @@ class UserEditMobileState extends State<UserEditMobile>
                       ),
                 Text(
                   admin == null ? '' : admin!.organizationName!,
-                  style: myTextStyleMediumBold(context),
+                  style: myTextStyleMediumBoldWithColor(context,color),
                 ),
                 const SizedBox(
-                  height: 8,
+                  height: 20,
                 )
               ],
             ),
@@ -146,17 +155,13 @@ class UserEditMobileState extends State<UserEditMobile>
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Card(
-                elevation: 4,
-                shape: getRoundedBorder(radius: 16),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SingleChildScrollView(
-                    child: UserForm(
-                        user: widget.user,
-                        width: width,
-                        internalPadding: 8.0),
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: UserForm(
+                      user: widget.user,
+                      width: width,
+                      internalPadding: 8.0),
                 ),
               ),
             ),
@@ -168,12 +173,12 @@ class UserEditMobileState extends State<UserEditMobile>
                       radius: 24,
                     ))
                 : Positioned(
-                    right: 20,
-                    top: 0,
+                    right: 8,
+                    top: 8,
                     child: GestureDetector(
                       onTap: _navigateToFullPhoto,
                       child: CircleAvatar(
-                        radius: deviceType == 'phone'?24:32,
+                        radius: deviceType == 'phone'?32:44,
                         backgroundImage:
                             NetworkImage(widget.user!.thumbnailUrl!),
                       ),
