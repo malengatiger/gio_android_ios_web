@@ -36,7 +36,7 @@ class SubscriptionSelectionState extends State<SubscriptionSelection> {
       monthlyTitle,
       annualTitle,
       corporateTitle,
-      free,
+      free, subscriptionPlans,
       subscriptionSubTitle;
   String? freeDesc, monthlyDesc, annualDesc, corporateDesc, submitText;
   Pricing? pricing;
@@ -101,6 +101,8 @@ class SubscriptionSelectionState extends State<SubscriptionSelection> {
   Future _setTexts() async {
     String locale = settings.locale!;
     freeTitle = await translator.translate('freeSub', locale);
+    subscriptionPlans = await translator.translate('subscriptionPlans', locale);
+
     monthlyTitle = await translator.translate('monthly', locale);
     annualTitle = await translator.translate('annual', locale);
     corporateTitle = await translator.translate('corporate', locale);
@@ -138,15 +140,16 @@ class SubscriptionSelectionState extends State<SubscriptionSelection> {
   void _startPayment(double amount, String label) async {
     pp('$mm _startPayment .. nav to PaymentMethods ...');
 
-    navigateWithScale(
-        PaymentMethods(
-          amount: amount,
-          label: label,
+    var result = await navigateWithScale(
+        GioStitchPaymentPage(
+          amount: amount.toInt(),
+          title: label,
           dataApiDog: widget.dataApiDog,
           stitchService: widget.stitchService,
           prefsOGx: widget.prefsOGx,
         ),
         context);
+    pp('$mm result of payment: $result');
   }
 
   List<Widget> _getItems() {
@@ -224,9 +227,9 @@ class SubscriptionSelectionState extends State<SubscriptionSelection> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Subscription Plans',
-          style: myTextStyleLargeWithColor(context, color),
+        title: Text(subscriptionPlans == null?
+          'Subscription Plans':subscriptionPlans!,
+          style: myTextStyleMediumLargeWithColor(context, color),
         ),
         // backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
         bottom: PreferredSize(
@@ -290,9 +293,13 @@ class SubscriptionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = getTextColorForBackground(Theme.of(context).primaryColor);
-    final locale = Intl.getCurrentLocale();
+    var color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
 
+    if (isDarkMode) {
+      color = Colors.white;
+    }
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Card(
@@ -330,7 +337,7 @@ class SubscriptionItem extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(
-                  height: 64,
+                  height: 48,
                 ),
                 hideButton
                     ? const SizedBox()
@@ -342,7 +349,7 @@ class SubscriptionItem extends StatelessWidget {
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: Text(submitText),
+                          child: Text(submitText, style: myTextStyleMediumWithColor(context, color),),
                         )),
               ],
             ),

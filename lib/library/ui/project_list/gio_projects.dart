@@ -741,8 +741,16 @@ class GioProjectsState extends State<GioProjects>
     if (type == 'phone') {
       searchWidth = 300.0;
     }
-    final color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var color2 = getTextColorForBackground(Theme.of(context).primaryColor);
 
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+      color2 = Colors.white;
+    }
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
@@ -796,6 +804,7 @@ class GioProjectsState extends State<GioProjects>
                 IconButton(onPressed: () {}, icon: const Icon(Icons.refresh)),
               ],
             ),
+            backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
             body: ScreenTypeLayout.builder(
               mobile: (ctx) {
                 return GestureDetector(
@@ -810,7 +819,7 @@ class GioProjectsState extends State<GioProjects>
                       badgeContent: Padding(
                         padding: const EdgeInsets.all(4.0),
                         child: Text('${projectsToDisplay.length}',
-                            style: myTextStyleSmallWithColor(context, color)),
+                            style: myTextStyleSmallWithColor(context, color2)),
                       ),
                       child: user == null
                           ? const SizedBox()

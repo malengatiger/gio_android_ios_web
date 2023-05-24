@@ -10,6 +10,7 @@ import 'package:geo_monitor/utilities/transitions.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+import '../../../l10n/translation_handler.dart';
 import '../../data/user.dart';
 import '../../functions.dart';
 
@@ -42,12 +43,19 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
   bool busy2 = false;
   late SettingsModel settings;
   User? user;
+  String? payment,confirm;
 
   @override
   void initState() {
     _controller = AnimationController(vsync: this);
     super.initState();
     _getToken();
+  }
+
+  void setTexts() async {
+    payment = await translator.translate('payment', settings.locale!);
+    confirm = await translator.translate('confirm', settings.locale!);
+
   }
 
   Future _getToken() async {
@@ -58,6 +66,7 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
       settings = await widget.prefsOGx.getSettings();
       user = await widget.prefsOGx.getUser();
       token = await widget.stitchService.getToken();
+      setTexts();
       pp('$mm token from Stitch: $token');
     } catch (e) {
       pp(e);
@@ -135,13 +144,21 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
   Widget build(BuildContext context) {
     var fmt = NumberFormat.compactCurrency(locale: Intl.getCurrentLocale());
     final num = fmt.format(widget.amount);
+    var color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
+    if (!isDarkMode) {
+      color = Colors.white;
+    }
     return ScreenTypeLayout.builder(
       mobile: (ctx) {
         return SafeArea(
             child: Scaffold(
           appBar: AppBar(
-            title: const Text('Stitch Payment'),
+            title:  Text('Payment', style: myTextStyleLargeWithColor(context, color),),
           ),
+          backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
           body: busy
               ? const Center(
                   child: CircularProgressIndicator(),
@@ -188,9 +205,9 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
                                           onPressed: () {
                                             _getPaymentRequest();
                                           },
-                                          child: const Padding(
-                                            padding: EdgeInsets.all(28.0),
-                                            child: Text('Submit Transaction'),
+                                          child:  Padding(
+                                            padding: const EdgeInsets.all(20.0),
+                                            child: Text(confirm == null? 'Confirm Transaction':confirm!),
                                           )),
                                 ],
                               ),

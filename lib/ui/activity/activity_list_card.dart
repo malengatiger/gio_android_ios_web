@@ -26,7 +26,9 @@ class ActivityListCard extends StatefulWidget {
       required this.onTapped,
       this.topPadding,
       this.user,
-      this.project, required this.prefsOGx, required this.cacheManager})
+      this.project,
+      required this.prefsOGx,
+      required this.cacheManager})
       : super(key: key);
 
   final Function(ActivityModel) onTapped;
@@ -223,69 +225,73 @@ class _ActivityListCardState extends State<ActivityListCard> {
     if (loadingSettings) {
       return const SizedBox();
     }
-    return busy? Center(child: LoadingCard(loadingData: activityStrings!.loadingActivities!)): Stack(
-      children: [
-        Column(
-          children: [
-            SizedBox(
-              height: widget.topPadding == null ? 72 : widget.topPadding!,
-            ),
-            Expanded(
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: models.length,
-                  itemBuilder: (_, index) {
-                    var act = models.elementAt(index);
-                    if (act.translatedUserType != null) {
-                    }
-                    return GestureDetector(
-                      onTap: () {
-                        pp('$mm event has been tapped - calling widget.onTapped(act); $widget');
-                        widget.onTapped(act);
-                      },
-                      child: EventView(
-                        activity: act,
-                        height: 84,
-                        width: 300,
-                        locale: settings!.locale!,
-                      ),
-                    );
-                  }),
-            ),
-          ],
-        ),
-        Positioned(
-            child: Card(
-          elevation: 8,
-          shape: getRoundedBorder(radius: 16),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
-            child: settings == null
-                ? const SizedBox()
-                : ActivityHeader(
-                    hours: settings!.activityStreamHours!,
-                    number: models.length,
-                    prefix: prefix!,
-                    suffix: suffix!,
-                    onRefreshRequested: () {
-                      _getData(true);
-                    },
-                    onSortRequested: () {},
+    return busy
+        ? Center(
+            child:
+                LoadingCard(loadingData: activityStrings!.loadingActivities!))
+        : Stack(
+            children: [
+              Column(
+                children: [
+                  SizedBox(
+                    height: widget.topPadding == null ? 72 : widget.topPadding!,
                   ),
-          ),
-        )),
-        loading
-            ? Positioned(
-                bottom: 124,
-                left: 24,
-                right: 24,
-                child: activityStrings == null
-                    ? const SizedBox()
-                    : LoadingCard(
-                        loadingData: activityStrings!.loadingActivities!))
-            : const SizedBox()
-      ],
-    );
+                  Expanded(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: models.length,
+                        itemBuilder: (_, index) {
+                          var act = models.elementAt(index);
+                          if (act.translatedUserType != null) {}
+                          return GestureDetector(
+                            onTap: () {
+                              pp('$mm event has been tapped - calling widget.onTapped(act); $widget');
+                              widget.onTapped(act);
+                            },
+                            child: EventView(
+                              activity: act,
+                              height: 84,
+                              width: 300,
+                              locale: settings!.locale!,
+                            ),
+                          );
+                        }),
+                  ),
+                ],
+              ),
+              Positioned(
+                  child: Card(
+                elevation: 12,
+                shape: getRoundedBorder(radius: 16),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 0.0, vertical: 16),
+                  child: settings == null
+                      ? const SizedBox()
+                      : ActivityHeader(
+                          hours: settings!.activityStreamHours!,
+                          number: models.length,
+                          prefix: prefix!,
+                          suffix: suffix!,
+                          onRefreshRequested: () {
+                            _getData(true);
+                          },
+                          onSortRequested: () {},
+                        ),
+                ),
+              )),
+              loading
+                  ? Positioned(
+                      bottom: 124,
+                      left: 24,
+                      right: 24,
+                      child: activityStrings == null
+                          ? const SizedBox()
+                          : LoadingCard(
+                              loadingData: activityStrings!.loadingActivities!))
+                  : const SizedBox()
+            ],
+          );
   }
 
   static const mm = '🌎🌎🌎🌎🌎 ActivityListCard 🌎';

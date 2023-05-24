@@ -506,8 +506,15 @@ class _GioUserListState extends State<GioUserList> {
       amInPortrait = true;
     }
     var mWidth = MediaQuery.of(context).size.width;
-    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
 
+    if (!isDarkMode) {
+      color = Colors.white;
+    } else {
+      color = Theme.of(context).primaryColor;
+    }
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -517,6 +524,7 @@ class _GioUserListState extends State<GioUserList> {
           ),
           actions: _getActions(),
         ),
+        backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
         body: Stack(
           children: [
             ScreenTypeLayout(

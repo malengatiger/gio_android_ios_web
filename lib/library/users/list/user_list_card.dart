@@ -168,8 +168,20 @@ class _UserListCardState extends State<UserListCard> {
 
   @override
   Widget build(BuildContext context) {
-    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var color2 = getTextColorForBackground(Theme.of(context).primaryColor);
 
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
+    if (!isDarkMode) {
+      color = Colors.black;
+      color2 = Colors.white;
+    } else {
+      color = Theme.of(context).primaryColor;
+      color2 = Colors.white;
+
+    }
     return Card(
       elevation: 4,
       shape: getRoundedBorder(radius: 16),
@@ -186,7 +198,7 @@ class _UserListCardState extends State<UserListCard> {
               padding: const EdgeInsets.only(left:16.0),
               child: Text(
                 widget.deviceUser.organizationName!,
-                style: myTextStyleMediumLargePrimaryColor(context),
+                style: myTextStyleMediumWithColor(context, color),
               ),
             ),
             const SizedBox(
@@ -216,7 +228,7 @@ class _UserListCardState extends State<UserListCard> {
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
                       '${widget.users.length}',
-                      style: myTextStyleSmallWithColor(context, color),
+                      style: myTextStyleSmallWithColor(context, color2),
                     ),
                   ),
                   badgeStyle: bd.BadgeStyle(

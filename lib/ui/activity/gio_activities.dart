@@ -261,10 +261,10 @@ class MobileList extends StatefulWidget {
   final CloudStorageBloc cloudStorageBloc;
 
   @override
-  State<MobileList> createState() => _MobileListState();
+  State<MobileList> createState() => MobileListState();
 }
 
-class _MobileListState extends State<MobileList> {
+class MobileListState extends State<MobileList> {
   String? locale, title;
   ActivityStrings? activityStrings;
   SettingsModel? settings;
@@ -309,17 +309,26 @@ class _MobileListState extends State<MobileList> {
 
   @override
   Widget build(BuildContext context) {
-    final  color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
 
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text(
-          title == null ? 'Events' : title!,
-          style: myTitleTextStyle(context, color),
+        title: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            title == null ? 'Events' : title!,
+            style: myTitleTextStyle(context, color),
+          ),
         ),
       ),
-      body: Padding(
+          backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
+          body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ActivityListCard(
           prefsOGx: widget.prefsOGx,
