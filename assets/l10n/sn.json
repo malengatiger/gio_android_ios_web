@@ -1,4 +1,7 @@
 {
+  "upgrade": "Upgrade",
+  "upgradeText": "Simudzira kune $Gio\u0027s kunyorera zvirongwa izvozvi uye uvhure iyo yakazara kugona. Wana maficha epamberi, chaiyo-nguva analytics, uye isina musono kusanganisa. Simudza manejimendi evashandi vako vari kure nhasi! Dzvanya kuti usimbise kubhadhara kwako uye shandura mashandiro ako.",
+
   "subscriptionPayment": "Kubhadhara Kubhadhara",
   "contract": "Contract",
   "payment": "Payment",

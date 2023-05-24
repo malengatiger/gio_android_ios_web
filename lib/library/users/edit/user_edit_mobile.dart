@@ -107,34 +107,26 @@ class UserEditMobileState extends State<UserEditMobile>
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var deviceType = getThisDeviceType();
+
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isDarkMode = brightness == Brightness.dark;
     var  color = getTextColorForBackground(Theme.of(context).primaryColor);
-
     if (isDarkMode) {
       color = Theme.of(context).primaryColor;
+    } else {
+      color = Colors.white;
     }
     return SafeArea(
       child: Scaffold(
         key: _key,
         appBar: AppBar(
           title: Text(
-            title == null ? 'User Editor' : title!, style: myTextStyleMediumLargeWithColor(context, color),
+            title == null ? 'User Editor' : title!, style: myTextStyleLargeWithColor(context, color),
           ),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(64),
             child: Column(
               children: [
-                // Text(
-                //   widget.user == null
-                //       ? newMember == null
-                //           ? 'New Member'
-                //           : newMember!
-                //       : editMember == null
-                //           ? 'Edit Member'
-                //           : editMember!,
-                //   style: myTextStyleSmall(context),
-                // ),
                 admin == null
                     ? Container()
                     : const SizedBox(
@@ -145,24 +137,23 @@ class UserEditMobileState extends State<UserEditMobile>
                   style: myTextStyleMediumBoldWithColor(context,color),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 24,
                 )
               ],
             ),
           ),
         ),
+        backgroundColor: isDarkMode?Theme.of(context).canvasColor: Colors.brown[50],
+
         body: Stack(
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SingleChildScrollView(
-                  child: UserForm(
-                      user: widget.user,
-                      width: width,
-                      internalPadding: 8.0),
-                ),
+              child: SingleChildScrollView(
+                child: UserForm(
+                    user: widget.user,
+                    width: width,
+                    internalPadding: 8.0),
               ),
             ),
             widget.user?.thumbnailUrl == null
@@ -178,7 +169,7 @@ class UserEditMobileState extends State<UserEditMobile>
                     child: GestureDetector(
                       onTap: _navigateToFullPhoto,
                       child: CircleAvatar(
-                        radius: deviceType == 'phone'?32:44,
+                        radius: deviceType == 'phone'?36:48,
                         backgroundImage:
                             NetworkImage(widget.user!.thumbnailUrl!),
                       ),

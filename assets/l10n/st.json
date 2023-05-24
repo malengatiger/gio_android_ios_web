@@ -1,4 +1,7 @@
 {
+  "upgrade": "Ntlafatsa",
+  "upgradeText": "Ntlafatsa ho merero ea peeletso ea $Gio hona joale \u0027me u notlolle menyetla e felletseng. Fumana likarolo tse tsoetseng pele, li-analytics tsa nako ea nnete, le likhokahano tse se nang moeli. Ntlafatsa taolo ea basebetsi ba hau ba hole kajeno! Tobetsa ho netefatsa tefo ea hau le ho fetola ts\u0027ebetso ea hau.",
+
   "subscriptionPayment": "Tefo ea Ngoliso",
   "contract": "Konteraka",
   "payment": "Tefo",

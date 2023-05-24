@@ -434,246 +434,242 @@ class UserFormState extends State<UserForm>
     }
     return SizedBox(
       width: widget.width,
-      child: Card(
-        elevation: 8.0,
-        shape: getRoundedBorder(radius: 16),
-        child: Padding(
-          padding: EdgeInsets.all(widget.internalPadding),
-          child: userFormStrings == null
-              ? const SizedBox()
-              : Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: spaceToTop,
-                        ),
-                        TextFormField(
-                          controller: nameController,
-                          keyboardType: TextInputType.text,
-                          style: myTextStyleSmall(context),
-                          decoration: InputDecoration(
-                              icon: Icon(
-                                Icons.person,
-                                size: 18,
-                                color: Theme.of(context).primaryColor,
+      child: Padding(
+        padding: EdgeInsets.all(widget.internalPadding),
+        child: userFormStrings == null
+            ? const SizedBox()
+            : Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: spaceToTop,
+                      ),
+                      TextFormField(
+                        controller: nameController,
+                        keyboardType: TextInputType.text,
+                        style: myTextStyleSmall(context),
+                        decoration: InputDecoration(
+                            icon: Icon(
+                              Icons.person,
+                              size: 18,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            labelText: userFormStrings!.userName,
+                            hintStyle: myTextStyleSmall(context),
+                            hintText: userFormStrings!.enterFullName),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return userFormStrings!.enterFullName;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 2,
+                      ),
+                      TextFormField(
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        style: myTextStyleSmall(context),
+                        decoration: InputDecoration(
+                            icon: Icon(
+                              Icons.email_outlined,
+                              size: 18,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            labelText: userFormStrings!.emailAddress,
+                            hintStyle: myTextStyleSmall(context),
+                            hintText: userFormStrings!.enterEmail),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return userFormStrings!.enterEmail;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 2,
+                      ),
+                      TextFormField(
+                        controller: cellphoneController,
+                        keyboardType: TextInputType.phone,
+                        style: myTextStyleSmall(context),
+                        decoration: InputDecoration(
+                            icon: Icon(
+                              Icons.phone,
+                              size: 18,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            labelText: userFormStrings!.cellphone,
+                            hintStyle: myTextStyleSmall(context),
+                            hintText: userFormStrings!.enterCell),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return userFormStrings!.enterCell;
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(
+                        height: spaceToButtons,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Radio(
+                            value: 0,
+                            groupValue: genderType,
+                            activeColor: Theme.of(context).primaryColor,
+                            onChanged: _handleGenderValueChange,
+                          ),
+                          Text(
+                            userFormStrings!.male,
+                            style: myTextStyleSmall(context),
+                          ),
+                          Radio(
+                            value: 1,
+                            groupValue: genderType,
+                            activeColor: Theme.of(context).primaryColor,
+                            onChanged: _handleGenderValueChange,
+                          ),
+                          Text(userFormStrings!.female,
+                              style: myTextStyleSmall(context)),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Column(
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              Radio(
+                                value: 0,
+                                groupValue: userType,
+                                activeColor: Theme.of(context).primaryColor,
+                                onChanged: _handleRadioValueChange,
                               ),
-                              labelText: userFormStrings!.userName,
-                              hintStyle: myTextStyleSmall(context),
-                              hintText: userFormStrings!.enterFullName),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return userFormStrings!.enterFullName;
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(
-                          height: 2,
-                        ),
-                        TextFormField(
-                          controller: emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          style: myTextStyleSmall(context),
-                          decoration: InputDecoration(
-                              icon: Icon(
-                                Icons.email_outlined,
-                                size: 18,
-                                color: Theme.of(context).primaryColor,
+                              const SizedBox(
+                                width: 8,
                               ),
-                              labelText: userFormStrings!.emailAddress,
-                              hintStyle: myTextStyleSmall(context),
-                              hintText: userFormStrings!.enterEmail),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return userFormStrings!.enterEmail;
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(
-                          height: 2,
-                        ),
-                        TextFormField(
-                          controller: cellphoneController,
-                          keyboardType: TextInputType.phone,
-                          style: myTextStyleSmall(context),
-                          decoration: InputDecoration(
-                              icon: Icon(
-                                Icons.phone,
-                                size: 18,
-                                color: Theme.of(context).primaryColor,
+                              Text(
+                                userFormStrings!.fieldMonitor,
+                                style: myTextStyleSmall(context),
                               ),
-                              labelText: userFormStrings!.cellphone,
-                              hintStyle: myTextStyleSmall(context),
-                              hintText: userFormStrings!.enterCell),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return userFormStrings!.enterCell;
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(
-                          height: spaceToButtons,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Radio(
-                              value: 0,
-                              groupValue: genderType,
-                              activeColor: Theme.of(context).primaryColor,
-                              onChanged: _handleGenderValueChange,
-                            ),
-                            Text(
-                              userFormStrings!.male,
-                              style: myTextStyleSmall(context),
-                            ),
-                            Radio(
-                              value: 1,
-                              groupValue: genderType,
-                              activeColor: Theme.of(context).primaryColor,
-                              onChanged: _handleGenderValueChange,
-                            ),
-                            Text(userFormStrings!.female,
-                                style: myTextStyleSmall(context)),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                Radio(
-                                  value: 0,
-                                  groupValue: userType,
-                                  activeColor: Theme.of(context).primaryColor,
-                                  onChanged: _handleRadioValueChange,
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Radio(
+                                value: 1,
+                                groupValue: userType,
+                                activeColor: Theme.of(context).primaryColor,
+                                onChanged: _handleRadioValueChange,
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(userFormStrings!.administrator,
+                                  style: myTextStyleSmall(context)),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Radio(
+                                value: 2,
+                                groupValue: userType,
+                                activeColor: Theme.of(context).primaryColor,
+                                onChanged: _handleRadioValueChange,
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                userFormStrings!.executive,
+                                style: myTextStyleSmall(context),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 2,
+                      ),
+                      CountryChooser(
+                        refreshCountries: refreshCountries,
+                        onSelected: (mCountry) async {
+                          translatedCountryName = await translator.translate(
+                              mCountry.name!, settingsModel!.locale!);
+                          setState(() {
+                            country = mCountry;
+                            refreshCountries = !refreshCountries;
+                          });
+                        },
+                        hint: userFormStrings!.selectCountry,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          country == null
+                              ? const SizedBox()
+                              : Text(
+                                  translatedCountryName == null
+                                      ? country!.name!
+                                      : translatedCountryName!,
+                                  style: myTextStyleMedium(context),
                                 ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                  userFormStrings!.fieldMonitor,
-                                  style: myTextStyleSmall(context),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Radio(
-                                  value: 1,
-                                  groupValue: userType,
-                                  activeColor: Theme.of(context).primaryColor,
-                                  onChanged: _handleRadioValueChange,
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Text(userFormStrings!.administrator,
-                                    style: myTextStyleSmall(context)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Radio(
-                                  value: 2,
-                                  groupValue: userType,
-                                  activeColor: Theme.of(context).primaryColor,
-                                  onChanged: _handleRadioValueChange,
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                  userFormStrings!.executive,
-                                  style: myTextStyleSmall(context),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 2,
-                        ),
-                        CountryChooser(
-                          refreshCountries: refreshCountries,
-                          onSelected: (mCountry) async {
-                            translatedCountryName = await translator.translate(
-                                mCountry.name!, settingsModel!.locale!);
-                            setState(() {
-                              country = mCountry;
-                              refreshCountries = !refreshCountries;
-                            });
-                          },
-                          hint: userFormStrings!.selectCountry,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            country == null
-                                ? const SizedBox()
-                                : Text(
-                                    translatedCountryName == null
-                                        ? country!.name!
-                                        : translatedCountryName!,
-                                    style: myTextStyleMedium(context),
-                                  ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: spaceToButtons,
-                        ),
-                        isBusy
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 8,
-                                  backgroundColor: Colors.black,
-                                ),
-                              )
-                            : SizedBox(
-                                width: 220,
-                                child: ElevatedButton(
-                                  onPressed: _submit,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Text(
-                                      userFormStrings!.submitMember,
-                                      style: myTextStyleSmallWithColor(context,mColor),
-                                    ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: spaceToButtons,
+                      ),
+                      isBusy
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 8,
+                                backgroundColor: Colors.black,
+                              ),
+                            )
+                          : SizedBox(
+                              width: 220,
+                              child: ElevatedButton(
+                                onPressed: _submit,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Text(
+                                    userFormStrings!.submitMember,
+                                    style: myTextStyleSmallWithColor(context,mColor),
                                   ),
                                 ),
                               ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        SizedBox(
-                          width: 220,
-                          child: ElevatedButton(
-                            onPressed: _navigateToAvatarBuilder,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Text(
-                                userFormStrings!.profilePhoto,
-                                style: myTextStyleSmallWithColor(context, mColor),
-                              ),
+                            ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      SizedBox(
+                        width: 220,
+                        child: ElevatedButton(
+                          onPressed: _navigateToAvatarBuilder,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              userFormStrings!.profilePhoto,
+                              style: myTextStyleSmallWithColor(context, mColor),
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                    ],
                   ),
                 ),
-        ),
+              ),
       ),
     );
   }

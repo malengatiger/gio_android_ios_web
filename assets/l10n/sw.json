@@ -1,4 +1,7 @@
 {
+  "upgrade": "Boresha",
+  "upgradeText": "Pata toleo jipya la mipango ya usajili ya $Gio sasa na upate uwezo kamili. Pata vipengele vya kina, uchanganuzi wa wakati halisi, na miunganisho isiyo na mshono. Ongeza usimamizi wako wa wafanyikazi wa mbali leo! Bofya ili kuthibitisha malipo yako na ubadilishe utendakazi wako.",
+
   "subscriptionPayment": "Malipo ya Usajili",
   "contract": "Mkataba",
   "payment": "Malipo",

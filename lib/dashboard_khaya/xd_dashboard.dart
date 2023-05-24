@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:core';
-import 'dart:core';
-import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
@@ -29,7 +27,6 @@ import 'package:geo_monitor/library/ui/camera/gio_video_player.dart';
 import 'package:geo_monitor/library/ui/maps/project_map_mobile.dart';
 import 'package:geo_monitor/library/ui/media/time_line/project_media_timeline.dart';
 import 'package:geo_monitor/library/ui/project_list/gio_projects.dart';
-import 'package:geo_monitor/library/users/edit/user_detail.dart';
 import 'package:geo_monitor/library/users/edit/user_edit_main.dart';
 import 'package:geo_monitor/library/users/list/geo_user_list.dart';
 import 'package:geo_monitor/ui/activity/gio_activities.dart';
@@ -43,7 +40,6 @@ import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:universal_platform/universal_platform.dart';
-import 'package:badges/badges.dart' as bd;
 
 import '../l10n/translation_handler.dart';
 import '../library/api/data_api_og.dart';
@@ -124,6 +120,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
   late StreamSubscription<String> killSubscriptionFCM;
   late StreamSubscription<bool> connectionSubscription;
   late StreamSubscription<GeofenceEvent> geofenceSubscription;
+
   //
   late StreamSubscription<Photo> photoSubscription;
   late StreamSubscription<Video> videoSubscription;
@@ -168,15 +165,24 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     //events.insert(0, event);
     var settings = await prefsOGx.getSettings();
     var arr = await translator.translate('memberArrived', settings.locale!);
+
+
     if (event.projectName != null) {
       var arrivedAt = arr.replaceAll('\$project', event.projectName!);
       if (mounted) {
+        var color = getTextColorForBackground(Theme.of(context).primaryColor);
+        var brightness = MediaQuery.of(context).platformBrightness;
+        bool isDarkMode = brightness == Brightness.dark;
+
+        if (!isDarkMode) {
+          color = Colors.white;
+        }
         showToast(
             duration: const Duration(seconds: 5),
             backgroundColor: Theme.of(context).primaryColor,
             padding: 20,
             toastGravity: ToastGravity.TOP,
-            textStyle: myTextStyleMedium(context),
+            textStyle: myTextStyleMediumWithColor(context, color),
             message: arrivedAt,
             context: context);
       }
@@ -390,6 +396,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
   String? serverProblem, videoTitle;
   late String deviceType;
   late SettingsModel settings;
+
   void _setTexts() async {
     settings = await widget.prefsOGx.getSettings();
     loadingDataText =
@@ -542,6 +549,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
   }
 
   bool forceRefresh = false;
+
   void _onRefreshRequested() {
     pp(' ✅✅✅ .... _onRefreshRequested ... calling broadcastRefresh with true');
     // refreshBloc.broadcastRefresh();
@@ -641,7 +649,34 @@ class DashboardKhayaState extends State<DashboardKhaya> {
   onUserTapped(User p1) {
     pp('🌀🌀🌀🌀 onUserTapped; ${p1.toJson()}');
 
-    navigateWithScale(UserDetail(user: p1), context);
+    navigateToUserEdit(p1);
+  }
+
+  void navigateToUserEdit(User? user) async {
+    if (user != null) {
+      if (user!.userType == UserType.fieldMonitor) {
+        if (user.userId != user.userId!) {
+          return;
+        }
+      }
+    }
+    Navigator.push(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale,
+            alignment: Alignment.topLeft,
+            duration: const Duration(seconds: 1),
+            child: UserEditMain(
+              user,
+              fcmBloc: widget.fcmBloc,
+              organizationBloc: widget.organizationBloc,
+              projectBloc: widget.projectBloc,
+              dataApiDog: widget.dataApiDog,
+              geoUploader: widget.geoUploader,
+              cloudStorageBloc: widget.cloudStorageBloc,
+              prefsOGx: widget.prefsOGx,
+              cacheManager: widget.cacheManager,
+            )));
   }
 
   onLocationResponse(LocationResponse p1) {
@@ -868,326 +903,329 @@ class DashboardKhayaState extends State<DashboardKhaya> {
       color = Theme.of(context).primaryColor;
     }
     return Scaffold(
-        backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
+        backgroundColor:
+            isDarkMode ? Theme.of(context).canvasColor : Colors.brown[50],
         body: Stack(
-      children: [
-        ScreenTypeLayout.builder(
-          mobile: (ctx) {
-            return user == null
-                ? const SizedBox()
-                : RealDashboard(
-                    projects: projects,
-                    users: users,
-                    locale: settings.locale!,
-                    totalEvents: totalEvents,
-                    totalProjects: totalProjects,
-                    totalUsers: totalUsers,
-                    sigmaX: sigmaX,
-                    sigmaY: sigmaY,
-                    user: user!,
-                    width: width,
-                    forceRefresh: forceRefresh,
-                    membersText: membersText!,
-                    projectsText: projectsText!,
-                    eventsText: eventsText!,
-                    dashboardText: dashboardText!,
-                    recentEventsText: recentEventsText!,
-                    cacheManager: widget.cacheManager,
-                    prefsOGx: widget.prefsOGx,
-                    dataApiDog: widget.dataApiDog,
-                    geoUploader: widget.geoUploader,
-                    cloudStorageBloc: widget.cloudStorageBloc,
-                    projectBloc: widget.projectBloc,
-                    onEventTapped: (event) {
-                      _onEventTapped(event);
-                    },
-                    onProjectSubtitleTapped: () {
-                      _onProjectSubtitleTapped();
-                    },
-                    onProjectsAcquired: (projects) {
-                      _onProjectsAcquired(projects);
-                    },
-                    onProjectTapped: (project) {
-                      onProjectTapped(project);
-                    },
-                    onUserSubtitleTapped: () {
-                      _onUserSubtitleTapped();
-                    },
-                    onUsersAcquired: (users) {
-                      _onUsersAcquired(users);
-                    },
-                    onUserTapped: (user) {
-                      onUserTapped(user);
-                    },
-                    onEventsSubtitleTapped: () {
-                      _onEventsSubtitleTapped();
-                    },
-                    onEventsAcquired: (events) {
-                      _onEventsAcquired(events);
-                    },
-                    onRefreshRequested: () {
-                      _onRefreshRequested();
-                    },
-                    onSearchTapped: () {
-                      _onSearchTapped();
-                    },
-                    onSettingsRequested: () {
-                      _onSettingsRequested();
-                    },
-                    onDeviceUserTapped: () {
-                      _onDeviceUserTapped();
-                    },
-                    centerTopCards: true,
-                    navigateToIntro: () {
-                      navigateToIntro();
-                    },
-                    navigateToActivities: () {
-                      _navigateToActivities();
-                    },
-                    organizationBloc: widget.organizationBloc,
-                    fcmBloc: widget.fcmBloc,
-                    onGioSubscriptionRequired: navigateToSubscription,
-                  );
-          },
-          tablet: (ctx) {
-            return Stack(
-              children: [
-                OrientationLayoutBuilder(
-                  portrait: (context) {
-                    return user == null
-                        ? const SizedBox()
-                        : RealDashboard(
-                            topCardSpacing: 16.0,
-                            centerTopCards: true,
-                            projects: projects,
-                            users: users,
-                            fcmBloc: widget.fcmBloc,
-                            navigateToActivities: () {
-                              _navigateToActivities();
-                            },
-                            cacheManager: widget.cacheManager,
-                            prefsOGx: widget.prefsOGx,
-                            dataApiDog: widget.dataApiDog,
-                            organizationBloc: widget.organizationBloc,
-                            geoUploader: widget.geoUploader,
-                            cloudStorageBloc: widget.cloudStorageBloc,
-                            projectBloc: widget.projectBloc,
-                            locale: settings.locale!,
-                            forceRefresh: forceRefresh,
-                            totalEvents: totalEvents,
-                            totalProjects: totalProjects,
-                            totalUsers: totalUsers,
-                            sigmaX: sigmaX,
-                            sigmaY: sigmaY,
-                            user: user!,
-                            width: width,
-                            membersText: membersText!,
-                            projectsText: projectsText!,
-                            eventsText: eventsText!,
-                            dashboardText: dashboardText!,
-                            recentEventsText: recentEventsText!,
-                            onGioSubscriptionRequired: navigateToSubscription,
-                            onEventTapped: (event) {
-                              _onEventTapped(event);
-                            },
-                            onProjectSubtitleTapped: () {
-                              _onProjectSubtitleTapped();
-                            },
-                            onProjectsAcquired: (projects) {
-                              _onProjectsAcquired(projects);
-                            },
-                            onProjectTapped: (project) {
-                              onProjectTapped(project);
-                            },
-                            onUserSubtitleTapped: () {
-                              _onUserSubtitleTapped();
-                            },
-                            onUsersAcquired: (users) {
-                              _onUsersAcquired(users);
-                            },
-                            onUserTapped: (user) {
-                              onUserTapped(user);
-                            },
-                            onEventsSubtitleTapped: () {
-                              _onEventsSubtitleTapped();
-                            },
-                            onEventsAcquired: (events) {
-                              _onEventsAcquired(events);
-                            },
-                            onRefreshRequested: () {
-                              _onRefreshRequested();
-                            },
-                            onSearchTapped: () {
-                              _onSearchTapped();
-                            },
-                            onSettingsRequested: () {
-                              _onSettingsRequested();
-                            },
-                            onDeviceUserTapped: () {
-                              _onDeviceUserTapped();
-                            },
-                            navigateToIntro: () {
-                              navigateToIntro();
-                            },
-                          );
-                  },
-                  landscape: (context) {
-                    return user == null
-                        ? const SizedBox()
-                        : RealDashboard(
-                            topCardSpacing: 16,
-                            forceRefresh: forceRefresh,
-                            projects: projects,
-                            users: users,
-                            fcmBloc: widget.fcmBloc,
-                            navigateToActivities: () {
-                              _navigateToActivities();
-                            },
-                            cacheManager: widget.cacheManager,
-                            prefsOGx: widget.prefsOGx,
-                            dataApiDog: widget.dataApiDog,
-                            organizationBloc: widget.organizationBloc,
-                            geoUploader: widget.geoUploader,
-                            cloudStorageBloc: widget.cloudStorageBloc,
-                            projectBloc: widget.projectBloc,
-                            totalEvents: totalEvents,
-                            totalProjects: totalProjects,
-                            totalUsers: totalUsers,
-                            sigmaX: sigmaX,
-                            sigmaY: sigmaY,
-                            membersText: membersText!,
-                            projectsText: projectsText!,
-                            eventsText: eventsText!,
-                            dashboardText: dashboardText!,
-                            recentEventsText: recentEventsText!,
-                            user: user!,
-                            width: width,
-                            navigateToIntro: () {
-                              navigateToIntro();
-                            },
-                            onEventTapped: (event) {
-                              _onEventTapped(event);
-                            },
-                            onProjectSubtitleTapped: () {
-                              _onProjectSubtitleTapped();
-                            },
-                            onProjectsAcquired: (projects) {
-                              _onProjectsAcquired(projects);
-                            },
-                            onProjectTapped: (project) {
-                              onProjectTapped(project);
-                            },
-                            onUserSubtitleTapped: () {
-                              _onUserSubtitleTapped();
-                            },
-                            onUsersAcquired: (users) {
-                              _onUsersAcquired(users);
-                            },
-                            onUserTapped: (user) {
-                              onUserTapped(user);
-                            },
-                            onEventsSubtitleTapped: () {
-                              _onEventsSubtitleTapped();
-                            },
-                            onEventsAcquired: (events) {
-                              _onEventsAcquired(events);
-                            },
-                            onRefreshRequested: () {
-                              _onRefreshRequested();
-                            },
-                            onSearchTapped: () {
-                              _onSearchTapped();
-                            },
-                            onSettingsRequested: () {
-                              _onSettingsRequested();
-                            },
-                            onDeviceUserTapped: () {
-                              _onDeviceUserTapped();
-                            },
-                            centerTopCards: true,
-                            locale: settings.locale!,
-                            onGioSubscriptionRequired: navigateToSubscription,
-                          );
-                  },
-                ),
-                playAudio
-                    ? Positioned(
-                        child: GioAudioPlayer(
+          children: [
+            ScreenTypeLayout.builder(
+              mobile: (ctx) {
+                return user == null
+                    ? const SizedBox()
+                    : RealDashboard(
+                        projects: projects,
+                        users: users,
+                        locale: settings.locale!,
+                        totalEvents: totalEvents,
+                        totalProjects: totalProjects,
+                        totalUsers: totalUsers,
+                        sigmaX: sigmaX,
+                        sigmaY: sigmaY,
+                        user: user!,
+                        width: width,
+                        forceRefresh: forceRefresh,
+                        membersText: membersText!,
+                        projectsText: projectsText!,
+                        eventsText: eventsText!,
+                        dashboardText: dashboardText!,
+                        recentEventsText: recentEventsText!,
                         cacheManager: widget.cacheManager,
                         prefsOGx: widget.prefsOGx,
-                        audio: audio!,
-                        onCloseRequested: () {},
                         dataApiDog: widget.dataApiDog,
-                      ))
-                    : const SizedBox()
-              ],
-            );
-          },
-        ),
-        busy
-            ? Positioned(child: LoadingCard(loadingData: loadingDataText!))
-            : const SizedBox(),
-        showAudio
-            ? Positioned(
-                left: 160,
-                right: 160,
-                top: 120,
-                child: SizedBox(
-                  width: 440,
-                  child: GioAudioPlayer(
-                      cacheManager: widget.cacheManager,
-                      prefsOGx: widget.prefsOGx,
-                      audio: audio!,
-                      onCloseRequested: () {
-                        setState(() {
-                          showAudio = false;
-                        });
+                        geoUploader: widget.geoUploader,
+                        cloudStorageBloc: widget.cloudStorageBloc,
+                        projectBloc: widget.projectBloc,
+                        onEventTapped: (event) {
+                          _onEventTapped(event);
+                        },
+                        onProjectSubtitleTapped: () {
+                          _onProjectSubtitleTapped();
+                        },
+                        onProjectsAcquired: (projects) {
+                          _onProjectsAcquired(projects);
+                        },
+                        onProjectTapped: (project) {
+                          onProjectTapped(project);
+                        },
+                        onUserSubtitleTapped: () {
+                          _onUserSubtitleTapped();
+                        },
+                        onUsersAcquired: (users) {
+                          _onUsersAcquired(users);
+                        },
+                        onUserTapped: (user) {
+                          onUserTapped(user);
+                        },
+                        onEventsSubtitleTapped: () {
+                          _onEventsSubtitleTapped();
+                        },
+                        onEventsAcquired: (events) {
+                          _onEventsAcquired(events);
+                        },
+                        onRefreshRequested: () {
+                          _onRefreshRequested();
+                        },
+                        onSearchTapped: () {
+                          _onSearchTapped();
+                        },
+                        onSettingsRequested: () {
+                          _onSettingsRequested();
+                        },
+                        onDeviceUserTapped: () {
+                          _onDeviceUserTapped();
+                        },
+                        centerTopCards: true,
+                        navigateToIntro: () {
+                          navigateToIntro();
+                        },
+                        navigateToActivities: () {
+                          _navigateToActivities();
+                        },
+                        organizationBloc: widget.organizationBloc,
+                        fcmBloc: widget.fcmBloc,
+                        onGioSubscriptionRequired: navigateToSubscription,
+                      );
+              },
+              tablet: (ctx) {
+                return Stack(
+                  children: [
+                    OrientationLayoutBuilder(
+                      portrait: (context) {
+                        return user == null
+                            ? const SizedBox()
+                            : RealDashboard(
+                                topCardSpacing: 16.0,
+                                centerTopCards: true,
+                                projects: projects,
+                                users: users,
+                                fcmBloc: widget.fcmBloc,
+                                navigateToActivities: () {
+                                  _navigateToActivities();
+                                },
+                                cacheManager: widget.cacheManager,
+                                prefsOGx: widget.prefsOGx,
+                                dataApiDog: widget.dataApiDog,
+                                organizationBloc: widget.organizationBloc,
+                                geoUploader: widget.geoUploader,
+                                cloudStorageBloc: widget.cloudStorageBloc,
+                                projectBloc: widget.projectBloc,
+                                locale: settings.locale!,
+                                forceRefresh: forceRefresh,
+                                totalEvents: totalEvents,
+                                totalProjects: totalProjects,
+                                totalUsers: totalUsers,
+                                sigmaX: sigmaX,
+                                sigmaY: sigmaY,
+                                user: user!,
+                                width: width,
+                                membersText: membersText!,
+                                projectsText: projectsText!,
+                                eventsText: eventsText!,
+                                dashboardText: dashboardText!,
+                                recentEventsText: recentEventsText!,
+                                onGioSubscriptionRequired:
+                                    navigateToSubscription,
+                                onEventTapped: (event) {
+                                  _onEventTapped(event);
+                                },
+                                onProjectSubtitleTapped: () {
+                                  _onProjectSubtitleTapped();
+                                },
+                                onProjectsAcquired: (projects) {
+                                  _onProjectsAcquired(projects);
+                                },
+                                onProjectTapped: (project) {
+                                  onProjectTapped(project);
+                                },
+                                onUserSubtitleTapped: () {
+                                  _onUserSubtitleTapped();
+                                },
+                                onUsersAcquired: (users) {
+                                  _onUsersAcquired(users);
+                                },
+                                onUserTapped: (user) {
+                                  onUserTapped(user);
+                                },
+                                onEventsSubtitleTapped: () {
+                                  _onEventsSubtitleTapped();
+                                },
+                                onEventsAcquired: (events) {
+                                  _onEventsAcquired(events);
+                                },
+                                onRefreshRequested: () {
+                                  _onRefreshRequested();
+                                },
+                                onSearchTapped: () {
+                                  _onSearchTapped();
+                                },
+                                onSettingsRequested: () {
+                                  _onSettingsRequested();
+                                },
+                                onDeviceUserTapped: () {
+                                  _onDeviceUserTapped();
+                                },
+                                navigateToIntro: () {
+                                  navigateToIntro();
+                                },
+                              );
                       },
-                      dataApiDog: dataApiDog),
-                ))
-            : const SizedBox(),
-        showPhoto
-            ? Positioned(
-                left: 100,
-                right: 100,
-                top: 48,
-                child: SizedBox(
-                  width: 600,
-                  child: PhotoCard(
-                    photo: photo!,
-                    onMapRequested: (photo) {},
-                    onRatingRequested: (photo) {},
-                    elevation: 8.0,
-                    onPhotoCardClose: () {
-                      setState(() {
-                        showPhoto = false;
-                      });
-                    },
-                    translatedDate: '',
-                  ),
-                ))
-            : const SizedBox(),
-        playVideo
-            ? Positioned(
-                left: 100,
-                right: 100,
-                top: 48,
-                child: SizedBox(
-                  width: 600,
-                  child: GioVideoPlayer(
-                    video: video!,
-                    onCloseRequested: () {
-                      setState(() {
-                        playVideo = false;
-                      });
-                    },
-                    width: 600,
-                    dataApiDog: widget.dataApiDog,
-                  ),
-                ))
-            : const SizedBox(),
-      ],
-    ));
+                      landscape: (context) {
+                        return user == null
+                            ? const SizedBox()
+                            : RealDashboard(
+                                topCardSpacing: 16,
+                                forceRefresh: forceRefresh,
+                                projects: projects,
+                                users: users,
+                                fcmBloc: widget.fcmBloc,
+                                navigateToActivities: () {
+                                  _navigateToActivities();
+                                },
+                                cacheManager: widget.cacheManager,
+                                prefsOGx: widget.prefsOGx,
+                                dataApiDog: widget.dataApiDog,
+                                organizationBloc: widget.organizationBloc,
+                                geoUploader: widget.geoUploader,
+                                cloudStorageBloc: widget.cloudStorageBloc,
+                                projectBloc: widget.projectBloc,
+                                totalEvents: totalEvents,
+                                totalProjects: totalProjects,
+                                totalUsers: totalUsers,
+                                sigmaX: sigmaX,
+                                sigmaY: sigmaY,
+                                membersText: membersText!,
+                                projectsText: projectsText!,
+                                eventsText: eventsText!,
+                                dashboardText: dashboardText!,
+                                recentEventsText: recentEventsText!,
+                                user: user!,
+                                width: width,
+                                navigateToIntro: () {
+                                  navigateToIntro();
+                                },
+                                onEventTapped: (event) {
+                                  _onEventTapped(event);
+                                },
+                                onProjectSubtitleTapped: () {
+                                  _onProjectSubtitleTapped();
+                                },
+                                onProjectsAcquired: (projects) {
+                                  _onProjectsAcquired(projects);
+                                },
+                                onProjectTapped: (project) {
+                                  onProjectTapped(project);
+                                },
+                                onUserSubtitleTapped: () {
+                                  _onUserSubtitleTapped();
+                                },
+                                onUsersAcquired: (users) {
+                                  _onUsersAcquired(users);
+                                },
+                                onUserTapped: (user) {
+                                  onUserTapped(user);
+                                },
+                                onEventsSubtitleTapped: () {
+                                  _onEventsSubtitleTapped();
+                                },
+                                onEventsAcquired: (events) {
+                                  _onEventsAcquired(events);
+                                },
+                                onRefreshRequested: () {
+                                  _onRefreshRequested();
+                                },
+                                onSearchTapped: () {
+                                  _onSearchTapped();
+                                },
+                                onSettingsRequested: () {
+                                  _onSettingsRequested();
+                                },
+                                onDeviceUserTapped: () {
+                                  _onDeviceUserTapped();
+                                },
+                                centerTopCards: true,
+                                locale: settings.locale!,
+                                onGioSubscriptionRequired:
+                                    navigateToSubscription,
+                              );
+                      },
+                    ),
+                    playAudio
+                        ? Positioned(
+                            child: GioAudioPlayer(
+                            cacheManager: widget.cacheManager,
+                            prefsOGx: widget.prefsOGx,
+                            audio: audio!,
+                            onCloseRequested: () {},
+                            dataApiDog: widget.dataApiDog,
+                          ))
+                        : const SizedBox()
+                  ],
+                );
+              },
+            ),
+            busy
+                ? Positioned(child: LoadingCard(loadingData: loadingDataText!))
+                : const SizedBox(),
+            showAudio
+                ? Positioned(
+                    left: 160,
+                    right: 160,
+                    top: 120,
+                    child: SizedBox(
+                      width: 440,
+                      child: GioAudioPlayer(
+                          cacheManager: widget.cacheManager,
+                          prefsOGx: widget.prefsOGx,
+                          audio: audio!,
+                          onCloseRequested: () {
+                            setState(() {
+                              showAudio = false;
+                            });
+                          },
+                          dataApiDog: dataApiDog),
+                    ))
+                : const SizedBox(),
+            showPhoto
+                ? Positioned(
+                    left: 100,
+                    right: 100,
+                    top: 48,
+                    child: SizedBox(
+                      width: 600,
+                      child: PhotoCard(
+                        photo: photo!,
+                        onMapRequested: (photo) {},
+                        onRatingRequested: (photo) {},
+                        elevation: 8.0,
+                        onPhotoCardClose: () {
+                          setState(() {
+                            showPhoto = false;
+                          });
+                        },
+                        translatedDate: '',
+                      ),
+                    ))
+                : const SizedBox(),
+            playVideo
+                ? Positioned(
+                    left: 100,
+                    right: 100,
+                    top: 48,
+                    child: SizedBox(
+                      width: 600,
+                      child: GioVideoPlayer(
+                        video: video!,
+                        onCloseRequested: () {
+                          setState(() {
+                            playVideo = false;
+                          });
+                        },
+                        width: 600,
+                        dataApiDog: widget.dataApiDog,
+                      ),
+                    ))
+                : const SizedBox(),
+          ],
+        ));
   }
 }
 
@@ -1506,6 +1544,7 @@ class SubTitleWidget extends StatelessWidget {
   final Function onTapped;
   final int number;
   final Color color;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -1660,6 +1699,7 @@ class TopCardListState extends State<TopCardList> {
   late StreamSubscription<bool> refreshSub;
 
   bool busy = false;
+
   // DataBag? dataBag;
   var eventsText = 'Events',
       projectsText = 'Projects',
@@ -1689,6 +1729,7 @@ class TopCardListState extends State<TopCardList> {
   }
 
   int cnt = 0;
+
   void _getData(bool forceRefresh) async {
     pp('$mm _getData ... forceRefresh: $forceRefresh');
     try {
@@ -1719,6 +1760,7 @@ class TopCardListState extends State<TopCardList> {
   }
 
   late SettingsModel settings;
+
   Future _setTexts() async {
     settings = await prefsOGx.getSettings();
     photosText = await translator.translate('photos', settings.locale!);

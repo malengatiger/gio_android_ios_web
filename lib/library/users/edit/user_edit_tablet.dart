@@ -25,7 +25,7 @@ import '../../data/user.dart' as ar;
 import '../../functions.dart';
 import '../../ui/maps/location_response_map.dart';
 
-class UserEditTablet extends StatefulWidget {
+class UserEditor extends StatefulWidget {
   final ar.User? user;
   final PrefsOGx prefsOGx;
   final CacheManager cacheManager;
@@ -37,7 +37,7 @@ class UserEditTablet extends StatefulWidget {
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
 
-  const UserEditTablet(
+  const UserEditor(
       {super.key,
       this.user,
       required this.prefsOGx,
@@ -51,10 +51,10 @@ class UserEditTablet extends StatefulWidget {
       required this.cloudStorageBloc});
 
   @override
-  UserEditTabletState createState() => UserEditTabletState();
+  UserEditorState createState() => UserEditorState();
 }
 
-class UserEditTabletState extends State<UserEditTablet>
+class UserEditorState extends State<UserEditor>
     with SingleTickerProviderStateMixin {
   ar.User? admin;
   final _key = GlobalKey<ScaffoldState>();

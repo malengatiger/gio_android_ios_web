@@ -1,4 +1,7 @@
 {
+  "upgrade": "Thuthukisa",
+  "upgradeText": "Thuthukela ezinhlelweni zokubhaliselwe ze-$Gio manje futhi uvule amandla aphelele. Zuza izici ezithuthukisiwe, izibalo zesikhathi sangempela, nokuhlanganiswa okungenazihibe. Khuphula izinga labasebenzi bakho abakude namuhla! Chofoza ukuze uqinisekise inkokhelo yakho futhi uguqule ukusebenza kwakho.",
+
   "subscriptionPayment": "Inkokhelo yokubhaliselwe",
   "contract": "Inkontileka",
   "payment": "Inkokhelo",

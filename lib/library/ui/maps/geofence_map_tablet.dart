@@ -146,6 +146,15 @@ class GeofenceMapState extends State<GeofenceMap>
       }
     }
     var deviceType = getThisDeviceType();
+    var color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
+    if (!isDarkMode) {
+      color = Colors.white;
+    } else {
+      color = Theme.of(context).primaryColor;
+    }
     return SafeArea(
       child: Scaffold(
         key: _key,
@@ -154,7 +163,7 @@ class GeofenceMapState extends State<GeofenceMap>
             memberAtProject == null
                 ? 'Member Project Arrival'
                 : memberAtProject!,
-            style: myTextStyleMediumBold(context),
+            style: myTextStyleMediumLargeWithColor(context, color),
           ),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(60),
@@ -162,7 +171,7 @@ class GeofenceMapState extends State<GeofenceMap>
               children: [
                 Text(
                   widget.geofenceEvent.projectName!,
-                  style: myTextStyleMediumLargePrimaryColor(context),
+                  style: myTextStyleMediumWithColor(context, color),
                 ),
                 const SizedBox(
                   height: 16,
@@ -213,8 +222,8 @@ class GeofenceMapState extends State<GeofenceMap>
                           elevation: 8,
                           color: Colors.black38,
                           child: SizedBox(
-                            height: deviceType == 'phone' ? 64 : 240,
-                            width: deviceType == 'phone' ? 64 : 480,
+                            height: deviceType == 'phone' ? 120 : 240,
+                            width: deviceType == 'phone' ? 80 : 480,
                             child: Column(
                               children: [
                                 const SizedBox(
@@ -281,10 +290,10 @@ class GeofenceMapState extends State<GeofenceMap>
                           color: Colors.black38,
                           shape: getRoundedBorder(radius: 16),
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(16.0),
                             child: SizedBox(
                               // height: deviceType == 'phone'? 140: 420,
-                              width: deviceType == 'phone' ? 100 : 160,
+                              width: deviceType == 'phone' ? 144 : 160,
                               child: Column(
                                 children: [
                                   const SizedBox(
@@ -306,14 +315,14 @@ class GeofenceMapState extends State<GeofenceMap>
                                     translatedDate == null
                                         ? widget.geofenceEvent.date!
                                         : translatedDate!,
-                                    style: myTextStyleTiny(context),
+                                    style: myTextStyleSmallWithColor(context, color),
                                   ),
                                   const SizedBox(
                                     height: 8,
                                   ),
                                   Text(
                                     widget.geofenceEvent.user!.name!,
-                                    style: myTextStyleSmallBold(context),
+                                    style: myTextStyleSmallWithColor(context, color),
                                   ),
                                   const SizedBox(
                                     height: 8,

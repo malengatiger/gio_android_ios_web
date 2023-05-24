@@ -300,7 +300,7 @@ class AudioRecorderState extends State<AudioRecorder> {
               ],
             )),
           ),
-          backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
+          backgroundColor: isDarkMode?Theme.of(context).canvasColor: Colors.brown[50],
           body: durationText == null
               ? const SizedBox()
               : AudioRecorderCard(

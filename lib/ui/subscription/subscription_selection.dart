@@ -231,7 +231,6 @@ class SubscriptionSelectionState extends State<SubscriptionSelection> {
           'Subscription Plans':subscriptionPlans!,
           style: myTextStyleMediumLargeWithColor(context, color),
         ),
-        // backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
         bottom: PreferredSize(
             preferredSize: const Size.fromHeight(160),
             child: Padding(
@@ -251,6 +250,7 @@ class SubscriptionSelectionState extends State<SubscriptionSelection> {
               ),
             )),
       ),
+          backgroundColor: isDarkMode?Theme.of(context).canvasColor: Colors.brown[50],
       body: ScreenTypeLayout.builder(
         mobile: (ctx) {
           return Container(color: isDarkMode? Colors.transparent: Colors.brown[50],

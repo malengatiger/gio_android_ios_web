@@ -42,7 +42,7 @@ class UserEditMain extends StatelessWidget {
       tablet: (ctx) {
         return OrientationLayoutBuilder(
           portrait: (context) {
-            return UserEditTablet(
+            return UserEditor(
               fcmBloc: fcmBloc,
               organizationBloc: organizationBloc,
               dataApiDog: dataApiDog,
@@ -56,7 +56,7 @@ class UserEditMain extends StatelessWidget {
             );
           },
           landscape: (context) {
-            return UserEditTablet(
+            return UserEditor(
               fcmBloc: fcmBloc,
               organizationBloc: organizationBloc,
               dataApiDog: dataApiDog,

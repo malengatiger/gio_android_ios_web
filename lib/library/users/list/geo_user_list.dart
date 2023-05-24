@@ -524,7 +524,7 @@ class _GioUserListState extends State<GioUserList> {
           ),
           actions: _getActions(),
         ),
-        backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
+        backgroundColor: isDarkMode?Theme.of(context).canvasColor: Colors.brown[50],
         body: Stack(
           children: [
             ScreenTypeLayout(

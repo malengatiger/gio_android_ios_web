@@ -804,7 +804,7 @@ class GioProjectsState extends State<GioProjects>
                 IconButton(onPressed: () {}, icon: const Icon(Icons.refresh)),
               ],
             ),
-            backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
+            backgroundColor: isDarkMode?Theme.of(context).canvasColor: Colors.brown[50],
             body: ScreenTypeLayout.builder(
               mobile: (ctx) {
                 return GestureDetector(

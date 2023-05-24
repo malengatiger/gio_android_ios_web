@@ -1,4 +1,7 @@
 {
+  "upgrade": "升级",
+  "upgradeText": "立即升级到 $Gio 的订阅计划并释放全部潜力。获得高级功能、实时分析和无缝集成。立即升级您的远程劳动力管理！单击以确认您的付款并彻底改变您的操作。",
+
   "subscriptionPayment": "订阅付款",
   "contract": "合同",
   "payment": "支付",

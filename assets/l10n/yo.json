@@ -1,4 +1,7 @@
 {
+  "upgrade": "Igbesoke",
+  "upgradeText": "Ṣe igbesoke si awọn ero ṣiṣe alabapin $Gio ni bayi ati ṣii agbara ni kikun. Gba awọn ẹya to ti ni ilọsiwaju, awọn atupale akoko gidi, ati awọn iṣọpọ lainidi. Ṣe ipele iṣakoso agbara oṣiṣẹ latọna jijin rẹ loni! Tẹ lati jẹrisi isanwo rẹ ati yi awọn iṣẹ ṣiṣe rẹ pada.",
+
   "subscriptionPayment": "Owo sisan alabapin",
   "contract": "Adehun",
   "payment": "Isanwo",

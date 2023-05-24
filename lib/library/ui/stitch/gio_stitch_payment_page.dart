@@ -20,7 +20,8 @@ class GioStitchPaymentPage extends StatefulWidget {
       required this.stitchService,
       required this.prefsOGx,
       required this.title,
-      required this.amount, required this.dataApiDog})
+      required this.amount,
+      required this.dataApiDog})
       : super(key: key);
 
   final StitchService stitchService;
@@ -43,7 +44,7 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
   bool busy2 = false;
   late SettingsModel settings;
   User? user;
-  String? payment,confirm;
+  String? payment, confirm, upgrade, upgradeText;
 
   @override
   void initState() {
@@ -55,7 +56,9 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
   void setTexts() async {
     payment = await translator.translate('payment', settings.locale!);
     confirm = await translator.translate('confirm', settings.locale!);
-
+    upgrade = await translator.translate('upgrade', settings.locale!);
+    final m = await translator.translate('upgradeText', settings.locale!);
+    upgradeText = m.replaceAll('\$Gio', 'Gio');
   }
 
   Future _getToken() async {
@@ -77,6 +80,7 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
       busy = false;
     });
   }
+
   GioPaymentRequest? gioPaymentRequest;
 
   Future _getPaymentRequest() async {
@@ -95,8 +99,8 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
           merchant: 'merchant_id_here',
           beneficiaryName: user!.organizationName);
       pp('$mm _getPaymentRequest, request: ${gioPaymentRequest!.toJson()}');
-      var result =
-          await widget.stitchService.sendGraphQlPaymentRequest(gioPaymentRequest!, token!);
+      var result = await widget.stitchService
+          .sendGraphQlPaymentRequest(gioPaymentRequest!, token!);
       pp('$mm back in the land of the living, id: ${result['id']} url: ${result['url']}');
       _navigateToWebView(result['id'], result['url']);
     } catch (e) {
@@ -150,69 +154,86 @@ class GioStitchPaymentPageState extends State<GioStitchPaymentPage>
 
     if (!isDarkMode) {
       color = Colors.white;
+    } else {
+      color = Theme.of(context).primaryColor;
     }
     return ScreenTypeLayout.builder(
       mobile: (ctx) {
         return SafeArea(
             child: Scaffold(
           appBar: AppBar(
-            title:  Text('Payment', style: myTextStyleLargeWithColor(context, color),),
+            title: Text(
+              payment == null ? 'Payment' : payment!,
+              style: myTextStyleLargeWithColor(context, color),
+            ),
           ),
-          backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
+          backgroundColor:
+              isDarkMode ? Theme.of(context).canvasColor : Colors.brown[50],
           body: busy
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
               : Center(
-                  child: Card(
-                      shape: getRoundedBorder(radius: 16),
-                      elevation: 8,
-                      child: Padding(
+                  child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        shape: getRoundedBorder(radius: 16),
+                        elevation: 8,
+                        child: Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: Card(
-                            child: SizedBox(height: 400,
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 60,
-                                  ),
-                                  Text(
-                                    widget.title,
-                                    style: myTextStyleLarge(context),
-                                  ),
-                                  const SizedBox(
-                                    height: 60,
-                                  ),
-                                  Text(
-                                    num,
-                                    style: myTextStyleLargerPrimaryColor(
-                                        context),
-                                  ),
-                                  const SizedBox(
-                                    height: 60,
-                                  ),
-                                  busy2
-                                      ? const SizedBox(
-                                          height: 24,
-                                          width: 24,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            backgroundColor: Colors.pink,
-                                          ),
-                                        )
-                                      : ElevatedButton(
-                                          style: const ButtonStyle(elevation: MaterialStatePropertyAll(8.0)),
-                                          onPressed: () {
-                                            _getPaymentRequest();
-                                          },
-                                          child:  Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: Text(confirm == null? 'Confirm Transaction':confirm!),
-                                          )),
-                                ],
+                          child: Column(
+
+                            children: [
+                              Image.asset('assets/gio.png', height: 48, width: 48,),
+                              const SizedBox(
+                                height: 48,
                               ),
-                            ),
-                          )))),
+                              Text(
+                                widget.title,
+                                style: myTextStyleLarge(context),
+                              ),
+                              const SizedBox(
+                                height: 40,
+                              ),
+                              Text(upgradeText == null
+                                  ? 'Upgrade'
+                                  : upgradeText!),
+                              const SizedBox(
+                                height: 60,
+                              ),
+                              Text(
+                                num,
+                                style: myTextStyleLargerPrimaryColor(context),
+                              ),
+                              const SizedBox(
+                                height: 60,
+                              ),
+                              busy2
+                                  ? const SizedBox(
+                                      height: 24,
+                                      width: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        backgroundColor: Colors.pink,
+                                      ),
+                                    )
+                                  : ElevatedButton(
+                                      style: const ButtonStyle(
+                                          elevation:
+                                              MaterialStatePropertyAll(8.0)),
+                                      onPressed: () {
+                                        _getPaymentRequest();
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Text(upgrade == null
+                                            ? 'Confirm Transaction'
+                                            : upgrade!),
+                                      )),
+                            ],
+                          ),
+                        ),
+                      ))),
         ));
       },
       tablet: (ctx) {
