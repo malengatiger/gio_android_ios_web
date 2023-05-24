@@ -860,7 +860,15 @@ class DashboardKhayaState extends State<DashboardKhaya> {
     var width = MediaQuery.of(context).size.width;
     final deviceType = getThisDeviceType();
     if (deviceType != 'phone') {}
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var color = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return Scaffold(
+        backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
         body: Stack(
       children: [
         ScreenTypeLayout.builder(
@@ -1317,7 +1325,6 @@ class RealDashboard extends StatelessWidget {
                   radius: 24.0,
                   backgroundImage: NetworkImage(user.thumbnailUrl!)),
             ),
-
             PopupMenuItem(
                 value: 1,
                 child: Icon(
@@ -1460,7 +1467,8 @@ class RealDashboard extends StatelessWidget {
           Positioned(
             child: SizedBox(
               height: 80,
-              child: AppBar(backgroundColor: backgroundColor,
+              child: AppBar(
+                backgroundColor: backgroundColor,
                 // flexibleSpace: ClipRect(
                 //   child: BackdropFilter(
                 //     filter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),

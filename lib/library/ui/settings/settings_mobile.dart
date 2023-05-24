@@ -143,7 +143,8 @@ class SettingsMobileState extends State<SettingsMobile>
           child: const SizedBox(),
         ),
       ),
-      body: busy
+          backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
+          body: busy
           ? const Center(
               child: SizedBox(
                 height: 20,

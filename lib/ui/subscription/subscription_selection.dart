@@ -214,7 +214,13 @@ class SubscriptionSelectionState extends State<SubscriptionSelection> {
         ),
       );
     }
-    final color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    var  color = getTextColorForBackground(Theme.of(context).primaryColor);
+
+    if (isDarkMode) {
+      color = Theme.of(context).primaryColor;
+    }
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -222,6 +228,7 @@ class SubscriptionSelectionState extends State<SubscriptionSelection> {
           'Subscription Plans',
           style: myTextStyleLargeWithColor(context, color),
         ),
+        // backgroundColor: isDarkMode? Colors.transparent: Colors.brown[50],
         bottom: PreferredSize(
             preferredSize: const Size.fromHeight(160),
             child: Padding(
@@ -243,8 +250,8 @@ class SubscriptionSelectionState extends State<SubscriptionSelection> {
       ),
       body: ScreenTypeLayout.builder(
         mobile: (ctx) {
-          return SizedBox(
-            height: 460,
+          return Container(color: isDarkMode? Colors.transparent: Colors.brown[50],
+            // height: 560,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: _getItems(),
@@ -252,9 +259,11 @@ class SubscriptionSelectionState extends State<SubscriptionSelection> {
           );
         },
         tablet: (ctx) {
-          return ListView(
-            scrollDirection: Axis.horizontal,
-            children: _getItems(),
+          return Container(color: isDarkMode? Colors.transparent: Colors.brown[50],
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: _getItems(),
+            ),
           );
         },
       ),
@@ -285,7 +294,7 @@ class SubscriptionItem extends StatelessWidget {
     final locale = Intl.getCurrentLocale();
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       child: Card(
         shape: getRoundedBorder(radius: 16),
         elevation: 8,
@@ -296,7 +305,7 @@ class SubscriptionItem extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(
-                  height: 8,
+                  height: 48,
                 ),
                 Text(
                   title,

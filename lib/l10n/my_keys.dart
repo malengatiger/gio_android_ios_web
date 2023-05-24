@@ -11,7 +11,11 @@ class MyKeys {
   }
 
   static _buildMap() {
-
+    hashMap["payment"] = "payment";
+    hashMap["subscriptionPlans"] = "subscriptionPlans";
+    hashMap["subscriptionPayment"] = "subscriptionPayment";
+    hashMap["contract"] = "contract";
+    
     hashMap["freeDesc"] = "freeDesc";
     hashMap["monthlyDesc"] = "monthlyDesc";
     hashMap["annualDesc"] = "annualDesc";

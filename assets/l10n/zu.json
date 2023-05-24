@@ -1,4 +1,7 @@
 {
+  "subscriptionPayment": "Inkokhelo yokubhaliselwe",
+  "contract": "Inkontileka",
+  "payment": "Inkokhelo",
   "subscriptionSubTitle": "Zitholele uhlelo oluhle lokubhaliselwe lwezinsizakalo ze-$Gio. Vula izici ezithuthukisiwe, izibalo, usekelo olubalulekile, nokuhlanganiswa okungenazihibe. Lungisa ukuphathwa kwakho kwabasebenzi kude kalula. Khetha i-$Gio futhi uguqule ukusebenza kwakho ngaphandle kwesayithi.",
   "subscriptionPlans": "Izinhlelo zokubhalisa",
   "enrolledFree": "Ubhaliselwe ngokuzenzekelayo ukuze uthole ukubhalisa kwamahhala kwe-$Gio okukuvumela ukuthi usebenzise i-$Gio izinsuku ezingu-14",
