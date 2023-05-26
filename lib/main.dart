@@ -26,6 +26,7 @@ import 'library/api/prefs_og.dart';
 import 'library/bloc/cloud_storage_bloc.dart';
 import 'library/bloc/fcm_bloc.dart';
 import 'library/bloc/geo_uploader.dart';
+import 'library/bloc/refresh_bloc.dart';
 import 'library/bloc/theme_bloc.dart';
 import 'library/cache_manager.dart';
 import 'library/emojis.dart';
@@ -217,6 +218,7 @@ class LandingPageState extends State<LandingPage> {
         cacheManager: cacheManager,
         isolateHandler: dataHandler,
         fcmBloc: fcmBloc,
+        refreshBloc: refreshBloc,
         organizationBloc: organizationBloc,
         projectBloc: projectBloc,
         geoUploader: geoUploader,
@@ -232,6 +234,7 @@ class LandingPageState extends State<LandingPage> {
         fcmBloc: fcmBloc,
         projectBloc: projectBloc,
         prefsOGx: prefsOGx,
+        refreshBloc: refreshBloc,
         firebaseAuth: FirebaseAuth.instance,
         cloudStorageBloc: cloudStorageBloc,
         stitchService: stitchService,

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-final RefreshBloc refreshBloc = RefreshBloc._instance;
+RefreshBloc refreshBloc = RefreshBloc._instance;
 
 class RefreshBloc {
   static final RefreshBloc _instance = RefreshBloc._();

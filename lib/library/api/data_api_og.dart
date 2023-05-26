@@ -7,6 +7,7 @@ import 'package:geo_monitor/library/api/prefs_og.dart';
 import 'package:geo_monitor/library/bloc/geo_exception.dart';
 import 'package:geo_monitor/library/data/activity_model.dart';
 import 'package:geo_monitor/library/data/app_error.dart';
+import 'package:geo_monitor/library/data/data_counts.dart';
 import 'package:geo_monitor/library/data/location_request.dart';
 import 'package:geo_monitor/library/data/organization_registration_bag.dart';
 import 'package:geo_monitor/library/data/project_polygon.dart';
@@ -1004,6 +1005,20 @@ class DataApiDog {
       list.add(Questionnaire.fromJson(m));
     }
     return list;
+  }
+
+  Future<DataCounts> getOrganizationDataCounts(
+      String organizationId, String startDate, String endDate, int activityStreamHours) async {
+    pp('$xz getOrganizationDataCounts: 🍏 id: $organizationId');
+
+    var cmd = 'getOrganizationDataCounts?organizationId=$organizationId&startDate=$startDate&endDate=$endDate&activityStreamHours=$activityStreamHours';
+    var u = '$url$cmd';
+
+    var result = await _sendHttpGET(u);
+    final dc = DataCounts.fromJson(result);
+    pp('$xz DataCounts received: ${dc.toJson()}');
+
+    return dc;
   }
 
   Future<Community> updateCommunity(Community community) async {

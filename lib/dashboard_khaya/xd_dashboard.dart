@@ -75,7 +75,7 @@ class DashboardKhaya extends StatefulWidget {
       required this.geoUploader,
       required this.cloudStorageBloc,
       required this.firebaseAuth,
-      required this.stitchService})
+      required this.stitchService, required this.refreshBloc})
       : super(key: key);
 
   final DataApiDog dataApiDog;
@@ -89,6 +89,8 @@ class DashboardKhaya extends StatefulWidget {
   final CloudStorageBloc cloudStorageBloc;
   final auth.FirebaseAuth firebaseAuth;
   final StitchService stitchService;
+  final RefreshBloc refreshBloc;
+
 
   @override
   State<DashboardKhaya> createState() => DashboardKhayaState();
@@ -133,6 +135,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
   late StreamSubscription<ActivityModel> activitySubscription;
 
   late StreamSubscription<DataBag> dataBagSubscription;
+  late StreamSubscription<bool> refreshSub;
   static const mm = '🥬🥬🥬🥬🥬🥬DashboardKhaya: 🥬🥬';
 
   @override
@@ -182,7 +185,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
             backgroundColor: Theme.of(context).primaryColor,
             padding: 20,
             toastGravity: ToastGravity.TOP,
-            textStyle: myTextStyleMediumWithColor(context, color),
+            textStyle: myTextStyleSmallWithColor(context, color),
             message: arrivedAt,
             context: context);
       }
@@ -293,6 +296,11 @@ class DashboardKhayaState extends State<DashboardKhaya> {
         setState(() {});
       }
     });
+
+    refreshSub = widget.refreshBloc.refreshStream.listen((event) {
+      pp('$mm refreshStream delivered a command, call getData with forceRefresh = true ... ');
+      _getData();
+    });
   }
 
   var images = <Image>[];
@@ -363,20 +371,27 @@ class DashboardKhayaState extends State<DashboardKhaya> {
       });
       final m =
           await getStartEndDates(numberOfDays: settingsModel.numberOfDays!);
-      final bag = await widget.organizationBloc.getOrganizationData(
-          organizationId: user!.organizationId!,
-          forceRefresh: true,
-          startDate: m['startDate']!,
-          endDate: m['endDate']!);
-      projects = bag.projects!;
-      events = await organizationBloc.getCachedOrganizationActivity(
-          organizationId: settingsModel.organizationId!,
-          hours: settingsModel.activityStreamHours!);
-      users = bag.users!;
+      // final bag = await widget.organizationBloc.getOrganizationData(
+      //     organizationId: user!.organizationId!,
+      //     forceRefresh: true,
+      //     startDate: m['startDate']!,
+      //     endDate: m['endDate']!);
+      final counts = await widget.dataApiDog.getOrganizationDataCounts(
+          settingsModel.organizationId!, m['startDate']!,
+          m['endDate']!, settingsModel.activityStreamHours!);
 
-      totalEvents = events.length;
-      totalUsers = users.length;
-      totalProjects = projects.length;
+      totalProjects = counts.projects!;
+      totalEvents = counts.activities!;
+      totalUsers = counts.users!;
+
+      // events = await organizationBloc.getCachedOrganizationActivity(
+      //     organizationId: settingsModel.organizationId!,
+      //     hours: settingsModel.activityStreamHours!);
+      // users = bag.users!;
+      //
+      // totalEvents = events.length;
+      // totalUsers = users.length;
+      // totalProjects = projects.length;
     } catch (e) {
       if (mounted) {
         pp('$mm showSnack with error : $e');
@@ -476,6 +491,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
           geoUploader: widget.geoUploader,
           cloudStorageBloc: widget.cloudStorageBloc,
           stitchService: widget.stitchService,
+          refreshBloc: widget.refreshBloc,
           projectBloc: widget.projectBloc,
           firebaseAuth: widget.firebaseAuth,
         ),
@@ -552,8 +568,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
 
   void _onRefreshRequested() {
     pp(' ✅✅✅ .... _onRefreshRequested ... calling broadcastRefresh with true');
-    // refreshBloc.broadcastRefresh();
-    _getData();
+    widget.refreshBloc.broadcastRefresh();
   }
 
   void _onSettingsRequested() {
@@ -1626,6 +1641,13 @@ class DashboardTopCard extends StatelessWidget {
         fontWeight: FontWeight.normal);
     final fmt = NumberFormat.decimalPattern();
     final mNumber = fmt.format(number);
+    var color2 = getTextColorForBackground(Theme.of(context).primaryColor);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
+    if (!isDarkMode) {
+      color2 = Colors.black;
+    }
 
     return GestureDetector(
       onTap: () {
@@ -1654,7 +1676,7 @@ class DashboardTopCard extends StatelessWidget {
                 ),
                 Text(
                   title,
-                  style: style2,
+                  style: myTextStyleSmallWithColor(context, color2),
                 )
               ],
             ),
@@ -2027,6 +2049,13 @@ class TopCardListState extends State<TopCardList> {
     //     ),
     //   );
     // }
+    var color = getTextColorForBackground(Theme.of(context).primaryColor);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
+    if (!isDarkMode) {
+      color = Colors.black;
+    }
     return Stack(children: [
       SizedBox(
         height: 140,

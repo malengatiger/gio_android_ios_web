@@ -14,6 +14,7 @@ import '../../library/bloc/fcm_bloc.dart';
 import '../../library/bloc/geo_uploader.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
+import '../../library/bloc/refresh_bloc.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/user.dart';
 import '../../library/generic_functions.dart';
@@ -32,7 +33,7 @@ class DashboardMain extends StatefulWidget {
     required this.dataHandler,
     required this.geoUploader,
     required this.cloudStorageBloc,
-    required this.firebaseAuth, required this.stitchService,
+    required this.firebaseAuth, required this.stitchService, required this.refreshBloc,
   }) : super(key: key);
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
@@ -45,6 +46,8 @@ class DashboardMain extends StatefulWidget {
   final CloudStorageBloc cloudStorageBloc;
   final auth.FirebaseAuth firebaseAuth;
   final StitchService stitchService;
+  final RefreshBloc refreshBloc;
+
 
 
   @override
@@ -196,6 +199,7 @@ class DashboardMainState extends State<DashboardMain>
                   firebaseAuth: widget.firebaseAuth,
                   stitchService: widget.stitchService,
                   cloudStorageBloc: widget.cloudStorageBloc,
+                  refreshBloc: widget.refreshBloc,
                   prefsOGx: widget.prefsOGx,
                   cacheManager: widget.cacheManager,
                 ),
@@ -211,6 +215,7 @@ class DashboardMainState extends State<DashboardMain>
                       cloudStorageBloc: widget.cloudStorageBloc,
                       firebaseAuth: widget.firebaseAuth,
                       organizationBloc: widget.organizationBloc,
+                      refreshBloc: widget.refreshBloc,
                       cacheManager: widget.cacheManager,
                       stitchService: widget.stitchService,
                     );
@@ -227,6 +232,7 @@ class DashboardMainState extends State<DashboardMain>
                       cloudStorageBloc: widget.cloudStorageBloc,
                       stitchService: widget.stitchService,
                       prefsOGx: widget.prefsOGx,
+                      refreshBloc: widget.refreshBloc,
                       cacheManager: widget.cacheManager,
                     );
                   },

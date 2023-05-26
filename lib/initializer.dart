@@ -90,8 +90,6 @@ class Initializer {
 
     final start = DateTime.now();
 
-    await stitchService.getToken();
-
     final settings = await prefsOGx.getSettings();
 
     FirebaseMessaging.instance.requestPermission();
@@ -103,8 +101,8 @@ class Initializer {
     await fcmBloc.initialize();
 
     final token = await appAuth.getAuthToken();
+    pp('$mx heavyLifting: Firebase auth token:\n$token\n');
 
-    pp('$mx heavyLifting: token:\n$token\n');
     if (settings.organizationId != null) {
       pp('$mx heavyLifting: _buildGeofences starting ..................');
       theGreatGeofencer.buildGeofences();
@@ -126,6 +124,18 @@ class Initializer {
         'initializeGeo: Hive initialized Gio services. '
         '💜💜 Ready to rumble! Ali Bomaye!!');
     final end = DateTime.now();
-    pp('$mx initializeGeo, heavyLifting: Time Elapsed: ${end.difference(start).inMilliseconds} milliseconds\n\n');
+    pp('$mx initializeGeo, heavyLifting: Time Elapsed: ${end.difference(start).inMilliseconds} '
+        'milliseconds\n\n');
+    final sett = await prefsOGx.getSettings();
+    final m = await getStartEndDates(numberOfDays: sett.numberOfDays!);
+
+    Future.delayed(const Duration(seconds: 15)).then((value) {
+      pp('$mx initializeGeo, heavyLifting: refreshing org data after delay of 15 seconds');
+      organizationBloc.getOrganizationData(
+          organizationId: sett.organizationId!,
+          forceRefresh: true,
+          startDate: m['startDate']!,
+          endDate: m['endDate']!);
+    });
   }
 }

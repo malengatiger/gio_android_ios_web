@@ -11,6 +11,7 @@ import '../../library/bloc/geo_uploader.dart';
 import '../../library/bloc/isolate_handler.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
+import '../../library/bloc/refresh_bloc.dart';
 import '../../library/cache_manager.dart';
 import '../../stitch/stitch_service.dart';
 import 'intro_page_viewer_landscape.dart';
@@ -27,6 +28,7 @@ class IntroMain extends StatefulWidget {
   final CloudStorageBloc cloudStorageBloc;
   final FirebaseAuth firebaseAuth;
   final StitchService stitchService;
+  final RefreshBloc refreshBloc;
 
 
   const IntroMain({
@@ -40,7 +42,7 @@ class IntroMain extends StatefulWidget {
     required this.projectBloc,
     required this.geoUploader,
     required this.cloudStorageBloc,
-    required this.firebaseAuth, required this.stitchService,
+    required this.firebaseAuth, required this.stitchService, required this.refreshBloc,
   }) : super(key: key);
   @override
   IntroMainState createState() => IntroMainState();
@@ -77,6 +79,7 @@ class IntroMainState extends State<IntroMain>
           projectBloc: widget.projectBloc,
           isolateHandler: widget.isolateHandler,
           geoUploader: widget.geoUploader,
+          refreshBloc: widget.refreshBloc,
           cloudStorageBloc: widget.cloudStorageBloc,
           firebaseAuth: widget.firebaseAuth,
           stitchService: widget.stitchService,
@@ -99,6 +102,7 @@ class IntroMainState extends State<IntroMain>
               geoUploader: widget.geoUploader,
               stitchService: widget.stitchService,
               cloudStorageBloc: widget.cloudStorageBloc,
+              refreshBloc: widget.refreshBloc,
             );
           },
           landscape: (context) {
@@ -110,6 +114,7 @@ class IntroMainState extends State<IntroMain>
               dataHandler: widget.isolateHandler,
               organizationBloc: widget.organizationBloc,
               geoUploader: widget.geoUploader,
+              refreshBloc: widget.refreshBloc,
               cloudStorageBloc: widget.cloudStorageBloc,
               firebaseAuth: widget.firebaseAuth,
               stitchService: widget.stitchService,

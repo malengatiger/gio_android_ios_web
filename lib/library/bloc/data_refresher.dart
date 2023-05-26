@@ -401,6 +401,9 @@ class DataRefresher {
     await cacheManager.addPhotos(photos: bag.photos!);
     await cacheManager.addVideos(videos: bag.videos!);
     await cacheManager.addAudios(audios: bag.audios!);
+    await cacheManager.deleteActivityModels();
+    await cacheManager.addActivityModels(activities: bag.activityModels!);
+
     bag.settings!.sort((a, b) => DateTime.parse(b.created!)
         .millisecondsSinceEpoch
         .compareTo(DateTime.parse(a.created!).millisecondsSinceEpoch));

@@ -24,6 +24,66 @@ class StitchService {
 
   final mm = '🍐🍐🍐🍐🍐🍐🍐 StitchService: ✅';
   final http.Client httpClient;
+  String getPay = """
+  mutation CreatePaymentRequest(
+    \$amount: MoneyInput!,
+    \$payerReference: String!,
+    \$beneficiaryReference: String!,
+    \$externalReference: String,
+    \$beneficiaryName: String!,
+    \$beneficiaryBankId: BankBeneficiaryBankId!,
+    \$beneficiaryAccountNumber: String!) {
+  clientPaymentInitiationRequestCreate(input: {
+      amount: \$amount,
+      payerReference: \$payerReference,
+      beneficiaryReference: \$beneficiaryReference,
+      externalReference: \$externalReference,
+      beneficiary: {
+          bankAccount: {
+              name: \$beneficiaryName,
+              bankId: \$beneficiaryBankId,
+              accountNumber: \$beneficiaryAccountNumber
+          }
+      }
+    }) {
+    paymentInitiationRequest {
+      id
+      url
+    }
+  }
+}
+  """;
+  String mutation = '''
+    mutation CreatePaymentRequest(
+      \$amount: MoneyInput!,
+      \$payerReference: String!,
+      \$beneficiaryReference: String!,
+      \$externalReference: String,
+      \$beneficiaryName: String!,
+      \$beneficiaryBankId: BankBeneficiaryBankId!,
+      \$beneficiaryAccountNumber: String!
+    ) {
+      clientPaymentInitiationRequestCreate(input: {
+        amount: \$amount,
+        payerReference: \$payerReference,
+        beneficiaryReference: \$beneficiaryReference,
+        externalReference: \$externalReference,
+        beneficiary: {
+          bankAccount: {
+            name: \$beneficiaryName,
+            bankId: \$beneficiaryBankId,
+            accountNumber: \$beneficiaryAccountNumber
+          }
+        }
+      }) {
+        paymentInitiationRequest {
+          id
+          url
+        }
+      }
+    }
+  ''';
+  late GraphQLClient client;
 
   StitchService(this.httpClient);
 
@@ -125,66 +185,7 @@ class StitchService {
     }
   }
 
-  String getPay = """
-  mutation CreatePaymentRequest(
-    \$amount: MoneyInput!,
-    \$payerReference: String!,
-    \$beneficiaryReference: String!,
-    \$externalReference: String,
-    \$beneficiaryName: String!,
-    \$beneficiaryBankId: BankBeneficiaryBankId!,
-    \$beneficiaryAccountNumber: String!) {
-  clientPaymentInitiationRequestCreate(input: {
-      amount: \$amount,
-      payerReference: \$payerReference,
-      beneficiaryReference: \$beneficiaryReference,
-      externalReference: \$externalReference,
-      beneficiary: {
-          bankAccount: {
-              name: \$beneficiaryName,
-              bankId: \$beneficiaryBankId,
-              accountNumber: \$beneficiaryAccountNumber
-          }
-      }
-    }) {
-    paymentInitiationRequest {
-      id
-      url
-    }
-  }
-}
-  """;
-  String mutation = '''
-    mutation CreatePaymentRequest(
-      \$amount: MoneyInput!,
-      \$payerReference: String!,
-      \$beneficiaryReference: String!,
-      \$externalReference: String,
-      \$beneficiaryName: String!,
-      \$beneficiaryBankId: BankBeneficiaryBankId!,
-      \$beneficiaryAccountNumber: String!
-    ) {
-      clientPaymentInitiationRequestCreate(input: {
-        amount: \$amount,
-        payerReference: \$payerReference,
-        beneficiaryReference: \$beneficiaryReference,
-        externalReference: \$externalReference,
-        beneficiary: {
-          bankAccount: {
-            name: \$beneficiaryName,
-            bankId: \$beneficiaryBankId,
-            accountNumber: \$beneficiaryAccountNumber
-          }
-        }
-      }) {
-        paymentInitiationRequest {
-          id
-          url
-        }
-      }
-    }
-  ''';
-  late GraphQLClient client;
+
 
   ///
   /// The table below describes the different statuses an InstantPay request can have,

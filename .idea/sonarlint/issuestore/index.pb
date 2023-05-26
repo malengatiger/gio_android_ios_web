@@ -261,8 +261,6 @@ V
 &lib/library/data/settings_model.g.dart,6/a/6ae18f5b8a96f2825227272bd40b99075a8634ed
 W
 'lib/library/data/location_response.dart,f/6/f6bbfd5fc35286632181b305bc7f63c6cb2cbfe9
-L
-lib/library/data/answer.dart,2/1/21623d994fed3dcbb85201448479f84d8268cf9f
 Z
 *lib/library/data/activity_type_enum.g.dart,6/a/6ac43a44b6624d57ec052eefbbb2a63063db6096
 M
@@ -271,8 +269,6 @@ X
 (lib/library/data/activity_type_enum.dart,0/1/01c61d3cc914931d39ceefd2c2a143f73cde7b55
 N
 lib/library/data/position.dart,7/9/7965a373e275bb135eebe87ad31992d461b0f26e
-O
-lib/library/data/app_error.dart,9/a/9a38d526c2d6d77a500dcb542fd83d0c565ed12c
 O
 lib/library/data/error_bag.dart,9/d/9d40fcab08ba213939cc6a1dde838f5cb017a4a4
 X
@@ -607,8 +603,6 @@ T
 $lib/library/data/activity_model.dart,b/a/ba042069e67c49a1b8bd16dde12c5ffb048775c1
 P
  lib/library/bloc/theme_bloc.dart,f/f/ff18663b3277d1e841b5078468599558b90b3eca
-R
-"lib/library/bloc/refresh_bloc.dart,3/7/37a8becd3592ab3966f73ab1aaa371dc7176b0a4
 K
 lib/utils/audio_player.dart,4/b/4b1280e6624a8978a833f829394e7a88367962b9
 c
@@ -625,8 +619,6 @@ U
 .lib/ui/dashboard/project_dashboard_mobile.dart,f/7/f7017790b3267d1df879d3ba44005188e45d6993
 N
 lib/library/auth/app_auth.dart,2/7/27b9d1ff643c291d720302ce7d07ba0aad90d666
-T
-$lib/library/bloc/data_refresher.dart,9/8/98d60306af869ba9890f133ccf1a9927b14fc02a
 N
 lib/library/bloc/fcm_bloc.dart,a/e/ae73d6a3cb5b2c49c9d1485ebf9ab308c81e196f
 Z
@@ -671,8 +663,6 @@ H
 android/app/build.gradle,5/9/594ba479000e0bb5513707b709ad1cd52da9063a
 ]
 -test/unit_test/library/api/get_data_test.dart,9/b/9b987689504a78e7a29a76d2a0601a7e531f84a0
-U
-%lib/library/bloc/isolate_handler.dart,b/d/bd63d70bf2f2c5a5b32c34d1c5ef600d16ba72b4
 N
 test/widget_test/app_test.dart,3/3/339edbebd7a8777cbd8b133d98f09f54a9c4b3a3
 E
@@ -701,8 +691,6 @@ R
 "lib/ui/activity/activity_list.dart,a/5/a55a4aa3beb88e93bbb8668fabe5f1867792910f
 J
 lib/library/data/user.dart,3/f/3f34fa95761b58e770e96c6d3a4cc38e6beb8386
-c
-3test/unit_test/library/api/get_data_test.mocks.dart,5/e/5e87790e591d507c029578079ca78eb0c2e471ba
 R
 "lib/ui/auth/auth_phone_signin.dart,2/2/2253bff592402cf4c7e2c9c6eb627eae3f32014b
 R

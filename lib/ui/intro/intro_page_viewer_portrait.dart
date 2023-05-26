@@ -20,6 +20,7 @@ import '../../library/bloc/geo_uploader.dart';
 import '../../library/bloc/isolate_handler.dart';
 import '../../library/bloc/organization_bloc.dart';
 import '../../library/bloc/project_bloc.dart';
+import '../../library/bloc/refresh_bloc.dart';
 import '../../library/bloc/theme_bloc.dart';
 import '../../library/cache_manager.dart';
 import '../../library/data/user.dart' as ur;
@@ -42,7 +43,7 @@ class IntroPageViewerPortrait extends StatefulWidget {
     required this.dataHandler,
     required this.geoUploader,
     required this.cloudStorageBloc,
-    required this.firebaseAuth, required this.stitchService,
+    required this.firebaseAuth, required this.stitchService, required this.refreshBloc,
   }) : super(key: key);
   final PrefsOGx prefsOGx;
   final DataApiDog dataApiDog;
@@ -56,6 +57,8 @@ class IntroPageViewerPortrait extends StatefulWidget {
   final CloudStorageBloc cloudStorageBloc;
   final FirebaseAuth firebaseAuth;
   final StitchService stitchService;
+  final RefreshBloc refreshBloc;
+
 
 
   @override
@@ -137,6 +140,7 @@ class IntroPageViewerPortraitState extends State<IntroPageViewerPortrait>
                 organizationBloc: widget.organizationBloc,
                 projectBloc: widget.projectBloc,
                 prefsOGx: widget.prefsOGx,
+                refreshBloc: widget.refreshBloc,
                 cacheManager: widget.cacheManager,
                 stitchService: widget.stitchService,
                 geoUploader: widget.geoUploader,
