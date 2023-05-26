@@ -108,6 +108,7 @@ dependencies:
   graphql_flutter: ^5.1.0
   web_socket_channel: 2.2.0
   realm: ^1.0.3
+  dji: ^1.0.10
 
 
 

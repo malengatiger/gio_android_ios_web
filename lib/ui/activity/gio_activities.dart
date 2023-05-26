@@ -55,7 +55,7 @@ class GioActivities extends StatefulWidget {
       required this.dataApiDog,
       required this.fcmBloc,
       required this.geoUploader,
-      required this.cloudStorageBloc})
+      required this.cloudStorageBloc, required this.onRefreshRequested})
       : super(key: key);
 
   final Function(Photo) onPhotoTapped;
@@ -79,6 +79,8 @@ class GioActivities extends StatefulWidget {
   final FCMBloc fcmBloc;
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
+  final Function onRefreshRequested;
+
 
   @override
   GioActivitiesState createState() => GioActivitiesState();
@@ -154,6 +156,9 @@ class GioActivitiesState extends State<GioActivities>
           projectBloc: widget.projectBloc,
           project: widget.project,
           onTapped: _onTapped,
+          onRefreshRequested: (){
+            widget.onRefreshRequested();
+          },
           dataApiDog: widget.dataApiDog,
         );
       },
@@ -167,6 +172,9 @@ class GioActivitiesState extends State<GioActivities>
           prefsOGx: widget.prefsOGx,
           cacheManager: widget.cacheManager,
           onTapped: _onTapped,
+          onRefreshRequested: (){
+            widget.onRefreshRequested();
+          },
         );
       },
     );

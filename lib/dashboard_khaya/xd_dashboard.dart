@@ -475,6 +475,7 @@ class DashboardKhayaState extends State<DashboardKhaya> {
           onLocationRequest: onLocationRequest,
           prefsOGx: widget.prefsOGx,
           cacheManager: widget.cacheManager,
+          onRefreshRequested: _onRefreshRequested,
         ),
         context);
   }
@@ -1641,7 +1642,7 @@ class DashboardTopCard extends StatelessWidget {
         fontWeight: FontWeight.normal);
     final fmt = NumberFormat.decimalPattern();
     final mNumber = fmt.format(number);
-    var color2 = getTextColorForBackground(Theme.of(context).primaryColor);
+    var color2 = Colors.white;
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isDarkMode = brightness == Brightness.dark;
 
@@ -2008,6 +2009,9 @@ class TopCardListState extends State<TopCardList> {
             },
             onAudioTapped: (p) {
               pp('$mm navigateWithScale ... onAudioTapped');
+            },
+            onRefreshRequested: (){
+              _getData(true);
             },
             onUserTapped: (p) {},
             onProjectTapped: (p) {},

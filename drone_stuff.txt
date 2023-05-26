@@ -1,0 +1,35 @@
+///////// IOS
+
+APP INFORMATION
+SDK Type: Mobile SDK
+App Name: GioMonitorA
+Software Platform: Android
+Package Name: com.boha.geo_monitor
+App Key: 22ec65766c31fab9909534c6
+Category: Film shooting
+Description:
+Creates photographs and video of project sites
+
+//////// IOS
+
+APP INFORMATION
+SDK Type: Mobile SDK
+App Name: GioMonitorI
+Software Platform: iOS
+Bundle Identifier: com.boha.geoMonitor
+App Key: 477f2317eb3041e07f249a58
+Category: Film shooting
+Description:
+Creates photographs and video of project sites
+
+////////// BACKEND
+
+APP INFORMATION
+SDK Type: Cloud API
+App Name: GioServer
+APP ID: 133250
+App Key: 3876d419e1480e230aff313550d2cc4
+App License: Gmt4EeAygH+yJQvvhgWBxoeAU76MmEzB96lucyPChVNqfo0gxHx0ZF6hsB7X9RNm6k/zWltEfT6DUcJv1ylxj9D/RNAkrEO+6qz7Sl0E4Hq7R7KpyDt9TSRS8eB/7bfRXURA2wglyJLxWW6sxuSOnxz+XHttSd6tptTP7cgXyeI=
+Category: Film shooting
+Description:
+Manages photographs and video of project sites

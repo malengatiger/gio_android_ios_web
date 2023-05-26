@@ -233,7 +233,9 @@ class GeoActivityState extends State<GeoActivity>
                     },
                     onLocationResponse: (locResp) {
                       widget.showLocationResponse(locResp);
-                    },
+                    }, onRefreshRequested: (){
+                    pp('$mm SOMEBODY requested a refresh ....');
+                  },
                   ),
                   tablet: OrientationLayoutBuilder(
                     portrait: (context) {
@@ -278,7 +280,9 @@ class GeoActivityState extends State<GeoActivity>
                               },
                               onOrgMessage: (orgMessage) {
                                 widget.showOrgMessage(orgMessage);
-                              },
+                              }, onRefreshRequested: (){
+                        pp('$mm SOMEBODY requested a refresh ....');
+                      },
                             );
                     },
                     landscape: (context) {
@@ -323,7 +327,9 @@ class GeoActivityState extends State<GeoActivity>
                               },
                               onLocationRequest: (locReq) {
                                 widget.showLocationRequest(locReq);
-                              },
+                              }, onRefreshRequested: (){
+                                pp('$mm SOMEBODY requested a refresh ....');
+                      },
                             );
                     },
                   ),
