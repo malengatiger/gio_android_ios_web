@@ -183,7 +183,7 @@ class TabletList extends StatefulWidget {
       required this.project,
       required this.organizationBloc,
       required this.dataApiDog,
-      required this.fcmBloc})
+      required this.fcmBloc, required this.onRefreshRequested})
       : super(key: key);
   final Function(ActivityModel) onTapped;
   final PrefsOGx prefsOGx;
@@ -193,6 +193,8 @@ class TabletList extends StatefulWidget {
   final OrganizationBloc organizationBloc;
   final DataApiDog dataApiDog;
   final FCMBloc fcmBloc;
+  final Function onRefreshRequested;
+
 
   @override
   State<TabletList> createState() => TabletListState();
@@ -247,7 +249,7 @@ class MobileList extends StatefulWidget {
       required this.dataApiDog,
       required this.fcmBloc,
       required this.geoUploader,
-      required this.cloudStorageBloc})
+      required this.cloudStorageBloc, required this.onRefreshRequested})
       : super(key: key);
   final Function(ActivityModel) onTapped;
   final PrefsOGx prefsOGx;
@@ -259,6 +261,7 @@ class MobileList extends StatefulWidget {
   final FCMBloc fcmBloc;
   final GeoUploader geoUploader;
   final CloudStorageBloc cloudStorageBloc;
+  final Function onRefreshRequested;
 
   @override
   State<MobileList> createState() => MobileListState();
@@ -326,6 +329,11 @@ class MobileListState extends State<MobileList> {
             style: myTitleTextStyle(context, color),
           ),
         ),
+        actions: [
+          IconButton(onPressed: (){
+            widget.onRefreshRequested();
+          }, icon: const Icon(Icons.refresh)),
+        ],
       ),
           backgroundColor: isDarkMode?Theme.of(context).canvasColor: Colors.brown[50],
           body: Padding(
